@@ -1,0 +1,1 @@
+var json = function(a) { console.log(typeof a); return (typeof a == 'string') ? JSON.parse(a) : JSON.stringify(a); }
