@@ -1,10 +1,10 @@
-console.log('-----------------');
+//console.log('-----------------');
 define([evo.extend, 'smsService'], function(a, smsService) {
     'use strict';
 
     myApp.$controller = function controller($compile, $rootScope) {
         var user = evo.user;
-        console.log(evo.user);
+        //console.log(evo.user);
         $scope.smsService = smsService(evo.user);
         $scope.extend({ user, openDeposit, openLoginLog, smsService });
     };

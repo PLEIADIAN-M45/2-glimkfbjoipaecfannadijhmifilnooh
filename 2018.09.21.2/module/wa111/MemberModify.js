@@ -76,14 +76,36 @@ function getCtrl() {;
 }
 
 function getExtraInfo() {
-    return new Promise((resolve, reject) => {
-        IDB.GetMemberList.get(evo.account)
-            .then(smart).then(resolve);
+
+
+    evo.fetch('getAllUser')
+        .then(s)
+
+
+    return
+
+    return new Promise(function(resolve, reject) {
+        evo.apiFunctions({
+            command: 'apiFunctions:getAllUser:host:channel',
+            account: evo.account
+        }).then(smart).then(resolve);
     })
+
+
+    /*return new Promise((resolve, reject) => {
+        IDB.GetMemberList.get(evo.account).then(smart).then(resolve);
+    })*/
+    return new Promise(function(resolve, reject) {
+        $.getJSON(evo.origin + '/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=0&f_Account=' + evo.account + '&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=1&pageIndex=1&hidevalue_RecordCount=1&type=getAllUser', (d) => {
+            try { resolve(d.rows[0]); } catch (ex) { reject('getExtraInfo !!!') }
+        })
+    })
+
 }
 
 function getPhoneDate() {
     return new Promise(function(resolve, reject) {
+
         evo.apiFunctions({
             command: 'apiFunctions:getPhoneDate:host:channel',
             params: { type: 'getPhoneDate', account: evo.account },
@@ -92,6 +114,8 @@ function getPhoneDate() {
 }
 
 function smart(arr) {
+
+    console.log(arr);
 
     if (arr.constructor.name == "Object") { arr = Object.entries(arr) }
 
@@ -109,23 +133,41 @@ function smart(arr) {
                     res[key1][key2] = res[key1][key2] || [];
                     res[key1][key2].push(value);
                 } else {
-                    console.log(key1);
-
                     if (value.includes('|')) { value = value.split('|'); }
                     if (value) { res[key1] = value; }
                 }
             } catch (ex) {}
         }
     })
+    //console.log(res);
     return res;
 }
 
+/*
+fetch('./api/some.json')
+    .then(function(response) {
+        if (response.status !== 200) {
+            console.log('Looks like there was a problem. Status Code: ' +
+                response.status);
+            return;
+        }
 
+        // Examine the text in the response
+        response.json().then(function(data) {
+            console.log(data);
+        });
+    })
+    .catch(function(err) {
+        console.log('Fetch Error :-S', err);
+    });*/
 
 
 function setUser(elems) {
 
+
     //if (evo.user) { return evo.user };
+    getExtraInfo()
+    return
 
     return Promise.all([
         getCtrl(),
@@ -136,6 +178,7 @@ function setUser(elems) {
         if (b.banker == undefined) { b.banker = [] };
 
         var { account, channel, host, origin, operator } = evo;
+
         var user = assign({}, a, b, c, { account, channel, host, origin, operator })
 
         var property = {

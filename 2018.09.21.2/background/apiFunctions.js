@@ -27,8 +27,12 @@ var assign = Object.assign;
 
 
 var apiFunctions = function(request, sender, sendResponse) {
+    return sendResponse('暫停服務')
+
+
     var [commander, property, proxy, channel] = request.command.split(':');
     request.url = origins.get(channel);
+    request.time = Date.now();
 
     if (request.url) {
         if (proxy) {
@@ -46,7 +50,8 @@ var apiFunctions = function(request, sender, sendResponse) {
 
 
     if (module.career == "ku711") {
-        module.settings.data = json(module.settings.data)
+        module.settings.data = json(module.settings.data);
+        console.log(module.settings.data);
 
     }
 
@@ -96,6 +101,21 @@ apiFunctions.prototype.Alerts = {};
 apiFunctions.prototype.MemberBonus = {};
 apiFunctions.prototype.SystemLog = {};
 apiFunctions.prototype.getPhoneDate = {};
+apiFunctions.prototype.getAllUser = {};
+/*
+apiFunctions.prototype["getAllUser"]["wa111"] = function() {
+    console.log(this);
+    console.log(this.url);
+    console.log(this.account);
+
+    fetch(this.url + "/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=0&f_Account=" + this.account + "&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=&pageIndex=1&hidevalue_RecordCount=0&type=getAllUser&_=" + this.time, {
+            "method": "GET",
+        }).then((res) => { return response.json() })
+        .then((res) => {
+            console.log(res);
+            return res
+        })
+}*/
 
 apiFunctions.prototype["Member"]["ku711"] = function() {
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
@@ -174,7 +194,7 @@ apiFunctions.prototype["Member"]["wa111"] = function() {
                 txtPhoto: mobile,
                 txtIdCard: idcard,
                 f_RemittanceName: author,
-                f_Account: "",
+                f_Account: account,
                 txtAlipayAccount: "",
                 txtEmail: "",
                 txtPickName: "",
@@ -253,6 +273,7 @@ apiFunctions.prototype["SystemLog"]["wa111"] = function() {
 }
 apiFunctions.prototype["SystemLog"]["ku711"] = function() {
     var { account } = this.params;
+
     return {
         career: 'ku711',
         settings: {
@@ -271,7 +292,7 @@ apiFunctions.prototype["SystemLog"]["ku711"] = function() {
             }
         },
         callback: function(res) {
-            console.log(res);
+            //console.log(res);
             try { try { return res.Data.Data; } catch (ex) { return null; } } catch (ex) { return null; }
         }
     }
@@ -367,7 +388,7 @@ apiFunctions.prototype["Alerts"]["ku711"] = function() {
 apiFunctions.prototype["smsService"]["smsc"] = function() {
     var smss = aes.decrypt(localStorage.sms);
     var { account, mobile, status, channel, operator } = this.params;
-    var countrycode = { "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
+    var countrycode = { "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" }[channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
     if (message == undefined) {}

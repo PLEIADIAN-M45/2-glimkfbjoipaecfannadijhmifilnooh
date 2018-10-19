@@ -83,6 +83,8 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
                 break;
         }
 
+        //console.log(this);
+
         Object.assign(this, { _hostname, _lastPath, _response, _params, _postData, _method, _responseText, query });
 
         //chrome.runtime.sendMessage('glimkfbjoipaecfannadijhmifilnooh', this, function(d) {});
@@ -103,20 +105,112 @@ IDB.version(1.0).stores({
 
 
 var TEMPBSN = {}
+var user = {}
+//console.log(user);
 
 function recorddb() {
     var { _lastPath, _postData, _params, _response, _responseText } = this;
 
+    //console.log(user);
+
     // console.log(_lastPath, _postData, _params);
 
 
+    ///Member/api/Bonus/GetMemberBonusLogBackendByCondition
+
+    if (this.isEquel('CreateMemberInfoOperationLog')) { //CreateMemberInfoOperationLog
+        //用建立log 來判別剛才的動作
+        //只發生在 [存款開關時]
+        //{"Operated":"shengcai2","OperateType":3,"DataID":"shengcai2","Content":[{"FieldName":"IsDeposit","FieldDisplayName":"存款","BeforeValue":false,"BeforeName":"关闭","AfterValue":true,"AfterName":"开启"},{"FieldName":"MemberStatus","FieldDisplayName":"用户状态","BeforeValue":3,"BeforeName":"審核中","AfterValue":1,"AfterName":"正常户"}]}
+        //"FieldName":"IsDeposit","FieldDisplayName":"存款","BeforeValue":false,"BeforeName":"关闭","AfterValue":true,"AfterName":"开启"}
+        //console.log(_postData);
+        var content = _postData.Content;
+        var type = _postData.OperateType;
+        console.log(json(_postData));
+        console.log(type);
+        console.log(content);
+        content.map(({ FieldName, FieldDisplayName, BeforeName, BeforeValue, AfterName, AfterValue }) => {
+            console.log(FieldName, FieldDisplayName, BeforeName, BeforeValue, AfterName, AfterValue);
+            if (FieldName == 'MemberStatus' && BeforeValue == 3) {
+                upload_5(_postData);
+            }
+        })
+        alert(1)
+        /*console.log(_responseText);
+        
+        sessionStorage[_postData.Operated] = json(_postData);
+       */
+    }
 
 
 
+    if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) {
+        //取得進入頁面時的會員狀態
+        //console.log(_response.Data.AccountID);
+        //console.log(_response.Data.AccountID);
+        //console.log(_response.Data);
+        var { AccountID } = object = _response.Data;
+        user[AccountID] = object;
+    }
+
+
+    if (this.isEquel('UpdateMemberSNInfoBackend')) {
+        console.clear();
+        //審核中轉停權 //發生在按下 基本資料的「修改鍵」 或 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
+        var _pastData = user[_postData.AccountID];
+        //console.log(json(_postData));
+        console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
+
+            /*if (_pastData.MemberStatus == 3) {
+                //開通表  可能是開通 也可能是 轉停權
+            }*/
+
+            if (_postData.MemberStatus == 1) {
+                //開通表  只可能是開通
+                upload_711(_postData);
+            }
+
+            if (_postData.MemberStatus == 0) {
+                //表示轉為停權
+                if (_pastData.MemberStatus == 3) {
+                    upload_711(_postData);
+                    //開通表  可能是開通 也可能是 轉停權
+                } else {
+                    upload_999(_postData);
+                    //停權表
+                }
+
+            }
+        }
 
 
 
+        //console.log(evo.user);
+        alert(2)
+        //console.log(_response);
+    }
+    //審核轉正常 "AccountID":"steved"   3->1
+    //審核轉停權 "AccountID":"dsjkf228" 3->0
+    /*
+    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { 
+        //發生在按下 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
+        //打開存款 審核中 會轉正常戶
+        var _pastData = user[_postData.AccountID];
+        console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        console.log(evo.user);
+        console.log(_response);
+        alert(1)
+    }*/
 
+    /*
+    var { IsDeposit, AccountID, MemberStatus, AccountName } = _postData;
+    var _pastData = user[AccountID];
+    var { IsDeposit, AccountID, MemberStatus, AccountName } = _pastData;
+    */
 
 
     /******************************************************************************/
@@ -149,45 +243,19 @@ function recorddb() {
 
     if (this.isEquel('UpdateMemberBonusLog')) {
         _postData.command = 'evo.statistics.m4';
-        
+
         upload_3(_postData);
         upload_4_test(_postData);
     }
 
 
     if (this.isEquel('DelDiceWinRecords')) {
-
         var command = 'evo.statistics.m3';
         var account = json(sessionStorage[_params.id]).f_accounts;
         assign(_params, { command, account });
-
         //console.log(_params);
-
         upload_3(_params);
         upload_3_test(_params);
-
-
-        //console.log(TEMPBSN[_params.id]);
-
-
-
-        /*
-                entries(_params).map(([name, value]) => {
-                    //console.log(name, value);
-                    console.log(this);
-
-                })*/
-
-
-
-
-        //_params.f_accounts = ss.f_accounts;
-        /*console.log(_params);
-        console.log(entries(_params))
-        */
-
-
-
         return
 
     }

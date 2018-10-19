@@ -45,14 +45,16 @@ function systemLogFilter([logs]) {
     return evo.user;
 }
 
+/*
 function getSystemLog(user) {
     return new Promise((resolve, reject) => {
+        var account = user.AccountID || user.account
         evo.sendMessage({
             command: 'apiFunctions:SystemLog:host:channel',
-            params: { account: user.account }
+            params: { account }
         }).then(resolve)
     })
-}
+}*/
 
 /***************************************************************************************/
 var apiFunctions = evo.apiFunctions;
@@ -70,8 +72,40 @@ function upload_1() {
     getUser().then(getSystemLog).then(systemLogFilter).then(statistics1);
 }
 
+function upload_711(postData) {
+    //user.log 找到靜止轉審核的時間
+
+    console.log('upload_711 開通表');
+    console.log(postData.AccountID);
+    console.log(postData);
+    console.log(json(postData));
+
+    getSystemLog(postData)
+        .then(s)
+
+
+    alert('upload_711')
+
+}
+
+function upload_999(postData) {
+    console.log('upload_999 停權表表');
+    console.log(postData);
+    console.log(json(postData));
+
+    alert('upload_999')
+
+}
+
 function upload_2() {
     getUser().then(getSystemLog).then(systemLogFilter).then(statistics2);
+}
+
+function upload_5(SystemLog) {
+
+    console.log(SystemLog);
+
+    //getUser().then(getSystemLog).then(systemLogFilter).then(statistics2);
 }
 
 

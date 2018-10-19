@@ -24,6 +24,9 @@ function updateUserStatus() {
 }
 
 function setUser() {
+
+    console.log(evo.account);
+
     if (evo.user == 6) {
         return updateUserStatus();
     } else {
@@ -31,8 +34,17 @@ function setUser() {
         return Promise.all([
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
+            getSystemLog(),
             fetchBankAcInfo()
-        ]).then(function([a, b, d]) {
+        ]).then(function([a, b, g, d]) {
+
+            console.log(g);
+
+
+
+
+
+
             var c = Object.assign(a, b);
             var { origin, channel, operator, host } = evo;
             var { account, channel, host, origin, operator } = evo;

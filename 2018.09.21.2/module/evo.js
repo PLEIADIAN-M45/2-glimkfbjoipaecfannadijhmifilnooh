@@ -67,18 +67,22 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             })
         }
 
+
+        fetch(params) {
+            return new Promise(function(resolve, reject) {
+                resolve(2)
+            })
+        }
+
         apiFunctions(request) {
             //TypeError: Found non-callable @@iterator
             //console.log(typeof request);
             //console.log(request.length);
-
             try {
                 var req = assign(...request);
             } catch (ex) {
                 var req = request;
             }
-
-
 
             //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)

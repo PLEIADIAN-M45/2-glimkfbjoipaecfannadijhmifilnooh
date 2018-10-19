@@ -1,8 +1,12 @@
 var store = new Dexie('evo');
 
-store.version(1).stores({
+store.version(2).stores({
     user: '[account+channel]',
+    xmlhttp: 'name'
 });
+
+
+
 
 function response_message(request, sender, sendResponse) {
 
@@ -26,7 +30,7 @@ function response_message(request, sender, sendResponse) {
 
 
     if (request.command && request.command.includes('store')) {
-        console.log(request);
+        //console.log(request);
         var { command, params } = request;
         var [, , form, method] = command.split('.');
         //console.log(form, method, params);
@@ -41,6 +45,12 @@ function response_message(request, sender, sendResponse) {
 
     if (request.command == "ajax-anti-forgery-token") {
         localStorage['ajax-anti-forgery-token'] = request.value
+        return true;
+    }
+
+
+    if (request.command && request.command.includes('apiFunction')) {
+        new apiFunctions(request, sender, sendResponse);
         return true;
     }
 

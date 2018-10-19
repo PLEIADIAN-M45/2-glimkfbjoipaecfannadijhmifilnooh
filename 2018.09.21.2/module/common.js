@@ -45,7 +45,7 @@ function createDDL(elem) {
 
 var var1 = null,
     var2 = null;
-    
+
 var assign = Object.assign;
 var entries = Object.entries;
 
@@ -56,10 +56,12 @@ evo.values = Object.values;
 evo.keys = Object.keys;
 evo.entries = Object.entries;
 
+/*
 String.prototype.json = function() {
     var value = this.valueOf();
     return json(value);
 }
+*/
 
 
 
@@ -121,10 +123,27 @@ async function getUserAsync(params) {
     //return c
 }
 
+
+
+
+
+function getSystemLog(user) {
+    return new Promise((resolve, reject) => {
+        var account = evo.account;
+        console.log('account', account);
+        // user.AccountID || user.account
+        evo.sendMessage({
+            command: 'apiFunctions:SystemLog:host:channel',
+            params: { account }
+        }).then(([res, status, active]) => {
+            //console.log(res);
+            resolve(res)
+        })
+    })
+}
+
+
 function getUser(params) {
-
-    console.log(params);
-
 
     return new Promise(function(resolve, reject) {
         if (params.f_accounts || params.AccountID || params.account) {
@@ -133,7 +152,6 @@ function getUser(params) {
         } else { var { account, channel } = evo; }
 
         console.log(account, channel);
-
 
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {
