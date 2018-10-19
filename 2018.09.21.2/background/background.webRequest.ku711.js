@@ -37,12 +37,18 @@ onBeforeSendHeaders();
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
-
-
+    var postedString = decodeURIComponent(String.fromCharCode.apply(null,
+        new Uint8Array(details.requestBody.raw[0].bytes)));
+    console.log('--------------------------');
+    console.log(details);
     console.log(details.requestBody);
+    console.log(postedString);
+    console.log('--------------------------');
+
 
 }, { urls: ["*://bk.ku711.net/*"] }, ['requestBody', 'blocking'])
 
-//YUNLANZONG258258@gmail.com
 
+
+//YUNLANZONG258258@gmail.com
 //FormDataItem

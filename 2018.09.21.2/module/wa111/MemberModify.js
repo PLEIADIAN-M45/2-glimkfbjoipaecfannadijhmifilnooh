@@ -196,7 +196,7 @@ function resolveAfter2Seconds() {
 }
 
 
-resolveAfter2Seconds()
+//resolveAfter2Seconds()
 
 
 
@@ -222,16 +222,6 @@ var bcb = asyncCall();
 console.log(bcb);
 <<<<<<< HEAD
 */
-
-=======
-
-*/
->>>>>>> 907a1560687151b72efe0677d776c6c14ed72df2
-
-
-
-
-
 
 
 

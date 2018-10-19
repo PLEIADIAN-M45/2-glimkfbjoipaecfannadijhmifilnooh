@@ -68,12 +68,23 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         apiFunctions(request) {
-            var request = assign(...request);
+            //TypeError: Found non-callable @@iterator
+            //console.log(typeof request);
+            //console.log(request.length);
+
+            try {
+                var req = assign(...request);
+            } catch (ex) {
+                var req = request;
+            }
+
+
+
             //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
-            request.command = request.command.replace('host', evo.host).replace('channel', evo.channel)
+            req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
             //console.log(request);
             return new Promise(function(resolve, reject) {
-                chrome.runtime.sendMessage(evo.extensionId, request, function([result, status, xhr]) {
+                chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
                     console.log(result);
                     resolve({ ...result, status, active: 0 });
                 })
@@ -161,7 +172,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         get channel() {
-            return this.params.siteNumber || localStorage.channel || localStorage.siteNumber;
+            //if(location.port=='16')
+            return this.params.siteNumber || localStorage.channel || localStorage.siteNumber || location.port;
             return Number(channel);
         }
 

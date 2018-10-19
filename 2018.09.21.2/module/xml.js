@@ -101,9 +101,25 @@ IDB.version(1.0).stores({
 }).upgrade(trans => { console.log(trans); });
 
 
+
+var TEMPBSN = {}
+
 function recorddb() {
     var { _lastPath, _postData, _params, _response, _responseText } = this;
-    console.log(_lastPath, _postData);
+
+    // console.log(_lastPath, _postData, _params);
+
+
+
+
+
+
+
+
+
+
+
+    /******************************************************************************/
 
     if (this.isEquel('DepositBonus')) { //存款紅利列表
         try {
@@ -112,6 +128,8 @@ function recorddb() {
             dataset.forEach(function(cv, idx, arr) {
                 var key = cv['f_id'];
                 this[key] = json(cv);
+                //console.log(cv);
+                TEMPBSN[cv.f_id] = cv.f_accounts;
             }, sessionStorage);
         } catch (ex) {}
     }
@@ -123,29 +141,60 @@ function recorddb() {
             dataset.forEach(function(cv, idx, arr) {
                 var key = cv['BonusNumber'];
                 this[key] = json(cv);
-                //console.log(key);
             }, sessionStorage);
         } catch (ex) {}
     }
 
 
-    //if (this.isEquel('DelDiceWinRecords')) { upload_3(_params); }
+
     if (this.isEquel('UpdateMemberBonusLog')) {
-        _postData.command = 'evo.statistics.m4'
-        upload_4(_postData);
+        _postData.command = 'evo.statistics.m4';
+        
+        upload_3(_postData);
         upload_4_test(_postData);
     }
 
+
     if (this.isEquel('DelDiceWinRecords')) {
-        console.log(_params);
-        _params.command = 'evo.statistics.m3'
+
+        var command = 'evo.statistics.m3';
+        var account = json(sessionStorage[_params.id]).f_accounts;
+        assign(_params, { command, account });
+
+        //console.log(_params);
+
         upload_3(_params);
-        //upload_4_test(_postData);
+        upload_3_test(_params);
+
+
+        //console.log(TEMPBSN[_params.id]);
+
+
+
+        /*
+                entries(_params).map(([name, value]) => {
+                    //console.log(name, value);
+                    console.log(this);
+
+                })*/
+
+
+
+
+        //_params.f_accounts = ss.f_accounts;
+        /*console.log(_params);
+        console.log(entries(_params))
+        */
+
+
+
+        return
+
     }
 
 
 
-
+    //wa111 会员列表
     if (this.isEquel('GetMemberList') && _params.type == "getAllUser") {
         for (let row of _response.rows) {
             IDB[_lastPath].put(row).then(() => { console.log('IDB', _lastPath); });
@@ -156,10 +205,33 @@ function recorddb() {
 }
 
 
+/*
+開通
+停權
+禮金
+*/
 
+function upload_3_test(postData) {
+    evo.test = 1;
+
+    if (evo.test) {
+        setTimeout(function() {
+            var log = json(sessionStorage[postData.id]);
+            assign(log, postData, {
+                f_AdminName: evo.operator,
+                f_AuditTime: evo.now,
+                f_del: Number(postData.pas == 1),
+                f_Audit: Number(postData.pas == 3)
+            })
+            sessionStorage[postData.id] = json(log);
+        }, 3000)
+    }
+}
 
 
 function upload_4_test(postData) {
+    evo.test = 1;
+    console.log(evo.operator);
     if (evo.test) {
         setTimeout(function() {
             var log = json(sessionStorage[postData.BonusNumber]);
@@ -169,7 +241,43 @@ function upload_4_test(postData) {
     }
 }
 
-
+/*
+{
+    "f_id": 1674254,
+    "f_accounts": "JIABO1006",
+    "f_time": "2018-10-16 17:14:07",
+    "f_date": "2018-10-16 17:28:17",
+    "f_parentAgent": "",
+    "f_remittanceName": "",
+    "f_bill": "",
+    "f_WinCount": 0,
+    "f_Money": 40,
+    "f_BeforeMoney": 180,
+    "f_AfterMoney": 220,
+    "f_AdminName": "18CS569",
+    "f_ip": null,
+    "f_Audit": 0,
+    "f_AuditTime:"
+    ","
+    f_del ":0,"
+    f_type ":15,"
+    f_unfreezeWater ":200,"
+    f_remark ":"
+    ","
+    f_content ":"
+    ","
+    f_billDate ":null,"
+    f_accountType ":0,"
+    f_pointType ":0,"
+    f_countAll ":0,"
+    f_moneyAll ":0,"
+    f_tMoney ":0,"
+    f_residualcredit ":0,"
+    f_errorIp ":0,"
+    f_groupName ":null,"
+    HasChanged ":false,"
+    IsNew ":true}
+*/
 /*
 
 

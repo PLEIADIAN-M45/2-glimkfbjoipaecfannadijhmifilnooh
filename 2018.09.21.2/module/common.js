@@ -45,7 +45,11 @@ function createDDL(elem) {
 
 var var1 = null,
     var2 = null;
+    
 var assign = Object.assign;
+var entries = Object.entries;
+
+
 
 evo.assign = Object.assign;
 evo.values = Object.values;
@@ -118,13 +122,18 @@ async function getUserAsync(params) {
 }
 
 function getUser(params) {
+
+    console.log(params);
+
+
     return new Promise(function(resolve, reject) {
         if (params.f_accounts || params.AccountID || params.account) {
             var account = params.f_accounts || params.AccountID || params.account;
             var channel = params.channel || evo.channel;
         } else { var { account, channel } = evo; }
+
         console.log(account, channel);
-        //console.log(params);
+
 
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {

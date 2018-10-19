@@ -15,13 +15,12 @@ window.open(spreadsheets[1])
 window.open(spreadsheets[2])
 */
 
-
-
 var sel = {
     f_ishow: ["靜止戶", "正常戶", "停權戶", "審核中", "測試戶"],
     f_intualStatus: ["否", "是"],
     f_depositStatus: ["否", "是"]
 }
+
 /***************************************************************************************/
 
 function systemLogFilter([logs]) {
@@ -56,6 +55,7 @@ function getSystemLog(user) {
 }
 
 /***************************************************************************************/
+var apiFunctions = evo.apiFunctions;
 
 function statistics1() {
     evo.sendMessage({ command: 'evo.statistics.m1', params: evo.user }).then(s)
@@ -63,10 +63,6 @@ function statistics1() {
 
 function statistics1() {
     evo.sendMessage({ command: 'evo.statistics.m2', params: evo.user }).then(s)
-}
-
-function statistics3() {
-    evo.sendMessage({ command: 'evo.statistics.m3', params: evo.user }).then(s)
 }
 
 /***************************************************************************************/
@@ -78,72 +74,36 @@ function upload_2() {
     getUser().then(getSystemLog).then(systemLogFilter).then(statistics2);
 }
 
-//var c = getUserAsync()
-//console.log(c);
 
-
-function getBonusLog22(postData) {
-    return new Promise((resolve, reject) => {
-        //console.log(json(sessionStorage[id]));
-        (function repeater({ id }) {
-            var log = json(sessionStorage[id]);
-            if (log.f_AuditTime) { resolve(log) } else { setTimeout(repeater, 1000, log) }
-        }(postData));
-    })
+function getBonusLog({ id, f_id, BonusNumber }) {
+    var BSN = f_id || id || BonusNumber;
+    return new Promise((resolve, reject) => {;
+        (function repeater(BSN) {
+            var { f_AdminName, Creator } = log = json(sessionStorage[BSN]);
+            if (f_AdminName === "") { return setTimeout(repeater, 1000, BSN); }
+            if (Creator === "AUTO") { return setTimeout(repeater, 1000, BSN); }
+            resolve(log);
+        }(BSN));
+    });
 }
+
 
 function upload_3(postData) {
-    //console.log(params);
-    return Promise.all([
-        getBonusLog22(postData),
-        //getUser(postData)
-    ]).then(apiFunctions);
-
-    return
-    var { _, pas, id, type, money } = params;
-
-    var bonus = json(sessionStorage[params.id]);
-
-    assign(bonus, {
-        f_del: Number(pas == 1),
-        f_Audit: Number(pas == 3),
-        f_AuditTime: evo.moment(_)
-    });
-    console.log(bonus);
-
-    getUser(bonus).then((user) => {
-        return assign(evo.user, { bonus })
-    })
-    //.then(statistics3).then(s);
-
-    //console.log(evo.user);
-}
-
-
-
-
-var apiFunctions = evo.apiFunctions;
-
-
-function upload_4(postData) {
     return Promise.all([
         getBonusLog(postData),
         getUser(postData)
     ]).then(apiFunctions);
 }
 
-function getBonusLog(postData) {
-    return new Promise((resolve, reject) => {;
-        (function repeater({ BonusNumber }) {
-            var log = json(sessionStorage[BonusNumber]);
-            if (log.AdjustTime) { resolve(log) } else { setTimeout(repeater, 1000, log) }
-        }(postData));
-    })
-}
+
+
+
 /***************************************************************************************/
 
 
+//if (log.AdjustTime) { resolve(log) } else { setTimeout(repeater, 1000, log) }
 
+//console.log(BSN);
 
 
 

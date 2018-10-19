@@ -11,7 +11,7 @@
             "option/encrypt.js",
             "background/background.js",
             "background/apiFunctions.js",
-            "background/background.webRequest.ku711.js",
+            //"background/background.webRequest.ku711.js",
             "background/background.onMessage.js",
             "background/background.onUpdated.js"
         ]
@@ -40,11 +40,12 @@
             "matches": [
                 "http://*/company/net/page/Login/CommonLogin/Login.aspx",
                 "http://*/layout/Login.aspx",
-                "*://127.0.0.1/*",
+                "*://127.0.0.1/*"
+                /*
                 "*://161.202.9.231/*",
                 "*://*.wa111.net/*",
                 "*://*.ku711.net/*",
-                "*://*.tp33.net/*"
+                "*://*.tp33.net/*"*/
             ],
             "run_at": "document_start"
         }
