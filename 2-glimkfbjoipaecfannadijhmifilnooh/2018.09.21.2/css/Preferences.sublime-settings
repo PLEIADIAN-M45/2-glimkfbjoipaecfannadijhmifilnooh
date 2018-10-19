@@ -1,0 +1,33 @@
+{
+	"Seti_blue_label": true,
+	"Seti_bold_heading": true,
+	"Seti_bold_slctdtab_labels": true,
+	"Seti_lime_label": true,
+	"Seti_panel_nrml": true,
+	"Seti_sidebar_font_size_12": true,
+	"Seti_tab_font_12": true,
+	"Seti_tabs_big": true,
+	"Seti_top_heading_small": true,
+	"Seti_yellow_label": true,
+	"Seti_yellow_statusbar": true,
+	"bold_folder_labels": true,
+	"color_scheme": "Packages/Agila Theme/Agila Oceanic Next.tmTheme",
+	"font_face": "DejaVu Sans Mono",
+	"font_options":
+	[
+		"bold"
+	],
+	"font_size": 10.5,
+	"highlight_modified_tabs": true,
+	"ignored_packages":
+	[
+		"Vintage"
+	],
+	"save_on_focus_lost": true,
+	"theme": "Seti.sublime-theme",
+	"theme_font_options":
+	[
+		"bold"
+	],
+	"trim_trailing_white_space_on_save": true
+}
