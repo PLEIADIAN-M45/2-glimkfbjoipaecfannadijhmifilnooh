@@ -37,7 +37,7 @@ function getSystemLog() {
                 Content.filter((obj) => {
                     if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
                         //evo.user.logs[0] = assign(obj, { OperateTime, Operator })
-                        evo.user.timer = [OperateTime];
+                        evo.user.timing = [OperateTime];
                         return resolve()
                     }
                 })
@@ -49,7 +49,7 @@ function getSystemLog() {
 
 function setUser() {
     //console.log(evo.account);
-    if (evo.user == 6) {
+    if (evo.user) {
         //return updateUserStatus();
     } else {
         evo.user = evo.user || {}
@@ -63,7 +63,7 @@ function setUser() {
             var { origin, channel, operator, host } = evo;
             var { account, channel, host, origin, operator } = evo;
             var sheets = {},
-                region = {}
+                region = {};
 
             var property = {
                 author: { property: 'author', value: c.AccountName, title: c.AccountNameShow, sheets },
@@ -73,7 +73,7 @@ function setUser() {
             }
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: joindate, IsBlackList: isBlack } = c;
             assign(evo.user, { account, channel, host, origin, operator, birthday, agency, joindate, isBlack }, property);
-            return evo.user
+            return evo.user;
         }).then(putUser)
 
         //.then(updateUserStatus)

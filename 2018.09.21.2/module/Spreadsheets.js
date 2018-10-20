@@ -1,24 +1,24 @@
 /***************************************************************************************/
-var apiFunctions = evo.apiFunctions;
-/***************************************************************************************/
-function upload_888(pastData, postData, MemberStatus) {
-    if (pastData.MemberStatus == postData.MemberStatus) { return }
-    evo.user.timer.push(evo.now);
-    evo.user.status = [pastData.MemberStatus, postData.MemberStatus]
-    evo.user.deposit = [pastData.IsDeposit, postData.IsDeposit]
-    if (pastData.MemberStatus == 3) {
-        evo.user.command = 'evo.statistics.m88'
-        apiFunctions(evo.user);
-    } else {
-        evo.user.command = 'evo.statistics.m22'
-        apiFunctions(evo.user);
-    }
-    alert(88888)
-    console.log(pastData.MemberStatus, postData.MemberStatus);
-    console.log(MemberStatus[pastData.MemberStatus]);
-    console.log(MemberStatus[postData.MemberStatus]);
 
+/***************************************************************************************/
+function upload_888(pastData, postData) {
+    //pastData.MemberStatus = 1;
+
+    console.log(pastData.MemberStatus, postData.MemberStatus);
+
+    if (pastData.MemberStatus == postData.MemberStatus) { return };
+
+    getUser(evo).then((user) => {
+        user.command = (pastData.MemberStatus == 3) ? "evo.statistics.m88" : "evo.statistics.m22";
+        user.status = [pastData.MemberStatus, postData.MemberStatus];
+        user.permit = [pastData.IsDeposit, postData.IsDeposit];
+        user.timing.push(evo.now);
+        evo.apiFunctions(evo.user);
+    })
 }
+
+
+
 
 function getBonusLog({ id, f_id, BonusNumber }) {
     var BSN = f_id || id || BonusNumber;
@@ -33,6 +33,7 @@ function getBonusLog({ id, f_id, BonusNumber }) {
 }
 
 function upload_3(postData) {
+    var apiFunctions = evo.apiFunctions;
     return Promise.all([
         getBonusLog(postData),
         getUser(postData)
@@ -57,7 +58,8 @@ var spreadsheets = {
 var spreadsheets = [
     ['https://docs.google.com/spreadsheets/d/1lbr9US1bTELbX-gOMMzNWXcz7HKOtUMycIbKhjeBABA/edit#gid=0'],
     ['https://docs.google.com/spreadsheets/d/1MYiScPY7xEbO4ypmwK6yzyzr8akn-YELGlIVPWmpbag/edit#gid=1309506964'],
-    ['https://docs.google.com/spreadsheets/d/1zzWv0g3ROLLlCFxgePFYMpCUgQ4JI5V1TuHWz6IdGy0/edit?pli=1#gid=42324241']
+    ['https://docs.google.com/spreadsheets/d/1zzWv0g3ROLLlCFxgePFYMpCUgQ4JI5V1TuHWz6IdGy0/edit?pli=1#gid=42324241'],
+    ['https://script.google.com/d/1sqoRxSPsBoRnGxYPfL5HxadsSsC1wMr_Ila9zHmZW3Lhaj0QSc0xZ4U7/edit?usp=drive_web']
 ]
 /*
 window.open(spreadsheets[0])

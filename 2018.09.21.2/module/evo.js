@@ -98,7 +98,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             console.log(req);
 
-            alert(json(req))
+            //alert(json(req))
 
             //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)

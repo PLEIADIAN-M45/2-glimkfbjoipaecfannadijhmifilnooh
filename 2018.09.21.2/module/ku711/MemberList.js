@@ -1,11 +1,8 @@
 define(['xml'], function(xml) {
-
-
     //console.log(xml);
-
     xml._loadend = function() {
 
-        console.log(this);
+        //console.log(this);
 
         /*var { _lastPath, _response } = this;
 

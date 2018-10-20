@@ -3,39 +3,17 @@ define([evo.extend, 'smsService'], function(a, smsService) {
     'use strict';
 
     myApp.$controller = function controller($compile, $rootScope) {
+
+        console.log(evo.user);
+        //var apiFunction = evo.apiFunction;
+
+
+
+        
+        /****************************************************************/
+
         var user = evo.user;
-        /*evo.user.log = [{
-            time: '',
-            status_descr: '',
-        }, {
-            time:
-        }];*/
-
-
-
-        //getSystemLog(user).then(filter1)
-
-
-        /*
-        .then((res) => {
-            console.log(res);
-
-              res.filter((x) => {
-                  x.Content.filter(({ FieldName, BeforeValue, AfterValue }) => {
-                      if ((FieldName == 'MemberStatus' && BeforeValue == 2 && AfterValue == 3)) {
-                          evo.user.log[0].time = x.OperateTime
-                          return true
-                      }
-                  })
-              })
-        })*/
-
-        var apiFunction = evo.apiFunction;
         var { channel, host, account } = evo;
-
-
-
-        //console.log(evo.user);
         $scope.smsService = smsService(evo.user);
         $scope.extend({ user, openDeposit, openLoginLog, smsService });
     };
@@ -51,18 +29,17 @@ define([evo.extend, 'smsService'], function(a, smsService) {
                 $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
                 $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
             }
-        } [host]();
+        }[host]();
     }
 
     function openLoginLog({ channel, account, host, origin }) {
         var _url = {
             wa111: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${channel}&member=${account}`,
             ku711: `${origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${account}`
-        } [host];
+        }[host];
         window.open(_url, '_blank');
     }
 
-    //console.log(evo.host, evo.account, evo.channel);
 
     $scope.defineProperties({
             openDeposit,
@@ -110,6 +87,8 @@ function checkBlacklist() {
         console.log(ex)
     }
 }
+
+
 
 /*
 

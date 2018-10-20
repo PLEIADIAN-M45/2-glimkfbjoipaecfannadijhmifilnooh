@@ -18,13 +18,9 @@ function parser(requestBody) {
         var postedString = decodeURIComponent(String.fromCharCode.apply(null,
             new Uint8Array(requestBody.raw[0].bytes)));
         return postedString;
-    } else {
-        return null;
-    }
+    } else { return null; }
 }
 
-//webRequestInternal.eventHandled(string, string, string, boolean)
-//webRequestInternal.eventHandled(string eventName, string subEventName, string requestId, optional object response)
 
 var xmlhttp = {};
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
@@ -34,14 +30,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     //var parameters = searchParams.entries()
     if (initiator == location.origin) {
 
-
-        var redirectUrl = url.replace('https://bk.ku711.net', 'http://127.0.0.1:16');
-        //console.log(details);
-        //console.log(redirectUrl);
-        //requestBody = json(requestBody.formData)
-
-
-        return { redirectUrl };
     } else {
         var dataType = 'json';
         var data = {};
@@ -70,7 +58,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
             };
         }
     }
-    //console.log(url);
 }, {
     urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
     types: ["xmlhttprequest"]
@@ -82,8 +69,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
     var lastPath = lastPathOf(url);
     if (initiator == location.origin) {
-       // console.log('*************', url);
-       // console.log(details);
+        // console.log('*************', url);
+        // console.log(details);
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
@@ -108,10 +95,34 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 
 
 
+
+
+
+
+
+
+
+//webRequestInternal.eventHandled(string, string, string, boolean)
+//webRequestInternal.eventHandled(string eventName, string subEventName, string requestId, optional object response)
+
+
+
+
+
+
+
+
+
+
 function onBeforeSendHeaders() {}
 onBeforeSendHeaders();
 
 
+//console.log(details);
+//requestBody = json(requestBody.formData)
+//var redirectUrl = url.replace('https://bk.ku711.net', 'http://127.0.0.1:16');
+//return { redirectUrl };
+//console.log(redirectUrl);
 //var career = _url.host.split('.')[1];
 //types:["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", or "other"]
 

@@ -14,7 +14,7 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
     /**************************************************************************/
     var { open, send, setRequestHeader } = XHR = XMLHttpRequest.prototype;
     //this.getAllResponseHeaders
-
+    
     XHR.setRequestHeader = function(name, value) {
         this.command = 'XMLHttpRequest';
         this._headers = {};
@@ -63,8 +63,6 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
         var _params = {};
         var _postData = {};
 
-        //console.log(_hostname);
-
         var query = searchParams;
         this.isEquel = function(pathString) {
             var reg = new RegExp('^' + this._lastPath + '$', 'i');
@@ -106,76 +104,154 @@ IDB.version(1.0).stores({
 }).upgrade(trans => { console.log(trans); });
 
 
-var debug = function(args) {
-    console.log("[Debug]", args);
-}
 
 //var TEMPBSN = {}
+var user = {}
 //console.log(user);
 var MemberStatus = {};
-
-
-/*
-var symbol2 = Symbol(42);
-var symbol3 = Symbol(42);
-console.log(symbol2);
-console.log(symbol3);
-console.log(symbol2 == symbol3);*/
-
-var user_pastData = {};
 
 function recorddb() {
 
     var { _lastPath, _postData, _params, _response, _responseText } = this;
+    //console.log(user);
+    // console.log(_lastPath, _postData, _params);
+    ///Member/api/Bonus/GetMemberBonusLogBackendByCondition
+
+    if (this.isEquel('CreateMemberInfoOperationLog--')) { //CreateMemberInfoOperationLog
+        //用建立log 來判別剛才的動作
+        //只發生在 [存款開關時]
+        //{"Operated":"shengcai2","OperateType":3,"DataID":"shengcai2","Content":[{"FieldName":"IsDeposit","FieldDisplayName":"存款","BeforeValue":false,"BeforeName":"关闭","AfterValue":true,"AfterName":"开启"},{"FieldName":"MemberStatus","FieldDisplayName":"用户状态","BeforeValue":3,"BeforeName":"審核中","AfterValue":1,"AfterName":"正常户"}]}
+        //"FieldName":"IsDeposit","FieldDisplayName":"存款","BeforeValue":false,"BeforeName":"关闭","AfterValue":true,"AfterName":"开启"}
+        //console.log(_postData);
+        var content = _postData.Content;
+        var type = _postData.OperateType;
+        console.log(json(_postData));
+        console.log(type);
+        console.log(content);
+        content.map(({ FieldName, FieldDisplayName, BeforeName, BeforeValue, AfterName, AfterValue }) => {
+            console.log(FieldName, FieldDisplayName, BeforeName, BeforeValue, AfterName, AfterValue);
+            if (FieldName == 'MemberStatus' && BeforeValue == 3) {
+                upload_5(_postData);
+            }
+        })
+        alert(333)
+        /*console.log(_responseText);
+        sessionStorage[_postData.Operated] = json(_postData);
+       */
+    }
+
+
+
+    if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) {
+        //取得進入頁面時的會員狀態
+        var { AccountID } = object = _response.Data;
+        //console.log(object);
+        console.log(object.AccountID, object.MemberStatus, object.IsDeposit);
+
+        user[AccountID] = object;
+    }
+
 
     if (this.isEquel('GetDealTypeList')) {
-        _response.Data.forEach(function(cv, i, arr) {
-            this[cv.DealType] = cv.Description;
-        }, DealType = {});
-        localStorage["DealType"] = json(DealType);
-        debug({ DealType });
+        //console.log(_response);
+        //var DealType
     }
+
 
     if (this.isEquel('GetMemberStatusByLanguageCode')) {
         MemberStatus = _response.Data.ValueKey;
-        localStorage["MemberStatus"] = json(MemberStatus);
-        debug({ MemberStatus });
-    }
-
-
-    if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態        
-        var object = _response.Data;
-        user_pastData[object.AccountID] = object;
-        debug({ user_pastData });
+        localStorage.MemberStatus = json(MemberStatus)
     }
 
 
 
 
-    if (this.isEquel('UpdateMemberSNInfoBackend')) { //基本資料的「修改鍵」 通常用於停權
+    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) {
+        var _pastData = user[_postData.AccountID];
+        upload_888(_pastData, _postData, MemberStatus)
+        return
+        //發生在按下 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
+        //打開存款 審核中 會轉正常戶
+        var _pastData = user[_postData.AccountID];
+        // console.log(_postData);
+        //console.log(_pastData);
+        //console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
+
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
+            if (_pastData.MemberStatus == 3) { //開通表 審核轉開通 審核轉停權
+                upload_1(evo.user);
+            } else { //停權表
+                upload_2(evo.user);
+            }
+        }
+
+
+        alert(88888)
+
+        /*console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        console.log(evo.user);
+        console.log(_response);*/
+    }
+
+
+    if (this.isEquel('UpdateMemberSNInfoBackend')) {
+        var _pastData = user[_postData.AccountID];
+        upload_888(_pastData, _postData, MemberStatus)
+        return
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
+            if (_pastData.MemberStatus == 3) { //開通表 審核轉開通 審核轉停權
+                upload_1(evo.user);
+            } else { //停權表
+                upload_2(evo.user);
+            }
+        }
         alert(2)
+        return
+        console.clear();
+        //審核中轉停權 //發生在按下 基本資料的「修改鍵」 或 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
+        var _pastData = user[_postData.AccountID];
+        //console.log(json(_postData));
+        console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        // console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
 
-        var _pastData = user_pastData[_postData.AccountID];
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
 
-        console.log(_pastData);
-        upload_888(_pastData, _postData);
-
-        alert(2)
-
-
+            if (_pastData.MemberStatus == 3) {
+                //開通表 審核轉開通 審核轉停權
+                upload_1(_postData);
+            } else {
+                //停權表
+                upload_2(_postData);
+            }
+        }
 
     }
 
-    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { //帐务相关的「修改鍵」 通常用於開通
-        alert(3)
 
-        var _pastData = user_pastData[_postData.AccountID];
-        upload_888(_pastData, _postData);
-
-    }
+    //console.log(evo.user);
+    //console.log(_response);
+    //審核轉正常 "AccountID":"steved"   3->1
+    //審核轉停權 "AccountID":"dsjkf228" 3->0
 
 
-
+    /*
+    var { IsDeposit, AccountID, MemberStatus, AccountName } = _postData;
+    var _pastData = user[AccountID];
+    var { IsDeposit, AccountID, MemberStatus, AccountName } = _pastData;
+    */
 
 
     /******************************************************************************/

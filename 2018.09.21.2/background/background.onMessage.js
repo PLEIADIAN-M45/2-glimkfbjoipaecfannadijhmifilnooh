@@ -42,7 +42,7 @@ function response_message(request, sender, sendResponse) {
 
 
     if (request.command && request.command.includes("evo.statistics")) {
-        console.log('*****', request);
+        console.log('*****', request.command);
         //console.log(request.params);
         $.ajax({
             url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',

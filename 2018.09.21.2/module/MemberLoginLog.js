@@ -6,9 +6,10 @@ define([
 
 ], function() {
 
+    
+
     myApp.$controller = function($compile, $rootScope, $timeout) {
         //console.log('user:', evo.user);
-
         var { author, locate, mobile, idcard, banker, host, channel, account, properties } = evo.user;
 
         var dataset = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
@@ -32,6 +33,7 @@ define([
                     return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix };
                 });
             }
+            
             this.extend({ ...me, icon, head, params, sites })
         };
 
@@ -42,6 +44,7 @@ define([
         };
 
         function regionTestFunction(me) {
+
             var { property, region } = me;
             if (region.test === undefined) {
                 this.extend(google.sheets.region.search.call(me))
@@ -50,6 +53,9 @@ define([
         };
 
         function apiFunctions(me, e) {
+            
+
+
             if (this.property == 'author') { return }
             if (this.property == 'banker') { return regionTestFunction(me) }
             if (this.params.command == undefined) { return }
@@ -59,6 +65,7 @@ define([
         };
 
         function apiMemberList(me, e) {
+            return
             //if (me.channel !== '16') { return }
             //if (!me.author) { return }
             me.index = me.index || 1;

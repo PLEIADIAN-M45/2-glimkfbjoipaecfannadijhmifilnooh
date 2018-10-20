@@ -139,12 +139,15 @@ function getSystemLog(user) {
 function getUser(params) {
 
     return new Promise(function(resolve, reject) {
+
         if (params.f_accounts || params.AccountID || params.account) {
             var account = params.f_accounts || params.AccountID || params.account;
             var channel = params.channel || evo.channel;
-        } else { var { account, channel } = evo; }
+        } else {
+            var { account, channel } = evo;
+        }
 
-        //console.log(account, channel);
+        console.log(account, channel);
 
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {
@@ -154,6 +157,7 @@ function getUser(params) {
             }).then(resolve);
     })
 }
+
 
 function delUser() {
     var { account, channel } = evo;

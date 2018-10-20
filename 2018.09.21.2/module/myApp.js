@@ -1,8 +1,12 @@
 function extend() {
 
     if (this == window) {
-        if (arguments.length == 1) { arguments = arguments[0] }
-        var scope = Object.assign(...arguments);
+        //if (arguments.length == 1) { arguments = arguments[0] }
+        try {
+            var scope = Object.assign(...arguments);
+        } catch (ex) {
+            var scope = Object.assign(arguments);
+        }
         //console.log(1, scope);
         return scope;
     } else {
