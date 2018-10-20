@@ -78,11 +78,12 @@ function getCtrl() {;
 function getExtraInfo() {
 
 
+    return new Promise((resolve, reject) => {
+        IDB.GetMemberList.get(evo.account).then(smart).then(resolve);
+    })
+    /*
     evo.fetch('getAllUser')
         .then(s)
-
-
-    return
 
     return new Promise(function(resolve, reject) {
         evo.apiFunctions({
@@ -90,22 +91,24 @@ function getExtraInfo() {
             account: evo.account
         }).then(smart).then(resolve);
     })
+    */
 
 
     /*return new Promise((resolve, reject) => {
         IDB.GetMemberList.get(evo.account).then(smart).then(resolve);
     })*/
+    /*
     return new Promise(function(resolve, reject) {
         $.getJSON(evo.origin + '/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=0&f_Account=' + evo.account + '&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=1&pageIndex=1&hidevalue_RecordCount=1&type=getAllUser', (d) => {
             try { resolve(d.rows[0]); } catch (ex) { reject('getExtraInfo !!!') }
         })
     })
+    */
 
 }
 
 function getPhoneDate() {
     return new Promise(function(resolve, reject) {
-
         evo.apiFunctions({
             command: 'apiFunctions:getPhoneDate:host:channel',
             params: { type: 'getPhoneDate', account: evo.account },
@@ -115,11 +118,13 @@ function getPhoneDate() {
 
 function smart(arr) {
 
-    console.log(arr);
+    //console.log(arr);
+    if (!arr) { return {} }
 
     if (arr.constructor.name == "Object") { arr = Object.entries(arr) }
 
     var res = {};
+
     arr.map(function([name, value]) {
         var key = evo.map[name];
         if (key) {
@@ -162,24 +167,60 @@ fetch('./api/some.json')
     });*/
 
 
+function getSystemLog() {
+    return new Promise((resolve, reject) => {
+        var { channel, host, account } = evo;
+        evo.sendMessage({
+            command: 'apiFunctions:SystemLog:host:channel',
+            channel,
+            host,
+            account
+        }).then(([logs]) => {
+
+            console.log(logs);
+
+            logs.filter(({ f_field, f_newData, f_oldData, f_time }) => {
+                console.log(f_field);
+
+                if ((f_field == 'f_ishow' && f_oldData == 0 && f_newData == 3)) {
+                    console.log(111, 22);
+                    console.log(evo.user);
+                    evo.user.timing = [f_time];
+                    return resolve()
+                }
+
+                /*Content.filter((obj) => {
+                    if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                        //evo.user.logs[0] = assign(obj, { OperateTime, Operator })
+                        evo.user.timing = [OperateTime];
+                        return resolve()
+                    }
+                })*/
+            })
+            return resolve()
+
+        })
+    })
+}
+
+
 function setUser(elems) {
 
-
-    //if (evo.user) { return evo.user };
-    getExtraInfo()
-    return
+    if (evo.user) { return evo.user } else { evo.user = {} };
 
     return Promise.all([
         getCtrl(),
         getExtraInfo(),
-        getPhoneDate()
-    ]).then(function([a, b, c, sheets = {}, region = {}]) {
+        getPhoneDate(),
+        getSystemLog()
+
+    ]).then(function([a, b, c, d, sheets = {}, region = {}]) {
 
         if (b.banker == undefined) { b.banker = [] };
 
         var { account, channel, host, origin, operator } = evo;
 
-        var user = assign({}, a, b, c, { account, channel, host, origin, operator })
+        assign(evo.user, a, b, c, { account, channel, host, origin, operator })
 
         var property = {
             author: { property: 'author', value: a.author, title: a.author, sheets },
@@ -192,8 +233,8 @@ function setUser(elems) {
             })
         }
 
-        evo.user = assign(user, property);
-        evo.user.region = [];
+
+        assign(evo.user, property);
 
         return putUser();
     })

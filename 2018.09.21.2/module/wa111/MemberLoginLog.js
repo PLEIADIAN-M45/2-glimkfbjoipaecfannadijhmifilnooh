@@ -1,3 +1,5 @@
+console.log(1111, 333333333);
+
 var dispatchMyEvent = function() {
     var callee = arguments.callee.name;
     return new Promise(function(resolve, reject) {

@@ -101,10 +101,14 @@ function response_message(request, sender, sendResponse) {
         //console.log(request);
         var { command, params } = request;
         var [, , form, method] = command.split('.');
-        //console.log(form, method, params);
+        
+       // console.log(form, method, params);
+
+
         if (method == 'delete') {
             store[form].where(params).delete().then((x) => { sendResponse('deleted:', params) });
         } else {
+            //console.log(method);
             store[form][method](params).then(sendResponse);
         }
         return true;

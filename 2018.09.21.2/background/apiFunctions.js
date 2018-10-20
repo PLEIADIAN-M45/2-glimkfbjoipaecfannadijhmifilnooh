@@ -10,7 +10,6 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
         //console.clear();
     }
     console.log(origins);
-
 });
 
 
@@ -38,6 +37,9 @@ var apiFunctions = function(request, sender, sendResponse) {
     request.url = origins.get(channel);
 
     request.time = Date.now();
+
+
+    console.log(request);
 
 
     if (request.url) {
@@ -248,9 +250,7 @@ apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
 }
 
 apiFunctions.prototype["SystemLog"]["wa111"] = function() {
-    // this.url = "http://www.dw23dw.net"
-    console.log(this);
-    var { account } = this.params;
+  
     return {
         career: 'wa111',
         settings: {
@@ -264,7 +264,7 @@ apiFunctions.prototype["SystemLog"]["wa111"] = function() {
                 f_target: '',
                 f_handler: '',
                 ddlType: 0,
-                f_accounts: account,
+                f_accounts: this.account,
                 zwrq2: '',
                 logType: 'memberlog',
                 f_number: null,

@@ -102,9 +102,13 @@ function format(t) {
 
 
 function putUser() {
+    
     return new Promise(function(resolve, reject) {
         console.log('putUser', evo.user);
+
+
         if (evo.user.region == undefined) { evo.user.region = [] };
+        
         evo.sendMessage({ command: 'evo.store.user.put', params: evo.user }).then(resolve);
     })
 }

@@ -72,12 +72,16 @@ requirejs(['evo', 'extension', 'moment', 'dexie'], function(evo, extension, mome
 
     if (evo.route == undefined) { return false; } else {
         //Cashflow
+
         if (evo.route == "Login") { requirejs([evo.route], function() {}) } else {
+
+
             //console.log('%c' + evo.route, 'color:Gold');
             //, 'records'
-
             //console.log('%c' + evo.filename, 'color:Gold');
-            console.log('%cpathname: ' + evo.pathname, 'color:Gold', evo.host);
+
+            console.log(evo.route);
+            // console.log('%cpathname: ' + evo.pathname, evo.route, 'color:Gold', evo.host);
 
 
             requirejs(['material', 'semantic', 'cryptojs/md5', 'cryptojs/ripemd160', 'common', 'encrypt', 'myApp'], function(mdc) {

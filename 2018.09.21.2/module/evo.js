@@ -259,8 +259,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
                     case "IGetMemberInfo".toLowerCase():
                     case "MemberLoginLog".toLowerCase():
-
                     case "SameBrowserList".toLowerCase():
+                        console.log('MemberLoginLog');
                         _route = "MemberLoginLog";
                         break;
 

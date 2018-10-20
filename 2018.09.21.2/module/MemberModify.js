@@ -7,9 +7,6 @@ define([evo.extend, 'smsService'], function(a, smsService) {
         console.log(evo.user);
         //var apiFunction = evo.apiFunction;
 
-
-
-        
         /****************************************************************/
 
         var user = evo.user;
@@ -40,7 +37,7 @@ define([evo.extend, 'smsService'], function(a, smsService) {
         window.open(_url, '_blank');
     }
 
-
+  
     $scope.defineProperties({
             openDeposit,
             openLoginLog,

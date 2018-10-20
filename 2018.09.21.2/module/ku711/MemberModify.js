@@ -48,17 +48,22 @@ function getSystemLog() {
 
 
 function setUser() {
-    //console.log(evo.account);
+
     if (evo.user) {
-        //return updateUserStatus();
+
     } else {
+
         evo.user = evo.user || {}
+
         return Promise.all([
+
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
             fetchBankAcInfo(),
             getSystemLog(),
-        ]).then(function([a, b, d]) {
+
+        ]).then(function([a, b]) {
+
             var c = assign(a, b);
             var { origin, channel, operator, host } = evo;
             var { account, channel, host, origin, operator } = evo;
@@ -74,9 +79,7 @@ function setUser() {
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: joindate, IsBlackList: isBlack } = c;
             assign(evo.user, { account, channel, host, origin, operator, birthday, agency, joindate, isBlack }, property);
             return evo.user;
-        }).then(putUser)
-
-        //.then(updateUserStatus)
+        }).then(putUser);
     }
 }
 

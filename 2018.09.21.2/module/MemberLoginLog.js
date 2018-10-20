@@ -192,6 +192,8 @@ define([
             }
         }
 
+
+
         $scope.extend({
             dataset,
             initialization,
@@ -206,6 +208,7 @@ define([
             imPopup,
             GetAlertInfoByID
         })
+
 
     };
 

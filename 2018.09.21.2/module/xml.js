@@ -11,6 +11,8 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
     else
         root["xml"] = factory();
 })(this, function() {
+
+
     /**************************************************************************/
     var { open, send, setRequestHeader } = XHR = XMLHttpRequest.prototype;
     //this.getAllResponseHeaders
@@ -80,7 +82,15 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
                 if (postData && postData.indexOf('{') == 0) {
                     _postData = json(postData);
                 } else {
-                    _postData = postData;
+                    try {
+                        postData.split('&').map((x) => {
+                            return x.split('=');
+                        }).map(function([name, value]) {
+                            _postData[name] = value;
+                        })
+                    } catch (ex) {
+                        _postData = postData;
+                    }
                 }
                 //console.log(postData, method);
                 break;
@@ -94,8 +104,11 @@ var json = function(str) { try { if (typeof str == "object") { var res = JSON.st
 
         recorddb.apply(this);
     }
+
     return XHR;
 });
+
+
 
 var IDB = new Dexie('evo');
 IDB.version(1.0).stores({
@@ -121,13 +134,17 @@ var symbol3 = Symbol(42);
 console.log(symbol2);
 console.log(symbol3);
 console.log(symbol2 == symbol3);*/
+//console.log(cv);
+//TEMPBSN[cv.f_id] = cv.f_accounts;
+
 
 var user_pastData = {};
 
 function recorddb() {
 
-    var { _lastPath, _postData, _params, _response, _responseText } = this;
+    var { _lastPath, _postData, _params, _response, _responseText, _method } = this;
 
+    /******************************************************************************/
     if (this.isEquel('GetDealTypeList')) {
         _response.Data.forEach(function(cv, i, arr) {
             this[cv.DealType] = cv.Description;
@@ -135,49 +152,25 @@ function recorddb() {
         localStorage["DealType"] = json(DealType);
         debug({ DealType });
     }
-
     if (this.isEquel('GetMemberStatusByLanguageCode')) {
         MemberStatus = _response.Data.ValueKey;
         localStorage["MemberStatus"] = json(MemberStatus);
         debug({ MemberStatus });
     }
-
-
+    /******************************************************************************/
     if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態        
         var object = _response.Data;
         user_pastData[object.AccountID] = object;
         debug({ user_pastData });
     }
-
-
-
-
     if (this.isEquel('UpdateMemberSNInfoBackend')) { //基本資料的「修改鍵」 通常用於停權
-        alert(2)
-
         var _pastData = user_pastData[_postData.AccountID];
-
-        console.log(_pastData);
         upload_888(_pastData, _postData);
-
-        alert(2)
-
-
-
     }
-
     if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { //帐务相关的「修改鍵」 通常用於開通
-        alert(3)
-
         var _pastData = user_pastData[_postData.AccountID];
         upload_888(_pastData, _postData);
-
     }
-
-
-
-
-
     /******************************************************************************/
 
     if (this.isEquel('DepositBonus')) { //存款紅利列表
@@ -187,8 +180,6 @@ function recorddb() {
             dataset.forEach(function(cv, idx, arr) {
                 var key = cv['f_id'];
                 this[key] = json(cv);
-                //console.log(cv);
-                TEMPBSN[cv.f_id] = cv.f_accounts;
             }, sessionStorage);
         } catch (ex) {}
     }
@@ -205,7 +196,6 @@ function recorddb() {
     }
 
 
-
     if (this.isEquel('UpdateMemberBonusLog')) {
         _postData.command = 'evo.statistics.m4';
         upload_3(_postData);
@@ -220,22 +210,65 @@ function recorddb() {
         //console.log(_params);
         upload_3(_params);
         upload_3_test(_params);
-        return
-
     }
-
-
-
+    /******************************************************************************/
     //wa111 会员列表
     if (this.isEquel('GetMemberList') && _params.type == "getAllUser") {
+
         for (let row of _response.rows) {
             IDB[_lastPath].put(row).then(() => { console.log('IDB', _lastPath); });
         }
     }
 
 
+
+
+
+    if (this.isEquel('MemberModify')) {
+        if (_method == "POST") {
+            if (_postData.action == "StopMember" && _postData.wujiMarkID != undefined) {
+                upload_2('停權表')
+            }
+        }
+    }
+
+
+    
+
+
+    /*
+    // var { action, warnMessage, accounts, wujiMarkID } = _postData;
+            //還原 action=StopMember&warnMessage=undefined&accounts=F61539
+    if (this.isEquel('MemberModify')) {
+        //console.log(_postData);
+        //console.log(_params);
+        __params = {
+            action: "GetMemberWarnTemp",
+            type: "wujibeizhu"
+        }
+
+    }
+    */
+
+
+
+
+
+
+
+
 }
 
+
+/*
+http://host26.wa111.net/LoadData/AccountManagement/MemberModify.ashx
+Request Method: POST
+action: StopMember
+warnMessage: 
+accounts: F61539
+wujiMarkID: 0
+*/
+//Request URL: http://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx?action=GetMemberWarnTemp&type=wujibeizhu
 
 /*
 開通

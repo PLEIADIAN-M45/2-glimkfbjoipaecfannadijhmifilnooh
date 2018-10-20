@@ -2,11 +2,17 @@ function extend() {
 
     if (this == window) {
         //if (arguments.length == 1) { arguments = arguments[0] }
-        try {
-            var scope = Object.assign(...arguments);
-        } catch (ex) {
-            var scope = Object.assign(arguments);
-        }
+         try {
+             var scope = Object.assign(arguments);
+
+         } catch (ex) {
+             var scope = Object.assign(...arguments);
+
+         }
+
+        //console.log(arguments);
+        var scope = Object.assign(...arguments);
+
         //console.log(1, scope);
         return scope;
     } else {
@@ -21,11 +27,12 @@ function extend() {
 
 if (evo.host === 'wa111') {
 
+
     define(['angular', 'angular-route', 'angular-sanitize'], function(angular) {
+
         'use strict';
 
         window.angular = angular;
-        //console.log(angular);
 
 
         var myApp = angular.module('myApp', ['ngSanitize'])

@@ -1,4 +1,4 @@
-define(['myApp'], function(myApp) {
+define([], function() {
 
 
     function createIFrame() {
@@ -53,7 +53,8 @@ define(['myApp'], function(myApp) {
         });
     }
 
-    if (evo.params.method == 'CookieID' || evo.filename == 'IGetMemberInfo') {
+
+    if (evo.params.method == 'CookieID' || evo.pathname == 'IGetMemberInfo') {
         //https://bk.ku711.net/Member/MemberInfoManage/MemberLoginLog?AccountId=laoj521
         //https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog
 
@@ -65,7 +66,7 @@ define(['myApp'], function(myApp) {
             .then(getUser)
             .then(dispatchMyEvent)
             .then(bootstrap)
-            .then(createIFrame)
+            //.then(createIFrame)
         /*.then(scrollHeightListener)
         .then(getHTMLTableCells)
         .then(checkSensitiveWords)
@@ -77,12 +78,12 @@ define(['myApp'], function(myApp) {
     if (evo.params.method == 'DeviceNo' || evo.filename == 'sameBrowserList') {
         dispatchMyEvent()
     }
-/*
+    /*
 
-無使用插件開通>>shengcai2-16 
-使用插件開通>> lmj565970-16
+    無使用插件開通>>shengcai2-16 
+    使用插件開通>> lmj565970-16
 
-*/
+    */
 
 
 
