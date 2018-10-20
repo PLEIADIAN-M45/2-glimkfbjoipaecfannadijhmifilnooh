@@ -23,33 +23,48 @@ function updateUserStatus() {
     })
 }
 
+
+function getSystemLog() {
+    return new Promise((resolve, reject) => {
+        var { channel, host, account } = evo;
+        evo.sendMessage({
+            command: 'apiFunctions:SystemLog:host:channel',
+            channel,
+            host,
+            account
+        }).then(([logs]) => {
+            logs.filter(({ Content, OperateTime, Operator }) => {
+                Content.filter((obj) => {
+                    if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                        //evo.user.logs[0] = assign(obj, { OperateTime, Operator })
+                        evo.user.timer = [OperateTime];
+                        return resolve()
+                    }
+                })
+            })
+        })
+    })
+}
+
+
 function setUser() {
-
-    console.log(evo.account);
-
+    //console.log(evo.account);
     if (evo.user == 6) {
-        return updateUserStatus();
+        //return updateUserStatus();
     } else {
         evo.user = evo.user || {}
         return Promise.all([
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
+            fetchBankAcInfo(),
             getSystemLog(),
-            fetchBankAcInfo()
-        ]).then(function([a, b, g, d]) {
-
-            console.log(g);
-
-
-
-
-
-
-            var c = Object.assign(a, b);
+        ]).then(function([a, b, d]) {
+            var c = assign(a, b);
             var { origin, channel, operator, host } = evo;
             var { account, channel, host, origin, operator } = evo;
             var sheets = {},
-                region = {};
+                region = {}
+
             var property = {
                 author: { property: 'author', value: c.AccountName, title: c.AccountNameShow, sheets },
                 locate: { property: 'locate', value: c.RegistedIP, title: c.RegistedIP, sheets, region },
@@ -59,7 +74,9 @@ function setUser() {
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: joindate, IsBlackList: isBlack } = c;
             assign(evo.user, { account, channel, host, origin, operator, birthday, agency, joindate, isBlack }, property);
             return evo.user
-        }).then(updateUserStatus).then(putUser)
+        }).then(putUser)
+
+        //.then(updateUserStatus)
     }
 }
 

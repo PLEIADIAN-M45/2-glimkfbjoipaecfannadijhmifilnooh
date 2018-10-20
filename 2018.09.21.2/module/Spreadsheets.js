@@ -1,3 +1,53 @@
+/***************************************************************************************/
+var apiFunctions = evo.apiFunctions;
+/***************************************************************************************/
+function upload_888(pastData, postData, MemberStatus) {
+    if (pastData.MemberStatus == postData.MemberStatus) { return }
+    evo.user.timer.push(evo.now);
+    evo.user.status = [pastData.MemberStatus, postData.MemberStatus]
+    evo.user.deposit = [pastData.IsDeposit, postData.IsDeposit]
+    if (pastData.MemberStatus == 3) {
+        evo.user.command = 'evo.statistics.m88'
+        apiFunctions(evo.user);
+    } else {
+        evo.user.command = 'evo.statistics.m22'
+        apiFunctions(evo.user);
+    }
+    alert(88888)
+    console.log(pastData.MemberStatus, postData.MemberStatus);
+    console.log(MemberStatus[pastData.MemberStatus]);
+    console.log(MemberStatus[postData.MemberStatus]);
+
+}
+
+function getBonusLog({ id, f_id, BonusNumber }) {
+    var BSN = f_id || id || BonusNumber;
+    return new Promise((resolve, reject) => {;
+        (function repeater(BSN) {
+            var { f_AdminName, Creator } = log = json(sessionStorage[BSN]);
+            if (f_AdminName === "") { return setTimeout(repeater, 1000, BSN); }
+            if (Creator === "AUTO") { return setTimeout(repeater, 1000, BSN); }
+            resolve(log);
+        }(BSN));
+    });
+}
+
+function upload_3(postData) {
+    return Promise.all([
+        getBonusLog(postData),
+        getUser(postData)
+    ]).then(apiFunctions);
+}
+
+
+
+
+function statistics4(params) {
+    var params = assign(...params);
+    console.log(params);
+    //evo.sendMessage({ command: 'evo.statistics.m4', params }).then(s)
+}
+
 var spreadsheets = {
     '开通表': 'https://docs.google.com/spreadsheets/d/1lbr9US1bTELbX-gOMMzNWXcz7HKOtUMycIbKhjeBABA/edit#gid=0',
     '停权表': 'https://docs.google.com/spreadsheets/d/1MYiScPY7xEbO4ypmwK6yzyzr8akn-YELGlIVPWmpbag/edit#gid=1309506964',
@@ -15,14 +65,107 @@ window.open(spreadsheets[1])
 window.open(spreadsheets[2])
 */
 
+/*
+status[user.status[0]] + '轉' + status[user.status[1]]
+
+    //.map((x) => { return (Number(x) == 1) ? "是" : "否" });
+
+var status = {
+    "ku711": ["停權戶", "正常戶", "靜止戶", "審核中", "測試戶", "推廣戶"],
+    "wa111": ["靜止戶", "正常戶", "停權戶", "審核中", "測試戶"]
+} [user.host];
+
+user.status.map((x) => { return status[x] }).join('->'),
+*/
+/*
+["停權戶", "正常戶", "靜止戶", "審核中", "測試戶", "推廣戶"]
+
+if (e.parameter.command == "evo.statistics.m88") {
+    var user = JSON.parse(e.parameter);
+    var model = {
+        dscr: '開通',
+        spreadSheets: '1lbr9US1bTELbX-gOMMzNWXcz7HKOtUMycIbKhjeBABA',
+        sheetName: '111',
+        contents: [
+            user.status.join('->'),
+            user.timer[0],
+            user.timer[1],
+            timeDiff(user.timer[0], user.timer[1], 'day'),
+            user.channel,
+            format(now),
+            user.operator,
+            user.account.toUpperCase(),
+            user.deposit[0],
+            user.banker[0].value,
+            user.banker[0].region.prov,
+            user.banker[0].region.city,
+            user.mobile.value,
+            user.mobile.region.prov,
+            user.mobile.region.city,
+            user.idcard.value,
+            user.idcard.region.prov,
+            user.idcard.region.city,
+            user.region.length,
+        ].concat(user.region)
+    }
+    var spreadsheet = SpreadsheetApp.openById(model.spreadSheets);
+    var sheet = spreadsheet.getSheetByName(model.sheetName);
+    console.log(model.contents);
+    sheet.appendRow(model.contents);
+    return 1
+}
+*/
+
+
+
+
+
+/*
+              evo.sendMessage({
+                  command: 'apiFunctions:SystemLog:host:channel',
+                  channel,
+                  host,
+                  account
+              }).then(s)
+              // .then(resolve)*/
+
+
+/* evo.apiFunction({
+     method: "GetMemberInfoOperationLogByMultiAccountID",
+     data: { DataID: account, Operated: account },
+     channel,
+     host,
+     account
+ }).then(s)*/
+/***************************************************************************************/
+
+
+//if (log.AdjustTime) { resolve(log) } else { setTimeout(repeater, 1000, log) }
+
+//console.log(BSN);
+
+
+
+
+
+
+/***************************************************************************************/
+
+
+
+
+
+
+
+/*
 var sel = {
     f_ishow: ["靜止戶", "正常戶", "停權戶", "審核中", "測試戶"],
     f_intualStatus: ["否", "是"],
     f_depositStatus: ["否", "是"]
 }
-
+*/
 /***************************************************************************************/
-
+/*
 function systemLogFilter([logs]) {
     function spliter(arr) { return arr.split('$log$'); }
 
@@ -45,128 +188,33 @@ function systemLogFilter([logs]) {
     return evo.user;
 }
 
-/*
-function getSystemLog(user) {
-    return new Promise((resolve, reject) => {
-        var account = user.AccountID || user.account
-        evo.sendMessage({
-            command: 'apiFunctions:SystemLog:host:channel',
-            params: { account }
-        }).then(resolve)
-    })
-}*/
+var filter1 = function(logs) {
+    return {
+        wa111: function(logs) {
 
-/***************************************************************************************/
-var apiFunctions = evo.apiFunctions;
 
-function statistics1() {
-    evo.sendMessage({ command: 'evo.statistics.m1', params: evo.user }).then(s)
+
+
+        },
+        ku711: function(logs) {
+            console.log(logs);
+            logs.filter(({ Content, OperateTime }, index, array) => {
+                Content.filter(({ FieldName, BeforeValue, AfterValue, BeforeName, AfterName }) => {
+                    if ((FieldName == 'MemberStatus' && BeforeValue == 2 && AfterValue == 3)) {
+                        evo.user.logs[0].time = OperateTime;
+                        evo.user.logs[0].status = [BeforeValue, AfterValue];
+                        evo.user.logs[0].status_descr = [BeforeName, AfterName];
+                        return true
+                    }
+                })
+            })
+        }
+    } [evo.host](logs);
 }
-
-function statistics1() {
-    evo.sendMessage({ command: 'evo.statistics.m2', params: evo.user }).then(s)
-}
-
-/***************************************************************************************/
-function upload_1() {
-    getUser().then(getSystemLog).then(systemLogFilter).then(statistics1);
-}
-
-function upload_711(postData) {
-    //user.log 找到靜止轉審核的時間
-
-    console.log('upload_711 開通表');
-    console.log(postData.AccountID);
-    console.log(postData);
-    console.log(json(postData));
-
-    getSystemLog(postData)
-        .then(s)
-
-
-    alert('upload_711')
-
-}
-
-function upload_999(postData) {
-    console.log('upload_999 停權表表');
-    console.log(postData);
-    console.log(json(postData));
-
-    alert('upload_999')
-
-}
-
-function upload_2() {
-    getUser().then(getSystemLog).then(systemLogFilter).then(statistics2);
-}
-
-function upload_5(SystemLog) {
-
-    console.log(SystemLog);
-
-    //getUser().then(getSystemLog).then(systemLogFilter).then(statistics2);
-}
-
-
-function getBonusLog({ id, f_id, BonusNumber }) {
-    var BSN = f_id || id || BonusNumber;
-    return new Promise((resolve, reject) => {;
-        (function repeater(BSN) {
-            var { f_AdminName, Creator } = log = json(sessionStorage[BSN]);
-            if (f_AdminName === "") { return setTimeout(repeater, 1000, BSN); }
-            if (Creator === "AUTO") { return setTimeout(repeater, 1000, BSN); }
-            resolve(log);
-        }(BSN));
-    });
-}
-
-
-function upload_3(postData) {
-    return Promise.all([
-        getBonusLog(postData),
-        getUser(postData)
-    ]).then(apiFunctions);
-}
+*/
 
 
 
-
-/***************************************************************************************/
-
-
-//if (log.AdjustTime) { resolve(log) } else { setTimeout(repeater, 1000, log) }
-
-//console.log(BSN);
-
-
-
-
-
-
-/***************************************************************************************/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function statistics4(params) {
-    var params = assign(...params);
-    console.log(params);
-    //evo.sendMessage({ command: 'evo.statistics.m4', params }).then(s)
-}
 
 
 

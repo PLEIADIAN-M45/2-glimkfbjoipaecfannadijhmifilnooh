@@ -4,6 +4,37 @@ define([evo.extend, 'smsService'], function(a, smsService) {
 
     myApp.$controller = function controller($compile, $rootScope) {
         var user = evo.user;
+        /*evo.user.log = [{
+            time: '',
+            status_descr: '',
+        }, {
+            time:
+        }];*/
+
+
+
+        //getSystemLog(user).then(filter1)
+
+
+        /*
+        .then((res) => {
+            console.log(res);
+
+              res.filter((x) => {
+                  x.Content.filter(({ FieldName, BeforeValue, AfterValue }) => {
+                      if ((FieldName == 'MemberStatus' && BeforeValue == 2 && AfterValue == 3)) {
+                          evo.user.log[0].time = x.OperateTime
+                          return true
+                      }
+                  })
+              })
+        })*/
+
+        var apiFunction = evo.apiFunction;
+        var { channel, host, account } = evo;
+
+
+
         //console.log(evo.user);
         $scope.smsService = smsService(evo.user);
         $scope.extend({ user, openDeposit, openLoginLog, smsService });

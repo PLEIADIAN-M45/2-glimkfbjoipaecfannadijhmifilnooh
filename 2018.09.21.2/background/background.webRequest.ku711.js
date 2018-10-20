@@ -1,36 +1,133 @@
-function onBeforeSendHeaders() {
+//window.origins.set(port.name, url.origin);
 
-    chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+function lastPathOf(str) {
+    var url = new URL(str);
+    //console.log(url);
+    //window.origins.set('16', url.origin);
+    return url.pathname.split('/').pop();
+}
 
-        // console.log(details);
-
-        if (details.initiator == location.origin) {
-            details.requestHeaders.push({ name: 'referer', value: details.url });
-            details.requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
-            details.requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['ajax-anti-forgery-token'] });
-            return { requestHeaders: details.requestHeaders }
-        } else {
-            if (details.method == "POST") {
-                details.requestHeaders.filter(({ name, value }) => {
-                    if (name == "RequestVerificationToken") { localStorage[name] = value; }
-                })
-            }
-        }
-
-    }, {
-
-        urls: ["*://bk.ku711.net/*"],
-
-        types: ["xmlhttprequest"]
-
-    }, ['requestHeaders', 'blocking']);
+function searchParamsOf(str) {
+    var url = new URL(str);
+    return url.searchParams;
 }
 
 
+function parser(requestBody) {
+    if (requestBody) {
+        var postedString = decodeURIComponent(String.fromCharCode.apply(null,
+            new Uint8Array(requestBody.raw[0].bytes)));
+        return postedString;
+    } else {
+        return null;
+    }
+}
+
+//webRequestInternal.eventHandled(string, string, string, boolean)
+//webRequestInternal.eventHandled(string eventName, string subEventName, string requestId, optional object response)
+
+var xmlhttp = {};
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    var { url, method, type, requestBody, initiator } = details;
+    var lastPath = lastPathOf(url);
+    var searchParams = searchParamsOf(url);
+    //var parameters = searchParams.entries()
+    if (initiator == location.origin) {
+
+
+        var redirectUrl = url.replace('https://bk.ku711.net', 'http://127.0.0.1:16');
+        //console.log(details);
+        //console.log(redirectUrl);
+        //requestBody = json(requestBody.formData)
+
+
+        return { redirectUrl };
+    } else {
+        var dataType = 'json';
+        var data = {};
+        if (!xmlhttp[lastPath]) {
+            switch (method) {
+                case "GET":
+                    var entries = searchParams.entries();
+                    [...entries].map(([name, value]) => { data[name] = value });
+                    break;
+                case "POST":
+                    data = json(parser(requestBody));
+                    break;
+            }
+            xmlhttp[lastPath] = {
+                postData: json(parser(requestBody)),
+                career: "KU711",
+                lastPath,
+                requestBody,
+                settings: {
+                    url: url.split('?')[0],
+                    dataType,
+                    method,
+                    type,
+                    data
+                }
+            };
+        }
+    }
+    //console.log(url);
+}, {
+    urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
+    types: ["xmlhttprequest"]
+}, ['requestBody', 'blocking'])
+
+
+
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+    var { url, method, type, requestHeaders, initiator } = details;
+    var lastPath = lastPathOf(url);
+    if (initiator == location.origin) {
+       // console.log('*************', url);
+       // console.log(details);
+        requestHeaders.push({ name: 'referer', value: url });
+        requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
+        requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
+        return { requestHeaders: details.requestHeaders }
+    } else {
+        if (!xmlhttp[lastPath].requestHeaders) {
+            xmlhttp[lastPath].requestHeaders = requestHeaders;
+            store.xmlhttp.put(xmlhttp[lastPath]);
+        }
+        if (details.method == "POST") {
+            details.requestHeaders.filter(({ name, value }) => {
+                if (name == "RequestVerificationToken") { localStorage[name] = value; }
+            })
+        }
+    }
+
+}, {
+    urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
+    types: ["xmlhttprequest"]
+}, ['requestHeaders', 'blocking']);
+
+
+
+
+function onBeforeSendHeaders() {}
+onBeforeSendHeaders();
+
+
+//var career = _url.host.split('.')[1];
 //types:["main_frame", "sub_frame", "stylesheet", "script", "image", "font", "object", "xmlhttprequest", "ping", "csp_report", "media", "websocket", or "other"]
 
 
-onBeforeSendHeaders();
+//YUNLANZONG258258@gmail.com
+//FormDataItem
+
+
+/*
+url.searchParams.append('x', 42);
+url.searchParams.set('x', 42);
+*/
+
+//console.log(xmlhttp);
+
+
 
 /*
 var sampl222 = {
@@ -46,92 +143,3 @@ var sampl222 = {
     url: "https://bk.ku711.net/Member/api/PaymentSetting/GetOtherPaymentSettingByCondition"
 }
 */
-
-
-console.log(json);
-
-
-var parser = function(requestBody) {
-    if (requestBody) {
-        var postedString = decodeURIComponent(String.fromCharCode.apply(null,
-            new Uint8Array(requestBody.raw[0].bytes)));
-        return postedString;
-    } else {
-        return null;
-    }
-}
-
-/*
-url.searchParams.append('x', 42);
-url.searchParams.set('x', 42);
-*/
-
-//console.log(xmlhttp);
-
-var xmlhttp = {};
-
-chrome.webRequest.onBeforeRequest.addListener(function(details) {
-    var { url, method, type, requestBody, initiator } = details;
-    if (initiator == location.origin) {
-        return true;
-    } else {
-        var dataType = 'json';
-        var _url = new URL(url);
-        var lastPath = _url.pathname.split('/').pop();
-
-        var name = lastPath;
-
-        var career = _url.host.split('.')[1];
-
-        if (xmlhttp[lastPath]) {
-
-        } else {
-            if (method == "GET") {
-                var entries = _url.searchParams.entries();
-                var data = {};
-                [...entries].map(([name, value]) => {
-                    data[name] = value
-                });
-            } else {
-                var data = json(parser(requestBody));
-                //console.log(data, typeof data);
-            }
-            var obj = {
-                career,
-                name,
-                settings: {
-                    dataType,
-                    url: url.split('?')[0],
-                    method,
-                    type,
-                    data
-                }
-            };
-
-            xmlhttp[lastPath] = obj;
-
-            store.xmlhttp.put(obj)
-
-            //console.log(xmlhttp);
-
-            console.log(json(xmlhttp));
-
-
-        }
-
-    }
-
-
-
-}, {
-    urls: ["*://bk.ku711.net/*"],
-    types: ["xmlhttprequest"]
-}, ['requestBody', 'blocking'])
-
-
-
-
-
-
-//YUNLANZONG258258@gmail.com
-//FormDataItem

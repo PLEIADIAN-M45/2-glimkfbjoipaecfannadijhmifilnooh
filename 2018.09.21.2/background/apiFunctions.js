@@ -1,18 +1,22 @@
-//console.log(window.MockType);
+//window.origins = new Map();
+//console.log(window.origins);
 
-if (!window.MockType) {
-    window.origins = new Map();
-    origins.set('0', location.origin)
-    chrome.runtime.onConnectExternal.addListener(function(port) {
-        var url = new URL(port.sender.url)
-        window.origins.set(port.name, url.origin);
-        if (origins.size > 5) {
-            //console.clear();
-            console.log(origins);
-        }
-    });
-}
+window.origins = new Map();
+origins.set('0', location.origin)
+chrome.runtime.onConnectExternal.addListener(function(port) {
+    var url = new URL(port.sender.url)
+    window.origins.set(port.name, url.origin);
+    if (origins.size > 5) {
+        //console.clear();
+    }
+    console.log(origins);
 
+});
+
+
+/*
+if (!window.MockType) {}
+*/
 
 function json(a) { return (typeof a == 'string') ? JSON.parse(a) : JSON.stringify(a); }
 
@@ -27,12 +31,14 @@ var assign = Object.assign;
 
 
 var apiFunctions = function(request, sender, sendResponse) {
-    return sendResponse('暫停服務')
 
-
+    //return sendResponse('暫停服務')
     var [commander, property, proxy, channel] = request.command.split(':');
+
     request.url = origins.get(channel);
+
     request.time = Date.now();
+
 
     if (request.url) {
         if (proxy) {
@@ -50,16 +56,19 @@ var apiFunctions = function(request, sender, sendResponse) {
 
 
     if (module.career == "ku711") {
+
+
         module.settings.data = json(module.settings.data);
-        console.log(module.settings.data);
+
+        //console.log(module.settings.data);
 
     }
 
 
     try {
 
-
         module.settings.timeout = 5000;
+
 
 
         $.ajax(module.settings)
@@ -272,8 +281,8 @@ apiFunctions.prototype["SystemLog"]["wa111"] = function() {
     }
 }
 apiFunctions.prototype["SystemLog"]["ku711"] = function() {
-    var { account } = this.params;
-
+    // console.log(xmlhttp.GetMemberInfoOperationLogByMultiAccountID);
+    // console.log(this);
     return {
         career: 'ku711',
         settings: {
@@ -286,8 +295,8 @@ apiFunctions.prototype["SystemLog"]["ku711"] = function() {
                 "DataIDList": [],
                 "PageIndex": 0,
                 "PageSize": 5,
-                "DataID": account,
-                "Operated": account,
+                "DataID": this.account,
+                "Operated": this.account,
                 "Platform": 0
             }
         },
@@ -388,7 +397,7 @@ apiFunctions.prototype["Alerts"]["ku711"] = function() {
 apiFunctions.prototype["smsService"]["smsc"] = function() {
     var smss = aes.decrypt(localStorage.sms);
     var { account, mobile, status, channel, operator } = this.params;
-    var countrycode = { "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" }[channel];
+    var countrycode = { "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
     if (message == undefined) {}

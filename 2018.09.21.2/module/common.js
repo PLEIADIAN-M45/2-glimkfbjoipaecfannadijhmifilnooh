@@ -49,8 +49,6 @@ var var1 = null,
 var assign = Object.assign;
 var entries = Object.entries;
 
-
-
 evo.assign = Object.assign;
 evo.values = Object.values;
 evo.keys = Object.keys;
@@ -77,7 +75,6 @@ function log(i) {
 
 
 //String.prototype.json = function() {};
-
 var map = Array.prototype.map;
 
 var re = () => {
@@ -122,11 +119,7 @@ async function getUserAsync(params) {
     //console.log(c);
     //return c
 }
-
-
-
-
-
+/*
 function getSystemLog(user) {
     return new Promise((resolve, reject) => {
         var account = evo.account;
@@ -141,7 +134,7 @@ function getSystemLog(user) {
         })
     })
 }
-
+*/
 
 function getUser(params) {
 
@@ -151,7 +144,7 @@ function getUser(params) {
             var channel = params.channel || evo.channel;
         } else { var { account, channel } = evo; }
 
-        console.log(account, channel);
+        //console.log(account, channel);
 
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {
@@ -188,9 +181,6 @@ async function start() {
     var banker = await extension.localStorage.getItem('blacklist');
     var locate = await extension.localStorage.getItem('IPAddress');
     var region = evo.sensitive.area;
-
-
-
 
     if ((evo.test)) {
         author.push(['王杰', 'F6261', '26', '恶意投诉人'])
@@ -339,14 +329,7 @@ function bgstoreMemberInfo() {
 
 function trim(value) { return value.trim() }
 
-
-
-
-
-
 //function upload_1(str, _status_, log) {
-
-
 
 var createTabs = function(url) {
     window.open(url, '_blank')

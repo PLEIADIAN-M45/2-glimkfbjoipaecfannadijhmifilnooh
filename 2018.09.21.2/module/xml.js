@@ -103,22 +103,21 @@ IDB.version(1.0).stores({
 }).upgrade(trans => { console.log(trans); });
 
 
+console.log(11111, 2222222222);
 
 var TEMPBSN = {}
 var user = {}
 //console.log(user);
+var MemberStatus = {};
 
 function recorddb() {
+
     var { _lastPath, _postData, _params, _response, _responseText } = this;
-
     //console.log(user);
-
     // console.log(_lastPath, _postData, _params);
-
-
     ///Member/api/Bonus/GetMemberBonusLogBackendByCondition
 
-    if (this.isEquel('CreateMemberInfoOperationLog')) { //CreateMemberInfoOperationLog
+    if (this.isEquel('CreateMemberInfoOperationLog--')) { //CreateMemberInfoOperationLog
         //用建立log 來判別剛才的動作
         //只發生在 [存款開關時]
         //{"Operated":"shengcai2","OperateType":3,"DataID":"shengcai2","Content":[{"FieldName":"IsDeposit","FieldDisplayName":"存款","BeforeValue":false,"BeforeName":"关闭","AfterValue":true,"AfterName":"开启"},{"FieldName":"MemberStatus","FieldDisplayName":"用户状态","BeforeValue":3,"BeforeName":"審核中","AfterValue":1,"AfterName":"正常户"}]}
@@ -135,9 +134,8 @@ function recorddb() {
                 upload_5(_postData);
             }
         })
-        alert(1)
+        alert(333)
         /*console.log(_responseText);
-        
         sessionStorage[_postData.Operated] = json(_postData);
        */
     }
@@ -146,65 +144,108 @@ function recorddb() {
 
     if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) {
         //取得進入頁面時的會員狀態
-        //console.log(_response.Data.AccountID);
-        //console.log(_response.Data.AccountID);
-        //console.log(_response.Data);
         var { AccountID } = object = _response.Data;
+        //console.log(object);
+        console.log(object.AccountID, object.MemberStatus, object.IsDeposit);
+
         user[AccountID] = object;
     }
 
 
+    if (this.isEquel('GetDealTypeList')) {
+        //console.log(_response);
+        //var DealType
+    }
+
+
+    if (this.isEquel('GetMemberStatusByLanguageCode')) {
+        MemberStatus = _response.Data.ValueKey;
+        localStorage.MemberStatus = json(MemberStatus)
+    }
+
+
+
+
+    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) {
+        var _pastData = user[_postData.AccountID];
+        upload_888(_pastData, _postData, MemberStatus)
+        return
+        //發生在按下 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
+        //打開存款 審核中 會轉正常戶
+        var _pastData = user[_postData.AccountID];
+        // console.log(_postData);
+        //console.log(_pastData);
+        //console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
+
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
+            if (_pastData.MemberStatus == 3) { //開通表 審核轉開通 審核轉停權
+                upload_1(evo.user);
+            } else { //停權表
+                upload_2(evo.user);
+            }
+        }
+
+
+        alert(88888)
+
+        /*console.log(_pastData.IsDeposit, _postData.IsDeposit);
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        console.log(evo.user);
+        console.log(_response);*/
+    }
+
+
     if (this.isEquel('UpdateMemberSNInfoBackend')) {
+        var _pastData = user[_postData.AccountID];
+        upload_888(_pastData, _postData, MemberStatus)
+        return
+        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
+        if (_pastData.MemberStatus !== _postData.MemberStatus) {
+            if (_pastData.MemberStatus == 3) { //開通表 審核轉開通 審核轉停權
+                upload_1(evo.user);
+            } else { //停權表
+                upload_2(evo.user);
+            }
+        }
+        alert(2)
+        return
         console.clear();
         //審核中轉停權 //發生在按下 基本資料的「修改鍵」 或 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
         var _pastData = user[_postData.AccountID];
         //console.log(json(_postData));
         console.log(_pastData.IsDeposit, _postData.IsDeposit);
-        console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        // console.log(_pastData.MemberStatus, _postData.MemberStatus);
+        evo.user.timer.push(evo.now);
+        evo.user.status = [_pastData.MemberStatus, _postData.MemberStatus];
+        evo.user.deposit = [_pastData.IsDeposit, _postData.IsDeposit];
 
         if (_pastData.MemberStatus !== _postData.MemberStatus) {
 
-            /*if (_pastData.MemberStatus == 3) {
-                //開通表  可能是開通 也可能是 轉停權
-            }*/
-
-            if (_postData.MemberStatus == 1) {
-                //開通表  只可能是開通
-                upload_711(_postData);
-            }
-
-            if (_postData.MemberStatus == 0) {
-                //表示轉為停權
-                if (_pastData.MemberStatus == 3) {
-                    upload_711(_postData);
-                    //開通表  可能是開通 也可能是 轉停權
-                } else {
-                    upload_999(_postData);
-                    //停權表
-                }
-
+            if (_pastData.MemberStatus == 3) {
+                //開通表 審核轉開通 審核轉停權
+                upload_1(_postData);
+            } else {
+                //停權表
+                upload_2(_postData);
             }
         }
 
-
-
-        //console.log(evo.user);
-        alert(2)
-        //console.log(_response);
     }
+
+
+    //console.log(evo.user);
+    //console.log(_response);
     //審核轉正常 "AccountID":"steved"   3->1
     //審核轉停權 "AccountID":"dsjkf228" 3->0
-    /*
-    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { 
-        //發生在按下 帐务相关 的「修改鍵」->接著引發 UpdateMemberSNInfoBackend
-        //打開存款 審核中 會轉正常戶
-        var _pastData = user[_postData.AccountID];
-        console.log(_pastData.IsDeposit, _postData.IsDeposit);
-        console.log(_pastData.MemberStatus, _postData.MemberStatus);
-        console.log(evo.user);
-        console.log(_response);
-        alert(1)
-    }*/
+
 
     /*
     var { IsDeposit, AccountID, MemberStatus, AccountName } = _postData;
@@ -243,7 +284,6 @@ function recorddb() {
 
     if (this.isEquel('UpdateMemberBonusLog')) {
         _postData.command = 'evo.statistics.m4';
-
         upload_3(_postData);
         upload_4_test(_postData);
     }

@@ -12,7 +12,8 @@ define(['myApp', 'dexie'], function(myApp, Dexie) {
             var siteNumber = "16";
             var siteName = "KU711"
             var operator = myApp.$scope.ctrl.resetModel.AccountID.toUpperCase();
-            evo.sendMessage({ command: 'ajax-anti-forgery-token', value: evo.token });
+            //evo.sendMessage({ command: 'ajax-anti-forgery-token', value: evo.token });
+            evo.sendMessage({ command: 'RequestVerificationToken', value: evo.token });
             break;
     }
 

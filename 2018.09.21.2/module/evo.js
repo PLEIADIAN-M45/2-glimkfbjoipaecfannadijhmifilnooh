@@ -74,6 +74,18 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             })
         }
 
+        apiFunction(request) {
+            console.log(request);
+            request.command = "apiFunction";
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, request, function(result) {
+                    console.log(result);
+                    resolve(result);
+                })
+            })
+        }
+
+
         apiFunctions(request) {
             //TypeError: Found non-callable @@iterator
             //console.log(typeof request);
@@ -83,6 +95,10 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             } catch (ex) {
                 var req = request;
             }
+
+            console.log(req);
+
+            alert(json(req))
 
             //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
