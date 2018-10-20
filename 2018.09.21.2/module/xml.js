@@ -226,14 +226,66 @@ function recorddb() {
 
     if (this.isEquel('MemberModify')) {
         if (_method == "POST") {
-            if (_postData.action == "StopMember" && _postData.wujiMarkID != undefined) {
-                upload_2('停權表')
+
+            var { action, wujiMarkID } = _postData;
+
+            console.log(action);
+
+
+            switch (action) {
+                case "btnUserSet":
+                    //console.log(_postData);
+                    var { ishow, isOpenDeposit } = _postData;
+                    console.log(ishow, isOpenDeposit);
+
+
+                    break;
+                case "getmodel":
+                    //f_isDeposit:代表有無存過款
+                    //f_depositStatus:代表存款開關
+                    //f_Deposit
+
+                    var { f_ishow, f_depositStatus, f_isDeposit } = _response;
+
+                    console.log(_response);
+
+                    console.log({ f_depositStatus });
+
+
+
+
+
+
+
+
+
+
+
+                    /*  //console.log(_postData);
+
+                      console.log(_response);
+
+                      console.log(json(_response));*/
+
+
+                    break;
+
+                case "StopMember":
+                    break;
+
             }
+
+
+
+
+            /* if (_postData.action == "StopMember" && _postData.wujiMarkID != undefined) {
+                 upload_2('停權表')
+             }*/
         }
     }
 
 
-    
+
 
 
     /*
@@ -258,6 +310,10 @@ function recorddb() {
 
 
 }
+
+
+
+
 
 
 /*

@@ -11,7 +11,7 @@ function refreshAllWindow() {
     })
 }
 
-
+/*
 chrome.runtime.onInstalled.addListener(function(details) {
     console.log(details);
     if (details.reason == "install") {
@@ -20,10 +20,11 @@ chrome.runtime.onInstalled.addListener(function(details) {
         refreshAllWindow()
     }
 });
-
+*/
 
 
 chrome.browserAction.onClicked.addListener(function(tab) {
+    
     chrome.runtime.reload();
 })
 
