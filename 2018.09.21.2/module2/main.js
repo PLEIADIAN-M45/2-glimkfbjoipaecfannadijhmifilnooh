@@ -51,8 +51,6 @@ requirejs.config({
 });
 
 /*
-
-
 requirejs(['path'], function(path) {
     console.log(win32, posix);
     var path = posix.parse(location.href);
@@ -60,8 +58,15 @@ requirejs(['path'], function(path) {
     var path = win32.parse(location.href);
     console.log(path);
 })
-
 */
+
+
+var path = location.pathname.split('/').pop();
+
+console.log(path);
+
+console.log(location);
+
 
 
 requirejs(['evo', 'extension', 'moment', 'dexie'], function(evo, extension, moment, Dexie) {

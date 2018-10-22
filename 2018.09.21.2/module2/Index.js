@@ -27,4 +27,7 @@ define(['myApp', 'dexie'], function(myApp, Dexie) {
     //console.log(siteNumber);
     chrome.runtime.connect(evo.extensionId, { name: siteNumber })
 
+
+
+    if (evo.test) { $('.collapse').removeClass('collapse') }
 });

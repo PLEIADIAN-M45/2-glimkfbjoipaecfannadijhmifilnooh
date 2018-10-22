@@ -12,7 +12,6 @@
             "background/background.js",
             "background/background.webRequest.ku711.js",
             //"background/background.webRequest.wa111.js",
-
             "background/chrome.webRequest.onCompleted.js",
             "background/background.onMessage.js",
             "background/background.onUpdated.js",
