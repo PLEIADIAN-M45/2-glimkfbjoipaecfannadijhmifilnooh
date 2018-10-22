@@ -1,5 +1,15 @@
-var json = function(str) {
+var IDB = new Dexie('evo');
+IDB.version(1.0).stores({
+    GetMemberList: 'f_accounts',
+    DepositBonus: 'f_id',
+    GetSystemLog: 'f_id',
+    GetMemberBonusLogBackendByCondition: 'BonusNumber'
+}).upgrade(trans => { console.log(trans); });
 
+var __debug = function(args) {
+    //console.log("[__Debug]", args);
+}
+var json = function(str) {
     try {
         if (str.constructor.name == "Response") {
             return str.json()
@@ -7,7 +17,6 @@ var json = function(str) {
         if (typeof str == "object") {
             var res = JSON.stringify(str);
         } else { var res = JSON.parse(str); }
-
 
     } catch (ex) { var res = str; }
     return res;
@@ -93,24 +102,12 @@ var json = function(str) {
     return XHR;
 });
 
-var IDB = new Dexie('evo');
-IDB.version(1.0).stores({
-    GetMemberList: 'f_accounts',
-    DepositBonus: 'f_id',
-    GetSystemLog: 'f_id',
-    GetMemberBonusLogBackendByCondition: 'BonusNumber'
-}).upgrade(trans => { console.log(trans); });
-
-var __debug = function(args) {
-    //console.log("[__Debug]", args);
-}
 var MemberStatus = {};
 var user_pastData = {};
 
 function recorddb() {
     var { _lastPath, _postData, _params, _response, _responseText, _method } = this;
     /******************************************************************************/
-
     if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態
         var object = _response.Data;
         user_pastData[object.AccountID] = object;
