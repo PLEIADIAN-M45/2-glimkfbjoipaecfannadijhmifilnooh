@@ -24,6 +24,9 @@ define([evo.extend], function(a) {
     }
 
     $scope.defineProperties({
+        debug: function() {
+
+        },
         components: [],
         stylesheet: ['MemberList']
     }).then(bootstrap)

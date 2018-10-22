@@ -80,11 +80,11 @@ requirejs(['evo', 'extension', 'moment', 'dexie'], function(evo, extension, mome
             //, 'records'
             //console.log('%c' + evo.filename, 'color:Gold');
 
-            console.log(evo.route);
+            //console.log(evo.route);
             // console.log('%cpathname: ' + evo.pathname, evo.route, 'color:Gold', evo.host);
 
 
-            requirejs(['material', 'semantic', 'cryptojs/md5', 'cryptojs/ripemd160', 'common', 'encrypt', 'myApp'], function(mdc) {
+            requirejs(['material', 'semantic', 'cryptojs/md5', 'cryptojs/ripemd160', 'common', 'encrypt', 'ApiFunction', 'myApp'], function(mdc) {
 
                 window.mdc = mdc;
 

@@ -233,6 +233,7 @@ apiFunctions.prototype["Member"]["wa111"] = function() {
 }
 
 apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
+    console.log(this);
     var { account } = this.params;
     return {
         career: 'wa111',
@@ -250,7 +251,7 @@ apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
 }
 
 apiFunctions.prototype["SystemLog"]["wa111"] = function() {
-  
+
     return {
         career: 'wa111',
         settings: {

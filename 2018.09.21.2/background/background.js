@@ -8,6 +8,8 @@ var isJson = function(str) {
 }
 var openOptionsPage = function() { chrome.runtime.openOptionsPage() };
 var createTabs = function(url) { chrome.tabs.create({ url: url }) }
+//openOptionsPage();
+
 /*
 var json = function(a) {
     try {
@@ -35,7 +37,6 @@ db.version(1).stores({
 
 
 
-//openOptionsPage();
 
 //createTabs("/mock/test.html")
 

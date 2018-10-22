@@ -6,9 +6,13 @@ define([
 
 ], function() {
 
-    
+    console.log(1111111);
+
 
     myApp.$controller = function($compile, $rootScope, $timeout) {
+
+    console.log(1111111);
+
         //console.log('user:', evo.user);
         var { author, locate, mobile, idcard, banker, host, channel, account, properties } = evo.user;
 
@@ -33,7 +37,7 @@ define([
                     return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix };
                 });
             }
-            
+
             this.extend({ ...me, icon, head, params, sites })
         };
 
@@ -53,7 +57,7 @@ define([
         };
 
         function apiFunctions(me, e) {
-            
+
 
 
             if (this.property == 'author') { return }
@@ -208,6 +212,8 @@ define([
             imPopup,
             GetAlertInfoByID
         })
+
+        console.log($scope);
 
 
     };

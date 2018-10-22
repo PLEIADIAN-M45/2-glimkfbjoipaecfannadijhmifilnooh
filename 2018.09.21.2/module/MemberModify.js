@@ -2,13 +2,11 @@
 define([evo.extend, 'smsService'], function(a, smsService) {
     'use strict';
 
+    var { account } = evo;
+
     myApp.$controller = function controller($compile, $rootScope) {
-
-        console.log(evo.user);
         //var apiFunction = evo.apiFunction;
-
         /****************************************************************/
-
         var user = evo.user;
         var { channel, host, account } = evo;
         $scope.smsService = smsService(evo.user);
@@ -22,37 +20,46 @@ define([evo.extend, 'smsService'], function(a, smsService) {
                 evo.ctrl.btnSave.click();
             },
             ku711: function() {
-                $scope.ctrl.model.UpdateEditMemberInfoManage.MemberStatus = 1;
                 $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+                $scope.ctrl.DepositChanged();
                 $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
             }
-        }[host]();
+        } [host]();
     }
 
     function openLoginLog({ channel, account, host, origin }) {
         var _url = {
             wa111: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${channel}&member=${account}`,
             ku711: `${origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${account}`
-        }[host];
+        } [host];
         window.open(_url, '_blank');
     }
 
-  
+    function debug() {
+        console.log(evo.user);
+    }
+
+
+    //apiFunction.getmodel(account).then(s)
+    //apiFunction.getAllUser(account).then(s)
+
     $scope.defineProperties({
+            debug,
             openDeposit,
             openLoginLog,
             components: ['MemberModify', 'dialog'],
             stylesheet: ['MemberModify']
         })
-        .then(getUser)
-        .then(setUser)
         //.then(getCtrl)
+        //.then(getUser)
+        .then(setUser)
         .then(bootstrap)
         .catch(errorHandler);
 
 })
 
 
+setTimeout(function() {}, 1000);
 
 
 function checkBlacklist() {
@@ -85,6 +92,20 @@ function checkBlacklist() {
     }
 }
 
+
+/*
+fetch('https://davidwalsh.name/submit', {
+    method: 'post',
+    body: new FormData(document.getElementById('comment-form'))
+});
+fetch('https://davidwalsh.name/submit-json', {
+  method: 'post',
+  body: JSON.stringify({
+    email: document.getElementById('email').value,
+    answer: document.getElementById('answer').value
+  })
+});
+*/
 
 
 /*
@@ -144,11 +165,6 @@ myApp.$controller2 = function controller($compile, $rootScope) {
 };
 
 */
-function showAll() {
-    console.log(evo.message);
-    console.log(evo.uniqueId);
-    console.log(evo.unique);
-}
 //console.log(evo.user);
 /*console.log($scope.ctrl.model.UpdateEditMemberRisksInfo.DirectorID);
 console.log($scope.ctrl.DepositChanged);*/

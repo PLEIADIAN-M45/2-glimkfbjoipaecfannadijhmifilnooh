@@ -26,7 +26,7 @@ var auto_select = function() {
     });
 }
 
-function s(obj) { console.log(obj); }
+function s(obj) { console.log(obj); return obj }
 
 function _small(string) { return string.toLowerCase(); }
 
@@ -40,6 +40,15 @@ function createDDL(elem) {
             [value]: outerText
         }
     }));
+}
+
+Array.prototype.serialize = function() {
+    var obj = {};
+    this.map(([longname, value], index) => {
+        var name = longname.replace('ctl00$ContentPlaceHolder1$', '');
+        Object.defineProperty(obj, name, { value, writable: true });
+    });
+    return obj;
 }
 
 
@@ -102,13 +111,9 @@ function format(t) {
 
 
 function putUser() {
-    
     return new Promise(function(resolve, reject) {
-        console.log('putUser', evo.user);
-
-
+        //console.log('putUser', evo.user);
         if (evo.user.region == undefined) { evo.user.region = [] };
-        
         evo.sendMessage({ command: 'evo.store.user.put', params: evo.user }).then(resolve);
     })
 }
@@ -123,41 +128,21 @@ async function getUserAsync(params) {
     //console.log(c);
     //return c
 }
-/*
-function getSystemLog(user) {
-    return new Promise((resolve, reject) => {
-        var account = evo.account;
-        console.log('account', account);
-        // user.AccountID || user.account
-        evo.sendMessage({
-            command: 'apiFunctions:SystemLog:host:channel',
-            params: { account }
-        }).then(([res, status, active]) => {
-            //console.log(res);
-            resolve(res)
-        })
-    })
-}
-*/
+
 
 function getUser(params) {
-
     return new Promise(function(resolve, reject) {
-
         if (params.f_accounts || params.AccountID || params.account) {
             var account = params.f_accounts || params.AccountID || params.account;
             var channel = params.channel || evo.channel;
         } else {
             var { account, channel } = evo;
         }
-
-        console.log(account, channel);
-
+        //console.log(account, channel);
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {
-                evo.user = user;
                 //console.log('getUser:', user);
-                return user;
+                return evo.user = user;
             }).then(resolve);
     })
 }
@@ -170,6 +155,7 @@ function delUser() {
 
 
 async function start() {
+
     var callee = arguments.callee.name;
     var separator = String.fromCharCode(124);
     var blacklist = await extension.localStorage.getItem('blacklist');
@@ -656,10 +642,10 @@ var scrollHeight = new function() {
 
 function bootstrap() {
     return start().then(requireStylesheet).then(requireComponents).then(bootstrap2)
-    /*.then(function() {
+        .then(function() {
+            $scope.debug();
+        })
 
-    })
-    */
 }
 
 
@@ -674,18 +660,6 @@ function bootstrap2() {
     })
 }
 
-/*
-function bootstrap() {
-    return new Promise(function(resolve, reject) {
-        if (myApp.$controller) {
-            myApp.$injector.invoke(myApp.$controller)
-            resolve(myApp);
-        } else {
-            reject('myApp.$controller is not defined.');
-        }
-    })
-}
-*/
 
 function trace(d) {
     //console.log(d)
@@ -699,3 +673,38 @@ function errorHandler(ex) {
 function sleep(time) {
     return new Promise((resolve) => setTimeout(resolve, time));
 }
+
+
+
+
+
+/*
+function bootstrap() {
+    return new Promise(function(resolve, reject) {
+        if (myApp.$controller) {
+            myApp.$injector.invoke(myApp.$controller)
+            resolve(myApp);
+        } else {
+            reject('myApp.$controller is not defined.');
+        }
+    })
+}
+*/
+
+
+/*
+function getSystemLog(user) {
+    return new Promise((resolve, reject) => {
+        var account = evo.account;
+        console.log('account', account);
+        // user.AccountID || user.account
+        evo.sendMessage({
+            command: 'apiFunctions:SystemLog:host:channel',
+            params: { account }
+        }).then(([res, status, active]) => {
+            //console.log(res);
+            resolve(res)
+        })
+    })
+}
+*/

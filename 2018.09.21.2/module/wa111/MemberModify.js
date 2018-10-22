@@ -3,8 +3,12 @@ if (location.host == "127.0.0.1" || evo.operator == "18C894") {
     $('#ctl00_ContentPlaceHolder1_btnStop').removeClass('btnReback')
 }
 
-if (['26', '35', '17'].includes(evo.channel)) {
+if (['21', '2'].includes(evo.channel)) {
 
+}
+
+
+if (['26', '35', '17'].includes(evo.channel)) {
     evo.map = {
         "BankCode111": "banker.meta",
         "BankCode111_2": "banker.meta",
@@ -44,21 +48,25 @@ if (['26', '35', '17'].includes(evo.channel)) {
     }
 }
 
-var ddl = {
-    f_ishow: createDDL(ctl00_ContentPlaceHolder1_ishow),
-    f_isOpenDeposit: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
-    f_depositStatus: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
-    status: createDDL(ctl00_ContentPlaceHolder1_ishow),
-    deposit: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
-    prov: createDDL(ctl00_ContentPlaceHolder1_ddlCity)
-};
 
-localStorage.ddl = json(ddl);
+function setCtrl() {
+    [...aspnetForm.elements].filter(({ name }) => name && !name.startsWith('__')).map(function(el, i) {
+        var _name = el.name.split('$').pop();
+        var sname = _name.replace(/(\d{0,3}_?\d)$/, '');
+        this[sname] = this[sname] || [];
+        this[sname].push(el);
+    }, evo.ctrl = {});
+    entries(evo.ctrl).map(function([name, value]) { this[name] = (value.length == 1) ? value[0] : value; }, evo.ctrl)
+}
 
+setCtrl();
 
 function updateUserStatus() {
-    var { status, deposit } = evo.ctrl;
-    return extend(evo.user, { status: status.value, deposit: deposit.value })
+    extend(evo.user, {
+        status: ctl00_ContentPlaceHolder1_ishow.value,
+        deposit: ctl00_ContentPlaceHolder1_isOpenDeposit.value
+    })
+    return putUser();
 }
 
 function getCtrl() {;
@@ -66,67 +74,42 @@ function getCtrl() {;
         el.value = el.outerText;
         el.name = el.id;
     });
+
     return new Promise((resolve, reject) => {
         var arr = [...aspnetForm.elements]
             .concat([document.getElementById('lblIp')])
             .filter((el) => { return el.name })
-            .map((el, i) => { return [el.name.split('$').pop(), el.value]; });
-        resolve(smart(arr));
+            .map((el, i) => {
+                var name = el.name.split('$').pop();
+                return [name, el.value];
+            });
+
+        var c = smart(arr);
+        resolve(c);
     })
 }
 
-function getExtraInfo() {
-
-
-    return new Promise((resolve, reject) => {
-        IDB.GetMemberList.get(evo.account).then(smart).then(resolve);
-    })
-    /*
-    evo.fetch('getAllUser')
-        .then(s)
-
-    return new Promise(function(resolve, reject) {
-        evo.apiFunctions({
-            command: 'apiFunctions:getAllUser:host:channel',
-            account: evo.account
-        }).then(smart).then(resolve);
-    })
-    */
-
-
-    /*return new Promise((resolve, reject) => {
-        IDB.GetMemberList.get(evo.account).then(smart).then(resolve);
-    })*/
-    /*
-    return new Promise(function(resolve, reject) {
-        $.getJSON(evo.origin + '/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=0&f_Account=' + evo.account + '&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=1&pageIndex=1&hidevalue_RecordCount=1&type=getAllUser', (d) => {
-            try { resolve(d.rows[0]); } catch (ex) { reject('getExtraInfo !!!') }
-        })
-    })
-    */
-
+function getAllUser() {
+    return apiFunction.getAllUser().then(smart)
 }
 
 function getPhoneDate() {
-    return new Promise(function(resolve, reject) {
-        evo.apiFunctions({
-            command: 'apiFunctions:getPhoneDate:host:channel',
-            params: { type: 'getPhoneDate', account: evo.account },
-        }).then(smart).then(resolve);
+    return apiFunction.getPhoneDate().then(smart)
+}
+
+function getSystemLog() {
+    return apiFunction.getSystemLog().then((logs) => {
+        logs.filter((x) => { if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) { evo.user.timing = [x.f_time]; } })
     })
 }
 
 function smart(arr) {
-
-    //console.log(arr);
-    if (!arr) { return {} }
-
+    if (!arr) { return {} } else { var res = {} };
     if (arr.constructor.name == "Object") { arr = Object.entries(arr) }
-
-    var res = {};
 
     arr.map(function([name, value]) {
         var key = evo.map[name];
+        //console.log(key);
         if (key) {
             try {
                 var keys = key.split('.');
@@ -148,80 +131,20 @@ function smart(arr) {
     return res;
 }
 
-/*
-fetch('./api/some.json')
-    .then(function(response) {
-        if (response.status !== 200) {
-            console.log('Looks like there was a problem. Status Code: ' +
-                response.status);
-            return;
-        }
-
-        // Examine the text in the response
-        response.json().then(function(data) {
-            console.log(data);
-        });
-    })
-    .catch(function(err) {
-        console.log('Fetch Error :-S', err);
-    });*/
-
-
-function getSystemLog() {
-    return new Promise((resolve, reject) => {
-        var { channel, host, account } = evo;
-        evo.sendMessage({
-            command: 'apiFunctions:SystemLog:host:channel',
-            channel,
-            host,
-            account
-        }).then(([logs]) => {
-
-            console.log(logs);
-
-            logs.filter(({ f_field, f_newData, f_oldData, f_time }) => {
-                console.log(f_field);
-
-                if ((f_field == 'f_ishow' && f_oldData == 0 && f_newData == 3)) {
-                    console.log(111, 22);
-                    console.log(evo.user);
-                    evo.user.timing = [f_time];
-                    return resolve()
-                }
-
-                /*Content.filter((obj) => {
-                    if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
-                        //evo.user.logs[0] = assign(obj, { OperateTime, Operator })
-                        evo.user.timing = [OperateTime];
-                        return resolve()
-                    }
-                })*/
-            })
-            return resolve()
-
-        })
-    })
-}
-
-
 function setUser(elems) {
-
-    if (evo.user) { return evo.user } else { evo.user = {} };
-
+    //console.log(evo.ctrl.txtRemittanceAccount);
+    evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
+    if (evo.user) { return updateUserStatus() }
+    evo.user = {};
     return Promise.all([
         getCtrl(),
-        getExtraInfo(),
+        getAllUser(),
         getPhoneDate(),
         getSystemLog()
-
     ]).then(function([a, b, c, d, sheets = {}, region = {}]) {
-
         if (b.banker == undefined) { b.banker = [] };
-
         var { account, channel, host, origin, operator } = evo;
-
         assign(evo.user, a, b, c, { account, channel, host, origin, operator })
-
         var property = {
             author: { property: 'author', value: a.author, title: a.author, sheets },
             locate: { property: 'locate', value: a.locate, title: a.locate, sheets, region },
@@ -232,155 +155,22 @@ function setUser(elems) {
                 return { property: 'banker', value: value, title: title[i], sheets: {}, region: { meta: meta[i], prov: prov[i], city: city[i] } }
             })
         }
-
-
         assign(evo.user, property);
-
         return putUser();
     })
 };
 
-/*
-function resolveAfter2Seconds() {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve('resolved');
-        }, 2000);
-    });
-}
 
-async function asyncCall() {
-    console.log('calling');
-    var result = await resolveAfter2Seconds();
-    bcb = result
-    console.log(result);
-    // expected output: 'resolved'
-}
-*/
+function testStop() { assign(evo.pastData, { ishow: 1, isOpenDeposit: 1 }) }
 
 
 
-var a = function(x) {
-    console.log(x);
-}
-
-/*
-Promise.resolve(function a(x) {
-    console.log(x);
-})*/
-
-
-function resolveAfter2Seconds() {
-    return new Promise(a => {
-        console.log(1, 2);
-        setTimeout(() => {
-            a('resolved');
-        }, 2000);
-    });
-}
-
-
-//resolveAfter2Seconds()
-
-
-
-
-
-
-
-/*
-async function asyncCall() {
-    console.log('calling');
-    var result = await resolveAfter2Seconds();
-    bcb = result
-    console.log(result);
-    // expected output: 'resolved'
-}
-
-
-console.log(resolveAfter2Seconds);
-
-var bcb = asyncCall();
-
-
-console.log(bcb);
-<<<<<<< HEAD
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function __mod2() {
-    var properties = [
-        { property: 'author', value: a.author, title: a.author, sheets },
-        { property: 'locate', value: a.locate, title: a.locate, sheets, region },
-        { property: 'mobile', value: c.mobile, title: a.mobile, sheets, region, },
-        { property: 'idcard', value: c.idcard, title: a.idcard, region, }
-    ];
-    b.banker.filter((x) => x).map((value, i) => {
-        var { meta, prov, city, title } = a.banker;
-        properties.push({
-            property: 'banker',
-            value: value,
-            title: title[i],
-            region: {
-                meta: meta[i],
-                prov: prov[i],
-                city: city[i]
-            }
-        })
-    });
-    var { account, channel, host, origin, operator } = evo;
-    evo.user = assign({}, a, b, c, { account, channel, host, origin, operator, properties });
-    return putUser();
-}
-
-
-
-
-/*var properties = {
-    author: { property: 'author', value: a.author, title: a.author, sheets },
-    locate: { property: 'locate', value: a.locate, title: a.locate, sheets, region },
-    mobile: { property: 'mobile', value: c.mobile, title: a.mobile, sheets, region },
-    idcard: { property: 'idcard', value: c.idcard, title: a.idcard, region, }
-};*/
-
-
-
-
-
-
-/*
-var properties = {
-            author: { property: 'author', value: a.author, title: a.author, sheets },
-            locate: { property: 'locate', value: a.locate, title: a.locate, sheets, region },
-            mobile: { property: 'mobile', value: c.mobile, title: a.mobile, sheets, region },
-            idcard: { property: 'idcard', value: c.idcard, title: a.idcard, region, },
-            banker: b.banker.split('|').filter((x) => x).map((value, i) => {
-                var { meta, prov, city, title } = a.banker;
-                return { property: 'banker', value: value, title: title[i], region: { meta: meta[i], prov: prov[i], city: city[i] } }
-            })
-        }
-        */
+var ddl = {
+    f_ishow: createDDL(ctl00_ContentPlaceHolder1_ishow),
+    f_isOpenDeposit: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
+    f_depositStatus: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
+    status: createDDL(ctl00_ContentPlaceHolder1_ishow),
+    deposit: createDDL(ctl00_ContentPlaceHolder1_isOpenDeposit),
+    prov: createDDL(ctl00_ContentPlaceHolder1_ddlCity)
+};
+localStorage.ddl = json(ddl);

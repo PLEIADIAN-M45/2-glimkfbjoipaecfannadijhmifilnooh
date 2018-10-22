@@ -53,8 +53,11 @@ define([], function() {
         });
     }
 
+    console.log(evo.pathname);
 
     if (evo.params.method == 'CookieID' || evo.pathname == 'IGetMemberInfo') {
+
+        console.log(111112);
         //https://bk.ku711.net/Member/MemberInfoManage/MemberLoginLog?AccountId=laoj521
         //https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog
 
@@ -80,7 +83,7 @@ define([], function() {
     }
     /*
 
-    無使用插件開通>>shengcai2-16 
+    無使用插件開通>>shengcai2-16
     使用插件開通>> lmj565970-16
 
     */

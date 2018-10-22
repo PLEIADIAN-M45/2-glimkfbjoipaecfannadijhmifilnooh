@@ -95,17 +95,13 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             } catch (ex) {
                 var req = request;
             }
-
-            console.log(req);
-
-            //alert(json(req))
-
+            //console.log(req);
             //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
             //console.log(request);
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
-                    console.log(result);
+                    //console.log(result);
                     resolve({ ...result, status, active: 0 });
                 })
             })
@@ -260,7 +256,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     case "IGetMemberInfo".toLowerCase():
                     case "MemberLoginLog".toLowerCase():
                     case "SameBrowserList".toLowerCase():
-                        console.log('MemberLoginLog');
+                        //console.log('MemberLoginLog');
                         _route = "MemberLoginLog";
                         break;
 

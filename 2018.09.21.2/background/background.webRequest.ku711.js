@@ -29,13 +29,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     var searchParams = searchParamsOf(url);
     //var parameters = searchParams.entries()
     //console.log(initiator);
-    
-
-    console.log(details);
-
-
+    //console.log(details);
     //console.log(requestBody);
-
     if (initiator == location.origin) {} else {
         var dataType = 'json';
         var data = {};
@@ -65,8 +60,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         }
     }
 }, {
-    urls: ["*://bk.ku711.net/*"],
-    //urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
+    //urls: ["*://bk.ku711.net/*"],
+    urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
 
     types: ["xmlhttprequest"]
 }, ['requestBody', 'blocking'])
@@ -89,6 +84,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
         return { requestHeaders: details.requestHeaders }
     } else {
+        //console.log(xmlhttp);
         if (!xmlhttp[lastPath].requestHeaders) {
             xmlhttp[lastPath].requestHeaders = requestHeaders;
             store.xmlhttp.put(xmlhttp[lastPath]);

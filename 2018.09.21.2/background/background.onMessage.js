@@ -43,7 +43,10 @@ function response_message(request, sender, sendResponse) {
 
     if (request.command && request.command.includes("evo.statistics")) {
         console.log('*****', request.command);
-        //console.log(request.params);
+        console.log(request);
+
+
+
         $.ajax({
             url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
             method: 'get',
@@ -101,7 +104,7 @@ function response_message(request, sender, sendResponse) {
         //console.log(request);
         var { command, params } = request;
         var [, , form, method] = command.split('.');
-        
+
        // console.log(form, method, params);
 
 

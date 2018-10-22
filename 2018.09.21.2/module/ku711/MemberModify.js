@@ -47,9 +47,32 @@ function getSystemLog() {
 }
 
 
+function getCtrl() {
+    evo.ctrl = {};
+    [...document.querySelectorAll('select')].forEach((el) => {
+        var { title, attributes } = el;
+        var ngModel = attributes["ng-model"];
+        if (ngModel) {
+            // console.log(ngModel.value);
+            switch (ngModel.value) {
+                case "ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit":
+                    evo.ctrl.deposit = el;
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
+        }
+    });
+    console.log(evo.ctrl);
+}
+
+
 function setUser() {
 
     if (evo.user) {
+
+        updateUserStatus()
 
     } else {
 
@@ -61,23 +84,26 @@ function setUser() {
             getModule('OldMemberRisksInfo'),
             fetchBankAcInfo(),
             getSystemLog(),
-
+            updateUserStatus()
         ]).then(function([a, b]) {
-
             var c = assign(a, b);
             var { origin, channel, operator, host } = evo;
             var { account, channel, host, origin, operator } = evo;
             var sheets = {},
                 region = {};
-
             var property = {
                 author: { property: 'author', value: c.AccountName, title: c.AccountNameShow, sheets },
                 locate: { property: 'locate', value: c.RegistedIP, title: c.RegistedIP, sheets, region },
                 mobile: { property: 'mobile', value: c.CellPhone, title: c.CellPhoneShow, sheets, region, },
                 idcard: { property: 'idcard', value: c.IDNumber, title: c.IDNumberShow, region, },
             }
-            var { BirthDay: birthday, AgencyID: agency, RegistedTime: joindate, IsBlackList: isBlack } = c;
-            assign(evo.user, { account, channel, host, origin, operator, birthday, agency, joindate, isBlack }, property);
+            var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: isBlack } = c;
+
+            assign(evo.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack }, property);
+
+
+            //console.log();
+
             return evo.user;
         }).then(putUser);
     }

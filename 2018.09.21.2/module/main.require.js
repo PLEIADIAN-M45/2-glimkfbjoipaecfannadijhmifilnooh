@@ -1,8 +1,7 @@
 function s0() {
     var s = document.createElement('script');
     s.src = chrome.runtime.getURL('/module/xml.js');
-   // console.log('xml');
-
+    // console.log('xml');
     s.onload = function() { this.remove(); };
     (document.head || document.documentElement).appendChild(s);
 };
@@ -22,18 +21,22 @@ function s3() {
     var s = document.createElement('script');
     s.src = chrome.extension.getURL('/lib/jquery/dexie.min.js');
     s.onload = function() {
-       // console.log('dexie');
+        // console.log('dexie');
         s0();
         this.remove();
     };
     (document.head || document.documentElement).appendChild(s);
 };
 
+if (location.pathname == "/IGetMemberInfo.html") {
 
 
+} else {
+    s3();
+
+}
 
 
-s3();
 
 document.onreadystatechange = function() {
     switch (document.readyState) {
