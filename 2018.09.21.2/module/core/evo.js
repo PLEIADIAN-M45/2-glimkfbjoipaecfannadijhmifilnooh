@@ -9,6 +9,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             this.version = '7.0';
         }
 
+
+
+
         get baseUrl() {
             return require.toUrl('.')
         }
@@ -41,13 +44,10 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get token() {
-            switch (this.host) {
-                case 'wa111':
-                    return null;
-                case 'ku711':
-                    return $('ajax-anti-forgery-token').attr('token');
-                    //document.querySelector('AJAX-ANTI-FORGERY-TOKEN').getAttribute('token');
-            }
+            return {
+                "wa111": "",
+                "ku711": $('ajax-anti-forgery-token').attr('token')
+            } [this.host];
         }
 
         get formData() {
@@ -206,12 +206,18 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get path() { return location.pathname.split('/').pop().replace(/\.(aspx|html)/, ''); }
         get domain() { return location.host.split('.'); }
         get sub() { return location.host.split('.')[0]; }
-        get host() {
-            if (location.host == '127.0.0.1:16') { return 'ku711'; }
-            if (location.host == '127.0.0.1:26') { return 'wa111' } else {
-                return location.host.split('.')[1].replace('202', 'wa111');
-            }
 
+
+        get host() {
+            return {
+                "16": "ku711",
+                "26": "wa111",
+                "35": "wa111",
+                "17": "wa111",
+                "17": "wa111",
+                "8876": "wa111",
+                "": location.host.split('.')[1]
+            } [location.port];
         }
 
         json(a) {
@@ -237,72 +243,57 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             //console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
         }
 
-        get route() {
-            //console.log(super);
-            var _route = this.filename.replace(/(\.\w+)/i, '').toLowerCase();
-            // console.log(_route);
-
-            if (_route) {
-                switch (_route) {
-
-                    case "MemberLog".toLowerCase():
-
-                        _route = "MemberLog";
-
-
-                        break;
-
-
-                    case "IGetMemberInfo".toLowerCase():
-                    case "MemberLoginLog".toLowerCase():
-                    case "SameBrowserList".toLowerCase():
-                        //console.log('MemberLoginLog');
-                        _route = "MemberLoginLog";
-                        break;
-
-                    case "WebMemberInfo".toLowerCase():
-                    case "WebMemberInfoForPhoto".toLowerCase():
-                        _route = "MemberLoginLogxxxxxxxxxxxx";
-                        break;
-                    case "EditMemberInfoManage".toLowerCase():
-                    case "MemberModify".toLowerCase():
-                        _route = "MemberModify";
-                        break;
-                    case "MemberInfoManage".toLowerCase():
-                    case "MemberList".toLowerCase():
-                        _route = "MemberList"
-                        break;
-
-
-
-                    case "BonusLog".toLowerCase():
-                    case "DepositBonus".toLowerCase():
-                        _route = "MemberBonus"
-                        break;
-                    case "Member".toLowerCase():
-                    case "Index".toLowerCase():
-                        _route = "Index";
-                        break;
-                    case "signin".toLowerCase():
-                    case "Login".toLowerCase():
-                        _route = "Login";
-                        break;
-                    case "DeltaBank".toLowerCase():
-                    case "DeltaOnline".toLowerCase():
-                    case "DeltaWeChat".toLowerCase():
-                    case "DeltaAlipay".toLowerCase():
-                    case "WithdrawalsBank".toLowerCase():
-                    case "AstropayWithdrawals".toLowerCase():
-                        _route = "Cashflow";
-                        break;
-                    default:
-                        return undefined;
-                        break;
-                }
-                evo.extend = this.host + '/' + _route;
-                return _route;
-            }
+        get pathname() {
+            return location.pathname.toLowerCase().replace(/(\.html|.aspx)$/i, '');
         }
+
+        get filename() {
+            return this.pathname.split('/').pop();
+        }
+
+        get elements() {
+            return document.querySelectorAll('span, select, input')
+        }
+
+        get path() {
+            //console.log(this.host, this.filename);
+            return {
+                "wa111": {
+                    "login": "login",
+                    "index": "home",
+                    "memberlist": "list",
+                    "membermodify": "edit",
+                    "depositbonus": "bonus",
+                    "IGetMemberInfo": "log",
+                    "sameBrowserList": "log",
+                    "deltabank": "cash",
+                    "deltaonline": "cash",
+                    "deltawechat": "cash",
+                    "deltaalipay": "cash",
+                    "withdrawalsbank": "cash",
+                    "astropaywithdrawals": "cash"
+                },
+                "ku711": {
+                    "signin": "login",
+                    "member": "home",
+                    "memberinfomanage": "list",
+                    "editmemberinfomanage": "edit",
+                    "bonuslog": "bonus",
+                    "memberloginlog": "log"
+
+                }
+            } [this.host][this.filename];
+        }
+
+        get router() {
+            return [this.host, this.path].join('/');
+        }
+
+        get adapter() {
+            console.log(this.path);
+            return ['adapter', this.path].join('/');
+        }
+
 
         get test() {
             if (location.hostname == "127.0.0.1") {
@@ -344,54 +335,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
     const evo = new Evo();
 
-    window.evo = evo;
-
     evo.assign = Object.assign;
+
     return evo;
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-
-            var YEAR = 365 * 24 * 60 * 60 * 1000;
-            return trans.friends.toCollection().modify(friend => {
-                friend.birthdate = new Date(Date.now() - (friend.age * YEAR));
-                delete friend.age;
-            });
-        get db() {
-
-            var db = new Dexie('evo');
-
-            db.version(2.0).stores({
-                mobile: 'uniqueId',
-                locate: 'uniqueId',
-                idcard: 'uniqueId',
-                sms: 'uniqueId',
-                DepositBonus: 'f_id',
-                MemberBonus: 'BonusNumber', //BonusNumber
-                PhoneDate: 'uniqueId',
-                MemberList: 'uniqueId'
-            }).upgrade(trans => {
-                console.log(trans);
-            });
-            return db;
-        }*/

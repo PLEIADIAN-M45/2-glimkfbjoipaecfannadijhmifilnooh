@@ -1,6 +1,6 @@
 function s0() {
     var s = document.createElement('script');
-    s.src = chrome.runtime.getURL('/module/xml.js');
+    s.src = chrome.runtime.getURL('/module/core/xhr.js');
     // console.log('xml');
     s.onload = function() { this.remove(); };
     (document.head || document.documentElement).appendChild(s);

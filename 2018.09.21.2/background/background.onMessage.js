@@ -105,7 +105,7 @@ function response_message(request, sender, sendResponse) {
         var { command, params } = request;
         var [, , form, method] = command.split('.');
 
-       // console.log(form, method, params);
+        // console.log(form, method, params);
 
 
         if (method == 'delete') {
@@ -118,12 +118,8 @@ function response_message(request, sender, sendResponse) {
     }
 
 
-    if (request.command == "ajax-anti-forgery-token") {
-        localStorage['ajax-anti-forgery-token'] = request.value
-        return true;
-    }
-    if (request.command == "RequestVerificationToken") {
-        localStorage['RequestVerificationToken'] = request.value
+    if (request.command == "requestverificationtoken") {
+        localStorage[request.command] = request.value;
         return true;
     }
 
