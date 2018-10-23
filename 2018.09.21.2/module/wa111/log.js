@@ -51,3 +51,12 @@ var getFrameUrl = function() {
     return location.origin + '/sameBrowserList.aspx?iType=3&accounts={accountId}&siteNumber={siteNumber}'
         .replace('{accountId}', evo.params.member).replace('{siteNumber}', evo.params.siteNumber);
 }*/
+
+
+
+function checkSensitiveWords() {
+    document.querySelectorAll("li").forEach((el) => {
+        var str = el.outerText.trim();
+        if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
+    })
+}

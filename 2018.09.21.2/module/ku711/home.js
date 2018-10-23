@@ -1,9 +1,9 @@
 define([], function() {
-    evo.sendMessage({ command: 'requestverificationtoken', value: evo.token });
+    var requestverificationtoken = evo.token;
     return {
         siteName: "KU711",
         channel: "16",
-        siteNumber: "16",
+        requestverificationtoken,
         operator: $scope.ctrl.resetModel.AccountID.toUpperCase()
     }
 })

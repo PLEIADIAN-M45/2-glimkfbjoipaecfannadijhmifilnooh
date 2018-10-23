@@ -157,7 +157,7 @@ function getUser(params) {
         } else {
             var { account, channel } = evo;
         }
-        //console.log(account, channel);
+        console.log(account, channel);
         evo.sendMessage({ command: 'evo.store.user.get', params: { account, channel } })
             .then((user) => {
                 //console.log('getUser:', user);
@@ -187,6 +187,12 @@ async function start() {
     evo.accusation = await extension.localStorage.getItem('accusation');
     //evo.protocol = await extension.localStorage.getItem('IPAddress');
     evo.sensitive.protocol = await extension.localStorage.getItem('IPAddress')
+
+
+    sensitive.area.push('浙江')
+    sensitive.area.push('商丘')
+    
+    
     sensitive.full = sensitive.area.concat(sensitive.word);
 
     //console.log(evo.sensitive);
@@ -288,6 +294,9 @@ async function start() {
         Regexp.prototype.sensitive[key] = new RegExp('(*)'.replace('*', value.join(separator)));
     })
     evo.regexp = new Regexp();
+
+    console.log(evo.regexp);
+
     return [callee, evo.regexp];
 }
 

@@ -32,18 +32,22 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         get siteName() { return localStorage['siteName']; }
 
-        get siteType() {
+       /* get siteType() {
             switch (this.siteName) {
                 case 'wa111':
                     return null;
                 case 'ku711':
-                    return $('ajax-anti-forgery-token').attr('token');
+
+                    return localStorage['requestverificationtoken'] = document.querySelector('AJAX-ANTI-FORGERY-TOKEN').getAttribute('token');
+
+                    $('ajax-anti-forgery-token').attr('token');
                     //document.querySelector('AJAX-ANTI-FORGERY-TOKEN').getAttribute('token');
             }
             return
-        }
+        }*/
 
         get token() {
+
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')

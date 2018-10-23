@@ -172,21 +172,7 @@ define([evo.router], function() {
             }
         }
 
-
-        $scope.extend({
-            property,
-            initialization,
-            regionTestFunction,
-            sheetsTestFunction,
-            apiFunctions,
-            apiMemberList,
-            getAllIPAddress,
-            showMemberModify,
-            openMemberList,
-            changeColor,
-            imPopup,
-            GetAlertInfoByID
-        })
+        $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
 
@@ -204,22 +190,10 @@ define([evo.router], function() {
         })
     }
 
-    async function checkSensitiveWords() {
-        var callee = arguments.callee.name;
-        return new Promise(function(resolve, reject) {
-            window.HTMLTableCellElements.each(function(index, el) {
-                var str = el.outerText.trim();
-                if (evo.siteNumber == '16') {
-                    el.classList.remove('w10');
-                    el.classList.remove('w20');
-                    $(el).find('br').remove();
-                    if (str == '正常户') { el.classList.add('normal'); }
-                }
-                if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
-            });
-            resolve([callee, HTMLTableCellElements])
-        })
-    }
+
+
+
+
 
     function addSiteNumberToAccountId() {
         var callee = arguments.callee.name;
@@ -249,19 +223,21 @@ define([evo.router], function() {
     }
 
     if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
+        //start().then(checkSensitiveWords)
 
         $scope.defineProperties({
                 components: ['log'],
                 stylesheet: ['cards', 'log']
             })
+            .then(start)
             .then(getUser)
             .then(dispatchMyEvent)
             .then(bootstrap)
             .then(scrollHeightListener)
-            .then(getHTMLTableCells)
             .then(checkSensitiveWords)
+            .then(s)
             .then(addSiteNumberToAccountId)
-            .then(createIFrame)
+            //.then(createIFrame)
             .catch(errorHandler)
     }
 
@@ -278,43 +254,24 @@ define([evo.router], function() {
     }
 
 
+})
 
 
 
 
 
 
+/*
+  console.log(evo.path);
+  console.log(evo.params);
+  console.log(evo.filename);
+  */
 
 
 
+/*
 
+無使用插件開通>>shengcai2-16
+使用插件開通>> lmj565970-16
 
-
-
-    /*
-    console.log(evo.path);
-    console.log(evo.params);
-    console.log(evo.filename);
-    */
-
-
-
-
-
-
-
-
-
-
-    /*
-
-    無使用插件開通>>shengcai2-16
-    使用插件開通>> lmj565970-16
-
-    */
-
-
-
-    //https://bk.ku711.net/Member/MemberInfoManage/MemberLoginLog?AccountId=laoj521
-    //https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog
-
+*/

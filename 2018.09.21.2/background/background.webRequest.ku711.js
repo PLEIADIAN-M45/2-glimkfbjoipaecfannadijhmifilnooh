@@ -27,6 +27,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     var { url, method, type, requestBody, initiator } = details;
     var lastPath = lastPathOf(url);
     var searchParams = searchParamsOf(url);
+
     //var parameters = searchParams.entries()
     //console.log(initiator);
     //console.log(details);
@@ -74,11 +75,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 
     //console.log(details);
     //console.log(initiator);
+    console.log(details);
 
 
     if (initiator == location.origin) {
         // console.log('*************', url);
-        //console.log(details);
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });

@@ -36,25 +36,72 @@ function getSiteNumberCollection() {
     return collection;
 }
 
-async function checkSensitiveWords() {
-    var callee = arguments.callee.name;
+
+function getModule(objPath) {
     return new Promise(function(resolve, reject) {
-        window.HTMLTableCellElements.each(function(index, el) {
-            var str = el.outerText.trim();
-            if (evo.siteNumber == '16') {
-                el.classList.remove('w10');
-                el.classList.remove('w20');
-                $(el).find('br').remove();
-                if (str == '正常户') {
-                    el.classList.add('normal');
-                }
+        var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
+        (function repeater(object) {
+            var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
+            if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                if (typeof alphaVal == "object") {
+                    if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                } else { resolve(alphaVal); }
             }
-            if (str.match(evo.regexp.sensitive.full)) {
-                el.classList.add('danger');
-            }
-        })
-        resolve([callee, HTMLTableCellElements])
+        }(object));
     })
+}
+
+
+
+async function checkSensitiveWords() {
+
+    function addclassList(el) { el.classList.add('danger'); return el; }
+
+    function removeClass(el) {
+        if (el.outerText == "正常户") { el.classList.add('normal'); }
+
+        el.classList.remove("w10", "w20");
+
+
+        [...el.children].filter((em, i, elem) => {
+            //elem[i].removeChild(em)
+            return em.localName == "br"
+        })
+        //.map((x) => { console.log(x); })
+
+        //removeChild
+
+        /*   console.log([...el.children]);
+
+           console.log(el.children);*/
+
+
+
+        //$(el).removeClass('w10', 'w20').find('br').remove();
+        return el;
+    }
+
+    function sensitive({ outerText }) { return outerText.match(evo.regexp.sensitive.full) }
+
+    await getModule("ctrl.model.ResultList");
+
+    var arr = [...document.querySelectorAll("td")];
+
+    arr.map(removeClass).filter(sensitive).forEach(addclassList);
+
+
+
+
+    /*document.querySelectorAll("td").forEach((el) => {
+        $(el).removeClass('w10', 'w20').find('br').remove();
+        var s
+        tr = el.outerText.trim();
+        if (str == '正常户') { el.classList.add('normal'); } else
+        if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
+    });*/
+    return;
+    //.map((x) => { console.log(x); })
+
 }
 
 
@@ -142,3 +189,60 @@ function getTableCellCollection() {
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+ async function checkSensitiveWords3() {
+        var callee = arguments.callee.name;
+        return new Promise(function(resolve, reject) {
+            window.HTMLTableCellElements.each(function(index, el) {
+                var str = el.outerText.trim();
+                if (evo.siteNumber == '16') {
+                    el.classList.remove('w10');
+                    el.classList.remove('w20');
+                    $(el).find('br').remove();
+                    if (str == '正常户') { el.classList.add('normal'); }
+                }
+                if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
+            });
+            resolve([callee, HTMLTableCellElements])
+        })
+    }
+    
+    function checkSensitiveWords() {
+        console.log(2222222, 33333);
+        document.querySelectorAll("li").forEach((el) => {
+            var str = el.outerText.trim();
+            if (str.match(evo.regexp.sensitive.full)) {
+                el.classList.add('danger');
+            }
+        })
+        return
+        window.HTMLTableCellElements.each(function(index, el) {
+            var str = el.outerText.trim();
+            if (evo.siteNumber == '16') {
+                el.classList.remove('w10');
+                el.classList.remove('w20');
+                $(el).find('br').remove();
+                if (str == '正常户') { el.classList.add('normal'); }
+            }
+            if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
+        });
+
+
+
+        return new Promise(function(resolve, reject) {
+
+            resolve()
+        })
+    }*/

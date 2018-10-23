@@ -40,7 +40,7 @@ var apiFunctions = function(request, sender, sendResponse) {
     request.time = Date.now();
 
 
-    console.log(request);
+    //console.log(request);
 
 
     if (request.url) {

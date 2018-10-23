@@ -40,7 +40,7 @@ var json = function(str) {
         this.command = 'XMLHttpRequest';
         this._headers = {};
         this._headers[name] = value;
-        localStorage[name] = value;
+        //localStorage[name] = value;
         return setRequestHeader.apply(this, arguments);
     };
     XHR.open = function(method, url, async, user, password) {
