@@ -10,7 +10,7 @@ document.oncopy = function(e) {
         }
     }
 };
-
+/*
 function extend() {
     if (this == window) {
         //if (arguments.length == 1) { arguments = arguments[0] }
@@ -31,7 +31,7 @@ function extend() {
         return scope;
     }
 }
-
+*/
 var auto_clean = function() {
     $('input[type=text]').focus(function() {
         $('input[type=text]').val('')
@@ -529,8 +529,8 @@ function templateCompier(templateHTML, templateName) {
             var element = document.createElement('myApp-template-' + evo.time.value());
 
             element.addEventListener('compile', function compilerFunction() {
-                myApp.$compile(this)(myApp.$scope);
-                myApp.$target.append(this);
+                evo.$compile(this)(evo.$scope);
+                evo.controllerProvider.append(this);
                 resolve(templateName);
             })
 
@@ -541,6 +541,36 @@ function templateCompier(templateHTML, templateName) {
         }
     });
 }
+
+
+
+function bootstrap() {
+    return start().then(requireStylesheet).then(requireComponents).then(bootstrap2)
+        .then(function() {
+            //$scope.debug();
+        })
+
+}
+
+
+function bootstrap2() {
+    return new Promise(function(resolve, reject) {
+        if (evo.$controller) {
+
+            //console.log(evo.controllerProvider);
+            
+           
+
+            evo.$invoke(evo.$controller)
+
+            resolve(evo);
+
+        } else {
+            reject('myApp.$controller is not defined.');
+        }
+    })
+}
+
 
 /*
 function getDialogModal(param, content) {
@@ -655,27 +685,6 @@ var scrollHeight = new function() {
     }
 }
 
-
-
-function bootstrap() {
-    return start().then(requireStylesheet).then(requireComponents).then(bootstrap2)
-        .then(function() {
-            //$scope.debug();
-        })
-
-}
-
-
-function bootstrap2() {
-    return new Promise(function(resolve, reject) {
-        if (myApp.$controller) {
-            myApp.$injector.invoke(myApp.$controller)
-            resolve(myApp);
-        } else {
-            reject('myApp.$controller is not defined.');
-        }
-    })
-}
 
 
 function trace(d) {

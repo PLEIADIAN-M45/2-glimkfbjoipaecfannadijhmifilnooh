@@ -11,22 +11,22 @@ function refreshAllWindow() {
     })
 }
 
-/*
+
 chrome.runtime.onInstalled.addListener(function(details) {
-    console.log(details);
+    //console.log(details);
     if (details.reason == "install") {
         refreshAllWindow()
     } else if (details.reason == "update") {
         refreshAllWindow()
     }
 });
-*/
 
 
+/*
 chrome.browserAction.onClicked.addListener(function(tab) {
     
     chrome.runtime.reload();
-})
+})*/
 
 /*
 chrome.browserAction.onClicked.addListener(function(tab) {

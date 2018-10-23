@@ -255,8 +255,11 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return document.querySelectorAll('span, select, input')
         }
 
+        get controllerProvider() {
+            return angular.element(document.querySelector('[ng-controller]'));
+        }
+
         get path() {
-            //console.log(this.host, this.filename);
             return {
                 "wa111": {
                     "login": "login",
@@ -264,7 +267,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "memberlist": "list",
                     "membermodify": "edit",
                     "depositbonus": "bonus",
-                    "IGetMemberInfo": "log",
+                    "igetmemberinfo": "log",
                     "sameBrowserList": "log",
                     "deltabank": "cash",
                     "deltaonline": "cash",
@@ -280,20 +283,17 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "editmemberinfomanage": "edit",
                     "bonuslog": "bonus",
                     "memberloginlog": "log"
-
                 }
             } [this.host][this.filename];
         }
 
-        get router() {
-            return [this.host, this.path].join('/');
-        }
+        get router() { return [this.host, this.path].join('/'); }
 
-        get adapter() {
-            console.log(this.path);
-            return ['adapter', this.path].join('/');
-        }
+        get adapter() { return ['adapter', this.path].join('/'); }
 
+        extend() {
+            return Object.assign(this, ...arguments);
+        }
 
         get test() {
             if (location.hostname == "127.0.0.1") {

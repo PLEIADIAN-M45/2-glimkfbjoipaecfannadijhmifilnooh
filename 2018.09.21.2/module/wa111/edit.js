@@ -1,4 +1,6 @@
-define([evo.host + "/ApiFunction"], function() {
+define([evo.host + "/apiFunction"], function(apiFunction) {
+
+
 
     if (['21', '2'].includes(evo.channel)) {}
 
@@ -46,13 +48,13 @@ define([evo.host + "/ApiFunction"], function() {
         })
     }
 
-    function getAllUser() { return apiFunction.getAllUser().then(smart) }
+    function getAllUser() { return apiFunction.getAllUser().then(smart) };
 
-    function getPhoneDate() { return apiFunction.getPhoneDate().then(smart) }
+    function getPhoneDate() { return apiFunction.getPhoneDate().then(smart) };
 
     function getSystemLog() {
         return apiFunction.getSystemLog().then((logs) => {
-            logs.filter((x) => { if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) { evo.user.timing = [x.f_time]; } })
+            logs.filter((x) => { if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) { evo.user.timing = [x.f_time]; return; } })
         })
     }
 
@@ -84,7 +86,7 @@ define([evo.host + "/ApiFunction"], function() {
         return res;
     }
 
-    function setUser(elems) {
+    function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
         if (evo.user) { return updateUserStatus() }
         evo.user = {};
@@ -96,7 +98,7 @@ define([evo.host + "/ApiFunction"], function() {
         ]).then(function([a, b, c, d, sheets = {}, region = {}]) {
             if (b.banker == undefined) { b.banker = [] };
             var { account, channel, host, origin, operator } = evo;
-            assign(evo.user, a, b, c, { account, channel, host, origin, operator })
+            evo.assign(evo.user, [a, b, c, { account, channel, host, origin, operator }])
             var property = {
                 author: { property: 'author', value: a.author, title: a.author, sheets },
                 locate: { property: 'locate', value: a.locate, title: a.locate, sheets, region },
@@ -106,8 +108,9 @@ define([evo.host + "/ApiFunction"], function() {
                     var { meta, prov, city, title } = a.banker;
                     return { property: 'banker', value: value, title: title[i], sheets: {}, region: { meta: meta[i], prov: prov[i], city: city[i] } }
                 })
-            }
-            assign(evo.user, property);
+            };
+
+            evo.assign(evo.user, property);
             return putUser();
         })
     };

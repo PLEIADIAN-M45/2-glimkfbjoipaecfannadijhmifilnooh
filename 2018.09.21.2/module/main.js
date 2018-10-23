@@ -65,21 +65,42 @@ requirejs.config({
 //'cryptojs/md5', 'cryptojs/ripemd160',
 
 
+
+
+window.extend = function() {
+    return Object.assign(this, ...arguments);
+    //if (!this.$$phase) { this.$apply(); };
+    //return this;
+}
+
+
+
+/*
+window.assign = function() {   
+    return Object.assign(this, ...arguments);
+}
+*/
+
+
 requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], function(moment, Dexie, mdc, semantic, evo) {
 
-    Object.assign(window, { moment, Dexie, mdc, evo });
+    window.extend({ moment, Dexie, mdc, evo });
 
+    console.log(evo.host);
 
-    // console.log(evo.adapter);
 
     requirejs(['common', 'encrypt', 'app', 'spreadsheets'], function() {
 
-        console.log(evo.adapter);
-        //console.log(location);
+
+
+        console.log('adapter:', evo.adapter);
 
         requirejs([evo.adapter], function() {
 
+
         })
+
+
     })
 });
 

@@ -275,6 +275,9 @@ var myApp = angular.module('myApp', [])
                     $scope.getAccusation();
                     $scope.getSensitive();
                     $scope.getBlackList();
+                    
+                    $scope.getBlackPhone();
+
                     $scope.getDashboards();
                 })
         }
@@ -357,6 +360,11 @@ var myApp = angular.module('myApp', [])
                     $('#dimmer-body').inactive();
                     $('#controller').display();
                 })
+        }
+        
+        $scope.getBlackPhone = function() {
+
+
         }
 
         $scope.getBlackList = function() {
