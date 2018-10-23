@@ -7,10 +7,10 @@ define([
 
 var dispatchMyEvent = function() {
     return new Promise(function(resolve, reject) {
-        if (myApp.$scope.ctrl.model.QueryInputModel.AccountID != undefined &&
-            myApp.$scope.ctrl.GetQueryLoginLog) {
-            myApp.$scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
-            myApp.$scope.ctrl.GetQueryLoginLog(evo.params.method);
+        if ($scope.ctrl.model.QueryInputModel.AccountID != undefined &&
+            $scope.ctrl.GetQueryLoginLog) {
+            $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
+            $scope.ctrl.GetQueryLoginLog(evo.params.method);
             resolve(['dispatchMyEvent', []])
         } else {
             reject('dispatchMyEvent')
@@ -107,7 +107,7 @@ function getHTMLTableCells() {
     var callee = arguments.callee.name;
     var flag = 0;
     return new Promise(function(resolve, reject) {
-        myApp.$scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
+        $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
             if (newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');
@@ -128,7 +128,7 @@ function getHTMLTableCells() {
 function getTableCellCollection() {
     var callee = arguments.callee.name;
     return new Promise(function(resolve, reject) {
-        myApp.$scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
+        $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
             if (newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');

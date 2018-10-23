@@ -45,9 +45,9 @@ var getAccountIdCollection = function() {
     return $('ul:not(.TrHead, .TrHead2)>li:nth-child(3)')
 }
 
-
+/*
 var getFrameUrl = function() {
     var callee = arguments.callee.name;
     return location.origin + '/sameBrowserList.aspx?iType=3&accounts={accountId}&siteNumber={siteNumber}'
         .replace('{accountId}', evo.params.member).replace('{siteNumber}', evo.params.siteNumber);
-}
+}*/

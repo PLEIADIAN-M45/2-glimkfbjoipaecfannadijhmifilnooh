@@ -8,35 +8,26 @@ define([evo.host + '/app'], function(app) {
     var $invoke = $injector.invoke;
     $scope.defineProperties = defineProperties;
     $scope.extend = function() {
-        Object.assign(this, ...arguments);
-        if (!this.$$phase) { this.$apply(); }
-        return this;
+        evo.assign(this, ...arguments);
+        return (this.$$phase) ? this : this.$apply();
     }
-
-
-
-
-    evo.extend({ $scope, $injector, $compile, $invoke });
     window.extend({ $scope, $compile, $injector });
-    return app;
+    return evo.extend({ $scope, $injector, $compile, $invoke });;
 });
 
 
 
 
+/*console.log(...arguments);
+       console.log(this);
+       console.log(this.$$phase);*/
 
 
 
 
 
 
-
-// myApp.$injector.invoke(myApp.$controller)
-
-
-
-
-
+//myApp.$injector.invoke(myApp.$controller)
 //app.extend({ $scope, $compile, $injector })
 //window.myApp = app;
 

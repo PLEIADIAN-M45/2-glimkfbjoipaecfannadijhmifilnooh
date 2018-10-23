@@ -12,9 +12,6 @@ define([evo.router, 'sendsms'], function({ setUser, openDeposit, openLoginLog },
         $scope.$apply();
     };
 
-    //console.log(1111222);
-    //console.log(evo.app);
-
     $scope.defineProperties({
             openDeposit,
             openLoginLog,

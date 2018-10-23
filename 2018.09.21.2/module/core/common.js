@@ -489,7 +489,7 @@ function requireStylesheet() {
                 var link = document.createElement('link');
                 link.rel = 'stylesheet';
                 link.href = evo.baseUrl + 'css/' + stylesheetName + '.css';
-                document.body.appendChild(link);;
+                document.body.appendChild(link);
                 resolve(stylesheetName)
             })
         })
@@ -527,7 +527,6 @@ function templateCompier(templateHTML, templateName) {
         if (templateHTML) {
             var event = new Event('compile');
             var element = document.createElement('myApp-template-' + evo.time.value());
-
             element.addEventListener('compile', function compilerFunction() {
                 evo.$compile(this)(evo.$scope);
                 evo.controllerProvider.append(this);
@@ -558,8 +557,8 @@ function bootstrap2() {
         if (evo.$controller) {
 
             //console.log(evo.controllerProvider);
-            
-           
+
+
 
             evo.$invoke(evo.$controller)
 
@@ -643,7 +642,7 @@ function scrollHeightListener() {
     window.addEventListener('message', function(e) {
         if (e.data) {
             if (e.data.id === "sameBrowserList") {
-                //console.log(e);
+                console.log(e);
                 var el = document.getElementById(e.data.id);
                 el.style.height = e.data.scrollHeight + 'px';
             }
@@ -653,7 +652,7 @@ function scrollHeightListener() {
 
 function scrollHeightPoster() {
     var scrollHeight = document.body.scrollHeight + 50;
-    //console.log('iframe scrollHeight:', scrollHeight);
+    console.log('iframe scrollHeight:', scrollHeight);
     window.parent.postMessage({
         id: 'sameBrowserList',
         scrollHeight: scrollHeight

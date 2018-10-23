@@ -54,7 +54,14 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
 
     function getSystemLog() {
         return apiFunction.getSystemLog().then((logs) => {
-            logs.filter((x) => { if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) { evo.user.timing = [x.f_time]; return; } })
+            var obj = {};
+            logs.filter((x) => {
+                if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) {
+                    //evo.user.timing = [x.f_time];
+                    return obj["timing"] = [x.f_time]
+                }
+            })
+            return obj;
         })
     }
 
@@ -89,28 +96,22 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
         if (evo.user) { return updateUserStatus() }
-        evo.user = {};
-        return Promise.all([
-            getCtrl(),
-            getAllUser(),
-            getPhoneDate(),
-            getSystemLog()
-        ]).then(function([a, b, c, d, sheets = {}, region = {}]) {
-            if (b.banker == undefined) { b.banker = [] };
-            var { account, channel, host, origin, operator } = evo;
-            evo.assign(evo.user, [a, b, c, { account, channel, host, origin, operator }])
+        return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
+            var a = evo.assign(args[0]);
+            var c = evo.assign(args[1], args[2], args[3]);
             var property = {
-                author: { property: 'author', value: a.author, title: a.author, sheets },
-                locate: { property: 'locate', value: a.locate, title: a.locate, sheets, region },
-                mobile: { property: 'mobile', value: c.mobile, title: a.mobile, sheets, region, },
-                idcard: { property: 'idcard', value: c.idcard, title: a.idcard, region, },
-                banker: b.banker.filter((x) => x).map((value, i) => {
+                author: { property: 'author', value: a.author, title: a.author, sheets: {} },
+                locate: { property: 'locate', value: a.locate, title: a.locate, sheets: {}, region: {} },
+                mobile: { property: 'mobile', value: c.mobile, title: a.mobile, sheets: {}, region: {} },
+                idcard: { property: 'idcard', value: c.idcard, title: a.idcard, region: {}, },
+                banker: c.banker.filter((x) => x).map((value, i) => {
                     var { meta, prov, city, title } = a.banker;
                     return { property: 'banker', value: value, title: title[i], sheets: {}, region: { meta: meta[i], prov: prov[i], city: city[i] } }
                 })
             };
-
-            evo.assign(evo.user, property);
+            var { account, channel, host, origin, operator } = evo;
+            evo.user = evo.assign(property, { account, channel, host, origin, operator });
+            //console.log(evo.user);
             return putUser();
         })
     };

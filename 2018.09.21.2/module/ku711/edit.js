@@ -1,8 +1,8 @@
     console.log(evo.host);
 
     define([evo.host + "/ApiFunction"], function() {
-        console.log(evo.host);
 
+        console.log(evo.host);
 
         function getModule(objPath) {
             return new Promise(function(resolve, reject) {
@@ -176,8 +176,8 @@
         }
 
         function openLoginLog() {
-            window.open(`/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
-            //window.open(`${evo.origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
+            //window.open(`/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
+            window.open(`${evo.origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
         }
 
         return { setUser, openDeposit, openLoginLog }

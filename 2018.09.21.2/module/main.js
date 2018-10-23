@@ -93,7 +93,7 @@ requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], funct
 
 
 
-        console.log('adapter:', evo.adapter);
+        console.log('adapter:', evo.adapter, location.pathname);
 
         requirejs([evo.adapter], function() {
 

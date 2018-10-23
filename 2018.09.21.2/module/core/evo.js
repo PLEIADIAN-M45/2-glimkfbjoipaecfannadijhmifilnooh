@@ -268,7 +268,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "membermodify": "edit",
                     "depositbonus": "bonus",
                     "igetmemberinfo": "log",
-                    "sameBrowserList": "log",
+                    "samebrowserlist": "log",
                     "deltabank": "cash",
                     "deltaonline": "cash",
                     "deltawechat": "cash",

@@ -1,4 +1,4 @@
-define(["myApp"], function() {
+define([], function() {
     evo.sendMessage({ command: 'requestverificationtoken', value: evo.token });
     return {
         siteName: "KU711",
@@ -7,6 +7,4 @@ define(["myApp"], function() {
         operator: $scope.ctrl.resetModel.AccountID.toUpperCase()
     }
 })
-
-
-if (evo.test) { $('.collapse').removeClass('collapse') }
+//if (evo.test) { $('.collapse').removeClass('collapse') }

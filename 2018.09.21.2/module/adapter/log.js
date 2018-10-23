@@ -1,20 +1,9 @@
-define([
-
-    evo.router,
-
-], function() {
-
+define([evo.router], function() {
 
     evo.$controller = function($compile, $rootScope, $timeout) {
-        console.log(222222222222222);
         console.log('user:', evo.user);
-
-
-
-        var { author, locate, mobile, idcard, banker, host, channel, account, properties } = evo.user;
-
-        var dataset = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
-
+        var { author, locate, mobile, idcard, banker, host, channel, account } = evo.user;
+        var property = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
         var initialization = function(me) {
             var { property, value, region } = me;
             var { host, channel, account } = evo.user;
@@ -34,8 +23,7 @@ define([
                     return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix };
                 });
             }
-
-            this.extend({ ...me, icon, head, params, sites })
+            this.extend({ ...me, icon, head, params, sites });
         };
 
         function sheetsTestFunction(me) {
@@ -45,7 +33,6 @@ define([
         };
 
         function regionTestFunction(me) {
-
             var { property, region } = me;
             if (region.test === undefined) {
                 this.extend(google.sheets.region.search.call(me))
@@ -63,30 +50,25 @@ define([
         };
 
         function apiMemberList(me, e) {
-            return
             //if (me.channel !== '16') { return }
             //if (!me.author) { return }
             me.index = me.index || 1;
-
             $('.popup').remove();
-
             this.extend({ rows: [], active: 1, index: me.index });
-
-            evo.apiFunctions(me).then((res) => {
-                this.extend(res);
-            })
+            evo.apiFunctions(me).then((res) => { this.extend(res); })
         };
 
         function GetAlertInfoByID(row, scope) {
-            return
             if (row.AccountID) {
                 evo.apiFunctions({
                     command: 'apiFunctions:Alerts:ku711:16',
                     params: { "DisplayArea": "1", "Account": [{ "AccountID": row.AccountID, "AccountName": "" }] },
-                }).then((res) => { return extend(row, res); }).then((row) => { changeColor(row, scope); })
+                }).then((res) => {
+                    evo.assign(row, res);
+                    changeColor(row, scope);
+                })
             }
         };
-
 
         function changeColor(r, scope) {
             var account = r.f_accounts || r.AccountID;
@@ -192,7 +174,7 @@ define([
 
 
         $scope.extend({
-            dataset,
+            property,
             initialization,
             regionTestFunction,
             sheetsTestFunction,
@@ -205,17 +187,19 @@ define([
             imPopup,
             GetAlertInfoByID
         })
-
-        console.log($scope);
-
-
     };
 
 
+
     function createIFrame() {
+        var frameUrl = {
+            "wa111": `http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
+            "ku711": `https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
+        } [evo.host];
+
         return new Promise(function(resolve, reject) {
-            $('<div>').addClass('ui horizontal divider').text('AND').appendTo(myApp.$target);
-            $('<iframe>', { id: 'sameBrowserList', src: getFrameUrl(), frameborder: 0, width: '100%', }).appendTo(myApp.$target);
+            $('<div>').addClass('ui horizontal divider').text('AND').appendTo(evo.controllerProvider);
+            $('<iframe>', { id: 'sameBrowserList', src: frameUrl, frameborder: 0, width: '100%', }).appendTo(evo.controllerProvider);
             resolve('createIFrame')
         })
     }
@@ -264,39 +248,64 @@ define([
         });
     }
 
-
-
-    console.log(evo.path);
-
-
-    if (evo.params.method == 'CookieID' || evo.path == 'log') {
-
-        console.log(111112);
-        //https://bk.ku711.net/Member/MemberInfoManage/MemberLoginLog?AccountId=laoj521
-        //https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog
-
+    if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
 
         $scope.defineProperties({
-                components: ['MemberLoginLog'],
-                stylesheet: ['cards', 'MemberLoginLog']
+                components: ['log'],
+                stylesheet: ['cards', 'log']
             })
             .then(getUser)
             .then(dispatchMyEvent)
             .then(bootstrap)
-
-
-        //.then(createIFrame)
-        /*.then(scrollHeightListener)
-        .then(getHTMLTableCells)
-        .then(checkSensitiveWords)
-        .then(addSiteNumberToAccountId)
-        .then(createIFrame)
-        .catch(errorHandler)*/
+            .then(scrollHeightListener)
+            .then(getHTMLTableCells)
+            .then(checkSensitiveWords)
+            .then(addSiteNumberToAccountId)
+            .then(createIFrame)
+            .catch(errorHandler)
     }
 
-    if (evo.params.method == 'DeviceNo' || evo.filename == 'sameBrowserList') {
+
+
+
+
+
+
+
+    if (evo.params.method == 'DeviceNo' || evo.filename == 'samebrowserlist') {
+        console.log(1111111);
         dispatchMyEvent()
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    console.log(evo.path);
+    console.log(evo.params);
+    console.log(evo.filename);
+    */
+
+
+
+
+
+
+
+
+
+
     /*
 
     無使用插件開通>>shengcai2-16
@@ -306,153 +315,6 @@ define([
 
 
 
+    //https://bk.ku711.net/Member/MemberInfoManage/MemberLoginLog?AccountId=laoj521
+    //https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog
 
-    //evo.filename
-    /*    console.log(evo.params.method);
-        console.log(evo.filename);
-        console.log(evo.route);
-        console.log(evo.pathname);
-        console.log(evo.path);
-    */
-
-
-    /* class APIFunctions {
-
-         constructor(_method) {
-             console.log(_method);
-             this.method = _method;
-         }
-         get exec() {
-             return this[this.method];
-         }
-
-
-
-         get IGetMemberInfo() {
-
-
-
-
-             switch (evo.host) {
-
-                 case "wa111":
-
-                     evo.account = evo.params.member;
-
-                     console.log(evo.account, evo.channel);
-
-                     start()
-                         .then(getUser)
-                         .then(requireStylesheet)
-                         .then(requireComponents)
-                         .then(bootstrap)
-                         //.then(scrollHeightListener)
-                         //.then(dispatchMyEvent)
-
-                         //.then(getHTMLTableCells)
-                         //.then(checkSensitiveWords)
-                         //.then(addSiteNumberToAccountId)
-                         //.then(createIFrame)
-                         .catch(errorHandler)
-
-                     //.then(getAllIPAddress)
-
-
-                     break;
-                 case "ku711":
-
-                     evo.account = evo.params.accounts;
-
-                     // evo.uniqueId = evo.account + '-' + evo.siteNumber;
-
-                     // console.log(evo.uniqueId);
-
-                     // console.log(evo.uniqueId);
-                     start()
-                         //.then(getAllIPAddress)
-                         //.then(function(a) { console.log(a); })
-                         //.then(queryMemberInfo)
-                         .then(getUser)
-                         //.then(getAllIPAddress)
-                         .then(requireStylesheet)
-                         .then(requireComponents)
-                         .then(bootstrap)
-                         .then(scrollHeightListener)
-                         .then(dispatchMyEvent)
-                         .then(getHTMLTableCells)
-                         .then(checkSensitiveWords)
-                         .then(addSiteNumberToAccountId)
-                         .then(createIFrame)
-                         .catch(errorHandler)
-                     break;
-             }
-         }
-
-         get SameBrowserList() {
-             evo.stylesheet = ['MemberLoginLog'];
-             start()
-                 .then(requireStylesheet)
-                 .then(dispatchMyEvent)
-                 .then(getHTMLTableCells)
-                 .then(scrollHeightPoster)
-                 .then(checkSensitiveWords)
-                 .then(addSiteNumberToAccountId)
-                 .catch(errorHandler);
-         }
-         get WebMemberInfo() {
-             evo.stylesheet = ['MemberLoginLog'];
-             start()
-                 .then(requireStylesheet)
-                 .catch(errorHandler);
-         }
-     }*/
-    /******************************************************************/
-
-    //evo.uniqueId = evo.account + '-' + evo.siteNumber;
-
-    //console.log(evo.host);
-
-
-
-
-    /*
-        if (evo.siteNumber == '16') {
-            var method = evo.params.method;
-            switch (method) {
-                case "CookieID":
-                    method = "IGetMemberInfo";
-                    break;
-                case "DeviceNo":
-                    method = "SameBrowserList";
-                    break;
-            }
-        } else {
-
-
-            var method = evo.filename.replace('.aspx', '');
-
-            console.log(method);
-
-
-            switch (method) {
-                case "IGetMemberInfo":
-                    method = "IGetMemberInfo";
-                    break;
-                case "sameBrowserList":
-                    method = "SameBrowserList";
-                    break;
-                default:
-                    method = "WebMemberInfo";
-                    break;
-            }
-        }
-    */
-    //console.log(evo.uniqueId, method);
-
-    //new APIFunctions(method).exec;
-
-    /* if (evo.uniqueId && method) {
-     } else {
-         throw new Error('not defined uniqueId.')
-     }*/
-})

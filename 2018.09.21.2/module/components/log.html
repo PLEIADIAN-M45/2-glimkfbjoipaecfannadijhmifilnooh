@@ -1,5 +1,5 @@
 <div class="ui cards" id="myCard">
-    <div class="ui card" ng-repeat="me in dataset track by $index" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me); sheetsTestFunction(me);">
+    <div class="ui card" ng-repeat="me in property track by $index" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me); sheetsTestFunction(me);">
         <!-- dimmer -->
         <div class="ui dimmer" ng-class="{ 'active': active }">
             <div class="ui text loader">{{title}}
@@ -45,9 +45,7 @@
             </div>
         </div>
         <div class="extra content" ng-if="property!='locate'">
-            <div class="cell" ng-class="me.method" ng-repeat="s in sites track by $index" ng-init="apiMemberList(s);"
-            ng-show="me.value && s.hide!=true">
-
+            <div class="cell" ng-class="me.method" ng-repeat="s in sites track by $index" ng-init="apiMemberList(s);" ng-show="me.value && s.hide!=true">
                 <div class="ui image label" ng-class="{'grey': s.active,'grey': s.ignore, 'red':s.result==-1, 'green':s.result.total==0, 'purple':s.result.total>0}">
                     <div class="detail port">{{s.channel}}</div>
                     <div class="detail" ng-if="active">
@@ -67,7 +65,7 @@
                 <!-- extra content 會員帳號
                     GetAlertInfoByID(row, this);
                 -->
-                <div class="ui image label pointer" ng-repeat="row in rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
+                <div class="ui image label pointer" ng-repeat="row in rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); GetAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
                     <div class="detail accounts">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息-->
                     <aside class="hidden">
@@ -93,7 +91,9 @@
         </div>
     </div>
 </div>
-
+<!-- https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&amp;accounts=mb958400 -->
+<!-- <iframe id="sameBrowserList" src="{{frameUrl}}" frameborder="0" style="width: 100%;">
+</iframe> -->
 <!--  <div class="ui popup special" ng-if="row.list_Accounts">
                    </div> -->
 <!--
@@ -108,7 +108,6 @@ ng-init="imPopup(row , this, popup_id)"
 ng-init="additional(me); apiFunctions(me); sheetsCheck(me);"
 ng-class="{'pink': row.list_Accounts }"
  -->
-
 <style type="text/css">
 .hidden {
     display: none !important;
