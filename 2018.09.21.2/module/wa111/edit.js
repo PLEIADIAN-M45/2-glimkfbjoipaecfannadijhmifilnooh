@@ -1,7 +1,5 @@
 define([evo.host + "/apiFunction"], function(apiFunction) {
 
-
-
     if (['21', '2'].includes(evo.channel)) {}
 
     if (['26', '35', '17'].includes(evo.channel)) {
@@ -54,24 +52,19 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
 
     function getSystemLog() {
         return apiFunction.getSystemLog().then((logs) => {
-            var obj = {};
             logs.filter((x) => {
                 if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) {
-                    //evo.user.timing = [x.f_time];
-                    return obj["timing"] = [x.f_time]
+                    return evo.user.timing = [x.f_time];
                 }
             })
-            return obj;
         })
     }
 
     function smart(arr) {
         if (!arr) { return {} } else { var res = {} };
         if (arr.constructor.name == "Object") { arr = Object.entries(arr) }
-
         arr.map(function([name, value]) {
             var key = evo.map[name];
-            //console.log(key);
             if (key) {
                 try {
                     var keys = key.split('.');
@@ -89,16 +82,19 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
                 } catch (ex) {}
             }
         })
-        //console.log(res);
         return res;
     }
 
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
-        if (evo.user) { return updateUserStatus() }
+        if (evo.user) {
+            return updateUserStatus()
+        } else {
+            evo.user = {}
+        };
         return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
             var a = evo.assign(args[0]);
-            var c = evo.assign(args[1], args[2], args[3]);
+            var c = evo.assign(args[1], args[2]);
             var property = {
                 author: { property: 'author', value: a.author, title: a.author, sheets: {} },
                 locate: { property: 'locate', value: a.locate, title: a.locate, sheets: {}, region: {} },
@@ -111,7 +107,6 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
             };
             var { account, channel, host, origin, operator } = evo;
             evo.user = evo.assign(property, { account, channel, host, origin, operator });
-            //console.log(evo.user);
             return putUser();
         })
     };
@@ -136,18 +131,5 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
         window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
     }
 
-
     return { setUser, openDeposit, openLoginLog }
 });
-
-
-
-
-
-
-/*
-function testStop() { assign(evo.pastData, { ishow: 1, isOpenDeposit: 1 }) }
-if (location.host == "127.0.0.1" || evo.operator == "18C894") {
-    //$('style').remove();
-    $('#ctl00_ContentPlaceHolder1_btnStop').removeClass('btnReback')
-}*/

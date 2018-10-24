@@ -3,42 +3,29 @@
 function upload_888(pastData, postData) {
     pastData.MemberStatus = 1;
     console.log(pastData.MemberStatus, postData.MemberStatus);
-
-
     if (pastData.MemberStatus == postData.MemberStatus) { return };
 
     getUser(evo).then((user) => {
-
-
         user.command = (pastData.MemberStatus == 3) ? "evo.statistics.m88" : "evo.statistics.m22";
         user.status = [pastData.MemberStatus, postData.MemberStatus];
         user.permit = [pastData.IsDeposit, postData.IsDeposit];
         user.timing.push(evo.now);
-
-
         evo.apiFunctions(user);
     })
 }
 
 function upload_111(pastData, postData) {
     console.log(pastData, postData);
-
-
     getUser(evo).then((user) => {
         user.command = (pastData.ishow == 3) ? "evo.statistics.m88" : "evo.statistics.m22";
         user.status = [pastData.ishow, postData.ishow];
         user.permit = [pastData.isOpenDeposit, postData.isOpenDeposit];
         user.timing.push(evo.now);
-
-
         evo.apiFunctions(user);
     })
 }
 
 /***************************************************************************************/
-
-
-
 function getBonusLog({ id, f_id, BonusNumber }) {
     var BSN = f_id || id || BonusNumber;
     return new Promise((resolve, reject) => {;
@@ -58,6 +45,18 @@ function upload_3(postData) {
         getUser(postData)
     ]).then(apiFunctions);
 }
+
+
+/*apiFunction(request) {
+    console.log(request);
+    request.command = "apiFunction";
+    return new Promise(function(resolve, reject) {
+        chrome.runtime.sendMessage(evo.extensionId, request, function(result) {
+            console.log(result);
+            resolve(result);
+        })
+    })
+}*/
 
 
 

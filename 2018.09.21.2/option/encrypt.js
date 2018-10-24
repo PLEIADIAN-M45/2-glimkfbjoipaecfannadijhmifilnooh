@@ -19,14 +19,12 @@ var aes = (function() {
             padding: CryptoJS.pad.Pkcs7
         });
         decrypted = CryptoJS.enc.Utf8.stringify(decrypted);
-
         try {
             return angular.fromJson(decrypted)
         } catch (ex) {
             return decrypted
         }
-
-        //return decrypted;
     }
     return my;
 }());
+

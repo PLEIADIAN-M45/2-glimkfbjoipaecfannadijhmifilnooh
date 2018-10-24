@@ -1,6 +1,6 @@
 define([evo.router], function() {
 
-    evo.$controller = function($compile, $rootScope, $timeout) {
+    $scope.controller = function($compile, $rootScope, $timeout) {
         console.log('user:', evo.user);
         var { author, locate, mobile, idcard, banker, host, channel, account } = evo.user;
         var property = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
@@ -29,12 +29,23 @@ define([evo.router], function() {
         function sheetsTestFunction(me) {
             var { property, value, sheets } = me;
             //console.log(property, google.sheets[property]);
-            if (sheets && google.sheets[property]) { extend(sheets, google.sheets[property].search(value)) }
+            if (sheets && google.sheets[property]) {
+                console.log(google.sheets[property].search(value));
+                evo.assign(sheets, google.sheets[property].search(value));
+
+                console.log(me);
+                //console.log(this.$apply());
+                //evo.assign(sheets, google.sheets[property].search(value));
+                //this.extend(sheets, google.sheets[property].search(value))
+
+            }
         };
 
         function regionTestFunction(me) {
+            return
             var { property, region } = me;
             if (region.test === undefined) {
+
                 this.extend(google.sheets.region.search.call(me))
                 putUser();
             }
@@ -191,10 +202,6 @@ define([evo.router], function() {
     }
 
 
-
-
-
-
     function addSiteNumberToAccountId() {
         var callee = arguments.callee.name;
         var accountIdCollection = getAccountIdCollection();
@@ -223,22 +230,19 @@ define([evo.router], function() {
     }
 
     if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
-        //start().then(checkSensitiveWords)
 
-        $scope.defineProperties({
-                components: ['log'],
-                stylesheet: ['cards', 'log']
-            })
-            .then(start)
+        $scope.components = ['log']
+        $scope.stylesheet = ['log', 'cards']
+
+        startup()
             .then(getUser)
             .then(dispatchMyEvent)
             .then(bootstrap)
             .then(scrollHeightListener)
             .then(checkSensitiveWords)
-            .then(s)
             .then(addSiteNumberToAccountId)
             //.then(createIFrame)
-            .catch(errorHandler)
+            .catch(error)
     }
 
 

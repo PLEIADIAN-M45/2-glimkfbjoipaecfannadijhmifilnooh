@@ -1,4 +1,37 @@
-var defineProperties = function(properties) { return new Promise((resolve, reject) => { resolve(Object.assign($scope, properties)); }) };
+function defineProperties(properties) {
+    return new Promise((resolve, reject) => {
+        resolve(Object.assign($scope, properties));
+    })
+};
+
+function requireComponents() {
+    $scope.components.forEach((name) => {
+        var templateUrl = require.toUrl("./html/" + name + ".html");
+        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+            var template = angular.element(html);
+            $element.append(template);
+            $compile(template)($scope);
+        })
+    })
+}
+
+function requireStylesheet() {
+    $scope.stylesheet.forEach(function(sheet) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = require.toUrl("./css/" + sheet + ".css");;
+        document.body.appendChild(link);
+    });
+}
+
+
+function startup() {
+    return start().then(requireStylesheet).then(requireComponents)
+}
+
+function bootstrap() {
+    $invoke($scope.controller)
+}
 
 define([evo.host + '/app'], function(app) {
     var controllerProvider = evo.controllerProvider;
@@ -6,68 +39,12 @@ define([evo.host + '/app'], function(app) {
     var $injector = controllerProvider.injector();
     var $compile = controllerProvider.injector().get('$compile');
     var $invoke = $injector.invoke;
+    var $element = controllerProvider;
     $scope.defineProperties = defineProperties;
     $scope.extend = function() {
         evo.assign(this, ...arguments);
         return (this.$$phase) ? this : this.$apply();
     }
-    window.extend({ $scope, $compile, $injector });
-    return evo.extend({ $scope, $injector, $compile, $invoke });;
+    window.extend({ $scope, $compile, $injector, $element, $invoke });
+    return evo.extend({ $scope, $injector, $compile, $invoke, $element });;
 });
-
-
-
-
-/*console.log(...arguments);
-       console.log(this);
-       console.log(this.$$phase);*/
-
-
-
-
-
-
-//myApp.$injector.invoke(myApp.$controller)
-//app.extend({ $scope, $compile, $injector })
-//window.myApp = app;
-
-
-
-
-/*
-app.assign({ $scope, $compile, $injector });;
-
-$scope.assign = assign;
-$scope.defineProperties;
-$scope.assign({ defineProperties, extend })
-*/
-/*
-
-
-
-serialize
-serializeArray
-serializeToJson
-toArray
-search
-templates
-selector
-selectpicker
-ready
-progress
-queue
-prop
-wrap
-*/
-/*
-regExp:
-variable: /\{\$*[A-z0-9]+\}/g
-
-
-regExp: {
-    beginsWith: "(?:s|^)",
-    escape: /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
-    __proto__: Object,
-    searchDelay: 200
-}
-*/

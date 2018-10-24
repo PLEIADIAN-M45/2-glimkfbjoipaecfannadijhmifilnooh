@@ -83,9 +83,9 @@ define(['myApp', 'moment', 'extension', 'common', 'semantic'], function(myApp, m
             var c = column[arguments.callee.name];
             var label = tr.cells[c].querySelector('span');
             if (label == null) {
-                return tr.cells[c].textContent.trim() + '-' + evo.siteNumber
+                return tr.cells[c].textContent.trim() + '-' + evo.channel
             } else {
-                return label.textContent.trim() + '-' + evo.siteNumber;
+                return label.textContent.trim() + '-' + evo.channel;
             }
         };
         var bankbuk = function() {

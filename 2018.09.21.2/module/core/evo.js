@@ -3,14 +3,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     'use strict';
 
     class Evo {
-
         constructor() {
-            //super();
             this.version = '7.0';
         }
-
-
-
 
         get baseUrl() {
             return require.toUrl('.')
@@ -32,22 +27,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         get siteName() { return localStorage['siteName']; }
 
-       /* get siteType() {
-            switch (this.siteName) {
-                case 'wa111':
-                    return null;
-                case 'ku711':
-
-                    return localStorage['requestverificationtoken'] = document.querySelector('AJAX-ANTI-FORGERY-TOKEN').getAttribute('token');
-
-                    $('ajax-anti-forgery-token').attr('token');
-                    //document.querySelector('AJAX-ANTI-FORGERY-TOKEN').getAttribute('token');
-            }
-            return
-        }*/
-
         get token() {
-
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')
@@ -71,41 +51,11 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             })
         }
 
-
-        fetch(params) {
-            return new Promise(function(resolve, reject) {
-                resolve(2)
-            })
-        }
-
-        apiFunction(request) {
-            console.log(request);
-            request.command = "apiFunction";
-            return new Promise(function(resolve, reject) {
-                chrome.runtime.sendMessage(evo.extensionId, request, function(result) {
-                    console.log(result);
-                    resolve(result);
-                })
-            })
-        }
-
-
         apiFunctions(request) {
-            //TypeError: Found non-callable @@iterator
-            //console.log(typeof request);
-            //console.log(request.length);
-            try {
-                var req = assign(...request);
-            } catch (ex) {
-                var req = request;
-            }
-            //console.log(req);
-            //if (arguments.length == 1) { request = Object.assign(...arguments[0]); }
+            try { var req = assign(...request); } catch (ex) { var req = request; }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
-            //console.log(request);
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
-                    //console.log(result);
                     resolve({ ...result, status, active: 0 });
                 })
             })
@@ -160,39 +110,14 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get operator() { return localStorage['operator']; }
 
 
-        get IDB() {
-
-            /*var IDB = new Dexie('evo');
-            if (this.host == 'wa111') {
-                IDB.version(1.0).stores({
-                    DepositBonus: 'f_id',
-                    GetMemberList: 'f_accounts',
-                    GetSystemLog: 'f_target, f_field'
-                }).upgrade(trans => { console.log(trans); });
-            }
-
-            if (this.host == 'ku711') {
-                IDB.version(1.0).stores({
-                    GetMemberList: 'AccountID',
-                    GetSystemLog: 'Operated, OperateType'
-                }).upgrade(trans => { console.log(trans); });
-            }
-
-            return IDB;*/
-        }
-
         moment(t) {
             if (Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
-            } else {
-                //console.log('xxxx', t);
-            }
+            } else {}
 
         }
 
-
         get channel() {
-            //if(location.port=='16')
             return this.params.siteNumber || localStorage.channel || localStorage.siteNumber || location.port;
             return Number(channel);
         }
@@ -210,8 +135,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get path() { return location.pathname.split('/').pop().replace(/\.(aspx|html)/, ''); }
         get domain() { return location.host.split('.'); }
         get sub() { return location.host.split('.')[0]; }
-
-
         get host() {
             return {
                 "16": "ku711",
@@ -227,10 +150,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         json(a) {
             try {
                 return (typeof a == 'string') ? JSON.parse(a) : JSON.stringify(a);
-            } catch (ex) {
-                //console.log(ex);
-                return a;
-            }
+            } catch (ex) { return a; }
         }
 
         getfilename() { return [...arguments].map((str) => { return str.split('?')[0].split('/').pop(); })[0]; };
@@ -262,6 +182,11 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get controllerProvider() {
             return angular.element(document.querySelector('[ng-controller]'));
         }
+
+        get controllerProvider2() {
+            return angular.element(document.querySelector('[ng-controller]'));
+        }
+
 
         get path() {
             return {

@@ -15,24 +15,24 @@
 .ui.cards>.card.success,
 .ui.cards>.card {
     min-width: fit-content;
-    background-repeat: round!important;
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/1.jpg')!important;
+    background-repeat: round !important;
+    background-image: url('chrome-extension://__MSG_@@extension_id__/images/1.jpg') !important;
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
 }
 
 .ui.cards>.card.error {
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/error.jpg')!important;
+    background-image: url('chrome-extension://__MSG_@@extension_id__/images/error.jpg') !important;
 }
 
 .ui.cards>.card.danger {
-    background-image: url('chrome-extension://__MSG_@@extension_id__/images/2.jpg')!important;
+    background-image: url('chrome-extension://__MSG_@@extension_id__/images/2.jpg') !important;
 }
 
 .ui.cards>.card>.content>.header:not(.ui),
 .ui.card>.content>.header:not(.ui) {
     min-height: 20px;
     color: #fff;
-    font-size: 16px!important;
+    font-size: 16px !important;
 }
 
 .ui.cards>.card>.content>.header.sub {
@@ -70,7 +70,7 @@
 .ui.cards>.card>.content>.meta {
     height: 20px;
     color: rgba(255, 255, 255, .8);
-    font-size: 12px!important;
+    font-size: 12px !important;
     font-weight: bold;
 }
 
@@ -90,6 +90,7 @@
     padding: 1px;
 }
 
+
 .extra.content>.cell:not(.fit) {
     /* min-width: 100px; */
     max-width: 100px;
@@ -99,6 +100,11 @@
 .extra.content>.cell.fit {
     min-width: 100px;
     max-width: fit-content;
+}
+
+.extra.content>.cell-1 {
+    min-width: 100%;
+    max-width: 100%;
 }
 
 .extra.content>.cell>.ui.buttons {
@@ -116,11 +122,15 @@
 }
 
 .ui.image.label.visible {
-    display: flex!important;
+    display: flex !important;
+}
+.ui.image.label>b{
+    padding: 0px 10px;
 }
 
 .ui.image.label.visible,
 .ui.image.label {
+    align-items: center;
     margin: 2px;
     display: flex;
     padding: 0;
@@ -136,22 +146,22 @@
 }
 
 .ui.image.label>.detail.port {
-    background-color: rgba(0, 0, 0, 0)!important;
+    background-color: rgba(0, 0, 0, 0) !important;
 }
 
 .ui.image.label>.detail.ishow {
     min-width: max-content;
-    background-color: rgba(0, 0, 0, 0.2)!important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
 }
 
 .ui.image.label>.detail.level {
     min-width: 35px;
-    background-color: rgba(0, 0, 0, 0.4)!important;
+    background-color: rgba(0, 0, 0, 0.4) !important;
 }
 
 .ui.image.label>.detail.accounts {
     min-width: 100px;
-    background-color: rgba(0, 0, 0, 0.1)!important;
+    background-color: rgba(0, 0, 0, 0.1) !important;
 }
 
 .ui.image.label>.detail.bankname {
@@ -164,7 +174,7 @@
 
 .ui.image.label>.detail.joindate {
     min-width: 142px;
-    background-color: rgba(0, 0, 0, 0.15)!important;
+    background-color: rgba(0, 0, 0, 0.15) !important;
 }
 
 

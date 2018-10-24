@@ -20,8 +20,6 @@ define(['aes', 'md5', 'hmac-md5'], function() {
                 padding: CryptoJS.pad.Pkcs7
             });
             decrypted = CryptoJS.enc.Utf8.stringify(decrypted);
-
-            console.log(decrypted);
             return decrypted;
         }
         return my;

@@ -275,12 +275,13 @@ var myApp = angular.module('myApp', [])
                     $scope.getAccusation();
                     $scope.getSensitive();
                     $scope.getBlackList();
-                    
                     $scope.getBlackPhone();
-
                     $scope.getDashboards();
                 })
         }
+
+
+
 
         $scope.getMyConfig = function() {
             $('.dropdown').dropdown();
@@ -315,6 +316,11 @@ var myApp = angular.module('myApp', [])
                     local.setItem('IPAddress', value);
                 })
         }
+        $scope.getBlackPhone = function() {
+            script.exec('getBlackPhone').then((value) => { local.setItem('BlackPhone', value); })
+
+        }
+
 
         $scope.getSensitive = function() {
             script.exec('getSensitive')
@@ -330,10 +336,7 @@ var myApp = angular.module('myApp', [])
 
         $scope.getMessages = function() {
             script.exec('getMessages')
-                .then(function(value) {
-                    localStorage.sms = value;
-                    dec(value)
-                })
+                .then(function(value) { localStorage.sms = value; })
         }
 
 
@@ -350,9 +353,6 @@ var myApp = angular.module('myApp', [])
             script.exec('getDashboards')
                 .then(function(values) {
                     values = aes.decrypt(values);
-                    console.log(values);
-
-                    // values = JSON.parse(values);
                     Object.entries(values).forEach(function([key, value]) {
                         $scope[key] = value;
                     })
@@ -361,11 +361,7 @@ var myApp = angular.module('myApp', [])
                     $('#controller').display();
                 })
         }
-        
-        $scope.getBlackPhone = function() {
 
-
-        }
 
         $scope.getBlackList = function() {
             $('#btntBlackList').hide();

@@ -37,8 +37,8 @@
         </div>
         <!-- extra content -->
         <div class="extra content" ng-if="property=='locate'" ng-init="getAllIPAddress(this)">
-            <div class="cell">
-                <div class="ui image label" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
+            <div class="cell-1">
+                <div class="ui image label full" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
                     <b ng-init="check_locate(row)">{{row.protocol}}</b>
                     <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
                 </div>
@@ -93,7 +93,6 @@
 </div>
 <link rel="stylesheet" href="chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/css/cards.css">
 <link rel="stylesheet" href="chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/css/log.css">
-
 <!-- https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&amp;accounts=mb958400 -->
 <!-- <iframe id="sameBrowserList" src="{{frameUrl}}" frameborder="0" style="width: 100%;">
 </iframe> -->
@@ -112,6 +111,10 @@ ng-init="additional(me); apiFunctions(me); sheetsCheck(me);"
 ng-class="{'pink': row.list_Accounts }"
  -->
 <style type="text/css">
+.ui.image.label.full {
+    width: 100% !important;
+}
+
 .hidden {
     display: none !important;
 }

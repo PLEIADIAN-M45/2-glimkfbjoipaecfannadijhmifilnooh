@@ -1,6 +1,5 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isBlack }">
-        <a class="item" ng-click="upload_1(user)"><i class="google icon"></i><b>upload_1</b></a>
         <a class="item" ng-click="openLoginLog(user)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b><br><br>{{user.account}}-{{user.channel}}</a>
         <a class="item" ng-click="__stop()" ng-if="user.isBlack==true"><i class="bug icon"></i><b>黑名单</b></a>
         <a class="item" ng-click="openDeposit(user)" ng-if="user.status==3"><i class="lightning icon"></i><b>开通</b></a>

@@ -4,7 +4,6 @@ var ApiFunction = function() {
             $.ajax(assign(mod, { dataType: "json" })).then((d) => {
                 var res = d.rows || d;
                 try {
-                    //console.log(res);
                     if (res.length == 1) {
                         resolve(...res)
                     } else {
@@ -49,3 +48,33 @@ ApiFunction.prototype.getPhoneDate = function() {
 }
 
 var apiFunction = new ApiFunction();
+
+
+
+
+
+
+ if (request.command == 'apiFunction') {
+
+        var { command, method } = request;
+
+        var module = apiFunction[method].settings;
+
+        assign(module.data, request.data);
+
+        module.data = json(module.data);
+
+        console.log(module);
+
+        $.ajax(module).then(function(res, s, x) {
+            try { var res = res.Data.Data } catch (ex) {}
+            sendResponse(res);
+        });
+
+        return true;
+    }
+
+
+    /*console.log(request);
+    console.log(apiFunction[method]);
+    console.log(module.settings);*/

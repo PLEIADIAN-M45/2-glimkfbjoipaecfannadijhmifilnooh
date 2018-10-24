@@ -1,28 +1,4 @@
-var IDB = new Dexie('evo');
-IDB.version(1.0).stores({
-    GetMemberList: 'f_accounts',
-    DepositBonus: 'f_id',
-    GetSystemLog: 'f_id',
-    GetMemberBonusLogBackendByCondition: 'BonusNumber'
-}).upgrade(trans => { console.log(trans); });
-
-var __debug = function(args) {
-    //console.log("[__Debug]", args);
-}
-var json = function(str) {
-    try {
-        if (str.constructor.name == "Response") {
-            return str.json()
-        }
-        if (typeof str == "object") {
-            var res = JSON.stringify(str);
-        } else { var res = JSON.parse(str); }
-
-    } catch (ex) { var res = str; }
-    return res;
-}
-
-;
+var json = function(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 (function webpackUniversalModuleDefinition(root, factory) {
     if (typeof exports === 'object' && typeof module === 'object')
         module.exports = factory();
@@ -40,7 +16,6 @@ var json = function(str) {
         this.command = 'XMLHttpRequest';
         this._headers = {};
         this._headers[name] = value;
-        //localStorage[name] = value;
         return setRequestHeader.apply(this, arguments);
     };
     XHR.open = function(method, url, async, user, password) {
@@ -55,11 +30,7 @@ var json = function(str) {
         this.addEventListener('loadend', this._loadend);
         return send.apply(this, arguments);
     };
-
-    XHR._loadend = function() {
-
-    };
-
+    XHR._loadend = function() {};
     XHR._load = function() {
         var { url, method, postData, response, responseText, responseType, responseURL, responseXML, readyState, status, statusText, timeout, withCredentials } = this; /*************************************************************************************************/
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
@@ -70,11 +41,9 @@ var json = function(str) {
         var _method = method;
         var _params = {};
         var _postData = {};
-        //console.log(_hostname);
         var query = searchParams;
         this.isEquel = function(pathString) {
             var reg = new RegExp('^' + this._lastPath + '$', 'i');
-            //console.log(pathString, reg);
             return pathString.match(reg);
         }
         switch (method) {
@@ -86,16 +55,13 @@ var json = function(str) {
                     _postData = json(postData);
                 } else {
                     try {
-                        postData.split('&').map((x) => {
-                            return x.split('=');
-                        }).map(function([name, value]) {
+                        postData.split('&').map((x) => { return x.split('='); }).map(function([name, value]) {
                             _postData[name] = value;
                         })
                     } catch (ex) {
                         _postData = postData;
                     }
                 }
-                //console.log(postData, method);
                 break;
         }
         Object.assign(this, { _hostname, _lastPath, _response, _params, _postData, _method, _responseText, query });
@@ -113,7 +79,6 @@ function recorddb() {
     if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態
         var object = _response.Data;
         user_pastData[object.AccountID] = object;
-        __debug({ user_pastData });
     }
     if (this.isEquel('UpdateMemberSNInfoBackend')) { //基本資料的「修改鍵」 通常用於停權
         var _pastData = user_pastData[_postData.AccountID];
@@ -129,8 +94,7 @@ function recorddb() {
             sessionStorage.clear();
             var dataset = _response.rows;
             dataset.forEach(function(cv, idx, arr) {
-                var key = cv['f_id'];
-                this[key] = json(cv);
+                this[cv.f_id] = json(cv);
             }, sessionStorage);
         } catch (ex) {}
     }
@@ -183,22 +147,9 @@ function recorddb() {
             this[cv.DealType] = cv.Description;
         }, DealType = {});
         localStorage["DealType"] = json(DealType);
-        __debug({ DealType });
     }
     if (this.isEquel('GetMemberStatusByLanguageCode')) {
         MemberStatus = _response.Data.ValueKey;
         localStorage["MemberStatus"] = json(MemberStatus);
-        __debug({ MemberStatus });
     }
-    //wa111 会员列表
-    if (this.isEquel('GetMemberList') && _params.type == "getAllUser") {
-        for (let row of _response.rows) { IDB[_lastPath].put(row).then(() => {}); }
-    }
-
 }
-
-
-
-
-//upload_4_test(_postData);
-//upload_3_test(_params);

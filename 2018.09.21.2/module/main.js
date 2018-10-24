@@ -13,6 +13,7 @@ requirejs.config({
         'angular-touch': '../lib/angular/angular-touch',
         "angularAMD": "../lib/angular/angularAMD",
         "ngload": "../lib/angular/ngload",
+
         'domReady': '../lib/require/domReady',
         'require': '../lib/require/require',
         'jquery': '../lib/jquery/jquery-3.2.1.min',
@@ -30,18 +31,16 @@ requirejs.config({
         //'utils': './utils',
         'aes.extend': './encrypt',
         // 'xmlhttp': './xmlhttp',
-
         'path': './core/path',
         'evo': './core/evo',
         'common': './core/common',
         'encrypt': './core/encrypt',
-        'myApp': './core/myApp',
-        'xhr': './core/xhr',
         'spreadsheets': './core/spreadsheets',
         'sendsms': './core/sendsms',
         'extension': './core/extension',
+        'app': './adapter/app',
+        'xhr': './core/xhr',
 
-        'app': './adapter/app'
 
 
     },
@@ -67,33 +66,17 @@ requirejs.config({
 
 
 
-window.extend = function() {
-    return Object.assign(this, ...arguments);
-    //if (!this.$$phase) { this.$apply(); };
-    //return this;
-}
-
-
-
-/*
-window.assign = function() {   
-    return Object.assign(this, ...arguments);
-}
-*/
+window.extend = function() { return Object.assign(this, ...arguments); }
 
 
 requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], function(moment, Dexie, mdc, semantic, evo) {
 
     window.extend({ moment, Dexie, mdc, evo });
 
-    console.log(evo.host);
-
 
     requirejs(['common', 'encrypt', 'app', 'spreadsheets'], function() {
 
-
-
-        console.log('adapter:', evo.adapter, location.pathname);
+        console.log("host", evo.host, 'adapter:', evo.adapter, location.pathname);
 
         requirejs([evo.adapter], function() {
 
@@ -106,76 +89,16 @@ requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], funct
 
 
 
-
-
-
 /*
-compiledWrapper
-apply
-boostrap_node.js
-module
-exports
-startup
-_compile
-process
-process.binding('natives');
-argv
-runMain
-wrap
+
+1. home
+2. list
+
+
+
+
+
+
+
+
 */
-
-
-
-
-/*
-requirejs(['route'], function({ adapter, router, host, port }) {
-    console.log({ adapter, router, host, port });
-})*/
-/*if (route == "login") {}
-  if (route == "cashflow") {}
-  if (route == "login") {}*/
-
-/*
-requirejs(['path'], function(path) {
-    //console.log(path);
-    if (path.back) { return }
-    if (path.last == "LOGIN" || path.last == "SIGNIN") { return requirejs([path.name]) }
-
-    requirejs(['moment', 'dexie', 'material', 'semantic', 'cryptojs/md5', 'cryptojs/ripemd160'], function(moment, Dexie, mdc) {
-
-        Object.assign(window, { Dexie, moment, mdc });
-
-        requirejs(['evo'], function() {
-
-            requirejs(['common', 'encrypt', 'myApp', 'spreadsheets'], function() {
-
-                console.log(path);
-
-
-                requirejs([path.core], function() {
-
-                })
-            })
-        })
-    });
-
-})*/
-
-
-
-
-
-
-
-
-
-
-
-
-//Cashflow
-//'extension',
-//console.log('%c' + evo.route, 'color:Gold');
-//,'records'
-//console.log('%c' + evo.filename, 'color:Gold');
-//console.log(evo.route);
-// console.log('%cpathname: ' + evo.pathname, evo.route, 'color:Gold', evo.host);

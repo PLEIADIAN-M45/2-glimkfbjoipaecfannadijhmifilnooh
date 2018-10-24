@@ -1,8 +1,4 @@
-console.log(evo.host);
 define([evo.host + "/apiFunction"], function(apiFunction) {
-
-    console.log(evo.host);
-
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {
             var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
@@ -17,13 +13,11 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
         })
     }
 
-
     function updateUserStatus() {
         return Promise.all([
             getModule('UpdateEditMemberInfoManage.MemberStatus'),
             getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
         ]).then(function([status, deposit]) {
-            console.log('updateUserStatus', status, deposit);
             return extend(evo.user, { status, deposit: Number(deposit) })
         })
     }
@@ -40,31 +34,10 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
         })
     }
 
-    function getCtrl() {
-        evo.ctrl = {};
-        [...document.querySelectorAll('select')].forEach((el) => {
-            var { title, attributes } = el;
-            var ngModel = attributes["ng-model"];
-            if (ngModel) {
-                // console.log(ngModel.value);
-                switch (ngModel.value) {
-                    case "ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit":
-                        evo.ctrl.deposit = el;
-                        break;
-                    default:
-                        // statements_def
-                        break;
-                }
-            }
-        });
-        console.log(evo.ctrl);
-    }
-
 
     function setUser() {
 
-        //if (evo.user) { return updateUserStatus() }
-        evo.user = {};
+        if (evo.user) { return updateUserStatus() } else { evo.user = {}; }
 
         return Promise.all([
             getModule('OldMemberBaseInfo'),
@@ -85,13 +58,8 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
                 idcard: { property: 'idcard', value: c.IDNumber, title: c.IDNumberShow, region, },
             }
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: isBlack } = c;
-
             assign(evo.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack }, property);
-
-            console.log(evo.user);
-
             return evo.user;
-
         }).then(putUser);
 
     }
@@ -157,7 +125,6 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     }
 
     function openLoginLog() {
-        //window.open(`/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
         window.open(`${evo.origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
     }
 
