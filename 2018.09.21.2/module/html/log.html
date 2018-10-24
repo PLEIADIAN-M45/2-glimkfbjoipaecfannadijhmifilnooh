@@ -47,21 +47,25 @@
         <div class="extra content" ng-if="property!='locate'">
             <div class="cell" ng-class="me.method" ng-repeat="s in sites track by $index" ng-init="apiMemberList(s);" ng-show="me.value && s.hide!=true">
                 <div class="ui image label" ng-class="{'grey': s.active,'grey': s.ignore, 'red':s.result==-1, 'green':s.result.total==0, 'purple':s.result.total>0}">
-                    <div class="detail port">{{s.channel}}</div>
-                    <div class="detail" ng-if="active">
-                        <i class="spinner loading icon"></i>
-                    </div>
+                    <b>{{s.channel}}</b>
                     <div class="detail">
-                        {{index}}-{{records}}
+                        <i class="spinner loading icon" ng-if="active"></i>
                     </div>
                 </div>
                 <!-- 分頁按鈕 -->
-                <div class="ui image label">
-                    <div class="detail">
-                        <i class="angle left icon" style="cursor: pointer;" ng-click="s.index = s.index-1; apiMemberList( s );"></i><!-- {{s.index}}-{{records}} -->
-                        <i class="angle right icon" style="cursor: pointer;" ng-click="s.index = s.index+1; apiMemberList( s );"></i>
-                    </div>
+                <div class="ui image label pagination">
+                    <i class="angle left icon" style="cursor: pointer;" ng-click="s.index = s.index-1; apiMemberList( s );"></i>
+                    <div class="detail">{{index}}-{{records}}</div>
+                    <i class="angle right icon" style="cursor: pointer;" ng-click="s.index = s.index+1; apiMemberList( s );"></i>
                 </div>
+                <!-- 分頁按鈕 -->
+                <!--  <div class="ui image label">
+                   <div class="detail">
+                       <i class="angle left icon" style="cursor: pointer;" ng-click="s.index = s.index-1; apiMemberList( s );"></i>
+                       <div class="detail">{{index}}-{{records}}</div>
+                       <i class="angle right icon" style="cursor: pointer;" ng-click="s.index = s.index+1; apiMemberList( s );"></i>
+                   </div>
+               </div> -->
                 <!-- extra content 會員帳號
                     GetAlertInfoByID(row, this);
                 -->
@@ -190,6 +194,10 @@ ng-class="{'pink': row.list_Accounts }"
     margin: 0px;
     visibility: hidden;
 }
+
+
+
+
 
 
 

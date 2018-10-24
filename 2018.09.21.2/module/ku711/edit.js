@@ -18,7 +18,7 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
             getModule('UpdateEditMemberInfoManage.MemberStatus'),
             getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
         ]).then(function([status, deposit]) {
-            return extend(evo.user, { status, deposit: Number(deposit) })
+            return evo.assign(evo.user, { status, deposit: Number(deposit) })
         })
     }
 
@@ -37,7 +37,7 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
 
     function setUser() {
 
-        if (evo.user) { return updateUserStatus() } else { evo.user = {}; }
+        if (evo.user) { return updateUserStatus().then(putUser) } else { evo.user = {}; }
 
         return Promise.all([
             getModule('OldMemberBaseInfo'),

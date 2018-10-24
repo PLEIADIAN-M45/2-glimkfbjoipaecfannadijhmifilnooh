@@ -58,3 +58,17 @@ function showModalDialog(status, content) {
     dialog.listen("MDCDialog:cancel", function() {});
     dialog.show()
 };
+
+
+
+function getDialogModal(param, content) {
+    return {
+        "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+        "0": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: evo.sms, description: "" },
+        "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+        "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+        "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: content, description: "" }
+    }[param]
+};
+  //if (status == "blacklisk") content.forEach(function(d, index) { content[index] = { match: d[0], value: d.input } });
+    console.log(status);

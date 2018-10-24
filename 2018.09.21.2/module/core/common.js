@@ -1,6 +1,7 @@
 function putUser() {
     return new Promise(function(resolve, reject) {
         if (evo.user.region == undefined) { evo.user.region = [] };
+        console.log('putUser', evo.user);
         evo.sendMessage({ command: 'evo.store.user.put', params: evo.user }).then(resolve);
     })
 }
@@ -30,24 +31,43 @@ async function start() {
     var sensitive = await extension.localStorage.getItem('sensitive');
     evo.sensitive = sensitive;
     evo.accusation = await extension.localStorage.getItem('accusation');
+
     evo.sensitive.protocol = await extension.localStorage.getItem('IPAddress')
+
     evo.sensitive.full = sensitive.area.concat(sensitive.word);
     var author = await extension.localStorage.getItem('accusation');
     author.splice(0, 2);
+
     var banker = await extension.localStorage.getItem('blacklist');
     var locate = await extension.localStorage.getItem('IPAddress');
     var region = evo.sensitive.area;
-    var mobile = await extension.localStorage.getItem('BlackPhone')
+    var mobile = await extension.localStorage.getItem('BlackPhone');
+
+
+    author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
+    author.push(["王杰", "A695000035", "26", "惡意投訴人", "異審-書辭"])
+    
+    region.push(['云南'])
+    region.push(['湖南'])
+    region.push(['湖北'])
+
+
+    banker.push(['62290837'])
+    locate.push(['116.53.197.240'])
+
+
     region.search = function() {
-        if (this == window) { this.region.test = 1 };
-        if (this.region == undefined) {}
+        //console.log(this);
+        if (this == window) { this.region.test = undefined };
+        if (this.region == undefined) { return }
         var { prov, city, area, ctry } = this.region;
         var value = [prov, city, area, ctry].join('').trim();
+        //console.log(this.property, value);
         if (value) {
             var expression = region.separate();
             var re = new RegExp(expression, 'g');
             this.region.test = value.match(re);
-        } else { this.region.test = 1; }
+        } else { this.region.test = undefined; }
         return this;
     }
 
@@ -88,6 +108,7 @@ async function start() {
             }
         })
     }
+
     locate.search = function(value, num = 4) {
         var arr = value.split('.');
         var val = arr.slice(0, num).join('.')

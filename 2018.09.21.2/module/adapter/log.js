@@ -7,13 +7,13 @@ define([evo.router], function() {
         var initialization = function(me) {
             var { property, value, region } = me;
             var { host, channel, account } = evo.user;
-            var icon = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" } [property];
-            var head = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" } [property];
+            var icon = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" }[property];
+            var head = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" }[property];
             var command = {
                 locate: "apiFunctions:locate:evo:0",
                 idcard: "apiFunctions:idcard:evo:0",
                 mobile: "apiFunctions:mobile:host:channel",
-            } [property];
+            }[property];
             var params = { property, channel, account, command, value };
             if (property == "locate") {
                 var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
@@ -28,41 +28,37 @@ define([evo.router], function() {
 
         function sheetsTestFunction(me) {
             var { property, value, sheets } = me;
-            //console.log(property, google.sheets[property]);
             if (sheets && google.sheets[property]) {
-                console.log(google.sheets[property].search(value));
                 evo.assign(sheets, google.sheets[property].search(value));
-
-                console.log(me);
-                //console.log(this.$apply());
-                //evo.assign(sheets, google.sheets[property].search(value));
-                //this.extend(sheets, google.sheets[property].search(value))
-
+                //console.log(me);
             }
         };
+        //  if (!$scope.$$phase) { $scope.$apply(); }
 
         function regionTestFunction(me) {
-            return
             var { property, region } = me;
-            if (region.test === undefined) {
+            return this.extend(google.sheets.region.search.call(me));
+        };
 
-                this.extend(google.sheets.region.search.call(me))
-                putUser();
+
+
+        function apiFunctions(me, e) {
+            if (this.property == 'author') { return };
+            if (this.property == 'banker') {
+                return this.regionTestFunction(me)
+            };
+            if (this.region.test === undefined || e) {
+                this.extend({ region: {}, active: 1 });
+                evo.apiFunctions(this.params).then((res) => {
+                    evo.assign(me, res)
+                    return this.regionTestFunction(me);
+                }).then(putUser);
+            } else {
+                return this.regionTestFunction(me)
             }
         };
 
-        function apiFunctions(me, e) {
-            if (this.property == 'author') { return }
-            if (this.property == 'banker') { return regionTestFunction(me) }
-            if (this.params.command == undefined) { return }
-            if (!isEmptyObject(this.region) && e == undefined) { return }
-            this.extend({ region: {}, active: 1 });
-            evo.apiFunctions(this.params).then((res) => { this.regionTestFunction(evo.assign(me, res)) });
-        };
-
-        function apiMemberList(me, e) {
-            //if (me.channel !== '16') { return }
-            //if (!me.author) { return }
+        function apiMemberList(me, e) {           
             me.index = me.index || 1;
             $('.popup').remove();
             this.extend({ rows: [], active: 1, index: me.index });
@@ -192,7 +188,7 @@ define([evo.router], function() {
         var frameUrl = {
             "wa111": `http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
             "ku711": `https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
-        } [evo.host];
+        }[evo.host];
 
         return new Promise(function(resolve, reject) {
             $('<div>').addClass('ui horizontal divider').text('AND').appendTo(evo.controllerProvider);

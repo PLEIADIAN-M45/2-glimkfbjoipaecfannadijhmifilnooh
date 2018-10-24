@@ -74,6 +74,21 @@
     font-weight: bold;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* .cell****************************************************/
 
 .ui.cards>.ui.card {
@@ -124,9 +139,18 @@
 .ui.image.label.visible {
     display: flex !important;
 }
-.ui.image.label>b{
+
+
+/* 
+.ui.image.label.full>b {
+    min-width: 120px;
     padding: 0px 10px;
 }
+
+.ui.image.label.full>.detail {
+    min-width: 60px;
+} */
+
 
 .ui.image.label.visible,
 .ui.image.label {
@@ -136,13 +160,33 @@
     padding: 0;
     justify-content: flex-start;
     overflow: hidden;
-    max-width: fit-content;
+    max-width: unset;
+    min-width: -webkit-fill-available;
+    min-height: 28.16px;
 }
+
+
+.ui.image.label>b {
+    padding: 0px 10px;
+}
+
 
 .ui.image.label>.detail {
     border-radius: 0;
     margin: 0;
     display: inline-flex;
+    flex: 1;
+    min-height: inherit;
+}
+
+
+.ui.image.label.pagination>i.icon {
+    cursor: pointer;
+    padding: 0px 10px;
+    margin: 0;
+    display: inline-flex;    
+    height: 100%;
+    align-items: center;
 }
 
 .ui.image.label>.detail.port {

@@ -31,7 +31,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')
-            } [this.host];
+            }[this.host];
         }
 
         get formData() {
@@ -65,6 +65,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             message.command = message.command.replace('host', evo.host).replace('channel', evo.channel)
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, message, function(res) {
+                    //console.log(res);
+
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -144,7 +146,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                 "17": "wa111",
                 "8876": "wa111",
                 "": location.host.split('.')[1]
-            } [location.port];
+            }[location.port];
         }
 
         json(a) {
@@ -213,7 +215,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "bonuslog": "bonus",
                     "memberloginlog": "log"
                 }
-            } [this.host][this.filename];
+            }[this.host][this.filename];
         }
 
         get router() { return [this.host, this.path].join('/'); }

@@ -400,12 +400,18 @@ apiFunctions.prototype["Alerts"]["ku711"] = function() {
 }
 
 apiFunctions.prototype["smsService"]["smsc"] = function() {
-    var smss = aes.decrypt(localStorage.sms);
     var { account, mobile, status, channel, operator } = this.params;
-    var countrycode = { "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
+    var smss = aes.decrypt(localStorage.sms);
+    
+    var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" }[channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
-    if (message == undefined) {}
+    if (smss == undefined) { return false }
+    if (channel == undefined) { return false }
+    if (mobile == undefined) { return false }
+    if (mobile.includes('*') == undefined) { return false }
+    if (countrycode == undefined) { return false }
+    if (message == undefined) { return false }
     return {
         career: 'smsc',
         settings: {
@@ -419,11 +425,7 @@ apiFunctions.prototype["smsService"]["smsc"] = function() {
             if (res.match(/(msg = '')/)) { var status = 0; }
             if (res.match(/(msg = '101')/)) { var status = 101; }
             if (res.match(/(msg = '102')/)) { var status = 102; }
-            return { operator, account, channel, message, status, mobile, status }
-            /*if (res.match(/(var msg = '')/)) { var status = 'success'; }
-            if (res.match(/(var msg = '101')/)) { var status = 'failed'; }
-            if (res.match(/(var msg = '102')/)) { var status = 'limited'; }
-            if (res.match(/(會員登錄)/)) { var status = 'login'; }*/
+            return { operator, account, channel, message, mobile, status }
         }
     }
 }
