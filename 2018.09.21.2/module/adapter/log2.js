@@ -3,7 +3,32 @@ define([evo.router], function() {
     $scope.controller = function($compile, $rootScope, $timeout) {
         console.log('user:', evo.user);
         var { author, locate, mobile, idcard, banker, host, channel, account } = evo.user;
-        var property = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
+        var dataset333 = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
+        console.log(dataset);
+
+        console.log(json(dataset));
+
+        var dataset = [{
+                "property": "author",
+                "value": "王杰",
+                "title": "王杰",
+                "sheets": { "test": "A695000035-26", "index": 219, "meta": "惡意投訴人" }
+                "sites": [
+                    { command: 'apiFunctions:Member:wa111:26', channel: "26" }
+                ]
+            },
+            { "property": "locate", "value": "223.104.147.255", "title": "223.104.147.255", "sheets": {}, "region": { "meta": "ipapi", "prov": "江苏省", "city": "连云港", "ctry": "中国", "career": "ipapi", "test": null }, "status": "error", "active": 0 },
+            { "property": "mobile", "value": "18360029000", "title": "18360029000", "sheets": {}, "region": { "meta": "中国移动 GSM/3G", "prov": "江苏", "city": "宿迁", "career": "ku711", "test": null }, "status": "success", "active": 0 },
+            { "property": "idcard", "value": "321321198706252438", "title": "32132119870625****", "region": { "prov": "江苏省", "city": "宿迁市", "area": "宿豫县", "meta": "1987年6月25日/男性/31岁", "career": "evo", "test": null }, "status": "success", "active": 0 },
+            { "property": "banker", "title": "**************82904", "value": "6222021116012282904", "sheets": {}, "region": { "meta": "中国工商银行", "prov": "江苏省", "city": "宿迁市", "test": null } }
+        ]
+
+        $scope.dataset = dataset;
+
+        $scope.$apply();
+        return
+        //$scope.extend({ dataset, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
+
         var initialization = function(me) {
             var { property, value, region } = me;
             var { host, channel, account } = evo.user;
@@ -16,101 +41,91 @@ define([evo.router], function() {
             }[property];
             var params = { property, channel, account, command, value };
             if (property == "locate") {
-                var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
+                var sites = []
+                //var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
             } else {
-                var sites = ['wa111:26', 'wa111:35', 'wa111:17', 'ku711:16'].map((suffix) => {
+                //, 'ku711:16'
+                var sites = ['wa111:26', 'wa111:35', 'wa111:17'].map((suffix) => {
                     var [proxy, channel] = suffix.split(':')
                     return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix };
                 });
             }
-            this.extend({ ...me, icon, head, params, sites });
+
+            //console.log(this);
+            Object.assign(this, { ...me, icon, head, params, sites })
+            //this.$apply();
+
+            console.log(this);
+            // this.extend({ ...me, icon, head, params, sites });
         };
 
         function sheetsTestFunction(me) {
+            return
             var { property, value, sheets } = me;
             if (sheets && google.sheets[property]) {
                 evo.assign(sheets, google.sheets[property].search(value));
-                if (!$scope.$$phase) { $scope.$apply(); }
+                //console.log(me);
             }
         };
+        //  if (!$scope.$$phase) { $scope.$apply(); }
 
         function regionTestFunction(me) {
+            return
             var { property, region } = me;
-            //console.log(property, region);
             return this.extend(google.sheets.region.search.call(me));
-
-            //return 
         };
+
+
 
         function apiFunctions(me, e) {
-
-            //if (this.params.command == undefined) { return }
-
+            return
             if (this.property == 'author') { return };
-
-            if (this.region.test === undefined) {
-                console.log(1, this.property, this.region.test);
-                if (this.property == 'banker') { return this.regionTestFunction(me) };
+            if (this.property == 'banker') {
+                return this.regionTestFunction(me)
+            };
+            if (this.region.test === undefined || e) {
                 this.extend({ region: {}, active: 1 });
                 evo.apiFunctions(this.params).then((res) => {
-                    console.log(res);
-                    return this.regionTestFunction(evo.assign(me, res))
-                }).then(putUser)
-
-
-            }
-
-            if (this.region.test === null) {
-
-                //console.log(2, this.property, this.region.test);
-
-            }
-
-
-
-
-            if (this.region.test && e == undefined) {
-
-
-                /*this.extend({ region: {}, active: 1 });
-                evo.apiFunctions(this.params).then((res) => {
-                    console.log(res);
-                    return this.regionTestFunction(evo.assign(me, res))
-                }).then(putUser)
-*/
-
-
+                    evo.assign(me, res)
+                    return this.regionTestFunction(me);
+                }).then(putUser);
             } else {
-
-                return
+                return this.regionTestFunction(me)
             }
-
-
-            return
-
-
-            console.log(this);
-
-
-
-
-
-            return
-
-            console.log(this.property, this.region, this.params, isEmptyObject(this.region));
-
-            if (!isEmptyObject(this.region) && e == undefined) { return }
-
-
         };
 
-        function apiMemberList(me, e) {
-            //if (me.channel !== '16') { return }
-            //if (!me.author) { return }
-            me.index = me.index || 1;
-            $('.popup').remove();
-            this.extend({ rows: [], active: 1, index: me.index });
-            evo.apiFunctions(me).then((res) => { this.extend(res); })
+        function apiMemberList(s) {
+            //return
+
+
+            var scope = this;
+
+            s.index = s.index || 1;
+
+            //$('.popup').remove();
+
+
+            s.active = true;
+
+
+            //scope.extend({ rows: [], index: me.index });
+
+            //this.extend({ rows: [], active: 1, index: me.index });
+
+            evo.apiFunctions(s).then((res) => {
+
+                //console.log(res);
+
+                //this.extend(res);
+                //this.active = false;
+                s.active = false;
+                s.rows = res.rows;
+
+                scope.$apply();
+
+
+                // if (!this.$$phase) {}
+            })
         };
 
         function GetAlertInfoByID(row, scope) {
@@ -227,7 +242,6 @@ define([evo.router], function() {
             }
         }
 
-        $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
 

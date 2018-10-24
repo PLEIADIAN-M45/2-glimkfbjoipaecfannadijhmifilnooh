@@ -102,6 +102,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
                     //console.log(result);
+                    console.log(result);
                     resolve({ ...result, status, active: 0 });
                 })
             })

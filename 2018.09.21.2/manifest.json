@@ -34,8 +34,8 @@
                 "lib/material/0.36.0/roboto.css",
                 "lib/material/0.36.0/icon.css",
                 "lib/angular/angular-csp.css",
-                "lib/semantic/semantic.css",
-                "css/common.css"
+                "lib/semantic/semantic.css"
+                //"css/common.css"
             ],
             "js": [
                 "module/main.require.js"

@@ -1,5 +1,5 @@
 <div class="ui cards" id="myCard">
-    <div class="ui card" ng-repeat="me in property track by $index" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me); sheetsTestFunction(me);">
+    <div class="ui card" ng-repeat="me in dataset" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me);">
         <!-- dimmer -->
         <div class="ui dimmer" ng-class="{ 'active': active }">
             <div class="ui text loader">{{title}}
@@ -19,15 +19,7 @@
             <i class="icon earlybirds hidden"></i>
             <div class="header">{{value}}</div>
         </div>
-        <!-- content 结果-->
-        <div class="content center aligned" ng-show="property=='author'">
-            <div class="sub header">
-                <a class="ui basic label">{{sheets.meta}}</a>
-            </div>
-            <a class="sub meta">{{sheets.test}}</a>
-        </div>
-        <!-- content 结果-->
-        <div class="content center aligned" ng-show="region" ng-init="apiFunctions(me);">
+        <div class="content center aligned" ng-show="region">
             <div class="sub header">
                 {{region.prov}} {{region.city}} {{region.area}} {{region.ctry}}
             </div>
@@ -35,371 +27,53 @@
                 {{region.meta}}
             </div>
         </div>
-        <!-- extra content -->
-        <div class="extra content" ng-if="property=='locate'" ng-init="getAllIPAddress(this)">
-            <div class="cell-1">
-                <div class="ui image label full" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
-                    <b ng-init="check_locate(row)">{{row.protocol}}</b>
-                    <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
-                </div>
-            </div>
-        </div>
-        <div class="extra content" ng-if="property!='locate'">
-            <div class="cell" ng-class="me.method" ng-repeat="s in sites track by $index" ng-init="apiMemberList(s);" ng-show="me.value && s.hide!=true">
-                <div class="ui image label" ng-class="{'grey': s.active,'grey': s.ignore, 'red':s.result==-1, 'green':s.result.total==0, 'purple':s.result.total>0}">
-                    <b>{{s.channel}}</b>
+        <div class="extra content">
+            <div class="cell" ng-repeat="s in sites" ng-init="apiMemberList(s);">
+                <div class="ui image label">
+                    <!-- <b>{{channel}}-{{active}}</b> -->
                     <div class="detail">
-                        <i class="spinner loading icon" ng-if="active"></i>
+                        <i class="spinner icon loading" ng-show="active"></i>
+                        <i class="spinner icon loading" ng-show="s.active"></i>
+
                     </div>
                 </div>
-                <!-- 分頁按鈕 -->
-                <div class="ui image label pagination">
-                    <i class="angle left icon" style="cursor: pointer;" ng-click="s.index = s.index-1; apiMemberList( s );"></i>
-                    <div class="detail">{{index}}-{{records}}</div>
-                    <i class="angle right icon" style="cursor: pointer;" ng-click="s.index = s.index+1; apiMemberList( s );"></i>
-                </div>
-                <!-- 分頁按鈕 -->
-                <!--  <div class="ui image label">
-                   <div class="detail">
-                       <i class="angle left icon" style="cursor: pointer;" ng-click="s.index = s.index-1; apiMemberList( s );"></i>
-                       <div class="detail">{{index}}-{{records}}</div>
-                       <i class="angle right icon" style="cursor: pointer;" ng-click="s.index = s.index+1; apiMemberList( s );"></i>
-                   </div>
-               </div> -->
-                <!-- extra content 會員帳號
-                    GetAlertInfoByID(row, this);
-                -->
-                <div class="ui image label pointer" ng-repeat="row in rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); GetAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
+                <div class="ui image label pointer" ng-repeat="row in rows">
                     <div class="detail accounts">{{row.f_accounts||row.AccountID|uppercase}}</div>
-                    <!-- extra content 警示訊息-->
-                    <aside class="hidden">
-                        <table class="ui celled selectable striped collapsing table inverted pink small" ng-init="imPopup(row , this, popup_id)" ng-if="row.list_Accounts.length">
-                            <thead>
-                                <th>警示帐号</th>
-                                <th>汇款户名</th>
-                                <th>汇款帐号</th>
-                                <th>警示讯息</th>
-                            </thead>
-                            <tbody>
-                                <tr ng-repeat="w in row.list_Accounts">
-                                    <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
-                                    <td>{{w.f_RemittanceName||w.AccountName}}</td>
-                                    <td>{{w.f_RemittanceAccount}}</td>
-                                    <td>{{w.f_remarks||w.Memo}}</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </aside>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<link rel="stylesheet" href="chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/css/cards.css">
-<link rel="stylesheet" href="chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/css/log.css">
-<!-- https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&amp;accounts=mb958400 -->
-<!-- <iframe id="sameBrowserList" src="{{frameUrl}}" frameborder="0" style="width: 100%;">
-</iframe> -->
-<!--  <div class="ui popup special" ng-if="row.list_Accounts">
-                   </div> -->
-<!--
-ng-init="imPopup(row , this, popup_id)"
-<i class="icon check circle outline small"></i>
-<i class="icon check circle outline small"></i>
-             question circle outline
-           exclamation circle
-           exclamation triangle -->
-<!--  ng-class="{ 'negative': sheetsTest, 'positive': !sheetsTest && me.sheetsTest }" -->
-<!--
-ng-init="additional(me); apiFunctions(me); sheetsCheck(me);"
-ng-class="{'pink': row.list_Accounts }"
- -->
 <style type="text/css">
-.ui.image.label.full {
-    width: 100% !important;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.icon.earlybirds {
-    background-color: #bbb;
-    border-radius: 50%;
-    height: 36px;
-    width: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    left: calc(50% - 18px);
-    top: -50px;
-    background-color: #fff;
-    box-shadow: 1px 2px 7px 1px black;
-    font-size: large;
-}
-
-.header.positive {
-    outline: #fff solid 1px;
-    /*border-style: dotted;*/
-}
-
-
-.header.negative {
-    outline: #fff solid 1px;
-    outline: #fff dashed 1px;
-    /*border-style: dotted;*/
-}
-
-.ui.basic.label {
-    /*background-color: transparent;
-    color: #fff;*/
-}
-
-.ui.cards>.card:nth-child(2) {
-    min-width: min-content;
-}
-
-.ui.popup.special {
-    padding: 2px;
-    min-width: max-content;
-}
-
-.ui.image.label.special {
-    text-align: center;
-    align-items: center;
-}
-
-.ui.image.label.special>.detail {
-    min-width: 100px;
-    text-align: center;
-}
-
-
-.ui.image.label.special>b {
-    padding: 0px 7px;
-    width: 120px;
-}
-
-.extra.content>.cell.locate {
-    max-width: 290px !important;
-}
-
-.ui.image.label {
-    font-size: small;
-}
-
-.extra.content>.cell.locate .detail.port {
-    display: none;
-    margin: 0px;
-    visibility: hidden;
+i.icon.loading33 {
+    height: 1em;
+    line-height: 1;
+    animation: icon-loading 2s linear 0s infinite normal none running;
+    animation-name: icon-loading;
+    animation-duration: 2s;
+    animation-timing-function: linear;
+    animation-delay: 0s;
+    animation-iteration-count: infinite;
+    animation-direction: normal;
+    animation-fill-mode: none;
+    animation-play-state: running;
 }
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+/* 
+i.icon.loading {
+    height: 1em;
+    line-height: 1;
+    animation: icon-loading 2s linear 0s infinite normal none running;
+}
+ */
 
 
 /*
-i.icon.universal.access {
-    content: "汇款户名";
+ ng-init="apiFunctions(me);"
+.hidden {
+    display: none !important;
 }
-
-i.icon.author:before {
-    content: "\f29a";
-}
-
-i.icon.mobile:before {
-    content: "\f3cd";
-}
-
-i.icon.idcard:before {
-    content: "\f2bb";
-}
-
-i.icon.locate:before {
-    content: "\f3c5";
-}
-
-i.icon.banker:before {
-    content: "\f380";
-}
-
-
-i.icon.universal.access:before {
-    content: "\f29a";
-} */
+*/
 </style>

@@ -65,6 +65,7 @@
     position: relative;
     flex-wrap: nowrap;
     align-items: flex-start;
+    padding: 3px;
 }
 
 .ui.cards>.card>.content>.meta {
@@ -73,13 +74,6 @@
     font-size: 12px !important;
     font-weight: bold;
 }
-
-
-
-
-
-
-
 
 
 
@@ -141,16 +135,10 @@
 }
 
 
-/* 
-.ui.image.label.full>b {
-    min-width: 120px;
-    padding: 0px 10px;
+.ui.image.label.full {
+    width: fit-content!important;
+    min-width: fit-content!important;
 }
-
-.ui.image.label.full>.detail {
-    min-width: 60px;
-} */
-
 
 .ui.image.label.visible,
 .ui.image.label {
@@ -170,6 +158,9 @@
     padding: 0px 10px;
 }
 
+.ui.image.label>.detail.center {
+    justify-content: center;
+}
 
 .ui.image.label>.detail {
     border-radius: 0;
@@ -179,16 +170,31 @@
     min-height: inherit;
 }
 
+*[disabled] {
+    pointer-events: none !important;
+    opacity: 0.5!important;
+    cursor: not-allowed;
+}
 
 .ui.image.label.pagination>i.icon {
     cursor: pointer;
     padding: 0px 10px;
     margin: 0;
-    display: inline-flex;    
+    display: inline-flex;
     height: 100%;
     align-items: center;
 }
 
+.ui.image.label.pagination>i.icon:hover {
+    background: grey;
+}
+
+
+
+
+
+
+/*
 .ui.image.label>.detail.port {
     background-color: rgba(0, 0, 0, 0) !important;
 }
@@ -220,7 +226,7 @@
     min-width: 142px;
     background-color: rgba(0, 0, 0, 0.15) !important;
 }
-
+*/
 
 .icon.sync.alternate {
     color: rgba(255, 255, 255, 0.5)
@@ -255,3 +261,84 @@
 .pointer {
     cursor: pointer;
 }
+
+
+
+
+.icon.earlybirds {
+    background-color: #bbb;
+    border-radius: 50%;
+    height: 36px;
+    width: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    left: calc(50% - 18px);
+    top: -50px;
+    background-color: #fff;
+    box-shadow: 1px 2px 7px 1px black;
+    font-size: large;
+}
+
+.header.positive {
+    outline: #fff solid 1px;
+    /*border-style: dotted;*/
+}
+
+
+.header.negative {
+    outline: #fff solid 1px;
+    outline: #fff dashed 1px;
+    /*border-style: dotted;*/
+}
+
+.ui.basic.label {
+    /*background-color: transparent;
+    color: #fff;*/
+}
+
+.ui.cards>.card:nth-child(2) {
+    min-width: min-content;
+}
+
+.ui.popup.special {
+    padding: 2px;
+    min-width: max-content;
+}
+
+.ui.image.label.special {
+    text-align: center;
+    align-items: center;
+}
+
+.ui.image.label.special>.detail {
+    min-width: 100px;
+    text-align: center;
+}
+
+
+.ui.image.label.special>b {
+    padding: 0px 7px;
+    width: 120px;
+}
+
+.extra.content>.cell.locate {
+    max-width: 290px !important;
+}
+
+.ui.image.label {
+    font-size: small;
+}
+
+.extra.content>.cell.locate .detail.port {
+    display: none;
+    margin: 0px;
+    visibility: hidden;
+}
+
+
+
+
+
+

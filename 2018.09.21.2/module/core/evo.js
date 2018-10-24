@@ -56,7 +56,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
-                    resolve({ ...result, status, active: 0 });
+                    //resolve({ ...result, status, active: false });
+                    resolve({ ...result, status});
+
                 })
             })
         }
@@ -66,7 +68,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, message, function(res) {
                     //console.log(res);
-
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
