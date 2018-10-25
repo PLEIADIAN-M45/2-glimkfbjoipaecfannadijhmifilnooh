@@ -5,29 +5,24 @@ define([
 
 })
 
-var dispatchMyEvent = function() {
-    var callee = arguments.callee.name;
-    return new Promise(function(resolve, reject) {
-        resolve([callee, []])
-    })
+var dispatch = function() {
+    return Promise.resolve()
 }
 
 var getHTMLTableCells = function() {
-    var callee = arguments.callee.name;
     return new Promise(function(resolve, reject) {
         window.HTMLTableCellElements = $('#divCookie>ul:not(.TrHead, .TrHead2)').find('li');
         if (HTMLTableCellElements) {
             resolve(HTMLTableCellElements)
         } else {
-            reject(callee)
+            reject()
         }
     })
 }
 
 function getGetAlerInfo() {
-    var callee = arguments.callee.name;
     return new Promise(function(resolve, reject) {
-        resolve([callee, []])
+        resolve([[], []])
     })
 }
 

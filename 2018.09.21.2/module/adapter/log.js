@@ -39,7 +39,7 @@ define([evo.router], function() {
         function apiFunctions(me, e) {
             this.extend(me);
             if (this.property == 'author') { return };
-            if (this.property == 'banker') { return }
+            if (this.property == 'banker') { return };
             if (this.region.test === undefined || e) {
                 this.extend({ region: {}, active: true });
                 evo.apiFunctions(this.params).then((res) => {
@@ -109,7 +109,7 @@ define([evo.router], function() {
             setTimeout(function() {
                 var content = target.querySelector(".ui.table");
                 $(target).popup({ html: content.outerHTML, hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" })
-            }, 500, target)
+            }, 500, target);
         };
 
         function openMemberList({ origin }) {
@@ -177,13 +177,13 @@ define([evo.router], function() {
         $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
-    function createIFrame() {
-        var frameUrl = {
-            "wa111": `${location.origin}/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
-            "ku711": `${location.origin}/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
-        } [evo.host];
 
+    function createIFrame() {
         return new Promise(function(resolve, reject) {
+            var frameUrl = {
+                "wa111": `${location.origin}/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
+                "ku711": `${location.origin}/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
+            } [evo.host];
             $('<div>').addClass('ui horizontal divider').text('AND').appendTo(evo.controllerProvider);
             $('<iframe>', { id: 'sameBrowserList', src: frameUrl, frameborder: 0, width: '100%', }).appendTo(evo.controllerProvider);
             resolve('createIFrame')
@@ -192,7 +192,6 @@ define([evo.router], function() {
 
 
     function addSiteNumberToAccountId() {
-        var callee = arguments.callee.name;
         var accountIdCollection = getAccountIdCollection();
         var siteNumberCollection = getSiteNumberCollection();
         accountIdCollection.each(function(index, element) {
@@ -225,18 +224,18 @@ define([evo.router], function() {
         $scope.stylesheet = ['log', 'cards'];
         startup()
             .then(getUser)
-            .then(dispatchMyEvent)
+            .then(dispatch)
             .then(bootstrap)
             .then(scrollHeightListener)
             .then(checkSensitiveWords)
             .then(addSiteNumberToAccountId)
-            .then(createIFrame)
+            //.then(createIFrame)
             .catch(error)
     }
 
     if (evo.params.method == 'DeviceNo' || evo.filename == 'samebrowserlist') {
         $scope.stylesheet = ['log'];
-        startup().then(dispatchMyEvent).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
+        startup().then(dispatch).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
     }
 
 

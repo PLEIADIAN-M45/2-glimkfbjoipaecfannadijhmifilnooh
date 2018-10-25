@@ -5,7 +5,7 @@ define([
 
 })
 
-var dispatchMyEvent = function() {
+var dispatch = function() {
     return new Promise(function(resolve, reject) {
         if ($scope.ctrl.model.QueryInputModel.AccountID != undefined &&
             $scope.ctrl.GetQueryLoginLog) {
@@ -23,13 +23,11 @@ var getFrameUrl = function() {
 }
 
 var getAccountIdCollection = function() {
-    var callee = arguments.callee.name;
     var collection = $('#tbList').find('tr>td:nth-child(2)')
     return collection;
 }
 
 function getSiteNumberCollection() {
-    var callee = arguments.callee.name;
     var collection = $('#tbList').find('tr').map(function(element) {
         return evo.siteNumber;
     })
@@ -54,59 +52,22 @@ function getModule(objPath) {
 
 
 async function checkSensitiveWords() {
-
+    function sensitive({ outerText }) { return outerText.match(evo.regexp.sensitive.full) }
     function addclassList(el) { el.classList.add('danger'); return el; }
-
     function removeClass(el) {
         if (el.outerText == "正常户") { el.classList.add('normal'); }
-
-        el.classList.remove("w10", "w20");
-
-
-        [...el.children].filter((em, i, elem) => {
-            //elem[i].removeChild(em)
-            return em.localName == "br"
-        })
-        //.map((x) => { console.log(x); })
-
-        //removeChild
-
-        /*   console.log([...el.children]);
-
-           console.log(el.children);*/
-
-
-
-        //$(el).removeClass('w10', 'w20').find('br').remove();
+        $(el).removeClass('w10', 'w20').find('br').remove();
         return el;
     }
 
-    function sensitive({ outerText }) { return outerText.match(evo.regexp.sensitive.full) }
-
     await getModule("ctrl.model.ResultList");
-
     var arr = [...document.querySelectorAll("td")];
-
     arr.map(removeClass).filter(sensitive).forEach(addclassList);
-
-
-
-
-    /*document.querySelectorAll("td").forEach((el) => {
-        $(el).removeClass('w10', 'w20').find('br').remove();
-        var s
-        tr = el.outerText.trim();
-        if (str == '正常户') { el.classList.add('normal'); } else
-        if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
-    });*/
     return;
-    //.map((x) => { console.log(x); })
-
 }
 
 
 function addSiteNumberToAccountId() {
-    var callee = arguments.callee.name;
     var accountIdCollection = getAccountIdCollection();
     var siteNumberCollection = getSiteNumberCollection();
     accountIdCollection.each(function(index, element) {
@@ -146,12 +107,11 @@ function addSiteNumberToAccountId() {
             }
         }
     })
-    return [callee, []];
+    return;
 }
 
 
 function getHTMLTableCells() {
-    var callee = arguments.callee.name;
     var flag = 0;
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
@@ -173,7 +133,6 @@ function getHTMLTableCells() {
 
 
 function getTableCellCollection() {
-    var callee = arguments.callee.name;
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
             if (newValue) {
@@ -186,8 +145,6 @@ function getTableCellCollection() {
             }
         });
     })
-
-
 }
 
 
@@ -218,7 +175,7 @@ function getTableCellCollection() {
             resolve([callee, HTMLTableCellElements])
         })
     }
-    
+
     function checkSensitiveWords() {
         console.log(2222222, 33333);
         document.querySelectorAll("li").forEach((el) => {
