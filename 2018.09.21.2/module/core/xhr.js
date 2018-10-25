@@ -32,7 +32,7 @@ var json = function(str) { try { if (str.constructor.name == "Response") { retur
     };
     XHR._loadend = function() {};
     XHR._load = function() {
-        var { url, method, postData, response, responseText, responseType, responseURL, responseXML, readyState, status, statusText, timeout, withCredentials } = this; /*************************************************************************************************/
+        var { url, method, postData, response, responseText, responseType, responseURL, responseXML, readyState, status, statusText, timeout, withCredentials } = this;
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
         var _hostname = hostname.split('.')[1];
         var _lastPath = pathname.split('/').pop().replace(/\.\w+/, '');
