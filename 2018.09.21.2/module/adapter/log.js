@@ -55,7 +55,7 @@ define([evo.router], function() {
             evo.apiFunctions(me).then((res) => {
                 evo.assign(me, res);
                 this.extend(res);
-            })
+            });
         };
 
         function GetAlertInfoByID(row, scope) {

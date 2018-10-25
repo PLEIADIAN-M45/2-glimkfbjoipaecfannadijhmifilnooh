@@ -1,9 +1,10 @@
 define([
+    'app'
 
+], (app) => {
+    console.log(this);
 
-], function() {
-
-})
+}, 'app')
 
 var dispatch = function() {
     return Promise.resolve()
@@ -22,7 +23,10 @@ var getHTMLTableCells = function() {
 
 function getGetAlerInfo() {
     return new Promise(function(resolve, reject) {
-        resolve([[], []])
+        resolve([
+            [],
+            []
+        ])
     })
 }
 

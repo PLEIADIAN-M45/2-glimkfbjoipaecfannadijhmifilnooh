@@ -3,6 +3,8 @@ define([
 
 ], function() {
 
+    console.log(this);
+
 })
 
 var dispatch = function() {
