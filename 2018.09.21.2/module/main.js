@@ -67,12 +67,6 @@ requirejs.config({
 
 //'cryptojs/md5', 'cryptojs/ripemd160',
 
-requirejs(['b'], function(b) {
-    console.log(b);
-    var c = b.foo()
-    console.log(c);
-
-})
 
 window.extend = function() { return Object.assign(this, ...arguments); }
 
@@ -101,7 +95,9 @@ requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], funct
 
 1. home
 2. list
-
+3. edit
+4.
+5.
 
 
 

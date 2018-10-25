@@ -15,3 +15,10 @@ define(['a', 'exports'], function(a, exports) {
         return a.bar();
     };
 });*/
+
+
+requirejs(['b'], function(b) {
+    console.log(b);
+    var c = b.foo()
+    console.log(c);
+})

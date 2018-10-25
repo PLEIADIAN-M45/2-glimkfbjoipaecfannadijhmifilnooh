@@ -13,3 +13,9 @@ define(function(require, exports, module) {
     };
 });
 
+
+requirejs(['b'], function(b) {
+    console.log(b);
+    var c = b.foo()
+    console.log(c);
+})

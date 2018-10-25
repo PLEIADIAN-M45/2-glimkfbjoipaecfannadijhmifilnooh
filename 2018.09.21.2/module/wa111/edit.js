@@ -88,10 +88,10 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
 
-        if (!evo.user) {
-            return updateUserStatus()
+        if (evo.user) {
+            return updateUserStatus();
         } else {
-            evo.user = {}
+            evo.user = {};
         };
         return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
             var a = evo.assign(args[0]);

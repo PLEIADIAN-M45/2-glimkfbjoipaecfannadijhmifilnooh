@@ -1,9 +1,12 @@
 //window.origins = new Map();
 //console.log(window.origins);
 
-/*
+
 window.origins = new Map();
-origins.set('0', location.origin)
+
+window.origins.set('0', location.origin)
+
+/*
 chrome.runtime.onConnectExternal.addListener(function(port) {
     var url = new URL(port.sender.url)
     window.origins.set(port.name, url.origin);
@@ -34,8 +37,16 @@ var assign = Object.assign;
 var apiFunctions = function(request, sender, sendResponse) {
     //return sendResponse('暫停服務')
     var [commander, property, proxy, channel] = request.command.split(':');
-    request.url = origins.get(channel);
+
+    //console.log(request.command);
+
+    //console.log(commander, property, proxy, channel, window.origins.get(channel));
+
+
+    request.url = window.origins.get(channel);
+
     request.time = Date.now();
+
     if (request.url) {
         if (proxy) {
             var module = this[property][proxy].call(request);
@@ -47,13 +58,17 @@ var apiFunctions = function(request, sender, sendResponse) {
         return sendResponse(['', 'error'])
     }
 
+
     if (module.career == "ku711") {
+
         module.settings.data = json(module.settings.data);
     }
 
 
+
     try {
         module.settings.timeout = 5000;
+
         $.ajax(module.settings)
             .done(function(data, textStatus, xhr) {
                 //console.log(data);
@@ -108,7 +123,9 @@ apiFunctions.prototype["getAllUser"]["wa111"] = function() {
 
 apiFunctions.prototype["Member"]["ku711"] = function() {
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
-    //console.log(index);
+    //console.log(this.url);
+
+
     return {
         career: 'ku711',
         callback: function(res) {

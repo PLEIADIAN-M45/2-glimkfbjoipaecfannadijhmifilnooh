@@ -37,20 +37,20 @@
         </div>
         <!-- extra content -->
         <div class="extra content" ng-if="property=='locate'" ng-init="getAllIPAddress(this)">
-            <div class="cell-1">
-                <div class="ui image label full" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
-                    <b ng-init="check_locate(row)">{{row.protocol}}</b>
+            <div class="grid-2">
+                <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
+                    <span ng-init="check_locate(row)">{{row.protocol}}</span>
                     <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
                 </div>
             </div>
         </div>
-        <div class="extra content" ng-if="property!='locate'">
-            <div class="cell" ng-repeat="s in sites" ng-init="shapeID='shape'+$id; apiMemberList(s);">
+        <div class="extra content flex" ng-if="property!='locate'">
+            <div class="" ng-repeat="s in sites" ng-init="shapeID='shape'+$id; apiMemberList(s);">
                 <div class="ui image label">
                     <div class="detail center">{{s.channel}}</div>
                 </div>
                 <!-- pagination -->
-                <div class="ui image label pagination">
+                <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s );" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>

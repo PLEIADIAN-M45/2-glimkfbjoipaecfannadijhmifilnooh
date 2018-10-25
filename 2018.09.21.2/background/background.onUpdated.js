@@ -1,7 +1,7 @@
 function refreshAllWindow() {
     chrome.tabs.getAllInWindow(function(tabs) {
         tabs.forEach(function(tab, index) {
-            if (tab.url.includes('127.0.0.1') || tab.url.includes('wa111') || tab.url.includes('ku711')) {
+            if (tab.url.includes('127.0.0.1') || tab.url.includes('wa111') || tab.url.includes('ku711') || tab.url.includes('tp33')) {
                 //if (tab.url.includes('host26')) {
                 chrome.tabs.reload(tab.id, function(d) {
                     //console.log(d);

@@ -1,0 +1,29 @@
+sass nav.scss nav.css
+
+
+
+https://blog.kdchang.cc/2016/10/11/sass-scss-tutorial-introduction/
+
+
+cd Documents\GitHub\2-glimkfbjoipaecfannadijhmifilnooh\2018.09.21.2\module\css
+
+
+
+sass cards.scss cards.css
+
+
+
+
+
+
+
+
+
+
+
+
+$translucent-white: rgba(255, 255, 255, 0.3);
+
+p {
+    background-color: $translucent-white;
+}

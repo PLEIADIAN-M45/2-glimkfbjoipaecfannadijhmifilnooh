@@ -20,7 +20,6 @@ function parser(requestBody) {
 }
 
 function http() {
-
     var xmlhttp = {};
     chrome.webRequest.onBeforeRequest.addListener(function(details) {
         var { url, method, type, requestBody, initiator } = details;
@@ -60,8 +59,6 @@ function http() {
     }, ['requestBody', 'blocking'])
 }
 
-
-
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
     var lastPath = lastPathOf(url);
@@ -77,8 +74,51 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
             })
         }
     }
-
 }, {
     urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
     types: ["xmlhttprequest"]
 }, ['requestHeaders', 'blocking']);
+
+
+/**************************************************************************************************************/
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    window.origins.set("16", details.initiator);
+}, { urls: ["https://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
+    window.origins.set(port, details.initiator);
+}, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    var port = details.initiator.replace('http://q51.tp33.net:63', '');
+}, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+
+/**************************************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+console.log(location.origin);
+var a = chrome.runtime.getURL('').slice(0, -1);
+console.log(a);
+*/

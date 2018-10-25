@@ -1,11 +1,3 @@
-define([
-    'app'
-
-], (app) => {
-    console.log(this);
-
-}, 'app')
-
 var dispatch = function() {
     return Promise.resolve()
 }

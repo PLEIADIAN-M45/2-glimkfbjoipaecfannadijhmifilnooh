@@ -1,6 +1,7 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isBlack }">
-        <a class="item" ng-click="openLoginLog(user)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b><br><br>{{user.account}}-{{user.channel}}</a>
+        <a class="item" ng-click="openLoginLog(user)" style="margin-bottom: 50px;">
+            <i class="bolt icon"></i><b>一机多登</b><br><br><b ng-bind="user.account+'-'+user.channel"></b></a>
         <!-- 
             -{{sendsms.status}}
             <a class="item" ng-click="__stop()" ng-if="user.isBlack==true"><i class="bug icon"></i><b>黑名单</b></a> -->
@@ -18,6 +19,7 @@
     </div>
 </aside>
 <!-- 
+    {{user.account}}-{{user.channel}}
 <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==2"><i class="mail icon"></i><b>静止简讯</b></a>
  <a class="item" ng-click="sendsms.send(user)" ng-show="sendsms.status=='1'||sendsms.status=='1' "><i class="mail icon"></i><b>简讯-{{sendsms.status}}</b></a> -->
 <style type="text/css">
