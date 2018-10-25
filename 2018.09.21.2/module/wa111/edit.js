@@ -87,7 +87,8 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
 
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
-        if (evo.user) {
+
+        if (!evo.user) {
             return updateUserStatus()
         } else {
             evo.user = {}

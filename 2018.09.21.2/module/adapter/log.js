@@ -3,114 +3,59 @@ define([evo.router], function() {
     $scope.controller = function($compile, $rootScope, $timeout) {
         console.log('user:', evo.user);
         var { author, locate, mobile, idcard, banker, host, channel, account } = evo.user;
+
         var property = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
         var initialization = function(me) {
             var { property, value, region } = me;
             var { host, channel, account } = evo.user;
-            var icon = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" }[property];
-            var head = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" }[property];
+            var icon = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" } [property];
+            var head = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" } [property];
             var command = {
                 locate: "apiFunctions:locate:evo:0",
                 idcard: "apiFunctions:idcard:evo:0",
                 mobile: "apiFunctions:mobile:host:channel",
-            }[property];
+            } [property];
             var params = { property, channel, account, command, value };
             if (property == "locate") {
-                var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
+                var sites = [];
             } else {
                 var sites = ['wa111:26', 'wa111:35', 'wa111:17', 'ku711:16'].map((suffix) => {
                     var [proxy, channel] = suffix.split(':')
-                    return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix };
+                    return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix, index: 1 };
                 });
+                console.log(sites);
             }
             this.extend({ ...me, icon, head, params, sites });
         };
 
         function sheetsTestFunction(me) {
-            var { property, value, sheets } = me;
-            if (sheets && google.sheets[property]) {
-                evo.assign(sheets, google.sheets[property].search(value));
-                if (!$scope.$$phase) { $scope.$apply(); }
-            }
+            if (me.sheets == undefined) { return } else { me.sheets.test = google[me.property].search(me.value); }
         };
 
         function regionTestFunction(me) {
-            var { property, region } = me;
-            //console.log(property, region);
-            return this.extend(google.sheets.region.search.call(me));
-
-            //return 
+            if (me.region == undefined) { return } else { me.region.test = google.region.search(me.region); }
         };
 
         function apiFunctions(me, e) {
-
-            //if (this.params.command == undefined) { return }
-
+            this.extend(me);
             if (this.property == 'author') { return };
-
-            if (this.region.test === undefined) {
-                console.log(1, this.property, this.region.test);
-                if (this.property == 'banker') { return this.regionTestFunction(me) };
-                this.extend({ region: {}, active: 1 });
+            if (this.property == 'banker') { return }
+            if (this.region.test === undefined || e) {
+                this.extend({ region: {}, active: true });
                 evo.apiFunctions(this.params).then((res) => {
-                    console.log(res);
-                    return this.regionTestFunction(evo.assign(me, res))
-                }).then(putUser)
-
-
+                    this.regionTestFunction(evo.assign(me, res));
+                    this.extend(res, { active: false });
+                }).then(putUser);
             }
-
-            if (this.region.test === null) {
-
-                //console.log(2, this.property, this.region.test);
-
-            }
-
-
-
-
-            if (this.region.test && e == undefined) {
-
-
-                /*this.extend({ region: {}, active: 1 });
-                evo.apiFunctions(this.params).then((res) => {
-                    console.log(res);
-                    return this.regionTestFunction(evo.assign(me, res))
-                }).then(putUser)
-*/
-
-
-            } else {
-
-                return
-            }
-
-
-            return
-
-
-            console.log(this);
-
-
-
-
-
-            return
-
-            console.log(this.property, this.region, this.params, isEmptyObject(this.region));
-
-            if (!isEmptyObject(this.region) && e == undefined) { return }
-
-
         };
 
         function apiMemberList(me, e) {
-            //if (me.channel !== '16') { return }
-            //if (!me.author) { return }
-            me.index = me.index || 1;
             $('.popup').remove();
-            this.extend({ rows: [], active: 1, index: me.index });
-            evo.apiFunctions(me).then((res) => { this.extend(res); })
+            this.extend(evo.assign(me, { rows: [], active: true }));
+            evo.apiFunctions(me).then((res) => {
+                evo.assign(me, res);
+                this.extend(res);
+            })
         };
 
         function GetAlertInfoByID(row, scope) {
@@ -158,7 +103,7 @@ define([evo.router], function() {
                 }
             }
         };
-        //千萬不要設 inline:true
+
         function imPopup(row, scope, id) {
             var target = document.getElementById(id);
             setTimeout(function() {
@@ -167,7 +112,11 @@ define([evo.router], function() {
             }, 500, target)
         };
 
-        function openMemberList(s) {
+        function openMemberList({ origin }) {
+            window.open(origin + {
+                "ku711": `/member/MemberInfoManage/MemberInfoManage`,
+                "wa111": `/aspx/MemberList.aspx?sort=Font_xianyousuoyouhuiyuan`
+            } [host]);
             switch (evo.host) {
                 case "wa111":
                     var path = "/aspx/MemberList.aspx?sort=Font_xianyousuoyouhuiyuan";
@@ -179,13 +128,11 @@ define([evo.router], function() {
             window.open(s.result.origin + path)
         };
 
-        function showMemberModify(row, s) {
-            if (s.channel == '16') {
-                var url = s.result.origin + '/Member/MemberInfoManage/EditMemberInfoManage?accountId=' + row.AccountID;
-            } else {
-                var url = s.result.origin + '/Aspx/MemberModify.aspx?account=' + row.f_accounts;
-            }
-            window.open(url);
+        function showMemberModify({ f_accounts, AccountID }, { origin, host }) {
+            window.open(origin + {
+                "ku711": `/Member/MemberInfoManage/EditMemberInfoManage?accountId=${AccountID}`,
+                "wa111": `/Aspx/MemberModify.aspx?account=${f_accounts}`
+            } [host]);
         };
 
         function getAllIPAddress(scope) {
@@ -230,13 +177,11 @@ define([evo.router], function() {
         $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
-
-
     function createIFrame() {
         var frameUrl = {
-            "wa111": `http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
-            "ku711": `https://bk.ku711.net/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
-        }[evo.host];
+            "wa111": `${location.origin}/sameBrowserList.aspx?iType=3&accounts=${evo.account}siteNumber=${evo.channel}`,
+            "ku711": `${location.origin}/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
+        } [evo.host];
 
         return new Promise(function(resolve, reject) {
             $('<div>').addClass('ui horizontal divider').text('AND').appendTo(evo.controllerProvider);
@@ -273,11 +218,11 @@ define([evo.router], function() {
         });
     }
 
+
+
     if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
-
-        $scope.components = ['log']
-        $scope.stylesheet = ['log', 'cards']
-
+        $scope.components = ['log'];
+        $scope.stylesheet = ['log', 'cards'];
         startup()
             .then(getUser)
             .then(dispatchMyEvent)
@@ -285,26 +230,37 @@ define([evo.router], function() {
             .then(scrollHeightListener)
             .then(checkSensitiveWords)
             .then(addSiteNumberToAccountId)
-            //.then(createIFrame)
+            .then(createIFrame)
             .catch(error)
     }
 
-
-
-
-
-
-
-
     if (evo.params.method == 'DeviceNo' || evo.filename == 'samebrowserlist') {
-        console.log(1111111);
-        dispatchMyEvent()
+        $scope.stylesheet = ['log'];
+        startup().then(dispatchMyEvent).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
     }
 
 
 })
 
 
+function test() {
+    author.value = "王杰";
+    mobile.value = "15868723883";
+    evo.user.mobile.value = "17805182900";
+    evo.user.idcard.value = "320684199901017199";
+    evo.user.banker[0].value = "6212264301022817389";
+    evo.user.author.value = "王杰";
+    evo.user.locate.value = "116.20.62.75";
+    /*
+        // evo.user.locate.value = "216.20.62.75";
+         evo.user.mobile.value = "13126682900";
+         evo.user.idcard.value = "320584199901017191";
+         //evo.user.banker[0].value = "623668255000152656";
+         evo.user.mobile.value = "15868723883";*/
+    //author.value = "欧阳磊";
+    //banker[0].value = "62122617040052324";
+
+}
 
 
 

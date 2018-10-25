@@ -5,23 +5,27 @@ function defineProperties(properties) {
 };
 
 function requireComponents() {
-    $scope.components.forEach((name) => {
-        var templateUrl = require.toUrl("./html/" + name + ".html");
-        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
-            var template = angular.element(html);
-            $element.append(template);
-            $compile(template)($scope);
+    if ($scope.components) {
+        $scope.components.forEach((name) => {
+            var templateUrl = require.toUrl("./html/" + name + ".html");
+            fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+                var template = angular.element(html);
+                $element.append(template);
+                $compile(template)($scope);
+            })
         })
-    })
+    }
 }
 
 function requireStylesheet() {
-    $scope.stylesheet.forEach(function(sheet) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = require.toUrl("./css/" + sheet + ".css");;
-        document.body.appendChild(link);
-    });
+    if ($scope.stylesheet) {
+        $scope.stylesheet.forEach(function(sheet) {
+            var link = document.createElement('link');
+            link.rel = 'stylesheet';
+            link.href = require.toUrl("./css/" + sheet + ".css");;
+            document.body.appendChild(link);
+        });
+    }
 }
 
 

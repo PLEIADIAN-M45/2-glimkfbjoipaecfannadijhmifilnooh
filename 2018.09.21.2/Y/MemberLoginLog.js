@@ -30,7 +30,9 @@ define([
             } [property];
             var params = { property, channel, account, command, value };
             if (property == "locate") {
-                var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
+                var sites = [];
+
+                //var sites = [{ channel: '9999', command: 'getAllIPAddress' }];
             } else {
                 var sites = ['wa111:26', 'wa111:35', 'wa111:17', 'ku711:16'].map((suffix) => {
                     var [proxy, channel] = suffix.split(':')

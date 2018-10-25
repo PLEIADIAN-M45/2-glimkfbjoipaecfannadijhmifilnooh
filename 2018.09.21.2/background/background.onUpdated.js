@@ -22,11 +22,11 @@ chrome.runtime.onInstalled.addListener(function(details) {
 });
 
 
-/*
+
 chrome.browserAction.onClicked.addListener(function(tab) {
-    
+
     chrome.runtime.reload();
-})*/
+})
 
 /*
 chrome.browserAction.onClicked.addListener(function(tab) {

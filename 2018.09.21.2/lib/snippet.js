@@ -1,0 +1,1 @@
+        //if (!$scope.$$phase) { $scope.$apply(); }

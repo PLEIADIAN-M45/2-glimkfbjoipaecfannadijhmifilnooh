@@ -1,6 +1,7 @@
 //window.origins = new Map();
 //console.log(window.origins);
 
+/*
 window.origins = new Map();
 origins.set('0', location.origin)
 chrome.runtime.onConnectExternal.addListener(function(port) {
@@ -12,7 +13,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     }
     console.log(origins);
 });
-
+*/
 
 /*
 if (!window.MockType) {}
@@ -31,74 +32,47 @@ var assign = Object.assign;
 
 
 var apiFunctions = function(request, sender, sendResponse) {
-
     //return sendResponse('暫停服務')
     var [commander, property, proxy, channel] = request.command.split(':');
-
     request.url = origins.get(channel);
-
     request.time = Date.now();
-
-
-    //console.log(request);
-
-
     if (request.url) {
-
         if (proxy) {
             var module = this[property][proxy].call(request);
-
-            console.log(module);
+            //console.log(module);
         } else {
             //var module = this[property].call(request);
         }
-        //console.log(module);
-        //var module = this[property + ':' + proxy].call(request);
-        //console.log(module);
     } else {
-
-        return sendResponse(['未连线', 'error'])
+        return sendResponse(['', 'error'])
     }
 
-
     if (module.career == "ku711") {
-
-
         module.settings.data = json(module.settings.data);
-
-        //console.log(module.settings.data);
-
     }
 
 
     try {
-
         module.settings.timeout = 5000;
-
-
-
         $.ajax(module.settings)
             .done(function(data, textStatus, xhr) {
-                // console.log(data);
+                //console.log(data);
                 try {
                     var result = module.callback(data);
-
                     result.career = module.career;
+                    result.host = module.career;
+                    result.origin = request.url;
 
                     var status = result.status || textStatus;
-
                     if (['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
-
-                    sendResponse([result, status, xhr])
-
+                    sendResponse([result, status, xhr]);
                 } catch (ex) {
-                    sendResponse([null, 'error', xhr])
+                    sendResponse([null, 'error', xhr]);
                 }
             })
             .fail(function(jqXHR, textStatus, errorThrown) {
                 sendResponse([null, 'error'])
             });
-
     } catch (ex) {
         sendResponse([null, 'ex'])
         console.warn(ex);
@@ -237,7 +211,6 @@ apiFunctions.prototype["Member"]["wa111"] = function() {
 }
 
 apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
-    console.log(this);
     var { account } = this.params;
     return {
         career: 'wa111',
@@ -255,7 +228,6 @@ apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
 }
 
 apiFunctions.prototype["SystemLog"]["wa111"] = function() {
-
     return {
         career: 'wa111',
         settings: {
@@ -312,9 +284,6 @@ apiFunctions.prototype["SystemLog"]["ku711"] = function() {
     }
 }
 apiFunctions.prototype["MemberBonus"]["ku711"] = function() {
-
-    console.log(this);
-
     var { AccountID, BonusNumber, BonusID } = this;
     return {
         career: 'ku711',
@@ -339,10 +308,10 @@ apiFunctions.prototype["MemberBonus"]["ku711"] = function() {
             data: {
                 AccountID: AccountID,
                 //AccountID: AccountID,
-                //StartTime: moment().format('YYYY-MM-dd'),
-                //EndTime: moment().format('YYYY-MM-dd'),
-                StartTime: '2018-01-01',
-                EndTime: '2018-10-10',
+                StartTime: moment().format('YYYY-MM-dd'),
+                EndTime: moment().format('YYYY-MM-dd'),
+                //StartTime: '2018-01-01',
+                //EndTime: '2018-10-10',
                 PageNumber: 0,
                 RecordCounts: 20,
                 OrderField: '',
@@ -402,8 +371,7 @@ apiFunctions.prototype["Alerts"]["ku711"] = function() {
 apiFunctions.prototype["smsService"]["smsc"] = function() {
     var { account, mobile, status, channel, operator } = this.params;
     var smss = aes.decrypt(localStorage.sms);
-    
-    var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" }[channel];
+    var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
     if (smss == undefined) { return false }
@@ -454,21 +422,10 @@ apiFunctions.prototype["mobile"]["ku711"] = function() {
                 prov: d.Province,
                 city: d.City
             }
-
-            /*return {
-                region: {
-                    career: 'ku711',
-                    meta: d.Cardtype,
-                    prov: d.Province,
-                    city: d.City
-                }
-            }*/
         }
     }
 }
 apiFunctions.prototype["mobile"]["wa111"] = function() {
-    //console.log(this);
-
     return {
         career: 'wa111',
         settings: {
@@ -483,6 +440,7 @@ apiFunctions.prototype["mobile"]["wa111"] = function() {
             }
         },
         callback: function(res) {
+            console.log(res);
             var str = res.msg.replace('<br />', '<br/>').split('<br/>');
             var arr = str[0].split('&nbsp;');
             return {
@@ -490,16 +448,6 @@ apiFunctions.prototype["mobile"]["wa111"] = function() {
                 city: arr[1],
                 meta: str[1]
             }
-
-            /*return {
-                region: {
-                    career: 'wa111',
-                    prov: arr[0],
-                    city: arr[1],
-                    meta: str[1]
-                },
-
-            }*/
         }
     }
 }

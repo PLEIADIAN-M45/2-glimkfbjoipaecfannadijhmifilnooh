@@ -25,7 +25,9 @@ function delUser() {
 
 
 var google = {};
+
 async function start() {
+
     var separator = String.fromCharCode(124);
     var blacklist = await extension.localStorage.getItem('blacklist');
     var sensitive = await extension.localStorage.getItem('sensitive');
@@ -43,96 +45,64 @@ async function start() {
     var region = evo.sensitive.area;
     var mobile = await extension.localStorage.getItem('BlackPhone');
 
+    /*
 
-    author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
     author.push(["王杰", "A695000035", "26", "惡意投訴人", "異審-書辭"])
-    
-    region.push(['云南'])
-    region.push(['湖南'])
-    region.push(['湖北'])
 
+        author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
+        region.push(['云南'])
+        region.push(['湖南'])
+        region.push(['湖北'])
+        banker.push(['62290837'])
+        locate.push(['116.53.197.240'])
+    */
 
-    banker.push(['62290837'])
-    locate.push(['116.53.197.240'])
-
-
-    region.search = function() {
-        //console.log(this);
-        if (this == window) { this.region.test = undefined };
-        if (this.region == undefined) { return }
-        var { prov, city, area, ctry } = this.region;
-        var value = [prov, city, area, ctry].join('').trim();
-        //console.log(this.property, value);
-        if (value) {
-            var expression = region.separate();
-            var re = new RegExp(expression, 'g');
-            this.region.test = value.match(re);
-        } else { this.region.test = undefined; }
-        return this;
+    region.search = function(region) {
+        if (this == window) { return undefined };
+        if (region == undefined) { return undefined };
+        var values = evo.values(region);
+        if (values.length == 0) { return undefined };
+        var value = values.join('').trim();
+        var expression = this.separate();
+        var re = new RegExp(expression, 'g');
+        return value.match(re);
     }
 
     author.search = function(value) {
-        var result = {};
-        this.find((x, index, array) => {
-            var [username, account, channel, meta] = x;
-            if (username.trim() == value) {
-                var test = account + '-' + channel;
-                return result = { test, index, meta };
-            }
+        return this.find(([user]) => {
+            return user == value;
         })
-        return result;
     }
-
     banker.search = function(value) {
-        return this.find(([x], i, array) => {
-            if (value.startsWith(trim(x))) {
-                var arr = array[i];
-                arr.test = true;
-                arr.index = i;
-                arr.text = x;
-                arr.meta = '黑名单'
-                return true;
-            }
+        return this.find(([x]) => {
+            return value.startsWith(trim(x))
         })
     }
-
-    mobile.search = function(value) {
-        return this.find(([x], i, array) => {
-            if (value.startsWith(trim(x))) {
-                var arr = array[i];
-                arr.test = true;
-                arr.index = i;
-                arr.text = x;
-                arr.meta = '黑名单'
-                return true;
-            }
+    mobile.search = function(value, me) {
+        return this.find(([x]) => {
+            return value.startsWith(trim(x))
         })
     }
-
     locate.search = function(value, num = 4) {
-        var arr = value.split('.');
-        var val = arr.slice(0, num).join('.')
-        return this.find((x, i, array) => {
-            var compare = x[0].trim();
-            if (compare.startsWith(val)) {
-                var arr = array[i];
-                arr.test = true;
-                arr.index = i;
-                arr.text = val;
-                arr.meta = '黑名单'
-                return true;
-            }
-        })
+        return this.find(function([x]) {
+            return trim(x).startsWith(this);
+        }, value.split('.').slice(0, num).join('.')) || false;
     }
 
 
-    google.sheets = { author, banker, locate, region, mobile }
+
+    evo.assign(google, { author, banker, locate, region, mobile })
+
+
+
     var Regexp = function() {};
     Regexp.prototype.blacklist = new RegExp('^(*)'.replace('*', blacklist.join(separator)))
     Regexp.prototype.sensitive = new Object();
     Object.entries(sensitive).forEach(function([key, value]) {
         Regexp.prototype.sensitive[key] = new RegExp('(*)'.replace('*', value.join(separator)));
     })
+
+    //console.log(google.sheets);
     evo.regexp = new Regexp();
 }
 

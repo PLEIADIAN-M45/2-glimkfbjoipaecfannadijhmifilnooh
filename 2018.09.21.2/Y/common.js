@@ -176,8 +176,13 @@ async function start() {
     var locate = await extension.localStorage.getItem('IPAddress');
     var region = evo.sensitive.area;
 
+    console.log(evo.test);
+
     if ((evo.test)) {
-        author.push(['王杰', 'F6261', '26', '恶意投诉人'])
+
+        //author.push(['蔡文献', 'F6261', '26', '恶意投诉人'])
+
+        author.push(['欧阳磊', 'F6261', '26', '恶意投诉人'])
         author.push(['张凯', 'F6261', '26', '恶意投诉人'])
         region.push('北京')
         region.push('湖南')

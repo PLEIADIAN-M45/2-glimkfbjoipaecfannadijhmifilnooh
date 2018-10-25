@@ -1,12 +1,12 @@
 <div class="ui cards" id="myCard">
-    <div class="ui card" ng-repeat="me in dataset" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me);">
+    <div class="ui card" ng-repeat="me in property track by $index" ng-class="{ 'danger':  sheets.test  || region.test }" ng-init="initialization(me);sheetsTestFunction(me);regionTestFunction(me)">
         <!-- dimmer -->
         <div class="ui dimmer" ng-class="{ 'active': active }">
             <div class="ui text loader">{{title}}
                 <br>归属地查询中</div>
         </div>
         <!-- attached content -->
-        <div class="ui top attached content">
+        <div class="ui top attached content" ng-init="">
             <div class="left floated meta">
                 <i class="icon" ng-class="icon"></i>{{head}} {{sheets.meta}}
             </div>
@@ -19,7 +19,15 @@
             <i class="icon earlybirds hidden"></i>
             <div class="header">{{value}}</div>
         </div>
-        <div class="content center aligned" ng-show="region">
+        <!-- content 结果-->
+        <div class="content center aligned" ng-show="property=='author'">
+            <div class="sub header">
+                <a class="ui basic label" ng-show="sheets.test">{{sheets.test[3]}}</a>
+            </div>
+            <a class="sub meta">{{sheets.test[1]}}-{{sheets.test[2]}}</a>
+        </div>
+        <!-- content 结果-->
+        <div class="content center aligned" ng-show="region" ng-init="apiFunctions(me);">
             <div class="sub header">
                 {{region.prov}} {{region.city}} {{region.area}} {{region.ctry}}
             </div>
@@ -27,53 +35,56 @@
                 {{region.meta}}
             </div>
         </div>
-        <div class="extra content">
-            <div class="cell" ng-repeat="s in sites" ng-init="apiMemberList(s);">
-                <div class="ui image label">
-                    <!-- <b>{{channel}}-{{active}}</b> -->
-                    <div class="detail">
-                        <i class="spinner icon loading" ng-show="active"></i>
-                        <i class="spinner icon loading" ng-show="s.active"></i>
-
-                    </div>
+        <!-- extra content -->
+        <div class="extra content" ng-if="property=='locate'" ng-init="getAllIPAddress(this)">
+            <div class="cell-1">
+                <div class="ui image label full" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
+                    <b ng-init="check_locate(row)">{{row.protocol}}</b>
+                    <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
                 </div>
-                <div class="ui image label pointer" ng-repeat="row in rows">
+            </div>
+        </div>
+        <div class="extra content" ng-if="property!='locate'">
+            <div class="cell" ng-repeat="s in sites" ng-init="shapeID='shape'+$id; apiMemberList(s);">
+                <div class="ui image label">
+                    <div class="detail center">{{s.channel}}</div>
+                </div>
+                <!-- pagination -->
+                <div class="ui image label pagination">
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s );" ng-disabled="s.index==1 || s.active"></i>
+                    <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
+                    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s );" ng-disabled="s.index>=s.records || s.active"></i>
+                </div>
+                <!-- account -->
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); GetAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
                     <div class="detail accounts">{{row.f_accounts||row.AccountID|uppercase}}</div>
+                    <!-- extra content 警示訊息-->
+                    <aside class="hidden">
+                        <table class="ui celled selectable striped collapsing table inverted pink small" ng-init="imPopup(row , this, popup_id)" ng-if="row.list_Accounts.length">
+                            <thead>
+                                <th>警示帐号</th>
+                                <th>汇款户名</th>
+                                <th>汇款帐号</th>
+                                <th>警示讯息</th>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="w in row.list_Accounts">
+                                    <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
+                                    <td>{{w.f_RemittanceName||w.AccountName}}</td>
+                                    <td>{{w.f_RemittanceAccount}}</td>
+                                    <td>{{w.f_remarks||w.Memo}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </aside>
                 </div>
             </div>
         </div>
     </div>
 </div>
 <style type="text/css">
-i.icon.loading33 {
-    height: 1em;
-    line-height: 1;
-    animation: icon-loading 2s linear 0s infinite normal none running;
-    animation-name: icon-loading;
-    animation-duration: 2s;
-    animation-timing-function: linear;
-    animation-delay: 0s;
-    animation-iteration-count: infinite;
-    animation-direction: normal;
-    animation-fill-mode: none;
-    animation-play-state: running;
+.ui.label>.detail .icon {
+    margin: 0;
 }
-
-
-
-/* 
-i.icon.loading {
-    height: 1em;
-    line-height: 1;
-    animation: icon-loading 2s linear 0s infinite normal none running;
-}
- */
-
-
-/*
- ng-init="apiFunctions(me);"
-.hidden {
-    display: none !important;
-}
-*/
 </style>
