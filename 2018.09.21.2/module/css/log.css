@@ -203,10 +203,6 @@ li>b:nth-child(2)::before {
     /*  content: " (" attr(href) ")"; */
 }
 
-li::before {
-    content: "2344-3243";
-    /*  content: " (" attr(href) ")"; */
-}
 
 /*
 i.icon.universal.access {
