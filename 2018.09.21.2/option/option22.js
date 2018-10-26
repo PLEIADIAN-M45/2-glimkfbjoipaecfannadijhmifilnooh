@@ -210,12 +210,36 @@ function getForms(obj) {
 }
 
 
+/*  getForms({
+       spreadsheet: '1eUNxUPYKC834Q2mzazEg-ToPiUVyIuxVHTxXNgPyAIY',
+       sheet: 'forms'
+   }).then(s)*/
+/*
+var map = new Map(GB2260)
+console.log(map);*/
 
 
-var myApp = angular.module('myApp', [])
+/*       var value = local.getItem('IPAddress')
+       value = aes.decrypt(value);
+       value = JSON.parse(value);
+       console.log(...value);*/
+//, function($controllerProvider) {        controllerProvider = $controllerProvider;    }
+/*
+.config(function($controllerProvider, $compileProvider, $provide) {
+        console.log($controllerProvider);
+        console.log($compileProvider);
+        console.log($provide);
 
-    .controller('myCtrl', function($scope, $http, $timeout) {
+    })*/
 
+
+var myApp2 = angular.module('myApp33', [])
+
+    .controller('myCtrl92', function($scope, $http, $timeout) {
+
+        console.log(222);
+        $scope.a = 4
+        return
         getProfileUserInfo()
             .then(userInfo => {
                 local.setItem('userInfo', userInfo);
@@ -424,3 +448,96 @@ var myApp = angular.module('myApp', [])
             });
         };
     })
+
+
+
+setTimeout(function() {
+    //console.log(controllerProvider);
+    console.log('------------------');
+    //var $injector = angular.injector();
+    //console.log($injector);
+    /* myApp2.config(function($controllerProvider, $compileProvider, $provide) {
+        console.log($controllerProvider);
+        console.log($compileProvider);
+        console.log($provide);
+    });
+
+
+    myApp2.run(myApp2._configBlocks)
+
+    console.log(myApp2);
+*/
+
+    /*
+    angular.element($(document.body)).injector().invoke(function($compile, $rootScope) {
+        $compile($('#ctrl'))($rootScope);
+        $rootScope.$apply();
+    });*/
+    //console.log(myApp2.config());
+
+
+    /*
+    var injector = angular.element(document.body).injector()
+    console.log(injector);
+
+*/
+    //console.log(myApp2.controller().toSource());
+
+    //.getAuthToken()
+
+}, 500)
+
+
+var myApp = angular.module('myApp', []);
+myApp.factory('aProvider', function() {
+    console.log("factory");
+});
+
+myApp.directive("test1", function() {
+    console.log("directive setup");
+    return {
+        compile: function() { console.log("directive compile"); }
+    }
+});
+
+myApp.directive("test2", function() {
+    return {
+        link: function() { console.log("directive link"); }
+    }
+});
+
+myApp.controller('myCtrl', function($scope) {
+    $scope.a = 12
+    console.log("app controller 1");
+});
+
+myApp.run(function() {
+    console.log("app run");
+});
+
+myApp.config(function() {
+    console.log("app config");
+});
+
+myApp.controller('myCtrl222', function($scope) {
+    console.log("app controller 222");
+});
+
+setTimeout(function() {
+    console.log(3232, 123);
+
+
+}, 2000)
+
+/*
+myApp.run(function() {
+    console.log("app run");
+});
+
+myApp.config(function() {
+    console.log("app config");
+});
+
+myApp.controller('myCtrl', function($scope) {
+    console.log("app controller");
+});*/

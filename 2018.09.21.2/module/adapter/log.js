@@ -3,6 +3,7 @@ define([evo.router], function() {
 
     $scope.controller = function($compile, $rootScope, $timeout) {
 
+
         console.log('user:', evo.user);
 
 
@@ -243,8 +244,10 @@ define([evo.router], function() {
                 var uniqueId = accountId + siteNumber;
                 if (uniqueId == evo.uniqueId) { element.classList.add('self'); }
                 if (evo.siteNumber != '16') {
+                    
                     element.setAttribute('data-content', accountId);
                     element.textContent = null;
+
                     $('<b>').text(accountId).addClass('pointer').attr('data-content', accountId).popup({ on: 'click' }).click(function() {
                         evo.copyText = accountId;
                         document.execCommand("copy");
@@ -284,81 +287,9 @@ define([evo.router], function() {
     }
 });
 
-function addChannel() {
-    var rows = $('#divCookie>ul:not([class]):not([style])').toArray();
-    var c = rows.filter((row) => {
-        console.log(row.TEXT_NODE);
-        return row.children.length > 5 && row.firstElementChild.outerText;
-    });
-
-    console.log(c);
-
-}
-
-addChannel();
-
-//collection.push([el.children[0]]);
-
-
-//var collection = [];
-function createElement() {
-    var node = document.createElement("B"); // Create a <li> node
-    var textnode = document.createTextNode(channel); // Create a text node
-    node.appendChild(textnode); // Append the text to <li>
-    document.getElementById("myList").appendChild(node);
-}
-
-
-document.querySelectorAll('ul:not([class]):not([style])').forEach((el) => {
-    if (el.children.length > 5 && el.firstElementChild.outerText) {
-
-        var { children } = el;
-        var channel = children[0].outerText.slice(0, 2);
-        var account = children[2].outerText;
-
-        children[2].firstChild.remove()
-
-        var node = document.createElement("B");
-        var textnode = document.createTextNode(account);
-        node.appendChild(textnode);
-        children[2].appendChild(node);
-
-        node.onclick = function() {
-            alert(1)
-        }
-
-
-        var node = document.createElement("B");
-        var textnode = document.createTextNode(channel);
-        node.appendChild(textnode);
-        children[2].appendChild(node);
 
 
 
-        if (channel == evo.channel) {
-            //self
-            el.title = [account, channel].join('-')
-        }
-
-    }
-}, collection = []);
-
-
-/*
-collection.forEach(({ children }) => {
-    //console.log(children[0].outerText);
-    collection2.push([children[0], children[1]])
-}, collection2 = [])
-
-collection2*/
-
-
-//console.log(collection);
-
-/*collection.forEach(({ children }) => {
-    console.log(children[0]);
-})
-*/
 
 
 function test() {

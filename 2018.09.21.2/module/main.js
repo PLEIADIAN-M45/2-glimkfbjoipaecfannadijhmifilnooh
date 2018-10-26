@@ -64,6 +64,31 @@ requirejs.config({
 });
 
 
+/*
+document.oncopy = function(e) {
+    //console.log(evo);
+    console.log(e);
+
+    if (window.getSelection().type === "Caret") {
+        e.preventDefault();
+        if (e.clipboardData) {
+            e.clipboardData.setData("text/plain", window.copyText);
+            // console.clear();
+            console.log('目前剪贴板内容：', window.copyText.toString());
+        } else if (window.clipboardData) {
+            console.log(222222222, clipboardData);
+            window.clipboardData.setData("Text", window.copyText);
+        }
+    }
+};*/
+
+
+document.addEventListener('copy', function(e) {
+    e.clipboardData.setData('text/plain', e.target.attributes["data-content"].value);
+    e.preventDefault();
+});
+
+
 
 //'cryptojs/md5', 'cryptojs/ripemd160',
 

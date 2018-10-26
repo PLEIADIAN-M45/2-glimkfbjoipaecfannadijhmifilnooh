@@ -55,5 +55,13 @@ define([evo.host + '/app'], function(app) {
     window.extend({ $scope, $compile, $injector, $element, $invoke });
     return evo.extend({ $scope, $injector, $compile, $invoke, $element });;
 });
+/*
 
 
+myApp.run(function() {
+    console.log("app run");
+});
+
+myApp.config(function() {
+    console.log("app config");
+});*/

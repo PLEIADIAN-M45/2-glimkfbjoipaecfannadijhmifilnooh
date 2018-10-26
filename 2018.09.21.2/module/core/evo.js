@@ -25,6 +25,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
 
+
         get siteName() { return localStorage['siteName']; }
 
         get token() {
@@ -261,11 +262,31 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         error(ex) {
             console.log(ex);
         }
+
+        copy(e) {
+            document.execCommand("copy");
+        }
+        cut(e) {
+            document.execCommand("cut");
+        }
+        paste(e) {
+            document.execCommand("paste");
+        }
+
+
     }
 
     const evo = new Evo();
+
 
     evo.assign = Object.assign;
 
     return evo;
 })
+
+/*
+//navigator.clipboard
+https://github.com/garykac/clipboard/blob/master/clipboard.md has a compatibility table for
+ execCommand(cut / copy / paste).
+
+*/

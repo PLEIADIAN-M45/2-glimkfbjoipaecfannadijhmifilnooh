@@ -107,18 +107,6 @@ async function start() {
 }
 
 
-document.oncopy = function(e) {
-    if (window.getSelection().type === "Caret") {
-        e.preventDefault();
-        if (e.clipboardData) {
-            e.clipboardData.setData("text/plain", evo.copyText);
-            // console.clear();
-            //console.log('目前剪贴板内容：', evo.copyText.toString());
-        } else if (window.clipboardData) {
-            window.clipboardData.setData("Text", evo.copyText);
-        }
-    }
-};
 
 var auto_clean = function() {
     $('input[type=text]').focus(function() {

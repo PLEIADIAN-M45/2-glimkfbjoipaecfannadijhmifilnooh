@@ -193,18 +193,24 @@ td.tooltipstered:after {
 }
 
 
+
 li>b:nth-child(1) {
     /* color: blue; */
 }
 
 li>b:nth-child(2)::before {
-
     content: "-";
-    /*  content: " (" attr(href) ")"; */
+}
+
+.pointer {
+    cursor: pointer;
 }
 
 
+
 /*
+    /*  content: " (" attr(href) ")"; */
+
 i.icon.universal.access {
     content: "汇款户名";
 }
@@ -232,4 +238,6 @@ i.icon.banker:before {
 
 i.icon.universal.access:before {
     content: "\f29a";
-} */
+}
+
+*/
