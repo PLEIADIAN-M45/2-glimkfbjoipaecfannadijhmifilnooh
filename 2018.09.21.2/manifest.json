@@ -7,18 +7,26 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
+
             "lib/cryptoJS/rollups/aes.js",
             "option/encrypt.js",
+
+
             "background/background.js",
-            "background/background.webRequest.ku711.js",
-            //"background/background.webRequest.wa111.js",
-            "background/chrome.webRequest.onCompleted.js",
-            "background/background.onMessage.js",
+            "background/background.webRequest.js",
             "background/background.onUpdated.js",
-            "background/apiFunctions.js"
-            /*"mock/mock.js",
+            "background/background.onMessage.js",
+            "background/apiFunctions.js",
+
+
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
+
+
+
+            //"background/background.webRequest.wa111.js",
+            //"background/chrome.webRequest.onCompleted.js",
             //"background/fetch.js"
         ]
     },
@@ -41,7 +49,7 @@
                 //"css/common.css"
             ],
             "js": [
-                "module/main.require.js"
+                "module/injector.js"
             ],
             "matches": [
                 "http://*/company/net/page/Login/CommonLogin/Login.aspx",

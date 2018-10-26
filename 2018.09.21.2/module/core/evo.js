@@ -141,14 +141,13 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get domain() { return location.host.split('.'); }
         get sub() { return location.host.split('.')[0]; }
         get host() {
-
-
             return {
-                "6335": "wa111",
                 "6326": "wa111",
+                "6335": "wa111",
                 "6317": "wa111",
                 "6302": "wa111",
                 "8876": "wa111",
+                "26": "wa111",
                 "16": "ku711",
                 "": location.host.split('.')[1]
             } [location.port];
@@ -189,11 +188,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get controllerProvider() {
             return angular.element(document.querySelector('[ng-controller]'));
         }
-
-        get controllerProvider2() {
-            return angular.element(document.querySelector('[ng-controller]'));
-        }
-
 
         get path() {
             return {

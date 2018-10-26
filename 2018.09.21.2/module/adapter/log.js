@@ -1,12 +1,5 @@
 define([evo.router], function() {
-    /*
 
-
-document.designMode = 'on'
-
-
-
-    */
 
     $scope.controller = function($compile, $rootScope, $timeout) {
 
@@ -215,102 +208,6 @@ document.designMode = 'on'
             resolve('createIFrame')
         })
     }
-    /*
-
-’   Apostrophe  撇號
-（）   Bracket (英式) / Parentheses (美式)    括號
- ：   Colon  冒號
- ，   Comma  逗號
- －   Dash   破折號
- …   Ellipsis   省略號
- ！   Exclamation Mark (英式) / Point (美式) 感嘆號
- .   Full Stop (英式) / Period (美式)   句號
- 《　》     Guillemets 書名號
- –   Hyphen 連字號
-？    Question Mark  問號
- ＂＂  Quotation Mark 引號
-；    Semicolon  分號
-/    Slash  斜線
-． period or full stop 句号
-， comma 逗号
-： colon 冒号
-； semicolon 分号
-！ exclamation mark 惊叹号
-？ question mark 问号
-- hyphen 连字符
-* asterisk 星号
-' apostrophe 所有格符号，单词内部的省略
-— dash 破折号
-_ underscore
-‘ ’ single quotation marks 单引号
-“ ” double quotation marks 双引号
-( ) parenthesis or round brackets 圆括号
-[ ] square brackets 方括号
-<> Angle brackets 尖括号
-{} curly brackets or braces 大括号
-《 》French quotes 法文引号；书名号
-... ellipsis 省略号
-¨ tandem colon 双点号
-" ditto 同上
-‖ parallel 双线号
-／ slash or virgule or diagonal mark 斜线号
-＆ ampersand = and
-～ tilde or swung dash 代字号
-§ section; division 分节号
-→ arrow 箭号；参见号
-| vertical bar 竖线
-\ backslash 反斜线
-
-=====================
-
-附：部分数学符号的英文名称
-
-＋ plus 加号；正号
-－ minus 减号；负号
-± plus or minus 正负号
-× is multiplied by 乘号
-÷ is divided by 除号
-＝ is equal to 等于号
-≠ is not equal to 不等于号
-≡ is equivalent to 全等于号
-≌ is equal to or approximately equal to 等于或约等于号
-≈ is approximately equal to 约等于号
-＜ less than sign 小于号
-＞ more than or greater than sign大于号
-≮ is not less than 不小于号
-≯ is not more than 不大于号
-≤ is less than or equal to 小于或等于号
-≥ is more than or equal to 大于或等于号
-％ per cent 百分之…
-‰ per mill 千分之…
-∞ infinity 无限大号
-∝ varies as 与…成比例
-√ (square) root 平方根
-∵ since; because 因为
-∴ hence 所以
-∷ equals, as (proportion) 等于，成比例
-∠ angle 角
-⌒ semicircle 半圆
-⊙ circle 圆
-○ circumference 圆周
-△ triangle 三角形
-⊥ perpendicular to 垂直于
-∪ union of 并，合集
-∩ intersection of 交，通集
-∫ the integral of …的积分
-∑ (sigma) summation of 总和
-° degree 度
-′ minute 分
-″ second 秒
-＃ number …号
-℃ Celsius system 摄氏度
-＠ at 在
-
-    */
-
-    function symbol() {
-
-    }
 
 
     /*
@@ -327,98 +224,13 @@ _ underscore
     10手机归属地
     11一機多登備註
     12總輸贏查詢*/
-    var arr = [];
-    var els = []
-
-    function addChannel() {
-        /* TrHead2
+    /* TrHead2
          TrHead
          divCookie
          divCookie*/
 
-        $('#divCookie>ul:not([class]):not([style])').each((i, { children }) => {
-            //console.log(children);
-            try {
-                els.push([
-                    children[0],
-                    children[2],
-                    children[7],
-                    children[9]
-                ])
-                arr.push([
-                    children[0].textContent.slice(0, 2).trim(),
-                    children[2].textContent.trim(),
-                    children[7].textContent.trim(),
-                    children[9].textContent.trim()
-                ])
-            } catch (ex) {
-
-            }
 
 
-
-
-
-            /*console.log(el.children[2]);
-            var cds =
-
-                var cn = el.children[0];
-            var acc = el.children[2];
-            var acc = el.children[7]; //IP
-            var acc = el.children[9]; //归属地
-
-            var acc = el.children[11]; //備註
-            */
-
-
-
-
-
-
-
-
-
-
-        })
-
-        //console.log(arr);
-        // console.log(els);
-
-        function textContent(el) {
-            //console.log(el);
-            return el.textContent.trim()
-        }
-
-        var ess = els.filter((x) => x[1]).map((arr) => {
-            return arr.map(([channel, account, protocol, location]) => {
-                
-            })
-        }).map(s)
-        //.map(textContent)
-
-
-        /*.map(([channel, account, protocol, location]) => {
-            //console.log(el);
-            return {
-                channel: channel,
-                account,
-                protocol,
-                location
-            }
-
-            //el.map(textContent).map(s)
-        }).map(s)*/
-
-
-        console.log(ess);
-
-        /* .map((x) => {
-     console.log(x);
- })*/
-
-
-
-    }
 
 
     function addSiteNumberToAccountId() {
@@ -470,9 +282,83 @@ _ underscore
         $scope.stylesheet = ['log'];
         startup().then(dispatch).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
     }
+});
+
+function addChannel() {
+    var rows = $('#divCookie>ul:not([class]):not([style])').toArray();
+    var c = rows.filter((row) => {
+        console.log(row.TEXT_NODE);
+        return row.children.length > 5 && row.firstElementChild.outerText;
+    });
+
+    console.log(c);
+
+}
+
+addChannel();
+
+//collection.push([el.children[0]]);
 
 
+//var collection = [];
+function createElement() {
+    var node = document.createElement("B"); // Create a <li> node
+    var textnode = document.createTextNode(channel); // Create a text node
+    node.appendChild(textnode); // Append the text to <li>
+    document.getElementById("myList").appendChild(node);
+}
+
+
+document.querySelectorAll('ul:not([class]):not([style])').forEach((el) => {
+    if (el.children.length > 5 && el.firstElementChild.outerText) {
+
+        var { children } = el;
+        var channel = children[0].outerText.slice(0, 2);
+        var account = children[2].outerText;
+
+        children[2].firstChild.remove()
+
+        var node = document.createElement("B");
+        var textnode = document.createTextNode(account);
+        node.appendChild(textnode);
+        children[2].appendChild(node);
+
+        node.onclick = function() {
+            alert(1)
+        }
+
+
+        var node = document.createElement("B");
+        var textnode = document.createTextNode(channel);
+        node.appendChild(textnode);
+        children[2].appendChild(node);
+
+
+
+        if (channel == evo.channel) {
+            //self
+            el.title = [account, channel].join('-')
+        }
+
+    }
+}, collection = []);
+
+
+/*
+collection.forEach(({ children }) => {
+    //console.log(children[0].outerText);
+    collection2.push([children[0], children[1]])
+}, collection2 = [])
+
+collection2*/
+
+
+//console.log(collection);
+
+/*collection.forEach(({ children }) => {
+    console.log(children[0]);
 })
+*/
 
 
 function test() {

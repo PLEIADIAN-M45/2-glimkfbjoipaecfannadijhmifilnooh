@@ -7,3 +7,6 @@ function createTabs(url) { chrome.tabs.create({ url: url }) }
 
 
 //openOptionsPage();
+
+
+//createTabs('../code/a.html')

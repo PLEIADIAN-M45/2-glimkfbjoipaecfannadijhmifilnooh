@@ -1,117 +1,124 @@
-function onBeforeSendHeaders() {
-    chrome.webRequest.onBeforeSendHeaders.addListener(
-        function(details) {
-            // console.log(details.url);
-            if (details.type == "xmlhttprequest" && details.initiator == location.origin) {
-                console.log(details);
-                details.requestHeaders.push({ name: 'referer', value: details.url });
-                details.requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
-                details.requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['ajax-anti-forgery-token'] });
-                return { requestHeaders: details.requestHeaders }
-            }
-        }, { urls: ["*://bk.ku711.net/*"] }, ['requestHeaders', 'blocking']);
+//window.origins.set(port.name, url.origin);
+
+function lastPathOf(str) {
+    var url = new URL(str);
+    return url.pathname.split('/').pop();
 }
-onBeforeSendHeaders();
 
-//console.log(chrome.runtime.getURL('laydate.css'));
-
-
-
-chrome.webRequest.onBeforeRequest.addListener(
-    function(details) {
-        //console.log(details);
-        return {
-            redirectUrl: chrome.runtime.getURL('laydate.css')
-        };
-    }, { urls: ["*://js.kucdn.net/bundles/theme/default/laydate.*"] }, ["blocking"]);
+function searchParamsOf(str) {
+    var url = new URL(str);
+    return url.searchParams;
+}
 
 
+function parser(requestBody) {
+    if (requestBody) {
+        var postedString = decodeURIComponent(String.fromCharCode.apply(null,
+            new Uint8Array(requestBody.raw[0].bytes)));
+        return postedString;
+    } else { return null; }
+}
 
-
-chrome.webRequest.onBeforeRequest.addListener(
-    function(details) {
-        console.log(details);
-        return {
-            //redirectUrl: chrome.runtime.getURL('laydate.css')
-        };
-    }, { urls: ["*://*/*"] }, ["blocking"]);
-
-
-
-
-console.log(123);
-
-
-/*
-chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details) {
-        // console.log(details);
-        //localStorage.baidu = angular.toJson(details)
-        return { requestHeaders: details.requestHeaders }
-
-    }, { urls: ["*://opendata.baidu.com/*"] }, ['requestHeaders', 'blocking']);
-
-
-chrome.webRequest.onBeforeSendHeaders.addListener(
-    function(details) {
-        console.log(details);
-        // localStorage.sogou = angular.toJson(details)
-        return { requestHeaders: details.requestHeaders }
-    }, { urls: ["*://www.sogou.com/reventondc/external*"] }, ['requestHeaders', 'blocking']);
-
-
-
-chrome.webRequest.onCompleted.addListener(function(details) {
-
-    // console.log(details);
-
-
-}, { urls: ["*://opendata.baidu.com/*"] });
-*/
-function xxx() {
-
-    chrome.webRequest.onCompleted.addListener(function(details) {
-        var path = details.url.split('/').pop()
-        if (details.type == "xmlhttprequest") {
-            if (path == "GetMemberRisksInfoBackendByAccountID") {
-                chrome.tabs.executeScript(details.tabId, {
-                    code: "console.log('******************************')"
-                }, function(d) { console.log(d); })
+function http() {
+    var xmlhttp = {};
+    chrome.webRequest.onBeforeRequest.addListener(function(details) {
+        var { url, method, type, requestBody, initiator } = details;
+        var lastPath = lastPathOf(url);
+        var searchParams = searchParamsOf(url);
+        if (initiator == location.origin) {} else {
+            var dataType = 'json';
+            var data = {};
+            if (!xmlhttp[lastPath]) {
+                switch (method) {
+                    case "GET":
+                        var entries = searchParams.entries();
+                        [...entries].map(([name, value]) => { data[name] = value });
+                        break;
+                    case "POST":
+                        data = json(parser(requestBody));
+                        break;
+                }
+                xmlhttp[lastPath] = {
+                    postData: json(parser(requestBody)),
+                    career: "KU711",
+                    lastPath,
+                    requestBody,
+                    settings: {
+                        url: url.split('?')[0],
+                        dataType,
+                        method,
+                        type,
+                        data
+                    }
+                };
             }
         }
-    }, { urls: ["https://bk.ku711.net/Member/api/MemberInfoManage/*"] });
-
-    //https: //bk.ku711.net/Member/MemberInfoManage/EditMemberInfoManage?accountId=dgsd446
-    chrome.webRequest.onBeforeSendHeaders.addListener(
-        function(details) {
-            console.log(details);
-            if (details.type == "xmlhttprequest2" && details.initiator == location.origin) {
-                console.log(details);
-                /*details.requestHeaders.push({ name: 'referer', value: details.url });
-                details.requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
-                details.requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['ajax-anti-forgery-token'] });*/
-                return { requestHeaders: details.requestHeaders }
-            }
-        }, { urls: ["https://bk.ku711.net/Member/MemberInfoManage/EditMemberInfoManage?*"] }, ['requestHeaders', 'blocking']);
+    }, {
+        urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
+        types: ["xmlhttprequest"]
+    }, ['requestBody', 'blocking'])
 }
 
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+    var { url, method, type, requestHeaders, initiator } = details;
+    var lastPath = lastPathOf(url);
+    if (initiator == location.origin) {
+        requestHeaders.push({ name: 'referer', value: url });
+        requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
+        requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
+        return { requestHeaders: details.requestHeaders }
+    } else {
+        if (details.method == "POST") {
+            details.requestHeaders.filter(({ name, value }) => {
+                if (name == "RequestVerificationToken") { localStorage[name] = value; }
+            })
+        }
+    }
+}, {
+    urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
+    types: ["xmlhttprequest"]
+}, ['requestHeaders', 'blocking']);
+
+
+/**************************************************************************************************************/
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    window.origins.set("16", details.initiator);
+}, { urls: ["https://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
+    window.origins.set(port, details.initiator);
+}, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) { return };
+    var port = details.initiator.replace('http://q51.tp33.net:63', '');
+}, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+
+/**************************************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
-chrome.runtime.onConnectExternal.addListener(function(port) {
-    console.log(port);
-})
+console.log(location.origin);
+var a = chrome.runtime.getURL('').slice(0, -1);
+console.log(a);
 */
-/*
-chrome.tabs.executeScript(details.tabId, {
-    file: "/module/main.require.js"
-}, function(d) {
-    console.log(d);
-})*/
-
-
-
-
-
-//console.log(chrome.webRequest);
-
-//https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/webRequest/filterResponseData
-//https://dzone.com/articles/how-we-captured-ajax-api-requests-from-arbitrary-w

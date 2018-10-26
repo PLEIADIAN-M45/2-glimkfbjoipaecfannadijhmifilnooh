@@ -6,6 +6,22 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
         evo.map = { "BankCode111": "banker.meta", "BankCode111_2": "banker.meta", "BankCode111_3": "banker.meta", "BankCode111_4": "banker.meta", "BankCode111_5": "banker.meta", "txtRemittanceAccount111": "banker.title", "txtRemittanceAccount111_2": "banker.title", "txtRemittanceAccount111_3": "banker.title", "txtRemittanceAccount111_4": "banker.title", "txtRemittanceAccount111_5": "banker.title", "ddlCityArea": "banker.city", "ddlCityArea2": "banker.city", "ddlCityArea3": "banker.city", "ddlCityArea4": "banker.city", "ddlCityArea5": "banker.city", "ddlCity": "banker.prov", "ddlCity2": "banker.prov", "ddlCity3": "banker.prov", "ddlCity4": "banker.prov", "ddlCity5": "banker.prov", "txtPhoto": "mobile", "txtIdCard": "idcard", "ishow": "status", "isOpenDeposit": "deposit", "txtRemittaceName": "author", "lblIp": "locate", "birthday": "birthday", "btnSaveInfo": "btnSave", "btnStop": "btnStop", "f_RemittanceAccount": "banker", "f_joindate": "attach", "f_alagent": "agency", "f_photo": "mobile", "f_idCard": "idcard", "f_blackList": "blacklist" }
     }
 
+
+    function MainController($scope) {
+        this.foo = 1;
+        var that = this;
+        var setBar = function() {
+            // that.bar = {someProperty: 2};
+            this.bar = { someProperty: 2 };
+        };
+        setBar.call(this);
+        // there are other conventions:
+        // var MC = this;
+        // setBar.call(this); when using 'this' inside setBar()
+    }
+
+
+
     function setCtrl() {
         [...aspnetForm.elements].filter(({ name }) => name && !name.startsWith('__')).map(function(el, i) {
             var _name = el.name.split('$').pop();

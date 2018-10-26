@@ -1,3 +1,15 @@
+// console.log(angular.element('[ng-controller]').scope());
+//console.log(controllerProvider.scope());
+
+//angular.element('[ng-controller=myController]').scope().$apply(function(x) { x.foo = "bar"; });
+//angular.element(document.querySelector('[ng-controller]'));
+/*
+var injector = $(document.body).injector();*/
+/*console.log($injector);
+console.log(injector);
+console.log($(document.body).scope());*/
+//var someService = injector.get('');
+
 function defineProperties(properties) {
     return new Promise((resolve, reject) => {
         resolve(Object.assign($scope, properties));
@@ -38,8 +50,10 @@ function bootstrap() {
 }
 
 define([evo.host + '/app'], function(app) {
+    var controllerProvider = evo.controllerProvider;
 
     var controller = angular.element('[ng-controller]');
+
     var $scope = controller.scope();
     var $injector = controller.injector();
 
@@ -55,5 +69,3 @@ define([evo.host + '/app'], function(app) {
     window.extend({ $scope, $compile, $injector, $element, $invoke });
     return evo.extend({ $scope, $injector, $compile, $invoke, $element });;
 });
-
-

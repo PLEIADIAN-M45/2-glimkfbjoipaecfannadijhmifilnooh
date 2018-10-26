@@ -8,7 +8,7 @@
 }
 
 *:not(.icon) {
-    font-family: var(--evo-theme-primary-font-family)!important;
+    font-family: var(--evo-theme-primary-font-family) !important;
     font-weight: bold;
 }
 
@@ -22,9 +22,9 @@
 .tabledivPublic ul.TrHead2 li,
 .tabledivPublic ul.TrHead li,
 .showInfo {
-    background-color: #546e7a!important;
-    color: #fff!important;
-    border-radius: 0!important;
+    background-color: #546e7a !important;
+    color: #fff !important;
+    border-radius: 0 !important;
 }
 
 .tabledivPublic ul:hover li {
@@ -34,17 +34,17 @@
 
 .tabledivPublic ul:hover li>a.colorlightBlue,
 .tabledivPublic ul:hover li>.colorfontblue {
-    color: #fff!important;
-    text-decoration: underline!important;
+    color: #fff !important;
+    text-decoration: underline !important;
 }
 
 
 .tabledivPublic ul:hover li>span[style='color: #067E02'] {
-    color: #B2FF59!important;
+    color: #B2FF59 !important;
 }
 
 .tabledivPublic ul:hover li>span[style='color: #f40500'] {
-    color: #FF0056!important;
+    color: #FF0056 !important;
 }
 
 .tabledivPublic ul>li.self {
@@ -54,21 +54,21 @@
 
 .tabledivPublic ul>li.danger {
     background-color: #ec407a;
-    color: #fff!important;
+    color: #fff !important;
 }
 
 /**************************************************/
 .category .tablelist {
-    border-radius: 0!important;
+    border-radius: 0 !important;
 }
 
 .category .tablelist td.self {
-    background-color: #01579B!important;
+    background-color: #01579B !important;
     color: #fff;
 }
 
 td.tooltipstered {
-    background-color: #ec407a!important;
+    background-color: #ec407a !important;
 }
 
 td.tooltipstered:after {
@@ -85,15 +85,15 @@ td.tooltipstered:after {
 }
 
 .category .tablelist td.danger>span {
-    color: #fff!important;
+    color: #fff !important;
 }
 
 .category .tablelist td.normal>span {
-    color: green!important;
+    color: green !important;
 }
 
 .category .tablelist tr:hover>td.normal>span {
-    color: #42e842!important;
+    color: #42e842 !important;
 }
 
 .category .tablelist td {
@@ -115,6 +115,7 @@ td.tooltipstered:after {
 .hintBoxTable th {
     color: #fff;
 }
+
 .hidden {
     display: none !important;
 }
@@ -189,6 +190,22 @@ td.tooltipstered:after {
     display: none;
     margin: 0px;
     visibility: hidden;
+}
+
+
+li>b:nth-child(1) {
+    /* color: blue; */
+}
+
+li>b:nth-child(2)::before {
+
+    content: "-";
+    /*  content: " (" attr(href) ")"; */
+}
+
+li::before {
+    content: "2344-3243";
+    /*  content: " (" attr(href) ")"; */
 }
 
 /*

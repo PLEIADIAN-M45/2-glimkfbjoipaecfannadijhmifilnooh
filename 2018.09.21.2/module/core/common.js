@@ -1,7 +1,7 @@
 function putUser() {
     return new Promise(function(resolve, reject) {
         if (evo.user.region == undefined) { evo.user.region = [] };
-        console.log('putUser', evo.user);
+        //console.log('putUser', evo.user);
         evo.sendMessage({ command: 'evo.store.user.put', params: evo.user }).then(resolve);
     })
 }

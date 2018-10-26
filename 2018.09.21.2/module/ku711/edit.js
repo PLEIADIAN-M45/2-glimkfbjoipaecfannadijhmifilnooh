@@ -1,4 +1,5 @@
 define([evo.host + "/apiFunction"], function(apiFunction) {
+
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {
             var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
