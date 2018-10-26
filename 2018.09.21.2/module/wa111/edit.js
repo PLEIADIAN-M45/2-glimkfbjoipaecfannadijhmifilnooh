@@ -112,6 +112,8 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
         return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
             var a = evo.assign(args[0]);
             var c = evo.assign(args[1], args[2]);
+            c.banker = c.banker || [];
+
             var property = {
                 author: { property: 'author', value: a.author, title: a.author, sheets: {} },
                 locate: { property: 'locate', value: a.locate, title: a.locate, sheets: {}, region: {} },

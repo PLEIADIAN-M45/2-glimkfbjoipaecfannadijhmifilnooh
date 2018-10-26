@@ -2,39 +2,151 @@ var dispatch = function() {
     return Promise.resolve()
 }
 
-var getHTMLTableCells = function() {
-    return new Promise(function(resolve, reject) {
-        window.HTMLTableCellElements = $('#divCookie>ul:not(.TrHead, .TrHead2)').find('li');
-        if (HTMLTableCellElements) {
-            resolve(HTMLTableCellElements)
-        } else {
-            reject()
+function checkSensitiveProvince() {
+    document.querySelectorAll("li:nth-of-type(10)").forEach((el) => {
+        if (el.outerText) {
+            var test = google.region.search(el.outerText)
+            if (test) { el.classList.add('danger'); }
         }
     })
 }
 
-function getGetAlerInfo() {
-    return new Promise(function(resolve, reject) {
-        resolve([
-            [],
-            []
-        ])
+function checkSensitiveProtocol() {
+    document.querySelectorAll("li:nth-of-type(8)").forEach((el) => {
+        if (el.outerText) {
+            var test = google.locate.search(el.outerText)
+            if (test) { el.classList.add('danger'); }
+        }
+    })
+}
+
+function checkSensitiveUserName() {
+    document.querySelectorAll("li:nth-of-type(5)").forEach((el) => {
+        if (el.outerText) {
+            var test = google.author.search(el.outerText)
+            if (test) { el.classList.add('danger'); }
+        }
     })
 }
 
 
-var getSiteNumberCollection = function() {
-    var callee = arguments.callee.name;
-    return $('ul:not(.TrHead, .TrHead2)>li:nth-child(1)')
-        .map(function(index, element) {
-            return element.textContent.split('-')[0];
-        })
+function checkSensitiveWords() {
+    document.querySelectorAll("li:nth-of-type(12)").forEach((el) => {
+        if (el.outerText) {
+            var test = google.warning.search(el.outerText)
+            if (test) {
+                el.classList.add('danger');
+                console.log(test);
+            }
+        }
+    })
 }
 
-var getAccountIdCollection = function() {
-    var callee = arguments.callee.name;
-    return $('ul:not(.TrHead, .TrHead2)>li:nth-child(3)')
+function checkSensitiveWords3() {
+    return
+    document.querySelectorAll("li").forEach((el) => {
+        var str = el.outerText.trim();
+        if (str.match(evo.regexp.sensitive.full)) {
+            el.classList.add('danger');
+        } else {
+            console.log(str);
+        }
+    })
 }
+
+
+
+function getAllIPAddress(scope) {
+
+    /*checkSensitiveProvince();
+    checkSensitiveProtocol();
+    checkSensitiveUserName();*/
+
+
+
+    var arrProvince = new Set();
+
+    var arrProtocol = new Map();
+
+
+    console.log(arrProtocol);
+
+
+    function createNodeB(target, [channel, account, protocol, province]) {
+        target.firstChild.remove();
+
+        if (evo.account = account && evo.channel == channel) {
+            target.style.backgroundColor = "#01579b";
+            target.style.color = "white";
+
+            //arrProtocol.push({ protocol, province });
+            arrProtocol.set({ protocol, province });
+            arrProvince.add(province);
+        }
+
+        [account, channel].reduce(function(accumulator, currentValue, currentIndex, array) {
+            $('<b>').text(currentValue).addClass('pointer')
+                .attr('data-content', accumulator + currentValue)
+                .popup({ on: 'click' }).click(evo.copy)
+                .appendTo(target);
+            return currentValue + '-';
+        }, '');
+    }
+
+
+
+    document.querySelectorAll('ul:not([class]):not([style])').forEach((el) => {
+        if (el.children.length > 5 && el.firstElementChild.outerText) {
+            var target = el.children[2];
+            var array = [0, 2, 7, 9].map((i) => { return el.children[i].outerText.split('-')[0]; })
+            createNodeB(target, array);
+        }
+    }, collection = []);
+
+
+
+    //console.log(arrProvince);
+    //console.log(arrProtocol);
+
+    //console.log(arrProtocol);
+
+
+
+    evo.user.region = Array.from(arrProvince);
+
+    scope.extend({ rows: Array.from(arrProtocol) });
+
+    console.log(scope);
+
+    console.log(Array.from(arrProtocol));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 var getFrameUrl = function() {
@@ -45,101 +157,16 @@ var getFrameUrl = function() {
 
 
 
-function checkSensitiveWords() {
-    document.querySelectorAll("li").forEach((el) => {
-        var str = el.outerText.trim();
-        if (str.match(evo.regexp.sensitive.full)) { el.classList.add('danger'); }
-    })
+function createElement(text) {
+    var node = document.createElement("B");
+    var textnode = document.createTextNode(text);
+    node.setAttribute('data-content', text)
+    node.appendChild(textnode);
+    node.onclick = function() { alert(text) }
+    return node;
+    target.appendChild(node);
+    //document.getElementById("myList").appendChild(node);
 }
-
-function addChannel() {
-
-
-
-    function createElement(text) {
-        var node = document.createElement("B");
-        var textnode = document.createTextNode(text);
-        node.setAttribute('data-content', text)
-        node.appendChild(textnode);
-        node.onclick = function() { alert(text) }
-        return node;
-        target.appendChild(node);
-        //document.getElementById("myList").appendChild(node);
-    }
-
-
-
-    function chooceSelf(target, account, channel) {
-        console.log(target, account, channel);
-    }
-
-
-
-    function createNodeB(target, [account, channel, protocol, province]) {
-
-
-        return
-        if (evo.account = array[0] && evo.channel == array[1]) {
-            target.style.backgroundColor = "red";
-            target.style.color = "white";
-        }
-
-        target.firstChild.remove();
-        array.reduce(function(accumulator, currentValue, currentIndex, array) {
-            $('<b>').text(currentValue).addClass('pointer')
-                .attr('data-content', accumulator + currentValue)
-                .popup({ on: 'click' }).click(evo.copy)
-                .appendTo(target);
-            return currentValue + '-';
-        }, '');
-    }
-
-
-    function createNodeC(arr) {
-        console.log(arr);
-
-
-    }
-
-
-    document.querySelectorAll('ul:not([class]):not([style])').forEach((el) => {
-        if (el.children.length > 5 && el.firstElementChild.outerText) {
-            //var { children } = el;
-
-
-            var arr = [0, 2, 7, 9].map((i) => { return el.children[i].outerText.split('-')[0]; })
-            //arr.push(el.children[2])
-
-            console.log(arr);
-
-            
-            
-            
-            /*arr.forEach((x) => {
-                console.log(x);
-            })**/
-
-
-            //var [channel, $1, account, $3, $4, $5, $6, protocol, $8, province, $10, $11, $12] = el.children;
-            //createNodeC([channel, account, protocol, province])
-
-
-
-            //console.log(channel.outerText);
-            /*var account = children[2].outerText;
-            var channel = children[0].outerText.slice(0, 2);
-            var target = children[2];*/
-            /* var channel = children[0];
-             var account = children[2];
-             var protocol = children[7];
-             var province = children[9];*/
-
-            /*createNodeB(target, [account, channel, protocol, province]);*/
-
-        }
-    }, collection = []);
-}
-
 
 
 

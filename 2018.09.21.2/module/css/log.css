@@ -52,6 +52,7 @@
     color: #fff;
 }
 
+.tabledivPublic ul>li.danger>a,
 .tabledivPublic ul>li.danger {
     background-color: #ec407a;
     color: #fff !important;

@@ -150,50 +150,19 @@ define([evo.router], function() {
             } [host]);
         };
 
+        /*
         function getAllIPAddress(scope) {
-            console.log(evo.user.region);
-            var rows = [];
-            var region = new Set();
-            switch (evo.host) {
-                case 'ku711':
-                    $scope.$watch('ctrl.model.ResultList', function(result, oldValue) {
-                        if (result) {
-                            result.filter(({ AccountID, IPLocation }) => {
-                                return AccountID == evo.user.account;
-                            }).map(({ IPAddress: protocol, IPLocation: province }) => {
-                                rows.push({ protocol, province });
-                                region.add(province);
-                            })
-                            scope.extend({ rows });
-                            evo.user.region = Array.from(region);
-                            //putUser();
-                        }
-                    });
-                    break;
-                case 'wa111':
-                    [...document.querySelectorAll("ul:not([class])")].filter(({ children }) => {
-                        return children.length > 1 && children[0].outerText;
-                    }).map(({ children }) => {
-                        return [...children].map((x) => { return x.outerText; })
-                    }).map((c) => {
-                        return { channel: c[0], account: c[2], protocol: c[7], province: c[9], }
-                    }).filter(({ channel, account }) => {
-                        return (account == evo.user.account) && (channel.startsWith(evo.user.channel))
-                    }).map(({ protocol, province }, index, arr) => {
-                        rows.push({ protocol, province });
-                        region.add(province);
-                    });
-                    scope.extend({ rows });
-                    evo.user.region = Array.from(region);
-                    putUser();
-                    break;
-            }
+            console.log(Array.from(arrProtocol))
+            console.log(Array.from(arrProvince))
+            console.log(222
+            //scope.extend({ rows });
         }
+        */
+
 
 
 
         $('<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">').appendTo('head')
-
         $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
@@ -210,6 +179,38 @@ define([evo.router], function() {
         })
     }
 
+
+
+
+    if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
+        $scope.components = ['log'];
+        $scope.stylesheet = ['log', 'cards'];
+
+        startup()
+            .then(getUser)
+            .then(dispatch)
+            .then(bootstrap)
+            .then(scrollHeightListener)
+            .then(checkSensitiveWords)
+            //.then(getAllIPAddress)
+            //.then(addSiteNumberToAccountId)
+            //.then(createIFrame)
+            .catch(error)
+    }
+
+
+    if (evo.params.method == 'DeviceNo' || evo.filename == 'samebrowserlist') {
+        $scope.stylesheet = ['log'];
+        startup().then(dispatch).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
+    }
+});
+
+
+
+
+
+
+function addSiteNumberToAccountId() {
 
     /*
     0分站名
@@ -232,64 +233,74 @@ define([evo.router], function() {
 
 
 
+    var accountIdCollection = getAccountIdCollection();
+    var siteNumberCollection = getSiteNumberCollection();
+    accountIdCollection.each(function(index, element) {
+        if (element.textContent.trim()) {
+            var accountId = element.textContent.trim();
+            var siteNumber = '-' + siteNumberCollection[index];
+            var uniqueId = accountId + siteNumber;
+            if (uniqueId == evo.uniqueId) { element.classList.add('self'); }
+            if (evo.siteNumber != '16') {
 
+                element.setAttribute('data-content', accountId);
+                element.textContent = null;
 
-    function addSiteNumberToAccountId() {
-        var accountIdCollection = getAccountIdCollection();
-        var siteNumberCollection = getSiteNumberCollection();
-        accountIdCollection.each(function(index, element) {
-            if (element.textContent.trim()) {
-                var accountId = element.textContent.trim();
-                var siteNumber = '-' + siteNumberCollection[index];
-                var uniqueId = accountId + siteNumber;
-                if (uniqueId == evo.uniqueId) { element.classList.add('self'); }
-                if (evo.siteNumber != '16') {
-                    
-                    element.setAttribute('data-content', accountId);
-                    element.textContent = null;
+                $('<b>').text(accountId).addClass('pointer').attr('data-content', accountId).popup({ on: 'click' }).click(function() {
+                    evo.copyText = accountId;
+                    document.execCommand("copy");
+                }).appendTo(element);
 
-                    $('<b>').text(accountId).addClass('pointer').attr('data-content', accountId).popup({ on: 'click' }).click(function() {
-                        evo.copyText = accountId;
-                        document.execCommand("copy");
-                    }).appendTo(element);
-
-                    $('<b>').text(siteNumber).addClass('pointer').attr('data-content', accountId + siteNumber).popup({ on: 'click' }).click(function() {
-                        evo.copyText = accountId + siteNumber;
-                        document.execCommand("copy");
-                    }).appendTo(element);
-                }
+                $('<b>').text(siteNumber).addClass('pointer').attr('data-content', accountId + siteNumber).popup({ on: 'click' }).click(function() {
+                    evo.copyText = accountId + siteNumber;
+                    document.execCommand("copy");
+                }).appendTo(element);
             }
-        });
+        }
+    });
+}
+
+
+function getAllIPAddress2(scope) {
+    return
+    console.log(evo.user.region);
+    var rows = [];
+    var region = new Set();
+    switch (evo.host) {
+        case 'ku711':
+            $scope.$watch('ctrl.model.ResultList', function(result, oldValue) {
+                if (result) {
+                    result.filter(({ AccountID, IPLocation }) => {
+                        return AccountID == evo.user.account;
+                    }).map(({ IPAddress: protocol, IPLocation: province }) => {
+                        rows.push({ protocol, province });
+                        region.add(province);
+                    })
+                    scope.extend({ rows });
+                    evo.user.region = Array.from(region);
+                    //putUser();
+                }
+            });
+            break;
+        case 'wa111':
+            [...document.querySelectorAll("ul:not([class])")].filter(({ children }) => {
+                return children.length > 1 && children[0].outerText;
+            }).map(({ children }) => {
+                return [...children].map((x) => { return x.outerText; })
+            }).map((c) => {
+                return { channel: c[0], account: c[2], protocol: c[7], province: c[9], }
+            }).filter(({ channel, account }) => {
+                return (account == evo.user.account) && (channel.startsWith(evo.user.channel))
+            }).map(({ protocol, province }, index, arr) => {
+                rows.push({ protocol, province });
+                region.add(province);
+            });
+            scope.extend({ rows });
+            evo.user.region = Array.from(region);
+            putUser();
+            break;
     }
-
-
-
-    if (evo.params.method == 'CookieID' || evo.filename == 'igetmemberinfo') {
-        $scope.components = ['log'];
-        $scope.stylesheet = ['log', 'cards'];
-
-        startup()
-            .then(getUser)
-            .then(dispatch)
-            .then(bootstrap)
-            .then(scrollHeightListener)
-            .then(checkSensitiveWords)
-            .then(addChannel)
-            //.then(addSiteNumberToAccountId)
-            //.then(createIFrame)
-            .catch(error)
-    }
-
-
-    if (evo.params.method == 'DeviceNo' || evo.filename == 'samebrowserlist') {
-        $scope.stylesheet = ['log'];
-        startup().then(dispatch).then(scrollHeightPoster).then(checkSensitiveWords).then(addSiteNumberToAccountId)
-    }
-});
-
-
-
-
+}
 
 
 function test() {

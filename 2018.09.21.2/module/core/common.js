@@ -34,7 +34,11 @@ async function start() {
     evo.sensitive = sensitive;
     evo.accusation = await extension.localStorage.getItem('accusation');
 
-    evo.sensitive.protocol = await extension.localStorage.getItem('IPAddress')
+    var protocol = await extension.localStorage.getItem('IPAddress')
+
+    //evo.sensitive.protocol = await extension.localStorage.getItem('IPAddress')
+
+    evo.sensitive.protocol = protocol.map(([x]) => x)
 
     evo.sensitive.full = sensitive.area.concat(sensitive.word);
     var author = await extension.localStorage.getItem('accusation');
@@ -45,10 +49,16 @@ async function start() {
     var region = evo.sensitive.area;
     var mobile = await extension.localStorage.getItem('BlackPhone');
 
+    evo.sensitive.province = evo.sensitive.area;
+
+    //console.log(evo.sensitive.protocol);
+    //console.log(evo.sensitive.area);
+
+    // console.log(evo.sensitive);
+
     /*
 
     author.push(["王杰", "A695000035", "26", "惡意投訴人", "異審-書辭"])
-
         author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
         region.push(['云南'])
         region.push(['湖南'])
@@ -56,6 +66,17 @@ async function start() {
         banker.push(['62290837'])
         locate.push(['116.53.197.240'])
     */
+
+    region.push(['浙江'])
+    author.push(['達比'])
+    locate.push(['115.231.231.120'])
+
+    var warning = sensitive.word.concat(sensitive.warn);
+    warning.search = function(value) {
+        return this.find(([str]) => {
+            return value.includes(str)
+        })
+    }
 
     region.search = function(region) {
         if (this == window) { return undefined };
@@ -70,7 +91,7 @@ async function start() {
 
     author.search = function(value) {
         return this.find(([user]) => {
-            return user == value;
+            return trim(user) == trim(value);
         })
     }
     banker.search = function(value) {
@@ -91,8 +112,11 @@ async function start() {
 
 
 
-    evo.assign(google, { author, banker, locate, region, mobile })
+    evo.assign(google, { author, banker, locate, region, mobile, warning })
 
+
+    console.log(google);
+    //console.log(evo);
 
 
     var Regexp = function() {};
