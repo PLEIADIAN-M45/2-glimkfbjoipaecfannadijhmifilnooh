@@ -89,28 +89,16 @@ document.addEventListener('copy', function(e) {
 });
 
 
-
 //'cryptojs/md5', 'cryptojs/ripemd160',
 
 
 window.extend = function() { return Object.assign(this, ...arguments); }
-
-
 requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], function(moment, Dexie, mdc, semantic, evo) {
-
     window.extend({ moment, Dexie, mdc, evo });
-
-
     requirejs(['common', 'encrypt', 'app', 'spreadsheets'], function() {
-
         console.log("host", evo.host, 'adapter:', evo.adapter, location.pathname);
-
         requirejs([evo.adapter], function() {
-
-
         })
-
-
     })
 });
 

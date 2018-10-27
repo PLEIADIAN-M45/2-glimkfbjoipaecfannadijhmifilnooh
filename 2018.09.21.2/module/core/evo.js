@@ -154,6 +154,10 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             } [location.port];
         }
 
+        get apiPath() {
+            return [this.host, 'apiFunction'].join('/');
+        }
+
         json(a) {
             try {
                 return (typeof a == 'string') ? JSON.parse(a) : JSON.stringify(a);
@@ -193,8 +197,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get path() {
             return {
                 "wa111": {
-                    "login": "login",
+                    "": "home",
                     "index": "home",
+                    "login": "login",
                     "memberlist": "list",
                     "membermodify": "edit",
                     "depositbonus": "bonus",

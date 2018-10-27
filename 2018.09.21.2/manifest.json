@@ -16,14 +16,13 @@
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
             "background/background.onMessage.js",
-            "background/background.webRequest.gstatic.js",
-            "background/apiFunctions.js",
+            "background/apiFunctions.js"
 
+            /*
+            "background/background.webRequest.gstatic.js",            
             "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"
-
-
+            "mock/mock.conf.js"*/
 
             //"background/background.webRequest.wa111.js",
             //"background/chrome.webRequest.onCompleted.js",

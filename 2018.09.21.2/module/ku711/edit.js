@@ -1,4 +1,4 @@
-define([evo.host + "/apiFunction"], function(apiFunction) {
+define([evo.apiPath], function(apiFunction) {
 
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {

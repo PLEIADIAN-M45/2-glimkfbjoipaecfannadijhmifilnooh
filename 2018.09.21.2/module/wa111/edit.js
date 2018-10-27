@@ -1,4 +1,4 @@
-define([evo.host + "/apiFunction"], function(apiFunction) {
+define([evo.apiPath], function(apiFunction) {
 
     if (['21', '2'].includes(evo.channel)) {}
 
@@ -89,7 +89,7 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
 
-        if (!evo.user) {
+        if (evo.user) {
             return updateUserStatus();
         } else {
             evo.user = {};

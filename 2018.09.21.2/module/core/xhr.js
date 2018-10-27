@@ -14,7 +14,7 @@ var json = function(str) { try { if (str.constructor.name == "Response") { retur
     //this.getAllResponseHeaders
     XHR.setRequestHeader = function(name, value) {
         this.command = 'XMLHttpRequest';
-        this._headers = {};
+        this._headers = {}; 
         this._headers[name] = value;
         return setRequestHeader.apply(this, arguments);
     };
