@@ -2,26 +2,22 @@ var json = function(str) { try { if (str.constructor.name == "Response") { retur
 
 
 function parseUrl(method, url, async, user, password) {
-    /*console.log(method);
-	console.log(url);
-    console.log(this)*/
-
-    var _url = new URL(url.replace('..', location.origin));
-    var params = {};
+    var requestUrl = new URL(url.replace('..', location.origin));
 
 
-    function a([name, value], index) { params[name] = value }
+    this.params = {};
+    [...requestUrl.searchParams.entries()].forEach(([name, value]) => {
+        this.params[name] = value;
+    });
 
-    [..._url.searchParams.entries()].map(a)
-
-    /*.map(([name, value]) => {
-        params[name] = value
-    })*/
+    this.queryString = requestUrl.search.slice(1);
 
 
 
-    console.log(_url);
-    console.log(params)
+    console.log(requestUrl);
+
+    console.log(this.queryString)
+
 }
 
 
@@ -34,23 +30,17 @@ function parseUrl(method, url, async, user, password) {
 })(this, function() {
 
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
-
     var XMLHttpSpider = XMLHttpRequest.prototype;
-
+    
     console.log(XMLHttpSpider);
-
     XMLHttpSpider.setRequestHeader = function(name, value) {
         return setRequestHeader.apply(this, arguments);
     }
 
     XMLHttpSpider.open = function(method, url, async, user, password) {
         //url = url.replace('..', location.origin)
-
         parseUrl.apply(this, arguments)
-
-
         //var _url = new URL(url.replace('..', location.origin));
-
         /* console.log(_url);
          console.log([_url.searchParams]);
          console.log([..._url.searchParams.entries()]);*/

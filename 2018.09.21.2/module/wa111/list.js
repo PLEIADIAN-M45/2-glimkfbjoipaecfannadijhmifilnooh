@@ -5,7 +5,7 @@
 });*/
 
 
-XMLHttpSpider.loadend = function() {
+xmlSpider.loadend = function() {
     console.log(this);
 
     //console.log(this.url);

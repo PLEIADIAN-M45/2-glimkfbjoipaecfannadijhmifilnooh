@@ -1,3 +1,40 @@
+/*
+define(['queryStringToJSON'], function(queryStringToJSON) {
+   console.log(queryStringToJSON);
+
+});*/
+
+
+/*
+function createObject(name, value) {
+    //console.log(name, value);
+    return { name, value }
+}
+
+function spliter() {
+    //var separators = "?&=";
+}
+
+String.prototype.spliter = function(arg) {
+ 
+    var b = responseUrl.spliter(1).spliter().forEach()
+    console.log(b);
+    return
+
+    var str = this.valueOf();
+
+    var separator = ['?', '&', '='].find((x) => { return str.includes(x) })
+
+    if (arg) {
+        return str.split(separator)[arg];
+
+    } else {
+        return str.split(separator);
+
+    }
+
+
+};*/
 
 function injectPostMessageInjector2() {
 
@@ -67,7 +104,7 @@ chrome.webNavigation.onCommitted.addListener(
             chrome.tabs.executeScript(info.tabId, {
                 allFrames: true,
                 runAt: "document_start",
-                file:  chrome.extension.getURL('manifest.json')
+                file: chrome.extension.getURL('manifest.json')
 
                 code: "(" + (function() {
 
@@ -98,5 +135,5 @@ chrome.webNavigation.onCommitted.addListener(
                 }) + ")();"
             });
         }
-      
+
     });
