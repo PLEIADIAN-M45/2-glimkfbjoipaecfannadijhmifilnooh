@@ -12,4 +12,4 @@ define([], function() {
 
 
 
-//if (evo.test) { $('.collapse').removeClass('collapse') }
+if (evo.test) { $('.collapse').removeClass('collapse') }

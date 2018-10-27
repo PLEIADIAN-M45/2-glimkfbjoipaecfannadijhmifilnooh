@@ -28,7 +28,7 @@ function s3() {
     (document.head || document.documentElement).appendChild(s);
 };
 
-if (location.pathname == "/IGetMemberInfo.html") {
+if (location.pathname.includes("IGetMemberInfo")) {
 
 
 } else {

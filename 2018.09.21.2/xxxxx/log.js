@@ -4,7 +4,9 @@ define([evo.router], function() {
 
         console.log('user:', evo.user);
 
+
         var { author, locate, mobile, idcard, banker, host, channel, account } = evo.user;
+
         var property = [author, locate, mobile, idcard, ...banker].filter((x) => x.value);
         var initialization = function(me) {
             var { property, value, region } = me;
@@ -21,6 +23,7 @@ define([evo.router], function() {
                 var sites = [];
             } else {
                 var sites = ['wa111:26', 'wa111:35', 'wa111:17', 'ku711:16'].map((suffix) => {
+
                     var [proxy, channel] = suffix.split(':')
                     return { channel, [property]: value, command: 'apiFunctions:Member:' + suffix, index: 1 };
                 });
@@ -42,7 +45,7 @@ define([evo.router], function() {
             if (this.property == 'author') { return };
             if (this.property == 'banker') { return };
             if (this.region.test === undefined || e) {
-                //console.log(this.property);
+                console.log(this.property);
                 this.extend({ region: {}, active: true });
                 evo.apiFunctions(this.params).then((res) => {
                         this.regionTestFunction(evo.assign(me, res));
@@ -53,7 +56,9 @@ define([evo.router], function() {
         };
 
         function apiMemberList(me, e) {
+
             $('.popup').remove();
+
             this.extend(evo.assign(me, { rows: [], active: true }));
 
             evo.apiFunctions(me).then((res) => {
@@ -84,6 +89,30 @@ define([evo.router], function() {
             scope.extend(r)
         };
 
+        function GetAlertInfoByName(s, scope) {
+            return
+            //console.log(s.channel);
+            if (s.channel == "16") {
+                chrome.runtime.sendMessage(evo.extensionId, {
+                    command: 'API',
+                    channel: '16',
+                    method: 'GetMemberAlertInfoBackendByMultiplayer',
+                    params: {
+                        "DisplayArea": "1",
+                        "Account": [{ "AccountID": "", "AccountName": s.value }]
+                    },
+                }, function(response, status) {
+                    s.list_RemittanceName = response.rows;
+                    if (!scope.$$phase) { scope.$apply(); }
+                })
+            } else {
+                //console.log(s);
+                if (s.result && s.result.rows && s.result.rows.length) {
+                    s.list_RemittanceName = s.result.rows[0].list_RemittanceName;
+                    if (!scope.$$phase) { scope.$apply(); }
+                }
+            }
+        };
 
         function imPopup(row, scope, id) {
             var target = document.getElementById(id);
@@ -94,10 +123,20 @@ define([evo.router], function() {
         };
 
         function openMemberList({ origin }) {
+            return
+
             window.open(origin + {
                 "ku711": `/member/MemberInfoManage/MemberInfoManage`,
                 "wa111": `/aspx/MemberList.aspx?sort=Font_xianyousuoyouhuiyuan`
             } [host]);
+            switch (evo.host) {
+                case "wa111":
+                    var path = "/aspx/MemberList.aspx?sort=Font_xianyousuoyouhuiyuan";
+                    break;
+                case "ku711":
+                    var path = "/member/MemberInfoManage/MemberInfoManage";
+                    break
+            }
             window.open(s.result.origin + path)
         };
 
@@ -108,7 +147,19 @@ define([evo.router], function() {
             } [host]);
         };
 
+        /*
+        function getAllIPAddress(scope) {
+            console.log(Array.from(arrProtocol))
+            console.log(Array.from(arrProvince))
+            console.log(222
+            //scope.extend({ rows });
+        }
+        */
 
+
+
+
+        $('<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">').appendTo('head')
         $scope.extend({ property, initialization, regionTestFunction, sheetsTestFunction, apiFunctions, apiMemberList, getAllIPAddress, showMemberModify, openMemberList, changeColor, imPopup, GetAlertInfoByID })
     };
 
@@ -137,7 +188,7 @@ define([evo.router], function() {
             .then(dispatch)
             .then(bootstrap)
             .then(scrollHeightListener)
-            //.then(checkSensitiveWords)
+            .then(checkSensitiveWords)
             //.then(getAllIPAddress)
             //.then(addSiteNumberToAccountId)
             //.then(createIFrame)
@@ -153,50 +204,111 @@ define([evo.router], function() {
 
 
 
-function GetAlertInfoByName(s, scope) {
-    return
-    //console.log(s.channel);
-    if (s.channel == "16") {
-        chrome.runtime.sendMessage(evo.extensionId, {
-            command: 'API',
-            channel: '16',
-            method: 'GetMemberAlertInfoBackendByMultiplayer',
-            params: {
-                "DisplayArea": "1",
-                "Account": [{ "AccountID": "", "AccountName": s.value }]
-            },
-        }, function(response, status) {
-            s.list_RemittanceName = response.rows;
-            if (!scope.$$phase) { scope.$apply(); }
-        })
-    } else {
-        //console.log(s);
-        if (s.result && s.result.rows && s.result.rows.length) {
-            s.list_RemittanceName = s.result.rows[0].list_RemittanceName;
-            if (!scope.$$phase) { scope.$apply(); }
+
+
+
+function addSiteNumberToAccountId() {
+
+    /*
+    0分站名
+    1代理登入
+    2帳號
+    3加入日期
+    4匯款戶名
+    5當前模式
+    6黑名单
+    7IP
+    8最後登入日期
+    9IP地址
+    10手机归属地
+    11一機多登備註
+    12總輸贏查詢*/
+    /* TrHead2
+         TrHead
+         divCookie
+         divCookie*/
+
+
+
+    var accountIdCollection = getAccountIdCollection();
+    var siteNumberCollection = getSiteNumberCollection();
+    accountIdCollection.each(function(index, element) {
+        if (element.textContent.trim()) {
+            var accountId = element.textContent.trim();
+            var siteNumber = '-' + siteNumberCollection[index];
+            var uniqueId = accountId + siteNumber;
+            if (uniqueId == evo.uniqueId) { element.classList.add('self'); }
+            if (evo.siteNumber != '16') {
+
+                element.setAttribute('data-content', accountId);
+                element.textContent = null;
+
+                $('<b>').text(accountId).addClass('pointer').attr('data-content', accountId).popup({ on: 'click' }).click(function() {
+                    evo.copyText = accountId;
+                    document.execCommand("copy");
+                }).appendTo(element);
+
+                $('<b>').text(siteNumber).addClass('pointer').attr('data-content', accountId + siteNumber).popup({ on: 'click' }).click(function() {
+                    evo.copyText = accountId + siteNumber;
+                    document.execCommand("copy");
+                }).appendTo(element);
+            }
         }
+    });
+}
+
+
+function getAllIPAddress2(scope) {
+    return
+    console.log(evo.user.region);
+    var rows = [];
+    var region = new Set();
+    switch (evo.host) {
+        case 'ku711':
+            $scope.$watch('ctrl.model.ResultList', function(result, oldValue) {
+                if (result) {
+                    result.filter(({ AccountID, IPLocation }) => {
+                        return AccountID == evo.user.account;
+                    }).map(({ IPAddress: protocol, IPLocation: province }) => {
+                        rows.push({ protocol, province });
+                        region.add(province);
+                    })
+                    scope.extend({ rows });
+                    evo.user.region = Array.from(region);
+                    //putUser();
+                }
+            });
+            break;
+        case 'wa111':
+            [...document.querySelectorAll("ul:not([class])")].filter(({ children }) => {
+                return children.length > 1 && children[0].outerText;
+            }).map(({ children }) => {
+                return [...children].map((x) => { return x.outerText; })
+            }).map((c) => {
+                return { channel: c[0], account: c[2], protocol: c[7], province: c[9], }
+            }).filter(({ channel, account }) => {
+                return (account == evo.user.account) && (channel.startsWith(evo.user.channel))
+            }).map(({ protocol, province }, index, arr) => {
+                rows.push({ protocol, province });
+                region.add(province);
+            });
+            scope.extend({ rows });
+            evo.user.region = Array.from(region);
+            putUser();
+            break;
     }
-};
-
-
+}
 
 
 function test() {
-    //author.value = "王杰";
-    //mobile.value = "15868723883";
-
-    /*mobile.value = "17805182900"; //danger
-    idcard.value = "320584199901017191"; //danger
-    banker[0].value = "623668255000152656"; //danger*/
-
-
-
-    /*evo.user.mobile.value = "17805182900";
+    author.value = "王杰";
+    mobile.value = "15868723883";
+    evo.user.mobile.value = "17805182900";
     evo.user.idcard.value = "320684199901017199";
     evo.user.banker[0].value = "6212264301022817389";
     evo.user.author.value = "王杰";
-    evo.user.locate.value = "116.20.62.75";*/
-    /**
+    evo.user.locate.value = "116.20.62.75";
+    /*
         // evo.user.locate.value = "216.20.62.75";
          evo.user.mobile.value = "13126682900";
          evo.user.idcard.value = "320584199901017191";
@@ -207,4 +319,32 @@ function test() {
 
 }
 
-test()
+
+
+function checkSensitiveWords3() {
+    return
+    document.querySelectorAll("li").forEach((el) => {
+        var str = el.outerText.trim();
+        if (str.match(evo.regexp.sensitive.full)) {
+            el.classList.add('danger');
+        } else {
+            console.log(str);
+        }
+    })
+}
+
+
+/*
+  console.log(evo.path);
+  console.log(evo.params);
+  console.log(evo.filename);
+  */
+
+
+
+/*
+
+無使用插件開通>>shengcai2-16
+使用插件開通>> lmj565970-16
+
+*/

@@ -51,34 +51,39 @@ async function start() {
 
     evo.sensitive.province = evo.sensitive.area;
 
-    //console.log(evo.sensitive.protocol);
-    //console.log(evo.sensitive.area);
 
-    // console.log(evo.sensitive);
-
-    /*
-
-    author.push(["王杰", "A695000035", "26", "惡意投訴人", "異審-書辭"])
-        author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
+    if (evo.test) {
+        /*
+                author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
+                region.push(['云南'])
+                region.push(['湖南'])
+                region.push(['湖北'])
+                banker.push(['62290837'])
+                locate.push(['116.53.197.240'])
+            */
         region.push(['云南'])
-        region.push(['湖南'])
-        region.push(['湖北'])
-        banker.push(['62290837'])
-        locate.push(['116.53.197.240'])
-    */
+        region.push(['浙江'])
+        author.push(['達比'])
+        locate.push(['115.231.231.120'])
+        author.push(["王杰", "A695000035", "26", "惡意投訴人", "異審-書辭"])
 
-    region.push(['浙江'])
-    author.push(['達比'])
-    locate.push(['115.231.231.120'])
+    }
 
-    var warning = sensitive.word.concat(sensitive.warn);
-    warning.search = function(value) {
+
+
+
+
+
+    var notice = sensitive.word.concat(sensitive.warn);
+    notice.search = function(value) {
         return this.find(([str]) => {
             return value.includes(str)
         })
     }
 
     region.search = function(region) {
+        //console.log(region);
+
         if (this == window) { return undefined };
         if (region == undefined) { return undefined };
         var values = evo.values(region);
@@ -112,11 +117,7 @@ async function start() {
 
 
 
-    evo.assign(google, { author, banker, locate, region, mobile, warning })
-
-
-    console.log(google);
-    //console.log(evo);
+    evo.assign(google, { author, banker, locate, region, mobile, notice })
 
 
     var Regexp = function() {};
@@ -126,7 +127,6 @@ async function start() {
         Regexp.prototype.sensitive[key] = new RegExp('(*)'.replace('*', value.join(separator)));
     })
 
-    //console.log(google.sheets);
     evo.regexp = new Regexp();
 }
 
@@ -282,3 +282,9 @@ Array.prototype.serialize = function() {
     });
     return obj;
 }
+
+
+
+
+
+//$('<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">').appendTo('head');

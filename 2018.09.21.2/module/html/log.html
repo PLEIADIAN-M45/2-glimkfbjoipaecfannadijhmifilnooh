@@ -9,7 +9,7 @@
                 <br>归属地查询中</div>
         </div>
         <!-- attached content -->
-        <div class="ui top attached content" ng-init="">
+        <div class="ui top attached content compact" ng-init="">
             <div class="left floated meta">
                 <i class="icon" ng-class="icon"></i>{{head}} {{sheets.meta}}
             </div>
@@ -18,20 +18,20 @@
             </div>
         </div>
         <!-- content 抬头值-->
-        <div class="content center aligned">
-            <i class="icon earlybirds hidden"></i>
+        <div class="content compact center aligned">
             <div class="header">{{value}}</div>
         </div>
         <!-- content 结果-->
         <div class="content center aligned" ng-show="property=='author'">
-            <div class="sub header">
-                <a class="ui basic label" ng-show="sheets.test">{{sheets.test[3]}}</a>
+            <div class="header padded">
+                {{sheets.test[3]}}
+                <!-- <a class="ui basic label" ng-show="sheets.test">{{sheets.test[3]}}</a> -->
             </div>
             <a class="sub meta">{{sheets.test[1]}}-{{sheets.test[2]}}</a>
         </div>
         <!-- content 结果-->
         <div class="content center aligned" ng-show="region" ng-init="apiFunctions(me);">
-            <div class="sub header">
+            <div class="header padded">
                 {{region.prov}} {{region.city}} {{region.area}} {{region.ctry}}
             </div>
             <div class="sub meta">
@@ -42,8 +42,8 @@
         <div class="extra content" ng-if="property=='locate'" ng-init="getAllIPAddress(this)">
             <div class="grid-2">
                 <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in rows">
-                    <span ng-init="check_locate(row)">{{row.protocol}}</span>
-                    <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
+                    <span ng-init="check_locate(row)">{{row[0]}}</span>
+                    <div ng-init="check_region(row)" class="detail">{{row[1]}}</div>
                 </div>
             </div>
         </div>

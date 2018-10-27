@@ -23,6 +23,9 @@ body {
     align-items: flex-start;
     justify-content: center;
 
+    .card.danger {
+        background-image: url($baseUrl+"/2.jpg") !important;
+    }
 
     .card.success,
     .card {
@@ -30,6 +33,35 @@ body {
         background-repeat: round !important;
         background-image: url($baseUrl+"/1.jpg") !important;
         box-shadow: 0 5px 5px -3px rgba(0, 0, 0, .2), 0 8px 10px 1px rgba(0, 0, 0, .14), 0 3px 14px 2px rgba(0, 0, 0, .12);
+
+        .content.compact {
+            padding: 6px 12px;
+
+        }
+
+        .content.padded {}
+
+        .content {
+
+            border-bottom: rgba(255, 255, 255, 0.5) solid grey;
+
+            .header.padded {
+                padding: 10px;
+                color: #fff !important;
+
+            }
+
+            .header {
+                color: #fff !important;
+
+
+            }
+
+            .meta {
+                font-size: x-small;
+                color: rgba(255, 255, 255, 0.5);
+            }
+        }
 
         .extra {
             background-color: #fefefe;
@@ -47,11 +79,6 @@ body {
         .extra.grid.grid-4 {
             grid-template-columns: 25% 25% 25% 25%;
         }
-
-
-
-
-
 
     }
 
@@ -96,7 +123,6 @@ body {
     line-height: 28px;
     text-align: left;
 
-
     .angle.icon {
         cursor: pointer;
         margin: 0;
@@ -135,7 +161,7 @@ body {
 
 
     .detail.center {
-        text-align: center;        
+        text-align: center;
     }
 
 

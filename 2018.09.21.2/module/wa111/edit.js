@@ -7,21 +7,6 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     }
 
 
-    function MainController($scope) {
-        this.foo = 1;
-        var that = this;
-        var setBar = function() {
-            // that.bar = {someProperty: 2};
-            this.bar = { someProperty: 2 };
-        };
-        setBar.call(this);
-        // there are other conventions:
-        // var MC = this;
-        // setBar.call(this); when using 'this' inside setBar()
-    }
-
-
-
     function setCtrl() {
         [...aspnetForm.elements].filter(({ name }) => name && !name.startsWith('__')).map(function(el, i) {
             var _name = el.name.split('$').pop();
@@ -104,12 +89,15 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
 
-        if (evo.user) {
+        if (!evo.user) {
             return updateUserStatus();
         } else {
             evo.user = {};
         };
+
+
         return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
+
             var a = evo.assign(args[0]);
             var c = evo.assign(args[1], args[2]);
             c.banker = c.banker || [];
@@ -147,7 +135,12 @@ define([evo.host + "/apiFunction"], function(apiFunction) {
     }
 
     function openLoginLog() {
-        window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
+        if (evo.test) {
+            window.open(`${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
+        } else {
+            window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
+        }
+
     }
 
     return { setUser, openDeposit, openLoginLog }

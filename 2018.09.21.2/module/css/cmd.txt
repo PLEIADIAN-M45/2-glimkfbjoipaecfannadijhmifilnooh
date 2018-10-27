@@ -16,7 +16,7 @@ sass cards.scss cards.css
 
 
 
-
+cd GitHub\2-glimkfbjoipaecfannadijhmifilnooh\2018.09.21.2\module\css
 
 
 

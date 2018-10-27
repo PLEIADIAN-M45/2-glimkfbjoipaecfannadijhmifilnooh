@@ -16,31 +16,15 @@ body {
   width: 100%;
   align-items: flex-start;
   justify-content: center; }
-  .ui.cards .card.danger {
-    background-image: url("chrome-extension://__MSG_@@extension_id__/images/2.jpg") !important; }
   .ui.cards .card.success,
   .ui.cards .card {
     min-width: fit-content;
     background-repeat: round !important;
     background-image: url("chrome-extension://__MSG_@@extension_id__/images/1.jpg") !important;
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); }
-    .ui.cards .card.success .content.compact,
-    .ui.cards .card .content.compact {
-      padding: 6px 12px; }
     .ui.cards .card.success .content,
     .ui.cards .card .content {
-      border-bottom: rgba(255, 255, 255, 0.5) solid grey; }
-      .ui.cards .card.success .content .header.padded,
-      .ui.cards .card .content .header.padded {
-        padding: 10px;
-        color: #fff !important; }
-      .ui.cards .card.success .content .header,
-      .ui.cards .card .content .header {
-        color: #fff !important; }
-      .ui.cards .card.success .content .meta,
-      .ui.cards .card .content .meta {
-        font-size: x-small;
-        color: rgba(255, 255, 255, 0.5); }
+      color: #fff; }
     .ui.cards .card.success .extra,
     .ui.cards .card .extra {
       background-color: #fefefe;
@@ -120,4 +104,4 @@ body {
   .ui.image.label.visible .detail.center {
     text-align: center; }
 
-/*# sourceMappingURL=cards.css.map */
+/*# sourceMappingURL=cards.csssa.map */
