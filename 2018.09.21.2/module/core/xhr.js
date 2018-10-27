@@ -1,20 +1,16 @@
 var json = function(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
-(function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object')
-        module.exports = factory();
-    else if (typeof define === 'function' && define.amd)
-        define([], factory);
-    else if (typeof exports === 'object')
-        exports["xml"] = factory();
-    else
-        root["xml"] = factory();
-})(this, function() {
+
+;
+(function webpackUniversalModuleDefinition(root, factory) { if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if (typeof define === 'function' && define.amd) define([], factory);
+    else if (typeof exports === 'object') exports["xml"] = factory();
+    else root["xml"] = factory(); })(this, function() {
     /**************************************************************************/
     var { open, send, setRequestHeader } = XHR = XMLHttpRequest.prototype;
     //this.getAllResponseHeaders
     XHR.setRequestHeader = function(name, value) {
         this.command = 'XMLHttpRequest';
-        this._headers = {}; 
+        this._headers = {};
         this._headers[name] = value;
         return setRequestHeader.apply(this, arguments);
     };

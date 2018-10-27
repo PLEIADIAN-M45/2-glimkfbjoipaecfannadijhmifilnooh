@@ -6,17 +6,15 @@
 
 
 XMLHttpSpider.loadend = function() {
-    console.log(json(this.responseText));
+    console.log(this);
+
+    //console.log(this.url);
+    //console.log(json(this.responseText));
 }
 
 
 
-
-
-
-
-
-
+//console.log(XMLHttpSpider);
 
 
 
