@@ -1,12 +1,25 @@
-define(['xhr'], function(xhr) {
+/*define(['xhr'], function(xhr) {
     xhr._loadend = function() {
         console.log(this);
     }
-});
+});*/
+
+
+xmlSpider.loadend = function() {
+    console.log(this);
+
+    //console.log(this.url);
+    //console.log(json(this.responseText));
+}
+
+
+
+//console.log(XMLHttpSpider);
 
 
 
 
+//console.log(xml);
 
 
 

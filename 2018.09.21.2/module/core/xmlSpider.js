@@ -1,70 +1,104 @@
-var json = function(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
-;
-(function webpackUniversalModuleDefinition(root, factory) { if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+function jsonqs(str) {
+    if (str.indexOf('?') == -1) { return undefined }
+    try {
+        var result = {};
+        str.split('?')[1].split('&').forEach((pair) => {
+            var [name, value] = pair.split('=');
+            result[name] = value;
+        });
+        return result;
+    } catch (ex) {
+        return undefined;
+    }
+}
+
+
+(function webpackUniversalModuleDefinition(root, factory) {
+    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
     else if (typeof define === 'function' && define.amd) define([], factory);
-    else if (typeof exports === 'object') exports["xml"] = factory();
-    else root["xml"] = factory(); })(this, function() {
-    /**************************************************************************/
-    var { open, send, setRequestHeader } = XHR = XMLHttpRequest.prototype;
-    //this.getAllResponseHeaders
-    XHR.setRequestHeader = function(name, value) {
-        this.command = 'XMLHttpRequest';
-        this._headers = {};
-        this._headers[name] = value;
+    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
+    else root["xmlSpider"] = factory();
+})(this, function() {    
+    var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
+    var xmlSpider = XMLHttpRequest.prototype;
+    xmlSpider.setRequestHeader = function(name, value) {
         return setRequestHeader.apply(this, arguments);
     };
-    XHR.open = function(method, url, async, user, password) {
-        this.url = url;
-        this.async = async;
-        this.method = method;
+    xmlSpider.open = function(method, url, async, user, password) {
+        Object.assign(this, { method, url, async, user, password });
         return open.apply(this, arguments);
     };
-    XHR.send = function(postData) {
+    xmlSpider.send = function(postData) {
         this.postData = postData;
-        this.addEventListener('load', this._load);
-        this.addEventListener('loadend', this._loadend);
+        this.addEventListener('load', this.load);
+        this.addEventListener('loadend', this.loadend);
         return send.apply(this, arguments);
     };
-    XHR._loadend = function() {};
-    XHR._load = function() {
+    xmlSpider.loadend = function() {};
+    xmlSpider.load = function() {
         var { url, method, postData, response, responseText, responseType, responseURL, responseXML, readyState, status, statusText, timeout, withCredentials } = this;
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
-        var _hostname = hostname.split('.')[1];
-        var _lastPath = pathname.split('/').pop().replace(/\.\w+/, '');
-        var _response = json(response);
-        var _responseText = responseText;
-        var _method = method;
-        var _params = {};
-        var _postData = {};
-        var query = searchParams;
-        this.isEquel = function(pathString) {
-            var reg = new RegExp('^' + this._lastPath + '$', 'i');
-            return pathString.match(reg);
-        }
-        switch (method) {
-            case 'GET':
-                [...searchParams.entries()].map(function([name, value]) { return this[name] = value; }, _params);
-                break;
-            case 'POST':
-                if (postData && postData.indexOf('{') == 0) {
-                    _postData = json(postData);
-                } else {
-                    try {
-                        postData.split('&').map((x) => { return x.split('='); }).map(function([name, value]) {
-                            _postData[name] = value;
-                        })
-                    } catch (ex) {
-                        _postData = postData;
-                    }
-                }
-                break;
-        }
-        Object.assign(this, { _hostname, _lastPath, _response, _params, _postData, _method, _responseText, query });
-        recorddb.apply(this);
+        this.hostname = hostname.split('.')[1];
+        this.lastPath = pathname.split('/').pop().replace(/\.\w+/, '');
+        this.postData = json(postData);
+        this.params = jsonqs(responseURL);
+        try {
+            var resp = json(response);
+            this.rows = resp.rows || resp.Data.Data;
+            this.resp = resp.rows || resp.Data.Data;
+        } catch (ex) {}
     }
-    return XHR;
+    return xmlSpider;
 });
+
+
+
+
+
+
+
+
+
+
+
+//var query = searchParams;
+
+//try {} catch (ex) {}
+
+/*
+this.isEquel = function(pathString) {
+    var reg = new RegExp('^' + this.lastPath + '$', 'i');
+    return pathString.match(reg);
+}*/
+
+
+/*
+switch (method) {
+    case 'GET':
+        [...searchParams.entries()].map(function([name, value]) { return this[name] = value; }, params);
+        break;
+    case 'POST':
+        if (postData && postData.indexOf('{') == 0) {
+            postData = json(postData);
+
+        } else {
+            try {
+                postData.split('&').map((x) => { return x.split('='); }).map(function([name, value]) {
+                    postData[name] = value;
+                })
+            } catch (ex) {
+                postData = postData;
+            }
+        }
+        break;
+}*/
+
+//Object.assign(this, { hostname, lastPath, method });
+//recorddb.apply(this);
+
+
 
 var MemberStatus = {};
 var user_pastData = {};

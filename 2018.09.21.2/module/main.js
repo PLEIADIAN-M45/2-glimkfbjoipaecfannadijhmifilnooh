@@ -32,6 +32,7 @@ requirejs.config({
         'aes.extend': './encrypt',
         // 'xmlhttp': './xmlhttp',
         'path': './core/path',
+        'queryStringToJSON': './core/queryStringToJSON',
         'evo': './core/evo',
         'common': './core/common',
         'encrypt': './core/encrypt',
@@ -89,28 +90,19 @@ document.addEventListener('copy', function(e) {
 });
 
 
-
 //'cryptojs/md5', 'cryptojs/ripemd160',
+/*
+requirejs(['queryStringToJSON'], function(queryStringToJSON) {
+    console.log(queryStringToJSON);
+})*/
 
 
 window.extend = function() { return Object.assign(this, ...arguments); }
-
-
 requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'extension'], function(moment, Dexie, mdc, semantic, evo) {
-
     window.extend({ moment, Dexie, mdc, evo });
-
-
     requirejs(['common', 'encrypt', 'app', 'spreadsheets'], function() {
-
         console.log("host", evo.host, 'adapter:', evo.adapter, location.pathname);
-
-        requirejs([evo.adapter], function() {
-
-
-        })
-
-
+        requirejs([evo.adapter], function() {})
     })
 });
 
