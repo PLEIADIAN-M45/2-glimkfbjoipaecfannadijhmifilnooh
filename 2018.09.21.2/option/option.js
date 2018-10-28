@@ -27,7 +27,7 @@ var oauth2 = new function() {
 
 const getTokenInfo = function(token) {
     return new Promise(function(resolve, reject) {
-        if (token) {
+        if(token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, function(tokenInfo) {
@@ -105,7 +105,7 @@ var local = new function() {
     }
     this.getItem = function(name) {
         var value = localStorage.getItem(name);
-        if (value) {
+        if(value) {
             try {
                 return JSON.parse(value)
             } catch (ex) {
@@ -200,17 +200,159 @@ function getForms(obj) {
         $.ajax({
             url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
             dataType: 'json',
-            data: {
-                audience: window.tokenInfo.audience,
-                spreadsheet: obj.spreadsheet,
-                sheet: obj.sheet
-            }
+            data: obj
         }).then(resolve).fail(reject)
     })
 }
 
+/*
+var audience = json(localStorage.tokenInfo).audience
+console.log(audience);
+
+*/
 
 
+function toObj(array) {
+    var obj = {};
+    array.forEach(([name, value]) => {
+        obj[name] = value
+    });
+    console.log(obj);
+    return obj;
+
+}
+//[name, value]
+
+
+function toMAP(arr) {
+    var sms = new Map(arr)
+    console.log(sms);
+
+}
+
+function json(str) {
+
+    console.log(typeof str);
+
+    try {
+
+        if(typeof str == "object") {
+
+            var res = JSON.stringify(str);
+        } else {
+
+            var res = JSON.parse(str);
+        }
+    } catch (ex) { var res = ex; }
+
+    return res;
+};
+
+var stringify = JSON.stringify;
+
+
+
+//btoa('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec')
+//atob("aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4NC04dHBqaUlYcVM3OGRzOXFHR1R0OHhObXUzOUVRYlo1MFg1OW9oQkVHeUkyUkE0SS9leGVj")
+
+
+function encoded3(res) {
+    res.forEach(([name, value], i) => {
+        var str = JSON.stringify(value)
+        var encoded = aes.encrypt(str);
+        var decoded = aes.decrypt(encoded);
+        console.log(encoded);
+        console.log(decoded);
+    });
+}
+/*
+var encoded = aes.encrypt('本网备用网址列表')
+var decoded = aes.decrypt(encoded);
+console.log(encoded);
+console.log(decoded);
+*/
+
+function view(res) {
+    console.log(res);
+    return res;
+}
+
+
+function decoder(res) {
+    res.forEach(([name, value], i) => {
+        console.log(name, decodeURI(atob(value)));
+    });
+}
+
+
+
+function toLocalStorage([name, value]) {
+    console.log(name, value);
+    localStorage[name] = value;
+}
+
+function forEach(res) {
+    res.forEach(toLocalStorage)
+}
+/*
+$.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
+        data: { commands: "GMA" }
+    }).then(forEach)
+    .fail(s);*/
+
+
+var str = localStorage.danger;
+var decoded = decodeURI(atob(str))
+
+console.log(JSON.parse(decoded));
+
+//console.log(decodeURI(atob(str)));
+
+
+
+/*
+res.forEach(([name, value], i) => {
+    localStorage[name] = value;
+});*/
+
+
+/*
+
+getForms({
+    audience: json(localStorage.tokenInfo).audience,
+    spreadsheet: "1_PPpDH6LxEfklCymd7367wvNnlCp2MuoeQuFAhrL2wI",
+    sheet: "sms"
+}).then(s)
+*/
+/*
+.then((x) => {
+    console.log(x);
+})
+*/
+
+
+
+/*https://docs.google.com/spreadsheets/d/1GxH9j5_IpUxL0ElXAfpx1HaxLIIIetrmN-JG5tRi_20/edit#gid=1854920738
+
+locate:gid=1752935424
+banker:gid=0
+author:gid=1854920738
+mobile:gid=547176525
+warn
+
+https://docs.google.com/spreadsheets/d/1eUNxUPYKC834Q2mzazEg-ToPiUVyIuxVHTxXNgPyAIY/edit#gid=1372623222
+
+region:
+notice:
+GB2260:
+sms:
+
+dashboard:
+config:
+
+advise
+*/
 
 var myApp = angular.module('myApp', [])
 
@@ -218,9 +360,12 @@ var myApp = angular.module('myApp', [])
 
         getProfileUserInfo()
             .then(userInfo => {
+                return
                 local.setItem('userInfo', userInfo);
                 $scope.userInfo = userInfo;
                 $scope.$apply();
+
+
             })
 
 
@@ -230,7 +375,7 @@ var myApp = angular.module('myApp', [])
         $scope.version = chrome.runtime.getManifest().version.replace(/\./g, '_');
         $scope.checkChromeVersion = function() {
             var minimum_chrome_version = '67.0.3396.87'
-            if (chromeVersion < minimum_chrome_version) {
+            if(chromeVersion < minimum_chrome_version) {
                 $('#dimmer-body').inactive();
                 $('#update-message').display();
             } else {
@@ -240,7 +385,7 @@ var myApp = angular.module('myApp', [])
 
 
         function getGB2260() {
-            if (localStorage["GB2260"] == undefined) {
+            if(localStorage["GB2260"] == undefined) {
                 getForms({
                     spreadsheet: '14QeaJYYKAd9_ch7fWhNHREjvva5jiHuv6IWtxZ_1Dy0',
                     sheet: 'GB2260'
@@ -256,6 +401,7 @@ var myApp = angular.module('myApp', [])
             getAuthToken(true)
                 .then(getTokenInfo)
                 .then(function() {
+                    return
                     getGB2260();
                     $scope.getDangerIP();
                     $scope.getMyConfig();
@@ -277,8 +423,8 @@ var myApp = angular.module('myApp', [])
             chrome.storage.sync.get(null, function(items) {
                 Object.entries(items).forEach(function([key, value]) {
                     //console.log(value);
-                    if (value) {
-                        if (typeof value == 'object') {
+                    if(value) {
+                        if(typeof value == 'object') {
                             $scope[key] = value;
                             var _value = JSON.stringify(value);
                             _value = aes.encrypt(_value);
@@ -375,7 +521,7 @@ var myApp = angular.module('myApp', [])
         }
 
         $scope.save = function(show_dimmer) {
-            if (show_dimmer == undefined) { $('#dimmer-body').active(); }
+            if(show_dimmer == undefined) { $('#dimmer-body').active(); }
             var _config = JSON.stringify($scope.config);
             _config = aes.encrypt(_config);
             local.setItem('config', _config);
@@ -399,16 +545,16 @@ var myApp = angular.module('myApp', [])
             var _board = $scope.config[name];
             var _page = $scope.pages[name];
             var _country = $scope.config.countries;
-            if (!_board.username) {
+            if(!_board.username) {
                 return false
             }
-            if (!_board.password) {
+            if(!_board.password) {
                 return false
             }
-            if (!_board.server) {
+            if(!_board.server) {
                 return false
             }
-            if (!_board.security && name == 'cashier') {
+            if(!_board.security && name == 'cashier') {
                 return false
             }
             $.each(_sites, function(index, site) {
@@ -418,7 +564,7 @@ var myApp = angular.module('myApp', [])
                 server = server.replace(/(:)$/g, '$1' + site.port);
                 var path = server + _page;
                 //console.log(path);
-                if (_country[site.country]) {
+                if(_country[site.country]) {
                     createTabs(path)
                 }
             });

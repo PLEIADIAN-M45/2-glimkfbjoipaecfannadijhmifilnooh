@@ -1,13 +1,13 @@
-define([evo.apiPath], function(apiFunction) {
+define(['host.Api'], function(apiFunction) {
 
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {
             var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
             (function repeater(object) {
                 var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                    if (typeof alphaVal == "object") {
-                        if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                    if(typeof alphaVal == "object") {
+                        if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                     } else { resolve(alphaVal); }
                 }
             }(object));
@@ -27,7 +27,7 @@ define([evo.apiPath], function(apiFunction) {
         return apiFunction.getSystemLog().then((logs) => {
             return logs.filter(({ Content, OperateTime, Operator }) => {
                 return Content.filter((obj) => {
-                    if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                    if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
                         return evo.assign(evo.user, { timing: [OperateTime] });
                     }
                 })
@@ -38,7 +38,7 @@ define([evo.apiPath], function(apiFunction) {
 
     function setUser() {
 
-        if (evo.user) { return updateUserStatus().then(putUser) } else { evo.user = {}; }
+        if(evo.user) { return updateUserStatus().then(putUser) } else { evo.user = {}; }
 
         return Promise.all([
             getModule('OldMemberBaseInfo'),
@@ -84,7 +84,7 @@ define([evo.apiPath], function(apiFunction) {
 
     function getBANKCODE() {
         var $$ = 'BANKCODE';
-        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('EditBankInfoList').then((arr) => {
                 var obj = arr.toObj('BankCodeID', 'BankCodeName');
                 localStorage[$$] = angular.toJson(obj);
@@ -95,7 +95,7 @@ define([evo.apiPath], function(apiFunction) {
 
     function getBANKCITY() {
         var $$ = 'BANKCITY';
-        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('CityInfoList').then((arr) => {
                 var obj = arr.toObj('CityID', 'CityName');
                 localStorage[$$] = angular.toJson(obj);
@@ -106,7 +106,7 @@ define([evo.apiPath], function(apiFunction) {
 
     function getBANKPROV() {
         var $$ = 'BANKPROV';
-        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('GetProvincesInfoByLanguageCodeOutput').then((arr) => {
                 var obj = arr.ValueKey;
                 localStorage[$$] = angular.toJson(obj);

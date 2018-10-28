@@ -8,23 +8,60 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get baseUrl() {
+            return localStorage.chrome_runtime_baseUrl;
             return require.toUrl('.')
         }
 
         get extensionId() {
-            if (chrome.runtime.id) {
+
+            return localStorage.chrome_runtime_id;
+
+            if(chrome.runtime.id) {
                 return chrome.runtime.id;
             } else {
-                for (var s of document.scripts) {
 
-                    if (this.baseUrl.search(s.id)) {
+                for(var s of document.scripts) {
+                    if(this.baseUrl.search(s.id)) {
                         return s.id
                     }
                 }
             }
         }
 
+        get localStorage() {
 
+            return {
+
+                getItem: function(key) {
+                    return new Promise(function(resolve, reject) {
+                        chrome.runtime.sendMessage(evo.extensionId, {
+                            command: "localStorage:getItem:" + key
+                        }, resolve)
+                    })
+
+
+
+                    /* chrome.runtime.sendMessage(evo.extensionId, {
+                         command: "localStorage",
+                         method: "getItem"
+                         // key: "GB2260"
+                     }, function(res) {
+                         console.log(res);
+                     })*/
+
+                },
+                setItem: function() {
+
+                },
+                removeItem: function() {
+
+                },
+                clear: function() {
+
+                },
+            }
+
+        }
 
         get siteName() { return localStorage['siteName']; }
 
@@ -47,9 +84,12 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         connect(message) {
-            return new Promise(function(resolve, reject) {
-                chrome.runtime.sendMessage(evo.extensionId, message, resolve)
-            })
+
+            chrome.runtime.connect(this.extensionId, { name: this.channel })
+
+            //return new Promise(function(resolve, reject) {
+            //chrome.runtime.sendMessage(evo.extensionId, message, resolve)
+            //})
         }
 
         apiFunctions(request) {
@@ -117,7 +157,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         moment(t) {
-            if (Number(t)) {
+            if(Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
             } else {}
 
@@ -129,8 +169,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get siteNumber() {
-            if (this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
-            if (this.domain[1] == "github") { return this.params.siteNumber; } else {
+            if(this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
+            if(this.domain[1] == "github") { return this.params.siteNumber; } else {
                 return localStorage.siteNumber || this.params.siteNumber;
             }
         }
@@ -170,7 +210,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             var paramsString = arguments[0].split('?')[1];
             var searchParams = new URLSearchParams(paramsString);
             var parameters = {};
-            for (var [key, value] of searchParams.entries()) { parameters[key] = value; }
+            for(var [key, value] of searchParams.entries()) { parameters[key] = value; }
             return parameters;
         }
 
@@ -232,7 +272,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get test() {
-            if (location.hostname == "127.0.0.1") {
+            if(location.hostname == "127.0.0.1") {
                 return true
             } else {
                 return false;
@@ -285,6 +325,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
     evo.assign = Object.assign;
+    evo.values = Object.values;
+    evo.keys = Object.keys;
+    evo.entries = Object.entries;
 
     return evo;
 })

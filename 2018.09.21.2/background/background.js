@@ -4,9 +4,11 @@ function openOptionsPage() { chrome.runtime.openOptionsPage() };
 
 function createTabs(url) { chrome.tabs.create({ url: url }) }
 
+function trim(value) { return value.toString().trim(); }
 
 
-//openOptionsPage();
+openOptionsPage();
 
 
 //createTabs('../code/a.html')
+//createTabs('/app/app.html')

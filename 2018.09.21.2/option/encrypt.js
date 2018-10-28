@@ -1,9 +1,17 @@
 var aes = (function() {
+
+
     var extId = chrome.runtime.id;
+
+
     var key = CryptoJS.enc.Utf8.parse(extId);
     var iv = CryptoJS.enc.Utf8.parse(extId);
+
+
+
     var my = {};
     my.encrypt = function(str) {
+        console.log(str);
         var encrypted = CryptoJS.AES.encrypt(str, key, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
@@ -13,12 +21,15 @@ var aes = (function() {
         return encrypted;
     }
     my.decrypt = function(str) {
+        console.log(str);
+
         var decrypted = CryptoJS.AES.decrypt(str, key, {
             iv: iv,
             mode: CryptoJS.mode.CBC,
             padding: CryptoJS.pad.Pkcs7
         });
         decrypted = CryptoJS.enc.Utf8.stringify(decrypted);
+        console.log(decrypted);
         try {
             return angular.fromJson(decrypted)
         } catch (ex) {
@@ -27,4 +38,3 @@ var aes = (function() {
     }
     return my;
 }());
-

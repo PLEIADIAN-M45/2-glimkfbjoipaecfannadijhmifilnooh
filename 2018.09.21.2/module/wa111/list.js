@@ -1,17 +1,14 @@
-/*define(['xhr'], function(xhr) {
-    xhr._loadend = function() {
+define(['xmlSpider'], function(xmlSpider) {
+    xmlSpider.loadend = function() {
         console.log(this);
+        //console.log(this.url);
+        //console.log(json(this.responseText));
     }
-});*/
 
 
-xmlSpider.loadend = function() {
-    console.log(this);
+});
 
-    //console.log(this.url);
-    //console.log(json(this.responseText));
-}
-
+console.log(12);
 
 
 //console.log(XMLHttpSpider);

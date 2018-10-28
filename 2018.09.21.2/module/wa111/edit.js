@@ -1,8 +1,10 @@
-define([evo.apiPath], function(apiFunction) {
+define(['host.Api'], function(apiFunction) {
 
-    if (['21', '2'].includes(evo.channel)) {}
+    console.log(12, 32);
 
-    if (['26', '35', '17'].includes(evo.channel)) {
+    if(['21', '2'].includes(evo.channel)) {}
+
+    if(['26', '35', '17'].includes(evo.channel)) {
         evo.map = { "BankCode111": "banker.meta", "BankCode111_2": "banker.meta", "BankCode111_3": "banker.meta", "BankCode111_4": "banker.meta", "BankCode111_5": "banker.meta", "txtRemittanceAccount111": "banker.title", "txtRemittanceAccount111_2": "banker.title", "txtRemittanceAccount111_3": "banker.title", "txtRemittanceAccount111_4": "banker.title", "txtRemittanceAccount111_5": "banker.title", "ddlCityArea": "banker.city", "ddlCityArea2": "banker.city", "ddlCityArea3": "banker.city", "ddlCityArea4": "banker.city", "ddlCityArea5": "banker.city", "ddlCity": "banker.prov", "ddlCity2": "banker.prov", "ddlCity3": "banker.prov", "ddlCity4": "banker.prov", "ddlCity5": "banker.prov", "txtPhoto": "mobile", "txtIdCard": "idcard", "ishow": "status", "isOpenDeposit": "deposit", "txtRemittaceName": "author", "lblIp": "locate", "birthday": "birthday", "btnSaveInfo": "btnSave", "btnStop": "btnStop", "f_RemittanceAccount": "banker", "f_joindate": "attach", "f_alagent": "agency", "f_photo": "mobile", "f_idCard": "idcard", "f_blackList": "blacklist" }
     }
 
@@ -54,7 +56,7 @@ define([evo.apiPath], function(apiFunction) {
     function getSystemLog() {
         return apiFunction.getSystemLog().then((logs) => {
             logs.filter((x) => {
-                if ((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) {
+                if((x.f_field == 'f_ishow' && x.f_oldData == 0 && x.f_newData == 3)) {
                     return evo.user.timing = [x.f_time];
                 }
             })
@@ -62,23 +64,23 @@ define([evo.apiPath], function(apiFunction) {
     }
 
     function smart(arr) {
-        if (!arr) { return {} } else { var res = {} };
-        if (arr.constructor.name == "Object") { arr = Object.entries(arr) }
+        if(!arr) { return {} } else { var res = {} };
+        if(arr.constructor.name == "Object") { arr = Object.entries(arr) }
         arr.map(function([name, value]) {
             var key = evo.map[name];
-            if (key) {
+            if(key) {
                 try {
                     var keys = key.split('.');
                     var key1 = keys[0];
                     var key2 = keys[1];
                     var value = (ddl[key2]) ? ddl[key2][value] : value.toString();
-                    if (key2) {
+                    if(key2) {
                         res[key1] = res[key1] || [];
                         res[key1][key2] = res[key1][key2] || [];
                         res[key1][key2].push(value);
                     } else {
-                        if (value.includes('|')) { value = value.split('|'); }
-                        if (value) { res[key1] = value; }
+                        if(value.includes('|')) { value = value.split('|'); }
+                        if(value) { res[key1] = value; }
                     }
                 } catch (ex) {}
             }
@@ -89,7 +91,7 @@ define([evo.apiPath], function(apiFunction) {
     function setUser() {
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
 
-        if (evo.user) {
+        if(evo.user) {
             return updateUserStatus();
         } else {
             evo.user = {};
@@ -135,7 +137,7 @@ define([evo.apiPath], function(apiFunction) {
     }
 
     function openLoginLog() {
-        if (evo.test) {
+        if(evo.test) {
             window.open(`${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
         } else {
             window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');

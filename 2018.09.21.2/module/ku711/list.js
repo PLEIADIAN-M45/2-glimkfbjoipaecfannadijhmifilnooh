@@ -1,5 +1,5 @@
 define([], function() {
-    console.log(evo.router);
+    console.log(evo);
 });
 
 

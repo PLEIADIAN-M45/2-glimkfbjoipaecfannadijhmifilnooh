@@ -26,7 +26,7 @@ function json(a) { return (typeof a == 'string') ? JSON.parse(a) : JSON.stringif
 
 function pathOf(url) { return url.split('/').pop(); }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 
@@ -47,8 +47,8 @@ var apiFunctions = function(request, sender, sendResponse) {
 
     request.time = Date.now();
 
-    if (request.url) {
-        if (proxy) {
+    if(request.url) {
+        if(proxy) {
             var module = this[property][proxy].call(request);
             //console.log(module);
         } else {
@@ -59,7 +59,7 @@ var apiFunctions = function(request, sender, sendResponse) {
     }
 
 
-    if (module.career == "ku711") {
+    if(module.career == "ku711") {
 
         module.settings.data = json(module.settings.data);
     }
@@ -79,7 +79,7 @@ var apiFunctions = function(request, sender, sendResponse) {
                     result.origin = request.url;
 
                     var status = result.status || textStatus;
-                    if (['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
+                    if(['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
                     sendResponse([result, status, xhr]);
                 } catch (ex) {
                     sendResponse([null, 'error', xhr]);
@@ -391,12 +391,12 @@ apiFunctions.prototype["smsService"]["smsc"] = function() {
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
-    if (smss == undefined) { return false }
-    if (channel == undefined) { return false }
-    if (mobile == undefined) { return false }
-    if (mobile.includes('*') == undefined) { return false }
-    if (countrycode == undefined) { return false }
-    if (message == undefined) { return false }
+    if(smss == undefined) { return false }
+    if(channel == undefined) { return false }
+    if(mobile == undefined) { return false }
+    if(mobile.includes('*') == undefined) { return false }
+    if(countrycode == undefined) { return false }
+    if(message == undefined) { return false }
     return {
         career: 'smsc',
         settings: {
@@ -406,10 +406,10 @@ apiFunctions.prototype["smsService"]["smsc"] = function() {
             data: { sender: '', phones: mobile, smscontent: message, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
         },
         callback: function(res) {
-            if (res.match(/(會員登錄)/)) { var status = 3; }
-            if (res.match(/(msg = '')/)) { var status = 0; }
-            if (res.match(/(msg = '101')/)) { var status = 101; }
-            if (res.match(/(msg = '102')/)) { var status = 102; }
+            if(res.match(/(會員登錄)/)) { var status = 3; }
+            if(res.match(/(msg = '')/)) { var status = 0; }
+            if(res.match(/(msg = '101')/)) { var status = 101; }
+            if(res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }
@@ -480,7 +480,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if (d.proCode == "999999") {
+                        if(d.proCode == "999999") {
                             return {
                                 meta: 'pconline',
                                 prov: d.pro,
@@ -640,15 +640,6 @@ apiFunctions.prototype["idcard"]["wa111"] = function() {
 }
 
 
-if (location.protocol == 'chrome-extension:') {
-    FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
-    FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
-    FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
-    FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
-    window.GB2260 = angular.fromJson(localStorage["GB2260"]).map((x) => { x[0] = x[0].toString(); return x; })
-    window.GB2260MAP = new Map(GB2260);
-    //console.log(GB2260MAP);
-}
 
 apiFunctions.prototype["idcard"]["evo"] = function() {
     var [$1, $2, $3, $4, $5, $6, $7] =
@@ -675,85 +666,99 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 
 
 
+var store = new Dexie('evo');
+store.version(4).stores({
+    user: '[account+channel]',
+    xmlhttp: 'lastPath',
+    author: '++id',
+    banker: '++id',
+    mobile: '++id',
+    locate: '++id',
+    danger: '++id',
+    notice: '++id',
+    region: '++id',
+    GB2260: 'code, area'
+});
+
+var evo = {
+    local: {},
+    search: {}
+};
+for(var key in window.localStorage) {
+    try {
+        var value = window.localStorage[key];
+        evo.local[key] = JSON.parse(decodeURI(atob(value)));
+
+        // console.log(evo.local[key]);
+
+        evo.local[key].forEach(function(value, index) {
+            console.log(value);
+            store[key].put(value)
+        });
+
+    } catch (e) {}
+}
+
+
+evo.local.GB2260.forEach(function([code, area], index) {
+    //console.log(code, area);
+    store.GB2260.put({ code, area })
+});
+
+
+
+if(location.protocol == 'chrome-extension:') {
+    FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
+    FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
+    FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
+    FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
+    evo.GB2260MAP = new Map(evo.local.GB2260);
+}
+
+evo.search = {
+    author: function(value) {
+        return evo.local.author.find((d) => {
+            return trim(d[0]) == value;
+        })
+    },
+    banker: function(value) {
+        return evo.local.banker.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    mobile: function(value) {
+        return evo.local.mobile.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    locate: function(value) {
+        return evo.local.locate.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    danger: function(value) {
+        return evo.local.danger.find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    notice: function(value) {
+        return evo.local.notice.find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    region: function(value) {
+        return evo.local.region.find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+}
+
 
 /*
-
-function getSystemLog(account) {
-    $.ajax({
-        url: 'https://bk.ku711.net/member/api/Common/GetMemberInfoOperationLogByMultiAccountID',
-        method: 'post',
-        dataType: 'json',
-        data: {
-            "OperateType": 0,
-            "OperatorList": [],
-            "DataIDList": [],
-            "PageIndex": 0,
-            "PageSize": 5,
-            "DataID": account,
-            "Operated": account,
-            "Platform": 0
-        }
-
-    }).then((d) => { console.log(d); })
-}
-
-
-
-function getSystemLog(account) {
-    $.ajax({
-        url: 'http://host26.wa111.net/LoadData/AccountManagement/GetSystemLog.ashx',
-        method: 'post',
-        dataType: 'json',
-        data: {
-            tabName: '',
-            zwrq: '',
-            pageIndex: '',
-            f_target: '',
-            f_handler: '',
-            ddlType: 0,
-            f_accounts: account,
-            zwrq2: '',
-            logType: 'memberlog'
-            f_number: null,
-            type: null,
-            selType: '',
-            selShow: -1,
-            txtID: '',
-            selDengji: ''
-        }
-    }).then((d) => { console.log(d); })
-}
-*/
-
-
-
-
-/*{
-    banker: 'f_BankAccount',
-    mobile: 'txtPhoto',
-    idcard: 'txtIdCard',
-    author: 'f_RemittanceName'
-}
-*/
-
-
-
-
-
-
-
-// try {} catch (ex) {}
-
-/*
-function now(t) {
-    if (t) {
-        return moment(t).format('YYYY/MM/DD HH:mm:ss')
-    } else { return t }
-}
-
-function today(t) {
-    if (t) {
-        return moment(t).format('YYYY/MM/DD HH:mm:ss')
-    } else { return t }
-}
+var b = evo.search.author('杨吉')
+var b = evo.search.banker('62170008500012323')
+var b = evo.search.locate('116.20.60.169')
+var b = evo.search.danger('他是打水套利客')
+var b = evo.search.region('台灣省')
+console.log(b);
 */

@@ -8,25 +8,22 @@
             "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
 
-            "lib/cryptoJS/rollups/aes.js",
-            "option/encrypt.js",
+            //"lib/crypto/rollups/aes.js",
+            //"option/encrypt.js",
 
 
             "background/background.js",
+
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
-            "background/background.onMessage.js",
-            "background/apiFunctions.js"
 
-            /*
-            "background/background.webRequest.gstatic.js",            
+            "background/onMessage.js",
+
+            "background/apiFunctions.js",
+
             "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
-
-            //"background/background.webRequest.wa111.js",
-            //"background/chrome.webRequest.onCompleted.js",
-            //"background/fetch.js"
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":
@@ -45,10 +42,9 @@
                 "lib/material/0.36.0/icon.css",
                 "lib/angular/angular-csp.css",
                 "lib/semantic/semantic.css"
-                //"css/common.css"
             ],
             "js": [
-                "module/injector.js"
+                "injector.js"
             ],
             "matches": [
                 "http://*/company/net/page/Login/CommonLogin/Login.aspx",
@@ -73,7 +69,8 @@
     {
         "accepts_tls_channel_id": false,
         "ids": ["*"],
-        "matches": ["*://127.0.0.1/*", "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"]
+        "matches": ["*://127.0.0.1/*",
+         "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"]
     },
     "icons":
     {
@@ -96,8 +93,9 @@
         "scopes": ["https://www.googleapis.com/auth/userinfo.profile"],
         "token_uri": "https://accounts.google.com/o/oauth2/token"
     },
-    "options_page": "option/option.html",
+    "options_page": "option/option3.html",
     "optional_permissions": ["tabs", "http://www.google.com/"],
+
     "permissions": [
         "webNavigation",
         "webRequest",

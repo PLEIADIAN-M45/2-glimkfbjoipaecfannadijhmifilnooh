@@ -66,16 +66,22 @@ function response_message(request, sender, sendResponse) {
     }
 
 
+
+
     if (request.command == "requestverificationtoken") {
         localStorage[request.command] = request.value;
         return true;
     }
 
     if (request.storage) {
+        console.log(request);
+        console.log(aes);
+
         switch (request.method) {
             case 'setItem':
                 var value = (typeof request.value == 'object') ? JSON.stringify(request.value) : request.value;
                 value = aes.encrypt(value);
+                console.log(value);
                 window[request.storage]['setItem'](request.key, value);
                 sendResponse(request);
                 break;
@@ -105,6 +111,7 @@ function response_message(request, sender, sendResponse) {
 
 if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
 if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+
 
 
 

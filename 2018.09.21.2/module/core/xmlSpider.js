@@ -20,7 +20,7 @@ function jsonqs(str) {
     else if (typeof define === 'function' && define.amd) define([], factory);
     else if (typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
-})(this, function() {    
+})(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
     var xmlSpider = XMLHttpRequest.prototype;
     xmlSpider.setRequestHeader = function(name, value) {

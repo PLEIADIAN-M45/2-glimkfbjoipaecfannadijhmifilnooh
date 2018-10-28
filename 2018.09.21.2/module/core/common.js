@@ -1,6 +1,6 @@
 function putUser() {
     return new Promise(function(resolve, reject) {
-        if (evo.user.region == undefined) { evo.user.region = [] };
+        if(evo.user.region == undefined) { evo.user.region = [] };
         //console.log('putUser', evo.user);
         evo.sendMessage({ command: 'evo.store.user.put', params: evo.user }).then(resolve);
     })
@@ -8,7 +8,7 @@ function putUser() {
 
 function getUser(params) {
     return new Promise(function(resolve, reject) {
-        if (params) {
+        if(params) {
             var account = params.f_accounts || params.AccountID || params.account;
             var channel = params.channel || evo.channel;
         } else { var { account, channel } = evo; }
@@ -24,9 +24,64 @@ function delUser() {
 }
 
 
+
+
+/*
+blacklist
+accusation
+BlackPhone
+sensitive
+IPAddress
+*/
+
+/*
+locate
+banker
+author
+mobile
+region
+notice
+*/
+
+
+
 var google = {};
 
+
+
 async function start() {
+
+
+/*
+    var danger = await evo.localStorage.getItem('danger')
+    var notice = await evo.localStorage.getItem('notice')
+    var region = await evo.localStorage.getItem('region')
+    var sms = await evo.localStorage.getItem('sms')*/
+
+
+    /*
+    var mobile = await evo.localStorage.getItem('mobile')
+    var banker = await evo.localStorage.getItem('banker')
+    var locate = await evo.localStorage.getItem('locate')
+    var author = await evo.localStorage.getItem('author')
+*/
+
+
+
+
+    console.log(notice);
+    console.log(sms);
+
+
+
+
+}
+
+
+async function start2() {
+
+
+
 
     var separator = String.fromCharCode(124);
     var blacklist = await extension.localStorage.getItem('blacklist');
@@ -52,7 +107,7 @@ async function start() {
     evo.sensitive.province = evo.sensitive.area;
 
 
-    if (evo.test) {
+    if(evo.test) {
         /*
                 author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
                 region.push(['云南'])
@@ -84,10 +139,10 @@ async function start() {
     region.search = function(region) {
         //console.log(region);
 
-        if (this == window) { return undefined };
-        if (region == undefined) { return undefined };
+        if(this == window) { return undefined };
+        if(region == undefined) { return undefined };
         var values = evo.values(region);
-        if (values.length == 0) { return undefined };
+        if(values.length == 0) { return undefined };
         var value = values.join('').trim();
         var expression = this.separate();
         var re = new RegExp(expression, 'g');
@@ -169,16 +224,16 @@ function log(i) {
 
 
 
-function isEmptyObject(obj) { for (var key in obj) { return false; } return true; }
+function isEmptyObject(obj) { for(var key in obj) { return false; } return true; }
 
 function format(t) {
-    if (t) {
+    if(t) {
         var g = moment(t);
         var length = g._pf.parsedDateParts.length
-        if (length == 6) {
+        if(length == 6) {
             return g.format('YYYY/MM/DD HH:mm:ss');
         }
-        if (length == 3) {
+        if(length == 3) {
             return g.format('YYYY/MM/DD');
         }
     } else { return t }
@@ -196,8 +251,8 @@ var createTabs = function(url) {
 
 function scrollHeightListener() {
     window.addEventListener('message', function(e) {
-        if (e.data) {
-            if (e.data.id === "sameBrowserList") {
+        if(e.data) {
+            if(e.data.id === "sameBrowserList") {
                 var el = document.getElementById(e.data.id);
                 el.style.height = e.data.scrollHeight + 'px';
             }
@@ -226,8 +281,8 @@ var scrollHeight = new function() {
     }
     this.listener = function() {
         return window.addEventListener('message', function(e) {
-            if (e.data) {
-                if (e.data.id === "sameBrowserList") {
+            if(e.data) {
+                if(e.data.id === "sameBrowserList") {
                     var el = document.getElementById(e.data.id);
                     el.style.height = e.data.scrollHeight + 'px';
                 }
@@ -255,10 +310,6 @@ var var1 = null,
 var assign = Object.assign;
 var entries = Object.entries;
 
-evo.assign = Object.assign;
-evo.values = Object.values;
-evo.keys = Object.keys;
-evo.entries = Object.entries;
 
 Array.prototype.toObj = function(key, value) {
     var object = {};
