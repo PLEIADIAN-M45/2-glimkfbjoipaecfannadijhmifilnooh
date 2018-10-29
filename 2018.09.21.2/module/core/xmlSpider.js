@@ -46,8 +46,10 @@ function jsonqs(str) {
         this.params = jsonqs(responseURL);
         try {
             var resp = json(response);
+            //console.log(resp);
+            //console.log(resp.Data.Data);
             this.rows = resp.rows || resp.Data.Data;
-            this.resp = resp.rows || resp.Data.Data;
+            //this.resp = resp.rows || resp.Data.Data;
         } catch (ex) {}
     }
     return xmlSpider;

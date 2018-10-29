@@ -1,60 +1,20 @@
+var store = new Dexie('evo');
+store.version(3).stores({
+    user: '[account+channel]',
+    xmlhttp: 'lastPath',
+});
+
 function response_message(request, sender, sendResponse) {
 
-    var [command, method, key] = array = request.command.split(':');
-
-    switch (command) {
-
-        case "extention.localStorage.getItem":
-
-            break;
-        case "extention.localStorage.setItem":
-
-            break;
-        case "localStorage":
-            if(key) {
-                var value = window[command][key];
-                var array = JSON.parse(decodeURI(atob(value)))
-                sendResponse(array.slice(1));
-            } else {
-                /*
-                var obj = {}
-                var res = window[command];
-                for(var key in res) {
-                    try {
-                        obj[key] = JSON.parse(decodeURI(atob(res[key])))
-                    } catch (e) {}
-                }
-                sendResponse(obj);*/
-            }
-
-            break;
-        case "label_1":
-
-            break;
-        case "label_1":
-
-            break;
-        default:
-            // statements_def
-            break;
-    }
-
-    /* var value = localStorage;
-    console.log(...localStorage);
-
-    for(key in localStorage) {
-        console.log(localStorage[key]);
-    }
-
-*/
-
-
-    if(request.command && request.command.includes('apiFunctions')) {
+    if (request.command && request.command.includes('apiFunctions')) {
+        //console.log(window.origins);
+        //console.log(request);
+        //console.log(request.channel, window.origins.get(request.channel));
         new apiFunctions(request, sender, sendResponse);
         return true;
     }
 
-    if(request.command && request.command.includes("evo.statistics")) {
+    if (request.command && request.command.includes("evo.statistics")) {
         $.ajax({
             url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
             method: 'get',
@@ -73,7 +33,7 @@ function response_message(request, sender, sendResponse) {
         return true;
     }
 
-    if(request.command == "evo.IndexedDB") {
+    if (request.command == "evo.IndexedDB") {
         var params = request.params;
         switch (params[0]) {
             case "get":
@@ -89,11 +49,15 @@ function response_message(request, sender, sendResponse) {
         return true;
     }
 
+    if (request.command == "sync") {
+        chrome.storage.sync.set(request.object, function() { sendResponse('OK') })
+        return true;
+    }
 
-    if(request.command && request.command.includes('store')) {
+    if (request.command && request.command.includes('store')) {
         var { command, params } = request;
         var [, , form, method] = command.split('.');
-        if(method == 'delete') {
+        if (method == 'delete') {
             store[form].where(params).delete().then((x) => { sendResponse('deleted:', params) });
         } else {
             store[form][method](params).then(sendResponse);
@@ -102,8 +66,17 @@ function response_message(request, sender, sendResponse) {
     }
 
 
-    if(request.storage) {
+
+
+    if (request.command == "requestverificationtoken") {
+        localStorage[request.command] = request.value;
+        return true;
+    }
+
+    if (request.storage) {
         console.log(request);
+        console.log(aes);
+
         switch (request.method) {
             case 'setItem':
                 var value = (typeof request.value == 'object') ? JSON.stringify(request.value) : request.value;
@@ -113,7 +86,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(request);
                 break;
             case 'getItem':
-                if(request.key == undefined) {
+                if (request.key == undefined) {
                     value = window[request.storage];
                 } else {
                     var value = window[request.storage]['getItem'](request.key);
@@ -123,8 +96,6 @@ function response_message(request, sender, sendResponse) {
                         value = value;
                     }
                 }
-                console.log(value);
-
                 sendResponse(value);
                 break;
             case 'removeItem':
@@ -134,15 +105,13 @@ function response_message(request, sender, sendResponse) {
         }
         return true;
     }
+
 }
 
 
+if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
-
-
-
-if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 
@@ -152,3 +121,4 @@ var allProvs = [
     "湖北省", "湖南省", "广东省", "海南省", "四川省", "贵州省", "云南省", "陕西省", "甘肃省", "青海省", "台湾省", "内蒙古自治区", "广西壮族自治区", "西藏自治区", "宁夏回族自治区",
     "新疆维吾尔自治区", "香港特别行政区", "澳门特别行政区"
 ]
+

@@ -1,54 +1,27 @@
-//window.origins = new Map();
-//console.log(window.origins);
-
-
-window.origins = new Map();
-
-window.origins.set('0', location.origin)
-
-/*
-chrome.runtime.onConnectExternal.addListener(function(port) {
-    var url = new URL(port.sender.url)
-    window.origins.set(port.name, url.origin);
-    console.log(port.name, url.origin);
-    if (origins.size > 5) {
-        //console.clear();
-    }
-    console.log(origins);
-});
-*/
-
-/*
-if (!window.MockType) {}
-*/
-
 function json(a) { return (typeof a == 'string') ? JSON.parse(a) : JSON.stringify(a); }
 
 function pathOf(url) { return url.split('/').pop(); }
 
-function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+var assign = Object.assign;
 
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 
 
-var assign = Object.assign;
 
 
 var apiFunctions = function(request, sender, sendResponse) {
     //return sendResponse('暫停服務')
     var [commander, property, proxy, channel] = request.command.split(':');
-
     //console.log(request.command);
-
     //console.log(commander, property, proxy, channel, window.origins.get(channel));
-
 
     request.url = window.origins.get(channel);
 
     request.time = Date.now();
 
-    if(request.url) {
-        if(proxy) {
+    if (request.url) {
+        if (proxy) {
             var module = this[property][proxy].call(request);
             //console.log(module);
         } else {
@@ -59,7 +32,7 @@ var apiFunctions = function(request, sender, sendResponse) {
     }
 
 
-    if(module.career == "ku711") {
+    if (module.career == "ku711") {
 
         module.settings.data = json(module.settings.data);
     }
@@ -79,7 +52,7 @@ var apiFunctions = function(request, sender, sendResponse) {
                     result.origin = request.url;
 
                     var status = result.status || textStatus;
-                    if(['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
+                    if (['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
                     sendResponse([result, status, xhr]);
                 } catch (ex) {
                     sendResponse([null, 'error', xhr]);
@@ -391,12 +364,12 @@ apiFunctions.prototype["smsService"]["smsc"] = function() {
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
     var mobile = countrycode + mobile;
     var message = smss[channel];
-    if(smss == undefined) { return false }
-    if(channel == undefined) { return false }
-    if(mobile == undefined) { return false }
-    if(mobile.includes('*') == undefined) { return false }
-    if(countrycode == undefined) { return false }
-    if(message == undefined) { return false }
+    if (smss == undefined) { return false }
+    if (channel == undefined) { return false }
+    if (mobile == undefined) { return false }
+    if (mobile.includes('*') == undefined) { return false }
+    if (countrycode == undefined) { return false }
+    if (message == undefined) { return false }
     return {
         career: 'smsc',
         settings: {
@@ -406,10 +379,10 @@ apiFunctions.prototype["smsService"]["smsc"] = function() {
             data: { sender: '', phones: mobile, smscontent: message, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
         },
         callback: function(res) {
-            if(res.match(/(會員登錄)/)) { var status = 3; }
-            if(res.match(/(msg = '')/)) { var status = 0; }
-            if(res.match(/(msg = '101')/)) { var status = 101; }
-            if(res.match(/(msg = '102')/)) { var status = 102; }
+            if (res.match(/(會員登錄)/)) { var status = 3; }
+            if (res.match(/(msg = '')/)) { var status = 0; }
+            if (res.match(/(msg = '101')/)) { var status = 101; }
+            if (res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }
@@ -480,7 +453,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if(d.proCode == "999999") {
+                        if (d.proCode == "999999") {
                             return {
                                 meta: 'pconline',
                                 prov: d.pro,
@@ -638,9 +611,6 @@ apiFunctions.prototype["idcard"]["wa111"] = function() {
         }
     }
 }
-
-
-
 apiFunctions.prototype["idcard"]["evo"] = function() {
     var [$1, $2, $3, $4, $5, $6, $7] =
     this.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
@@ -663,54 +633,165 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 }
 
 
+FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
+FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
+FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
+FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
 
 
 
-var store = new Dexie('evo');
-store.version(4).stores({
-    user: '[account+channel]',
-    xmlhttp: 'lastPath',
-    author: '++id',
-    banker: '++id',
-    mobile: '++id',
-    locate: '++id',
-    danger: '++id',
-    notice: '++id',
-    region: '++id',
-    GB2260: 'code, area'
-});
-
-var evo = {
-    local: {},
-    search: {},
-    json: function(arg) {
-       // console.log(typeof arg);
-        try {
-            var value = (typeof arg == 'object') ? JSON.stringify(arg) : JSON.parse(arg);
-        } catch (e) {
-            var value = arg;
-        }
-       // console.log(value);
-        return value;
+evo.search = {
+    author: function(value) {
+        return evo.local.author.find((d) => {
+            return trim(d[0]) == value;
+        })
     },
-
-    encoder: function(value) {
-        var str = JSON.stringify(value, true);
-        console.log(str);
-        return btoa(encodeURI(JSON.stringify(value)))
+    banker: function(value) {
+        return evo.local.banker.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
     },
-    decoder: function(value) {
-        return decodeURI(atob(value))
+    mobile: function(value) {
+        return evo.local.mobile.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    locate: function(value) {
+        return evo.local.locate.find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    danger: function(value) {
+        return evo.local.danger.find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    notice: function(value) {
+        return evo.local.notice.find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    region: function(value) {
+        return evo.local.region.find((d) => {
+            return value.includes(trim(d[0]))
+        })
     }
-};
+}
 
 
-console.log(evo.json("grrgr"));
+function s(array) { console.log(array); }
 
+function flat(array) { return array.flat(); }
+
+function save(arr) {
+    arr.forEach(([name, value]) => {
+        localStorage[name] = value;
+        evo.local[name] = evo.decoder(value);
+    })
+}
+
+
+function download() {
+    return Promise.all([
+        fetch('https://www.evo.com/?commands=GMA').then(_toJson),
+        fetch('https://www.evo.com/?commands=GMB').then(_toJson)
+    ]).then(flat).then(save);
+}
+
+download()
+
+
+
+/*
+var b = evo.search.author('杨吉')
+var b = evo.search.banker('62170008500012323')
+var b = evo.search.locate('116.20.60.169')
+var b = evo.search.danger('他是打水套利客')
+var b = evo.search.region('台灣省')
+console.log(b);
+*/
+
+
+
+
+/*
+fetch('gb2260').then(_toText)
+    .then((value) => {
+        return localStorage["gb2260"] = value;
+    }).then((value) => {
+        window.GB2260MAP = new Map(evo.decoder(value))
+    });
+
+fetch('ga2260').then(_toText)
+    .then((value) => {
+        console.log(evo.decoder(value));
+        return localStorage["ga2260"] = value;
+    });
+    */
+
+
+//fetch('https://www.evo.com/?commands=GMB').then(_toJson).then(_toLocalStorage)
+//fetch('https://www.evo.com/?commands=GMA').then(_toJson).then(_toLocalStorage)
+
+/*
+for (var key in window.localStorage) {
+    try {
+        var value = window.localStorage[key];
+        evo.local[key] = JSON.parse(decodeURI(atob(value)));
+        // console.log(evo.local[key]);
+        evo.local[key].forEach(function(value, index) {
+            //console.log(value);
+            store[key].put(value)
+        });
+    } catch (e) {}
+}
+*/
+
+/*
+var search = function() {
+    console.log(this);
+    this._author = evo.decoder()
+}
+
+search.prototype.author = function() {
+    console.log(this);
+
+}
+
+search.prototype.banker = function() {}
+
+search.prototype.mobile = function() {}
+
+search.prototype.locate = function() {}
+
+search.prototype.danger = function() {}
+
+search.prototype.notice = function() {}
+
+search.prototype.region = function() {}
+
+
+var sea = new search();
+
+sea.author()
+
+*/
+
+
+
+
+
+
+
+
+/*
+evo.local.gb2260.forEach(function([code, area], index) {
+    console.log(code, area);
+    store.gb2260.put({ code, area })
+});
+*/
 //console.log(gb2260);
-
 //console.log(evo.decoder(gb2260));
-
 //JSON.parse("\"'\"")
 /*
 >>> s = "Hello world !!"
@@ -721,108 +802,21 @@ console.log(evo.json("grrgr"));
 /*
 http://www.admin10000.com/document/8185.html
 */
-
+/*
 var arr = [
     [110000, "北京市"],
     [110101, "东城区"],
     [110102, "西城区"]
 ]
-
 console.log(evo.json(arr).replace(/\u2034/g, '\\u2034'));
-
-
 console.log(JSON.stringify(arr));
-
-
 console.log(String.fromCharCode(34));
-
 console.log(2028);
-
+*/
 /*
 console.log(evo.encoder(arr));
 var s = evo.encoder(arr)
 console.log(s);
 console.log(evo.decoder(s));
 
-*/
-
-function pre() {
-
-
-    for(var key in window.localStorage) {
-        try {
-            var value = window.localStorage[key];
-            evo.local[key] = JSON.parse(decodeURI(atob(value)));
-            // console.log(evo.local[key]);
-            evo.local[key].forEach(function(value, index) {
-                //console.log(value);
-                store[key].put(value)
-            });
-        } catch (e) {}
-    }
-
-
-
-    evo.local.GB2260.forEach(function([code, area], index) {
-        //console.log(code, area);
-        store.GB2260.put({ code, area })
-    });
-
-
-
-    if(location.protocol == 'chrome-extension:') {
-        FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
-        FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
-        FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
-        FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
-        evo.GB2260MAP = new Map(evo.local.GB2260);
-    }
-
-    evo.search = {
-        author: function(value) {
-            return evo.local.author.find((d) => {
-                return trim(d[0]) == value;
-            })
-        },
-        banker: function(value) {
-            return evo.local.banker.find((d) => {
-                return value.startsWith(trim(d[0]))
-            })
-        },
-        mobile: function(value) {
-            return evo.local.mobile.find((d) => {
-                return value.startsWith(trim(d[0]))
-            })
-        },
-        locate: function(value) {
-            return evo.local.locate.find((d) => {
-                return value.startsWith(trim(d[0]))
-            })
-        },
-        danger: function(value) {
-            return evo.local.danger.find((d) => {
-                return value.includes(trim(d[0]))
-            })
-        },
-        notice: function(value) {
-            return evo.local.notice.find((d) => {
-                return value.includes(trim(d[0]))
-            })
-        },
-        region: function(value) {
-            return evo.local.region.find((d) => {
-                return value.includes(trim(d[0]))
-            })
-        },
-    }
-
-}
-
-/*
-var b = evo.search.author('杨吉')
-var b = evo.search.banker('62170008500012323')
-var b = evo.search.locate('116.20.60.169')
-var b = evo.search.danger('他是打水套利客')
-var b = evo.search.region('台灣省')
-console.log(b);
 */

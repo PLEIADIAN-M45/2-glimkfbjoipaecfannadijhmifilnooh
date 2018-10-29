@@ -7,7 +7,7 @@ function defineProperties(properties) {
 function requireComponents() {
     if($scope.components) {
         $scope.components.forEach((name) => {
-            var templateUrl = require.toUrl("./html/" + name + ".html");
+            var templateUrl = require.toUrl("./module/html/" + name + ".html");
             fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
                 var template = angular.element(html);
                 $element.append(template);
@@ -22,7 +22,7 @@ function requireStylesheet() {
         $scope.stylesheet.forEach(function(sheet) {
             var link = document.createElement('link');
             link.rel = 'stylesheet';
-            link.href = require.toUrl("./css/" + sheet + ".css");;
+            link.href = require.toUrl("./module/css/" + sheet + ".css");;
             document.body.appendChild(link);
         });
     }
@@ -30,6 +30,7 @@ function requireStylesheet() {
 
 
 function startup() {
+    console.log(1);
     return start().then(requireStylesheet).then(requireComponents)
 }
 

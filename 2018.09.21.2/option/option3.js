@@ -285,34 +285,11 @@ function decoder(value) {
 
 
 
-function toLocalStorage([name, value]) {
-    console.log(name, value);
-    localStorage[name] = value;
-}
-
 function forEach(res) {
     res.forEach(toLocalStorage)
 }
 
-
-
-console.log(decoder(gb2260));
-
-/*
-$.ajax({
-    url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-    data: { commands: "GMB" }
-}).then(forEach).fail(s);
-
-
-$.ajax({
-    url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-    data: { commands: "GMA" }
-}).then(forEach).fail(s);
-
-*/
-
-
+//console.log(decoder(gb2260));
 
 
 //var gb2260 = localStorage.GB2260;

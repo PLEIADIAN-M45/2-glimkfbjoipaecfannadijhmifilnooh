@@ -7,8 +7,9 @@ function createTabs(url) { chrome.tabs.create({ url: url }) }
 function trim(value) { return value.toString().trim(); }
 
 
-
 openOptionsPage();
+
+
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 
@@ -28,6 +29,8 @@ store.version(4).stores({
     GB2260: 'code, area'
 });
 
+
+
 var evo = {
     local: {},
     search: {},
@@ -43,18 +46,20 @@ var evo = {
     },
 
     encoder: function(value) {
-        var str = JSON.stringify(value);
-        //console.log(str);
+        var str = JSON.stringify(value, true);
+        console.log(str);
         return btoa(encodeURI(JSON.stringify(value)))
     },
     decoder: function(value) {
-        try {
-            return JSON.parse(decodeURI(atob(value)))
-        } catch (ex) {
-            return decodeURI(atob(value))
-        }
-
+        return decodeURI(atob(value))
     }
+};
+
+
+
+/*
+var readFile = function() {
+    return new Promise(function(resolve, reject) {});
 };
 
 var resp = {
@@ -66,67 +71,11 @@ var resp = {
     }
 }
 
-function _toLocalStorage(res) {
-    console.log(res);
-    res.forEach(([name, value]) => { localStorage[name] = value; })
-}
-
-function _toJson(res) {
-    return res.json()
-}
-
-function _toText(res) {
-    return res.text()
-}
-
-
-
-
-/*
-fetch('/d/gb2260').then(res => res.text()).then((res) => {
-    console.log(res);
-    localStorage['gb2260'] = res;
-})
-*/
-
-/*fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMB')
-    .then(_toJson).then(_toLocalStorage)*/
-
-
-
-
-/*
-$.ajax({
-    url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-    data: { commands: "GMB" }
-}).then(_toLocalStorage).fail();
-
-*/
-/*
-$.ajax({
-    url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-    data: { commands: "GMA" }
-}).then(_toLocalStorage).fail();
-
-
-
-
-var url = btoa("https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec")
-console.log(url);
-console.log(atob(url));
-*/
-
-
-/*var readFile = function() {
-    return new Promise(function(resolve, reject) {
-        fetch('/d/gb2260').then(res => res.text()).then(resolve)
-    });
-};
-
 function _text(res) {
     //console.log(res);
     return res.text();
 }
+
 function _view(res) {
     console.log(res);
     return res;
@@ -138,13 +87,9 @@ function _cb(res) {
     return res;
 }
 
-function getGB2260() {
-    return promise('type', target)
-}
-
-
 var promise1 = new Promise(function(resolve, reject) {
     setTimeout(function() {
         resolve('foo');
     }, 300);
-});*/
+});
+*/

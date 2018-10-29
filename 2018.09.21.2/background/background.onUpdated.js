@@ -1,32 +1,25 @@
 function refreshAllWindow() {
-    chrome.tabs.getAllInWindow(function(tabs) {
-        tabs.forEach(function(tab, index) {
-            if (tab.url.includes('127.0.0.1') || tab.url.includes('wa111') || tab.url.includes('ku711') || tab.url.includes('tp33')) {
-                //if (tab.url.includes('host26')) {
-                chrome.tabs.reload(tab.id, function(d) {
-                    //console.log(d);
-                })
-            }
-        })
+    chrome.tabs.getAllInWindow((tabs) => {
+        tabs.filter((tab) => {
+            return ["127.0.0.1", "wa111", "ku711", "tp33"].filter((host) => { return tab.url.includes(host); })
+        }).forEach((tab) => { chrome.tabs.reload(tab.id) })
     })
 }
 
+chrome.browserAction.onClicked.addListener((tab) => {
+    chrome.runtime.reload();
+});
 
-chrome.runtime.onInstalled.addListener(function(details) {
-    //console.log(details);
-    if (details.reason == "install") {
-        refreshAllWindow()
-    } else if (details.reason == "update") {
-        refreshAllWindow()
+chrome.runtime.onInstalled.addListener((details) => {
+    switch (details.reason) {
+        case "install":
+            break;
+        case "update":
+            refreshAllWindow();
+            break;
     }
 });
 
-
-
-chrome.browserAction.onClicked.addListener(function(tab) {
-
-    chrome.runtime.reload();
-})
 
 /*
 chrome.browserAction.onClicked.addListener(function(tab) {

@@ -5,6 +5,7 @@ define(['host', 'sendsms'], function({ setUser, openDeposit, openLoginLog }, sen
 
     $scope.controller = function($compile, $rootScope) {
         $scope.user = evo.user;
+        console.log($scope.user);
         $scope.sendsms = sendsms.bind(evo.user);
         $scope.$apply();
     };
@@ -13,5 +14,10 @@ define(['host', 'sendsms'], function({ setUser, openDeposit, openLoginLog }, sen
     $scope.openLoginLog = openLoginLog;
     $scope.components = ['edit', 'dialog'];
     $scope.stylesheet = ['edit'];
+    
     startup().then(getUser).then(setUser).then(bootstrap).catch(error);
+
+
+
+    fetch("https://extension.evo.com/?fefef=2434")
 })

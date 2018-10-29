@@ -1,4 +1,7 @@
 //window.origins.set(port.name, url.origin);
+console.log("background.webRequest.js");
+
+//{2}
 
 function lastPathOf(str) {
     var url = new URL(str);
@@ -81,6 +84,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 
 
 /**************************************************************************************************************/
+window.origins = new Map();
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
@@ -96,29 +100,28 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://q51.tp33.net:63', '');
+    window.origins.set(port, details.initiator);
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
 /**************************************************************************************************************/
 
 
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) {
+        var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
+        console.log(redirectUrl);
+        return { redirectUrl }
+    };
+}, { urls: ["https://www.evo.com/*"], }, ['blocking']);
 
 
 
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    console.log(details);
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-console.log(location.origin);
-var a = chrome.runtime.getURL('').slice(0, -1);
-console.log(a);
-*/
+    if (details.initiator == location.origin) {
+        //var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
+        //return { redirectUrl }
+    };
+}, { urls: ["https://extension.evo.com/*"], }, ['blocking']);

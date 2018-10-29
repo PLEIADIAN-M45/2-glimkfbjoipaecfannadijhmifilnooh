@@ -12,15 +12,7 @@ console.log(12);
 
 
 //console.log(XMLHttpSpider);
-
-
-
-
 //console.log(xml);
-
-
-
-
 
 /*xml._loadend = function() {
     var { _lastPath, _response } = this;
