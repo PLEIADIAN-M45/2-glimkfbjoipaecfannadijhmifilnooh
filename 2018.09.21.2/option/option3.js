@@ -212,6 +212,7 @@ console.log(audience);
 */
 
 
+
 function toObj(array) {
     var obj = {};
     array.forEach(([name, value]) => {
@@ -278,10 +279,8 @@ function view(res) {
 }
 
 
-function decoder(res) {
-    res.forEach(([name, value], i) => {
-        console.log(name, decodeURI(atob(value)));
-    });
+function decoder(value) {
+    return decodeURI(atob(value))
 }
 
 
@@ -290,9 +289,15 @@ function toLocalStorage([name, value]) {
     console.log(name, value);
     localStorage[name] = value;
 }
+
 function forEach(res) {
     res.forEach(toLocalStorage)
 }
+
+
+
+console.log(decoder(gb2260));
+
 /*
 $.ajax({
     url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
@@ -310,10 +315,13 @@ $.ajax({
 
 
 
-var str = localStorage.GB2260;
+//var gb2260 = localStorage.GB2260;
+
+
+/*
 var decoded = decodeURI(atob(str))
 console.log(JSON.parse(decoded));
-
+*/
 //console.log(decodeURI(atob(str)));
 
 

@@ -15,25 +15,27 @@
         <div class="ui indeterminate text loader"><b class="chinese">资料正在同步中</b></div>
     </div>
     <div class="ui negative message hide" id="update-message">
-          <i class="close icon"></i>
-          <div class="header">
+        <i class="close icon"></i>
+        <div class="header">
             請先更新 Chrome 瀏覽器版本
-          </div>
-          <br>
-          <p>複製並打開以下這個網址進行更新版本後重啟</p>
-          <b>chrome://settings/help</b>
+        </div>
+        <br>
+        <p>複製並打開以下這個網址進行更新版本後重啟</p>
+        <b>chrome://settings/help</b>
     </div>
     <style type="text/css">
-     .ui.message>b{
+    .ui.message>b {
         color: blue;
-     }
-    .ui.message>p{
-        font-family: Roboto,Microsoft JhengHei!important;
+    }
+
+    .ui.message>p {
+        font-family: Roboto, Microsoft JhengHei !important;
         font-size: 13px;
         font-weight: 700;
     }
-    .ui.message>.header{
-        font-family: Roboto,Microsoft JhengHei!important;
+
+    .ui.message>.header {
+        font-family: Roboto, Microsoft JhengHei !important;
         font-size: 16.5px;
         font-weight: 700;
     }
@@ -187,11 +189,11 @@
     <link rel="stylesheet" href="/lib/material/0.36.0/roboto.css">
     <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
     <link rel="stylesheet" href="option.css">
-    <script src="../lib/crypto/rollups/aes.js"></script>
+    <!-- <script src="../lib/crypto/rollups/aes.js"></script>
     <script src="../lib/crypto/rollups/md5.js"></script>
-    <script src="../lib/crypto/rollups/hmac-md5.js"></script>
-    <script src="./encrypt.js"></script>
+    <script src="../lib/crypto/rollups/hmac-md5.js"></script> -->
     <script src="option.config.js"></script>
+    <script src="/background/gb2260-base64.js"></script>
     <script src="option3.js"></script>
 </body>
 

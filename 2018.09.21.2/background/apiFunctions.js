@@ -682,77 +682,141 @@ store.version(4).stores({
 
 var evo = {
     local: {},
-    search: {}
+    search: {},
+    json: function(arg) {
+       // console.log(typeof arg);
+        try {
+            var value = (typeof arg == 'object') ? JSON.stringify(arg) : JSON.parse(arg);
+        } catch (e) {
+            var value = arg;
+        }
+       // console.log(value);
+        return value;
+    },
+
+    encoder: function(value) {
+        var str = JSON.stringify(value, true);
+        console.log(str);
+        return btoa(encodeURI(JSON.stringify(value)))
+    },
+    decoder: function(value) {
+        return decodeURI(atob(value))
+    }
 };
-for(var key in window.localStorage) {
-    try {
-        var value = window.localStorage[key];
-        evo.local[key] = JSON.parse(decodeURI(atob(value)));
 
-        // console.log(evo.local[key]);
 
-        evo.local[key].forEach(function(value, index) {
-            console.log(value);
-            store[key].put(value)
-        });
+console.log(evo.json("grrgr"));
 
-    } catch (e) {}
+//console.log(gb2260);
+
+//console.log(evo.decoder(gb2260));
+
+//JSON.parse("\"'\"")
+/*
+>>> s = "Hello world !!"
+>>> ":".join("{:02x}".format(ord(c)) for c in s)
+'48:65:6c:6c:6f:20:77:6f:72:6c:64:20:21:21
+*/
+
+/*
+http://www.admin10000.com/document/8185.html
+*/
+
+var arr = [
+    [110000, "北京市"],
+    [110101, "东城区"],
+    [110102, "西城区"]
+]
+
+console.log(evo.json(arr).replace(/\u2034/g, '\\u2034'));
+
+
+console.log(JSON.stringify(arr));
+
+
+console.log(String.fromCharCode(34));
+
+console.log(2028);
+
+/*
+console.log(evo.encoder(arr));
+var s = evo.encoder(arr)
+console.log(s);
+console.log(evo.decoder(s));
+
+*/
+
+function pre() {
+
+
+    for(var key in window.localStorage) {
+        try {
+            var value = window.localStorage[key];
+            evo.local[key] = JSON.parse(decodeURI(atob(value)));
+            // console.log(evo.local[key]);
+            evo.local[key].forEach(function(value, index) {
+                //console.log(value);
+                store[key].put(value)
+            });
+        } catch (e) {}
+    }
+
+
+
+    evo.local.GB2260.forEach(function([code, area], index) {
+        //console.log(code, area);
+        store.GB2260.put({ code, area })
+    });
+
+
+
+    if(location.protocol == 'chrome-extension:') {
+        FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
+        FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
+        FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
+        FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
+        evo.GB2260MAP = new Map(evo.local.GB2260);
+    }
+
+    evo.search = {
+        author: function(value) {
+            return evo.local.author.find((d) => {
+                return trim(d[0]) == value;
+            })
+        },
+        banker: function(value) {
+            return evo.local.banker.find((d) => {
+                return value.startsWith(trim(d[0]))
+            })
+        },
+        mobile: function(value) {
+            return evo.local.mobile.find((d) => {
+                return value.startsWith(trim(d[0]))
+            })
+        },
+        locate: function(value) {
+            return evo.local.locate.find((d) => {
+                return value.startsWith(trim(d[0]))
+            })
+        },
+        danger: function(value) {
+            return evo.local.danger.find((d) => {
+                return value.includes(trim(d[0]))
+            })
+        },
+        notice: function(value) {
+            return evo.local.notice.find((d) => {
+                return value.includes(trim(d[0]))
+            })
+        },
+        region: function(value) {
+            return evo.local.region.find((d) => {
+                return value.includes(trim(d[0]))
+            })
+        },
+    }
+
 }
-
-
-evo.local.GB2260.forEach(function([code, area], index) {
-    //console.log(code, area);
-    store.GB2260.put({ code, area })
-});
-
-
-
-if(location.protocol == 'chrome-extension:') {
-    FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
-    FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
-    FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
-    FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
-    evo.GB2260MAP = new Map(evo.local.GB2260);
-}
-
-evo.search = {
-    author: function(value) {
-        return evo.local.author.find((d) => {
-            return trim(d[0]) == value;
-        })
-    },
-    banker: function(value) {
-        return evo.local.banker.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    mobile: function(value) {
-        return evo.local.mobile.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    locate: function(value) {
-        return evo.local.locate.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    danger: function(value) {
-        return evo.local.danger.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    },
-    notice: function(value) {
-        return evo.local.notice.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    },
-    region: function(value) {
-        return evo.local.region.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    },
-}
-
 
 /*
 var b = evo.search.author('杨吉')

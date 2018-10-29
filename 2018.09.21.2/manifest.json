@@ -8,22 +8,19 @@
             "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
 
-            //"lib/crypto/rollups/aes.js",
-            //"option/encrypt.js",
-
-
+            "background/gb2260-base64.js",
             "background/background.js",
-
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
 
-            "background/onMessage.js",
+            /*"mock/mock.js",
+            "mock/mock.data.js",
+            "mock/mock.conf.js",*/
 
             "background/apiFunctions.js",
+            "background/onMessage.js"
 
-            "mock/mock.js",
-            "mock/mock.data.js",
-            "mock/mock.conf.js"
+
         ]
     },
     "browser_action":
