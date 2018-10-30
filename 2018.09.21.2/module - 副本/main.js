@@ -28,16 +28,16 @@ requirejs.config({
         'semantic': '../lib/semantic/semantic',
         'Mock': '../lib/mock',
 
-        'evo': '../core/evo',
-        'path': '../core/path',
-        'common': '../core/common',
-        'encrypt': '../core/encrypt',
-        'sendsms': '../core/sendsms',
-        'extension': '../core/extension',
-        'spreadsheets': '../core/spreadsheets',
-        'load': '../core/load',
-        'xmlSpider': '../core/xmlSpider',
-        'utils': '../core/utils',
+        'evo': 'core/evo',
+        'path': 'core/path',
+        'common': 'core/common',
+        'encrypt': 'core/encrypt',
+        'sendsms': 'core/sendsms',
+        'extension': 'core/extension',
+        'spreadsheets': 'core/spreadsheets',
+        'load': 'core/load',
+        'xmlSpider': 'core/xmlSpider',
+        'utils': 'core/utils',
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -56,7 +56,7 @@ requirejs.config({
 
 
 
-console.log(localStorage.baseUrl);
+//console.log(localStorage.baseUrl);
 
 
 
@@ -68,21 +68,18 @@ requirejs(['router', 'utils'], function(router) {
 
         window.extend({ moment, Dexie, mdc, evo, router });
 
+
         requirejs(['myApp'], function(myApp) {
 
-            console.log(evo.account, evo.channel);
-
-            requirejs(['@root'], function(rt) {
-
-                console.log(1000);
-
-
-                //_invoke();
-
+            
+            requirejs([router.root], function() {
 
             })
 
+
+
         })
+
     });
 
 

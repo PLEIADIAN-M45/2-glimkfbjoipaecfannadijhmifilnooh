@@ -1,5 +1,5 @@
 var getURL = chrome.runtime.getURL;
-localStorage.baseUrl = getURL('/');
+localStorage.baseUrl = getURL('module/');
 
 localStorage.chrome_runtime_id = chrome.runtime.id;
 localStorage.chrome_runtime_baseUrl = chrome.runtime.getURL('/');
@@ -15,7 +15,7 @@ function injectScript(attrs) {
 
 
 
-injectScript({ "src": getURL("/module/core/xmlSpider.js") });
+injectScript({ "src": getURL("/core/xmlSpider.js") });
 
 document.onreadystatechange = function() {
     switch (document.readyState) {
