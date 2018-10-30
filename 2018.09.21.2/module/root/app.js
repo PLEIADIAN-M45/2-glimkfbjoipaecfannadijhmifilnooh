@@ -5,39 +5,42 @@ function defineProperties(properties) {
 };
 
 function requireComponents() {
-    if($scope.components) {
-        $scope.components.forEach((name) => {
-            var templateUrl = require.toUrl("./module/html/" + name + ".html");
-            fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
-                var template = angular.element(html);
-                $element.append(template);
-                $compile(template)($scope);
-            })
-        })
-    }
-    return
+    return new Promise((resolve, reject) => {
 
-    console.log(7777);
+        if($scope.components) {
+            $scope.components.forEach((name) => {
+                var templateUrl = require.toUrl("./module/html/" + name + ".html");
+                fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+                    var template = angular.element(html);
+                    $element.append(template);
+                    $compile(template)($scope);
+                })
+            })
+            resolve()
+        }
+    })
 
 }
 
 function requireStylesheet() {
-    if($scope.stylesheet) {
-        $scope.stylesheet.forEach(function(sheet) {
-            var link = document.createElement('link');
-            link.rel = 'stylesheet';
-            link.href = require.toUrl("./module/css/" + sheet + ".css");;
-            document.body.appendChild(link);
-        });
-    }
-    return
+    return new Promise((resolve, reject) => {
 
-    console.log(6666);
+        if($scope.stylesheet) {
+            $scope.stylesheet.forEach(function(sheet) {
+                var link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = require.toUrl("./module/css/" + sheet + ".css");;
+                document.body.appendChild(link);
+            });
+            resolve()
+
+        }
+    });
 }
 
 
 function startup() {
-    console.log(evo.user);
+    // console.log(evo.user);
 
     return Promise.all([
         requireStylesheet(),
@@ -52,36 +55,54 @@ function startup() {
 }
 
 function bootstrap() {
-    console.log(5);
-    console.log(evo.user);
-    $invoke($scope.controller)
+    $invoke(window.controller)
 }
 
-//
 
-define(['host.App'], function(app) {
-
-    console.log(2);
-
-    console.log(app);
-
-
-    var controller = angular.element('[ng-controller]');
-
+define(['host.App'], function(myApp) {
+    //var controller = angular.element('[ng-controller]');
+    var controller = angular.element(document.body);
     var $element = controller;
-
     var $scope = controller.scope();
     var $injector = controller.injector();
     var $invoke = $injector.invoke;
     var $compile = $injector.get('$compile');
 
+
+    $invoke(function($compile, $rootScope) {
+        $scope.name2 = "CHANG";
+        $scope.$apply();
+    })
+
+    window.$scope = $scope
+    window.$compile = $compile
+    window.$invoke = $invoke
+    window.$element = $element
+
+
+
+
+    //console.log($scope);
+    // console.log();
+
+
+    return myApp;
+    /*
     $scope.defineProperties = defineProperties;
     $scope.extend = function() {
         evo.assign(this, ...arguments);
         return (this.$$phase) ? this : this.$apply();
     }
+    */
 
-    window.extend({ $scope, $compile, $injector, $invoke, $element });
+
+    myApp.$scope = $scope
+    myApp.$injector = $injector
+    myApp.$invoke = $invoke
+    myApp.$compile = $compile
+
+    window.extend({ myApp, $scope, $compile, $injector, $invoke, $element });
+
     //evo.extend({ $scope, $injector, $compile, $invoke, $element });
     //Object.assign({ $scope, $injector, $compile, $invoke, $element })
 
@@ -89,7 +110,7 @@ define(['host.App'], function(app) {
 
     // console.log($scope);
 
-    return app;
+    return myApp;
 
 
 });

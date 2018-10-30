@@ -27,7 +27,9 @@ requirejs(['moment', 'dexie', 'material', 'evo', 'semantic'], function(moment, D
     requirejs(['common', 'spreadsheets'], function() {
 
 
-        requirejs(['root.App'], function() {
+        requirejs(['root.App'], function(myApp) {
+
+            console.log(myApp);
 
             requirejs(['root'], function() {})
         })

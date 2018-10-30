@@ -2,28 +2,43 @@ define(['host', 'sendsms'], function({ setUser, openDeposit, openLoginLog }, sen
 
     'use strict';
 
-    console.log(43);
+
 
     //var { channel, host, account, origin } = evo;
 
-    $scope.controller = function($compile, $rootScope) {
+    /*window.controller = function($compile, $rootScope) {
         console.log(8);
-        $scope.user = evo.user;
         //console.log($scope.user);
         $scope.sendsms = sendsms.bind(evo.user);
+        $scope.user = evo.user;
         $scope.$apply();
-    };
+    };*/
+
+    console.log($scope);
 
     //$scope.setUser = setUser;
+
     $scope.openDeposit = openDeposit;
     $scope.openLoginLog = openLoginLog;
+
     $scope.components = ['edit', 'dialog'];
     $scope.stylesheet = ['edit'];
+
+    requireStylesheet()
+    requireComponents()
+    $scope.$apply()
+
+
+    //bootstrap()
+
 
 
     //startup().then(getUser).then(setUser).then(bootstrap).catch(error);
 
-    getUser().then(startup).then(bootstrap).catch(error);
+    // getUser().then(startup).then(bootstrap).catch(error);
+
+    //startup().then(getUser).then(bootstrap).catch(error);
+
     // .then(setUser)
 
 })

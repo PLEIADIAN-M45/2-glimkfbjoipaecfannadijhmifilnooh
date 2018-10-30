@@ -1,31 +1,33 @@
-define(['angular', 'angular-route', 'angular-sanitize'], function(angular) {
+define(['angular', 'angular-sanitize'], function(angular) {
 
-    console.log(1);
 
-    window.angular = angular;
 
     'use strict';
 
-    document.body.setAttribute("ng-controller", "evo-ctrl");
+    window.angular = angular;
 
     $("<b>").html("{{name}}").prependTo('body')
+    $("<b>").html("-{{name2}}-").prependTo('body')
 
-    var app = angular.module('app', ['ngSanitize']);
 
-    app.controller('evo-ctrl', function($scope) {
+    document.body.setAttribute("ng-controller", "evo-ctrl");
+
+    var myApp = angular.module('myApp', ['ngSanitize']);
+    myApp.controller('evo-ctrl', function($scope) {
         $scope.name = "RYAN"
     });
 
-    app.config(function($sceDelegateProvider) {
+
+
+    myApp.config(function($sceDelegateProvider) {
         var baseUrl = localStorage.baseUrl;
         $sceDelegateProvider.resourceUrlBlacklist(['']);
         $sceDelegateProvider.resourceUrlWhitelist(['self', baseUrl, baseUrl + '**']);
     });
 
 
-    angular.bootstrap(document, ['app']);
+    angular.bootstrap(document, ['myApp']);
 
-    console.log(app);
 
-    return app;
+    return myApp;
 });
