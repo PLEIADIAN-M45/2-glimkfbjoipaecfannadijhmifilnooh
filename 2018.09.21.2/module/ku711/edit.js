@@ -59,7 +59,7 @@ define(['host.Api'], function(apiFunction) {
                 idcard: { property: 'idcard', value: c.IDNumber, title: c.IDNumberShow, region, },
             }
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: isBlack } = c;
-            assign(evo.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack }, property);
+            assign(evo.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack, region: [] }, property);
             return evo.user;
         }).then(putUser);
 

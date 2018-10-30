@@ -8,25 +8,12 @@ function trim(value) { return value.toString().trim(); }
 
 
 
-openOptionsPage();
+//openOptionsPage();
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 
 
 
-var store = new Dexie('evo');
-store.version(4).stores({
-    user: '[account+channel]',
-    xmlhttp: 'lastPath',
-    author: '++id',
-    banker: '++id',
-    mobile: '++id',
-    locate: '++id',
-    danger: '++id',
-    notice: '++id',
-    region: '++id',
-    GB2260: 'code, area'
-});
 
 var evo = {
     local: {},
@@ -56,6 +43,31 @@ var evo = {
 
     }
 };
+
+var store = new Dexie('evo');
+store.version(4).stores({
+    user: '[account+channel]',
+    users: 'account',
+    xmlhttp: 'lastPath',
+    author: '++id',
+    banker: '++id',
+    mobile: '++id',
+    locate: '++id',
+    danger: '++id',
+    notice: '++id',
+    region: '++id',
+    GB2260: 'code, area'
+});
+
+
+
+
+evo.store = store;
+
+/*
+console.log(evo.store.user);
+evo.store.users.put({ account: 'F61539', channel: "26" })
+*/
 
 var resp = {
     text: function(r) {

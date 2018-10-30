@@ -29,10 +29,7 @@ requirejs(['moment', 'dexie', 'material', 'evo', 'semantic'], function(moment, D
 
         requirejs(['root.App'], function() {
 
-
-            requirejs(['root'], function() {
-
-            })
+            requirejs(['root'], function() {})
         })
 
         /*requirejs([evo.adapter], function() {

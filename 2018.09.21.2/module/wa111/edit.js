@@ -1,6 +1,6 @@
 define(['host.Api'], function(apiFunction) {
 
-    console.log(12, 32);
+    console.log(22);
 
     if(['21', '2'].includes(evo.channel)) {}
 
@@ -26,7 +26,7 @@ define(['host.Api'], function(apiFunction) {
             status: ctl00_ContentPlaceHolder1_ishow.value,
             deposit: ctl00_ContentPlaceHolder1_isOpenDeposit.value
         })
-        return putUser();
+        //return putUser();
     }
 
     function getCtrl() {;
@@ -92,12 +92,15 @@ define(['host.Api'], function(apiFunction) {
 
         evo.pastData = [...new FormData(aspnetForm).entries()].serialize();
 
-        console.log(evo.user);
+
+
         if(evo.user) {
             return updateUserStatus();
         } else {
             evo.user = {};
         };
+
+        console.log('-------------------');
 
 
         return Promise.all([getCtrl(), getAllUser(), getPhoneDate(), getSystemLog()]).then(function(args) {
@@ -117,7 +120,7 @@ define(['host.Api'], function(apiFunction) {
                 })
             };
             var { account, channel, host, origin, operator } = evo;
-            evo.user = evo.assign(property, { account, channel, host, origin, operator });
+            evo.user = evo.assign(property, { account, channel, host, origin, operator, region: [] });
             return putUser();
         })
     };

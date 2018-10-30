@@ -124,4 +124,4 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         //var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
         //return { redirectUrl }
     };
-}, { urls: ["https://extension.evo.com/*"], }, ['blocking']);
+}, { urls: ["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apis/*"], }, ['blocking']);

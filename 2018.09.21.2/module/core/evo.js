@@ -29,26 +29,13 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get localStorage() {
-
             return {
-
                 getItem: function(key) {
                     return new Promise(function(resolve, reject) {
                         chrome.runtime.sendMessage(evo.extensionId, {
                             command: "localStorage:getItem:" + key
                         }, resolve)
                     })
-
-
-
-                    /* chrome.runtime.sendMessage(evo.extensionId, {
-                         command: "localStorage",
-                         method: "getItem"
-                         // key: "GB2260"
-                     }, function(res) {
-                         console.log(res);
-                     })*/
-
                 },
                 setItem: function() {
 
@@ -84,19 +71,13 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         connect(message) {
-
             chrome.runtime.connect(this.extensionId, { name: this.channel })
-
-            //return new Promise(function(resolve, reject) {
-            //chrome.runtime.sendMessage(evo.extensionId, message, resolve)
-            //})
         }
 
         apiFunctions(request) {
             try { var req = assign(...request); } catch (ex) { var req = request; }
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
             return new Promise(function(resolve, reject) {
-
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
                     //resolve({ ...result, status, active: false });
                     //console.log(request.command, result);
@@ -108,7 +89,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         sendMessage(message) {
             message.command = message.command.replace('host', evo.host).replace('channel', evo.channel)
+
             return new Promise(function(resolve, reject) {
+
                 chrome.runtime.sendMessage(evo.extensionId, message, function(res) {
                     //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
@@ -329,8 +312,54 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     evo.keys = Object.keys;
     evo.entries = Object.entries;
 
+
+
     return evo;
 })
+
+
+
+
+
+/*
+function Store() {
+    return {
+        get: function(arg) {
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, {
+                    command: "evo.store.users.get('" + arg + "')"
+                }, function(result) {
+                    console.log(result);
+                    resolve(result)
+                })
+            })
+        },
+        put: function() {
+            return new Promise(function(resolve, reject) {
+
+            })
+        }
+    }
+
+}
+
+
+evo.store = {}
+chrome.runtime.sendMessage(evo.extensionId, {
+    command: "evo.store.tables"
+}, function(result) {
+    console.log(evo.filename);
+    console.log(result);
+    result.forEach((store) => {
+        console.log(store.name);
+        // evo.store[store.name] = evo.store[store.name] || {}
+        evo.store[store.name] = new Store();
+    })
+})
+console.log(evo.store);
+*/
+
+
 
 /*
 //navigator.clipboard

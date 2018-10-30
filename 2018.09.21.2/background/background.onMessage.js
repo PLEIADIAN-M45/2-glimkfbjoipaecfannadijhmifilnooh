@@ -2,7 +2,21 @@ console.log("background.onMessage.js");
 
 function response_message(request, sender, sendResponse) {
 
+
     var [command, method, key] = array = request.command.split(':');
+
+
+    console.log(request.command);
+    console.log(command);
+
+
+    /*
+    try {
+        eval(command).then(sendResponse)
+    } catch (ex) {
+        sendResponse(eval(command))
+    }*/
+
 
     switch (command) {
 
@@ -11,12 +25,71 @@ function response_message(request, sender, sendResponse) {
          case "extention.localStorage.setItem":
              break;*/
 
+        case "evo.store.tables":
+
+            var tb = eval(command);
+            console.log(tb);
+            sendResponse(tb);
+
+            break;
+
         case "evo:local:":
-        case "evo:session:":
+
+        case "evo.store.user.get":
+            console.log(request.params);
+            evo.store.user.get(request.params)
+                .then(sendResponse)
+
+            return true
+
+        case "evo.store.user.put":
+            console.log(request.params);
+            evo.store.user.put(request.params)
+                .then(sendResponse)
+
+            break;
+
+
+        case "evo.store.users.get('F61539')":
+
+            eval(command).then(sendResponse)
+
+            //evo.store.users.get('F61539').then(sendResponse)
+
+            return true
+            //sendResponse(evo.store.users.get('F61539'))
+
+            /*.then(function(user) {
+                console.log(user);
+                sendResponse(user);
+            })*/
+
+
+
+            /*
+                return new Promise(function(resolve, reject) {
+                    eval(command).then((user) => {
+                        console.log(user);
+                        sendResponse(user);
+                        resolve(user)
+                    })
+
+                })*/
+
+            // return true;
+
+            //console.log(tb._value);
+
+
+            break;
+
+        case "evo:localStorage:":
+
+
+            break;
 
         case "localStorage":
-
-            if (key) {
+            if(key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -24,7 +97,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for (var key in res) {
+                for(var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -69,8 +142,8 @@ function response_message(request, sender, sendResponse) {
 
 
 
-if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 
