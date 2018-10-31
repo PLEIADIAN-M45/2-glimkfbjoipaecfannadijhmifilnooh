@@ -1,21 +1,20 @@
 define(['@page', 'sendsms'], function(factory, sendsms) {
-
-    window.extend(factory)
-
-    ;
+    console.log(sendsms);
+    window.extend(factory);
     'use strict';
-
-    return new Promise(async function(resolve, reject) {
-        myApp.factory = factory;
-        myApp.stylesheet = ['edit'];
-        myApp.components = ['edit', 'dialog'];
-        var user = await getUser() || await setUser();
-        //console.log(user);
-        resolve($scope);
-    })
-
     return function main() {
+        return new Promise(async function(resolve, reject) {
+            myApp.factory = factory;
+            myApp.stylesheet = ['edit'];
+            myApp.components = ['edit', 'dialog'];
 
+            var user = await getUser() || await setUser();
+
+            $scope.sendsms = sendsms.bind(user)
+
+            //setTimeout(resolve, 10000)
+            resolve($scope);
+        })
     }
 
 

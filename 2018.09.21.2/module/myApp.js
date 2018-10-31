@@ -34,13 +34,17 @@ function fnComponents(_components) {
 
 function _invoke() {
 
-    console.log('_invoke......');
 
     Object.assign(myApp.$scope, myApp.factory);
 
     fnStylesheet(myApp.stylesheet);
 
     fnComponents(myApp.components);
+
+    console.log('_invoke......');
+
+    console.timeEnd(location.pathname);
+
 }
 
 

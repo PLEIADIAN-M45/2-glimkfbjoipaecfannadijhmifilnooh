@@ -23,7 +23,11 @@ define(['common'], function() {
     var sms = {
         bind: function({ channel, account, operator, status, mobile }) {
             var mobile = mobile.value;
+            console.log(mobile);
+            console.log(status);
+
             var status = localStorage[mobile] || status;
+            
             return Object.assign(this, { channel, account, operator, mobile, status });
         },
         send: function() {
