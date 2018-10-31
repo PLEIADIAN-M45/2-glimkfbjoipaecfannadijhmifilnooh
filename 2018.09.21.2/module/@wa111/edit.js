@@ -13,23 +13,7 @@ define(['@api'], function(apiFunction) {
     }
     var title = null,
         value = null;
-    var user = {
-        timer: [],
-        author: { title: null, value: null, },
-        locate: { title: null, value: null, region: {} },
-        mobile: { title: null, value: null, region: {} },
-        idcard: { title: null, value: null, region: {} },
-        banker: {
-            decode: null,
-            code: [],
-            name: [],
-            city: [],
-            prov: []
-        }
-        /* [{ title, value, region: {} },
-            { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }
-        ]*/
-    }
+    var user = { timer: [], author: { title: null, value: null, }, locate: { title: null, value: null, region: {} }, mobile: { title: null, value: null, region: {} }, idcard: { title: null, value: null, region: {} }, banker: { decode: null, code: [], name: [], city: [], prov: [] } /* [{ title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} } ]*/ }
 
     if(['21', '2'].includes(evo.channel)) {}
 
@@ -52,12 +36,8 @@ define(['@api'], function(apiFunction) {
             "f_joindate": "user.attach",
             "f_peril": "user.peril",
             "f_time": "user.timer[0]",
-
-
-
             "lblIp": "user.locate.value",
             //"lblIp": "user.locate.title",
-
             "txtIdCard": "user.idcard.title",
             "txtPhoto": "user.mobile.title",
             "txtRemittaceName": "user.author.title",
@@ -88,23 +68,12 @@ define(['@api'], function(apiFunction) {
         }
     }
 
-
-    function runMAP3(el) {
-        var prop = el.name.split('$').pop();
-        console.log(prop, ctrlMAP[prop], el.value);
-        if(ctrlMAP.hasOwnProperty(prop)) {
-            switch (el.constructor.name) {
-                case "HTMLSelectElement":
-                    eval(ctrlMAP[prop] + "='" + el.selectedOptions[0].label + "'")
-                    break;
-                default:
-                    eval(ctrlMAP[prop] + "='" + el.value + "'")
-                    break;
-            }
-        }
+    function runMAP([prop, value]) {
+        var prop = prop.split('$').pop();
+        if(ctrlMAP.hasOwnProperty(prop)) { eval(ctrlMAP[prop] + "='" + value + "'") }
     }
 
-
+    function forEach(entries) { entries.forEach(runMAP) }
 
     function assign(args) { return Object.assign({}, ...args); }
 
@@ -112,16 +81,6 @@ define(['@api'], function(apiFunction) {
         var { account, channel, host, origin, operator } = evo;
         return Object.assign(user, { account, channel, host, origin, operator })
     }
-
-    function runMAP([prop, value]) {
-        var prop = prop.split('$').pop();
-        //console.log(prop, value);
-        if(ctrlMAP.hasOwnProperty(prop)) {
-            eval(ctrlMAP[prop] + "='" + value + "'")
-        }
-    }
-
-    function forEach(entries) { entries.forEach(runMAP) }
 
     function setUser() {
         return Promise.all([
@@ -132,33 +91,16 @@ define(['@api'], function(apiFunction) {
     }
 
 
-    function setUser2() {;
+    function setUser2() {;;
         [...document.querySelectorAll('select')].map(({ name, value }) => { return [name, value]; })
-            .forEach(runMAP);;
+            .forEach(runMAP);;;
         [...document.querySelectorAll('input')].map(({ name, value }) => { return [name, value]; })
-            .forEach(runMAP);
-
-        ;
+            .forEach(runMAP);;
         [...document.querySelectorAll('span')].map(({ id, outerText }) => { return [id, outerText]; })
             .forEach(runMAP);
 
         console.log(user);
 
-        return
-
-
-        //console.log($("input").serializeArray());
-        //console.log($("input").serialize());
-        //console.log($("input").serializeObject());
-
-
-
-        /*
-        console.log([...new FormData(aspnetForm)]);
-        [...new FormData(aspnetForm)].forEach(runMAP);
-       console.log(user);*/
-
-        //.forEach(runMAP);
     }
 
     setUser()
@@ -183,3 +125,21 @@ define(['@api'], function(apiFunction) {
 
     return { setUser, openDeposit, openLoginLog }
 });
+
+
+
+return
+
+
+//console.log($("input").serializeArray());
+//console.log($("input").serialize());
+//console.log($("input").serializeObject());
+
+
+
+/*
+        console.log([...new FormData(aspnetForm)]);
+        [...new FormData(aspnetForm)].forEach(runMAP);
+       console.log(user);*/
+
+//.forEach(runMAP);
