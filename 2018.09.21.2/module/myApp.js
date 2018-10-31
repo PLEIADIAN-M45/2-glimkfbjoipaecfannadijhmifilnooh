@@ -34,7 +34,7 @@ function fnComponents(_components) {
 
 function _invoke() {
 
-	console.log($scope);
+    console.log('_invoke......');
 
     Object.assign(myApp.$scope, myApp.factory);
 

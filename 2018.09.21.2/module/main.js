@@ -63,33 +63,15 @@ requirejs.config({
 //console.clear();
 
 requirejs(['router', 'utils'], function(router) {
-
     //console.log(router);
-
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
-
         window.extend({ moment, Dexie, mdc, evo, router });
-
         requirejs(['myApp'], function(myApp) {
-
-            //console.log(evo.account, evo.channel);
-
-            requirejs(['@root'], function(rt) {
-
-                // console.log(1000);
-
-
-                //_invoke();
-
-
-
-
-            })
-
+            requirejs(['@root'], function(main) {
+                if (main) { main.then(_invoke) }
+            });
         })
     });
-
-
 });
 
 

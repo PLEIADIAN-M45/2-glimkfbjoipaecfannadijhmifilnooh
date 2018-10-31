@@ -1,4 +1,5 @@
 define(['@api'], function(apiFunction) {
+
     var user = {
         timer: [],
         author: { title: null, value: null, },
@@ -36,14 +37,15 @@ define(['@api'], function(apiFunction) {
         }
     }
 
+    function binding(user) {
+        var { channel, host, origin, operator } = evo;
+        return Object.assign(user, { channel, host, origin, operator });
+    }
+
     function setUser() {
+        console.log('++++++++++');
         return Promise.all([
-            $serializeObject('#lblIp'),
-            $serializeObject('input'),
-            $serializeObject('select'),
-            apiFunction.getPhoneDate(),
-            apiFunction.getUserStore(),
-            apiFunction.getSystemLog().then(timerFilter1),
+            $serializeObject('#lblIp'), $serializeObject('input'), $serializeObject('select'), apiFunction.getPhoneDate(), apiFunction.getUserStore(), apiFunction.getSystemLog().then(timerFilter1),
         ]).then((args) => {
             var obj = Object.assign({}, ...args);
             var arr = Object.entries(obj);
@@ -57,11 +59,16 @@ define(['@api'], function(apiFunction) {
                     region: { prov: user.banker.prov[index], meta: user.banker.meta[index], city: user.banker.city[index] }
                 }
             });
-            console.log(user);
-        })
+            return user;
+        }).then(binding).then(putUser)
+
     }
 
-    setUser()
+
+
+
+
+
 
 
 

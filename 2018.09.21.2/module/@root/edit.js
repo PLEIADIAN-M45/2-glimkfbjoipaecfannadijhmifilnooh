@@ -1,40 +1,54 @@
-define(['@page', 'sendsms'], function(factory, sendsms) {;
-    //{ setUser, openDeposit, openLoginLog }
-    console.log(factory);
+define(['@page', 'sendsms'], function(factory, sendsms) {
 
-    var { setUser, openDeposit, openLoginLog } = factory;
+    window.extend(factory)
 
+    ;
     'use strict';
 
-    myApp.factory = factory;
-    myApp.stylesheet = ['edit'];
-    myApp.components = ['edit', 'dialog'];
+    return new Promise(async function(resolve, reject) {
+        myApp.factory = factory;
+        myApp.stylesheet = ['edit'];
+        myApp.components = ['edit', 'dialog'];
+        var user = await getUser() || await setUser();
+        //console.log(user);
+        resolve($scope);
+    })
 
-    $scope.name = "RYAN CHANG";
+    return function main() {
 
-
-
-   // getUser().then(setUser)
-
-
-    //.then(s)
-    //.then(putUser)
-    //.then(s)
+    }
 
 
 
 
-    /*async function main() {
-        await factory.setUser();
-        console.log(evo.user);
-        $scope.user = evo.user;
-        return myApp;
-        _invoke();
-    }*/
-
-    // main();
 })
 
+
+//setTimeout(resolve, 3000)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// $scope.name = "RYAN CHANG";
+
+//{ setUser, openDeposit, openLoginLog }
+//console.log(factory);
+//var { setUser, openDeposit, openLoginLog } = factory;
+/*
+            //setTimeout(resolve, 3000)
 
 define(['require', 'jquery'], function(require, $) {
     var promise = new Promise(function(resolve, reject) {
@@ -44,7 +58,7 @@ define(['require', 'jquery'], function(require, $) {
     });
     return promise;
 });
-
+*/
 
 /*
     function long() {

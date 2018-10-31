@@ -44,7 +44,9 @@ function response_message(request, sender, sendResponse) {
             evo.store.user.get(request.params).then(sendResponse)
             return true
         case "evo.store.user.put":
-            evo.store.user.put(request.params).then(sendResponse)
+            console.log(request.params);
+            evo.store.user.put(request.params).then(function() { sendResponse(request.params) })
+            return true
             break;
         case "evo.store.users.get('F61539')":
             eval(command).then(sendResponse)
@@ -82,7 +84,7 @@ function response_message(request, sender, sendResponse) {
             break;
 
         case "localStorage":
-            if(key) {
+            if (key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -90,7 +92,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for(var key in res) {
+                for (var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -135,8 +137,8 @@ function response_message(request, sender, sendResponse) {
 
 
 
-if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 
