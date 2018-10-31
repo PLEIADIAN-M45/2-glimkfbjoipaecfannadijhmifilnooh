@@ -136,6 +136,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
 
+
         get operator() { return localStorage['operator']; }
 
 
@@ -215,6 +216,14 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         get controllerProvider() {
             return angular.element(document.querySelector('[ng-controller]'));
+        }
+
+        get store() {
+            var store = new Dexie('evo');
+            store.version(4).stores({
+                user: 'f_accounts'
+            });
+            return store
         }
 
         get path() {

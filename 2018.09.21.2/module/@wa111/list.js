@@ -3,12 +3,18 @@ define(['xmlSpider'], function(xmlSpider) {
         console.log(this);
         //console.log(this.url);
         //console.log(json(this.responseText));
+
+        this.rows.forEach(function(row, index) {
+            console.log(row);
+            evo.store.user.put(row);
+        });
+
     }
 
 
 });
 
-console.log(12);
+
 
 
 //console.log(XMLHttpSpider);

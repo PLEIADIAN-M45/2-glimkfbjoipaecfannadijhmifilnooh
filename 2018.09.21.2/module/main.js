@@ -58,11 +58,11 @@ requirejs.config({
 
 console.log(localStorage.baseUrl);
 
-
+console.clear();
 
 requirejs(['router', 'utils'], function(router) {
 
-    console.log(router);
+    //console.log(router);
 
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
 
@@ -70,11 +70,11 @@ requirejs(['router', 'utils'], function(router) {
 
         requirejs(['myApp'], function(myApp) {
 
-            console.log(evo.account, evo.channel);
+            //console.log(evo.account, evo.channel);
 
             requirejs(['@root'], function(rt) {
 
-                console.log(1000);
+               // console.log(1000);
 
 
                 //_invoke();

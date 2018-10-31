@@ -1,4 +1,4 @@
-define(['host.Api'], function(apiFunction) {
+define(['@api'], function(apiFunction) {
 
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {

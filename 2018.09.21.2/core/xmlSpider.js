@@ -1,7 +1,7 @@
-function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
 function jsonqs(str) {
-    if (str.indexOf('?') == -1) { return undefined }
+    if(str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
@@ -14,13 +14,11 @@ function jsonqs(str) {
     }
 };
 
-console.log('xmlSpider');
-
-
+;
 (function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if (typeof define === 'function' && define.amd) define([], factory);
-    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
+    if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if(typeof define === 'function' && define.amd) define([], factory);
+    else if(typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -113,20 +111,20 @@ var user_pastData = {};
 function recorddb() {
     var { _lastPath, _postData, _params, _response, _responseText, _method } = this;
     /******************************************************************************/
-    if (this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態
+    if(this.isEquel('GetMemberRiskInfoAccountingBackendByAccountID')) { //取得進入頁面時的會員狀態
         var object = _response.Data;
         user_pastData[object.AccountID] = object;
     }
-    if (this.isEquel('UpdateMemberSNInfoBackend')) { //基本資料的「修改鍵」 通常用於停權
+    if(this.isEquel('UpdateMemberSNInfoBackend')) { //基本資料的「修改鍵」 通常用於停權
         var _pastData = user_pastData[_postData.AccountID];
         upload_888(_pastData, _postData);
     }
-    if (this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { //帐务相关的「修改鍵」 通常用於開通
+    if(this.isEquel('UpdateMemberRiskInfoAccountingBackend')) { //帐务相关的「修改鍵」 通常用於開通
         var _pastData = user_pastData[_postData.AccountID];
         upload_888(_pastData, _postData);
     }
     /******************************************************************************/
-    if (this.isEquel('DepositBonus')) { //存款紅利列表
+    if(this.isEquel('DepositBonus')) { //存款紅利列表
         try {
             sessionStorage.clear();
             var dataset = _response.rows;
@@ -135,8 +133,8 @@ function recorddb() {
             }, sessionStorage);
         } catch (ex) {}
     }
-    if (this.isEquel('GetMemberBonusLogBackendByCondition')) { //存款紅利列表
-        if (_postData.RecordCounts == 20) { sessionStorage.clear(); }
+    if(this.isEquel('GetMemberBonusLogBackendByCondition')) { //存款紅利列表
+        if(_postData.RecordCounts == 20) { sessionStorage.clear(); }
         try {
             var dataset = _response.Data.Data;
             dataset.forEach(function(cv, idx, arr) {
@@ -145,30 +143,30 @@ function recorddb() {
             }, sessionStorage);
         } catch (ex) {}
     }
-    if (this.isEquel('UpdateMemberBonusLog')) {
+    if(this.isEquel('UpdateMemberBonusLog')) {
         _postData.command = 'evo.statistics.m4';
         upload_3(_postData);
     }
-    if (this.isEquel('DelDiceWinRecords')) {
+    if(this.isEquel('DelDiceWinRecords')) {
         var command = 'evo.statistics.m3';
         var account = json(sessionStorage[_params.id]).f_accounts;
         assign(_params, { command, account });
         upload_3(_params);
     }
     /******************************************************************************/
-    if (this.isEquel('MemberModify')) {
+    if(this.isEquel('MemberModify')) {
         var { action, ishow, isOpenDeposit, wujiMarkID } = _postData;
         var { f_ishow, f_depositStatus } = _response;
         switch (action) {
             case "btnUserSet":
-                if (_response == "u-ok") {
+                if(_response == "u-ok") {
                     var pastData = evo.pastData;
                     var postData = { ishow: 1, isOpenDeposit: 1 }
                     upload_111(pastData, postData);
                 }
                 break;
             case "StopMember":
-                if (_postData.wujiMarkID !== undefined) {
+                if(_postData.wujiMarkID !== undefined) {
                     var pastData = evo.pastData;
                     var postData = { ishow: 2, isOpenDeposit: 0 }
                     upload_111(pastData, postData);
@@ -179,13 +177,13 @@ function recorddb() {
     }
 
     /******************************************************************************/
-    if (this.isEquel('GetDealTypeList')) {
+    if(this.isEquel('GetDealTypeList')) {
         _response.Data.forEach(function(cv, i, arr) {
             this[cv.DealType] = cv.Description;
         }, DealType = {});
         localStorage["DealType"] = json(DealType);
     }
-    if (this.isEquel('GetMemberStatusByLanguageCode')) {
+    if(this.isEquel('GetMemberStatusByLanguageCode')) {
         MemberStatus = _response.Data.ValueKey;
         localStorage["MemberStatus"] = json(MemberStatus);
     }

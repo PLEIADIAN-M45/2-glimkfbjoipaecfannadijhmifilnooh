@@ -1,15 +1,26 @@
 define(['@page', 'sendsms'], function(factory, sendsms) {;
     //{ setUser, openDeposit, openLoginLog }
     console.log(factory);
+
+    var { setUser, openDeposit, openLoginLog } = factory;
+
     'use strict';
 
     myApp.factory = factory;
-    
     myApp.stylesheet = ['edit'];
     myApp.components = ['edit', 'dialog'];
-    
 
     $scope.name = "RYAN CHANG";
+
+
+
+    getUser()
+        .then(setUser)
+        .then(s)
+        //.then(putUser)
+    //.then(s)
+
+
 
 
     /*async function main() {
@@ -20,7 +31,7 @@ define(['@page', 'sendsms'], function(factory, sendsms) {;
         _invoke();
     }*/
 
-   // main();
+    // main();
 })
 
 
@@ -82,43 +93,43 @@ function xxx() {
 
 
 
-    //console.log($injector.modules.ng);
+//console.log($injector.modules.ng);
 
 
-    //requireStylesheet(['edit'])
-    // requireComponents(['edit', 'dialog'])
+//requireStylesheet(['edit'])
+// requireComponents(['edit', 'dialog'])
 
 
-    //var { channel, host, account, origin } = evo;
+//var { channel, host, account, origin } = evo;
 
 
-    /*
-    window.controller = function($compile, $rootScope) {
-        console.log(8);
-        //console.log($scope.user);
-        $scope.sendsms = sendsms.bind(evo.user);
-        $scope.user = evo.user;
-        $scope.$apply();
-    };
-    */
-
-
-
-    //$scope.setUser = setUser;
+/*
+window.controller = function($compile, $rootScope) {
+    console.log(8);
+    //console.log($scope.user);
+    $scope.sendsms = sendsms.bind(evo.user);
+    $scope.user = evo.user;
+    $scope.$apply();
+};
+*/
 
 
 
-    //bootstrap()
+//$scope.setUser = setUser;
 
 
 
-    //startup().then(getUser).then(setUser).then(bootstrap).catch(error);
+//bootstrap()
 
-    // getUser().then(startup).then(bootstrap).catch(error);
 
-    //startup().then(getUser).then(bootstrap).catch(error);
 
-    // .then(setUser)
+//startup().then(getUser).then(setUser).then(bootstrap).catch(error);
+
+// getUser().then(startup).then(bootstrap).catch(error);
+
+//startup().then(getUser).then(bootstrap).catch(error);
+
+// .then(setUser)
 
 /*
 async function startt() {

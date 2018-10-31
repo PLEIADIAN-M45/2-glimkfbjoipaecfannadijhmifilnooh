@@ -6,11 +6,12 @@ define(['@api'], function(apiFunction) {
     if(['26', '35', '17'].includes(evo.channel)) {
 
         var ctrlMAP = {
-            /*"BankCode111": "banker.meta",
+            "BankCode111": "banker.meta",
             "BankCode111_2": "banker.meta",
             "BankCode111_3": "banker.meta",
             "BankCode111_4": "banker.meta",
             "BankCode111_5": "banker.meta",
+            "txtRemittanceAccount111": "banker.title[0]",
             "txtRemittanceAccount111_2": "banker.title[1]",
             "txtRemittanceAccount111_3": "banker.title[2]",
             "txtRemittanceAccount111_4": "banker.title[3]",
@@ -24,70 +25,18 @@ define(['@api'], function(apiFunction) {
             "ddlCity2": "banker.prov",
             "ddlCity3": "banker.prov",
             "ddlCity4": "banker.prov",
-            "ddlCity5": "banker.prov",*/
+            "ddlCity5": "banker.prov",
 
-
-
-            "txtRemittaceName": "user.author.title",
-            "txtIdCard": "user.idcard.title",
-            "txtPhoto": "user.mobile.title",
-            "txtTitle": "user.nickName",
-            "birthday": "user.birthday",
-
-            "txtRemittanceAccount111": "user.banker[0].title",
-            "txtRemittanceAccount111_2": "user.banker[1].title",
-            "txtRemittanceAccount111_3": "user.banker[2].title",
-            "txtRemittanceAccount111_4": "user.banker[3].title",
-            "txtRemittanceAccount111_5": "user.banker[4].title",
-
-            "BankCode111": "user.banker[0].region.meta",
-            "BankCode111_2": "user.banker[1].region.meta",
-            "BankCode111_3": "user.banker[2].region.meta",
-            "BankCode111_4": "user.banker[3].region.meta",
-            "BankCode111_5": "user.banker[4].region.meta",
-
-            "ddlCityArea": "user.banker[0].region.city",
-            "ddlCityArea2": "user.banker[1].region.city",
-            "ddlCityArea3": "user.banker[2].region.city",
-            "ddlCityArea4": "user.banker[3].region.city",
-            "ddlCityArea5": "user.banker[4].region.city",
-
-            //"ishow": "user.status",
-            //"isOpenDeposit": "user.deposit",
-
-
-
-
-            "f_accounts": "user.account",
-            "f_RemittanceAccount": "user.banker.code",
-
-            /*"f_ishow": "status",
+            "f_accounts": "account",
+            "f_ishow": "status",
             "f_depositStatus": "deposit",
-            "f_RemittanceName": "user.author.value",
-            "f_RemittanceAccount": "banker.code",
-            "f_photo": "user.mobile.value",
-            "f_idCard": "user.idcard.value",
-            "f_BankCode": "user.banker.name",
+            "f_RemittanceName": "author.value",
+            "txtRemittaceName": "author.title",
 
-            "f_birthday": "birthday",
-            "f_alagent": "agency",
-            "f_joindate": "attach",
-            "f_peril": "isDanger",
-            "f_blackList": "isBlack",
-            "f_time": "timer[0]",*/
-            "f_blacklist": "user.isBlack",
-            "f_accounts": "user.account",
-            "f_ishow": "user.status",
-            "f_depositStatus": "user.deposit",
-            "f_RemittanceName": "user.author.value",
-            "f_alagent": "user.agency",
-            "f_birthday": "user.birthday",
-            "f_joindate": "user.attach",
-            "f_peril": "user.isDanger",
-
-
-            /*"f_photo": "mobile",
-            "f_idCard": "idcard",
+            "f_photo": "mobile.value",
+            "txtPhoto": "mobile.title",
+            "f_idCard": "idcard.value",
+            "txtIdCard": "idcard.title",
             "f_RemittanceAccount": "banker.code",
             "f_BankCode": "banker.name",
             "f_birthday": "birthday",
@@ -95,8 +44,7 @@ define(['@api'], function(apiFunction) {
             "f_joindate": "attach",
             "f_peril": "isDanger",
             "f_blackList": "isBlack",
-            "f_time": "f_time",*/
-
+            "f_time": "timer[0]",
 
         }
 
@@ -132,40 +80,8 @@ define(['@api'], function(apiFunction) {
         });
     }
 
-    var title = null,
-        value = null,
-        region = {
 
-        }
-
-    var user = {
-        author: {
-            title,
-            value,
-        },
-        locate: {
-            title,
-            value,
-            region: {}
-
-        },
-        mobile: {
-            title,
-            value,
-            region: {}
-
-        },
-        idcard: {
-            title,
-            value,
-            region: {}
-        },
-
-        banker: [{ title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }]
-    }
-
-
-    function runMAP2(el) {
+    function runMAP(el) {
         var prop = el.name.split('$').pop();
         console.log(prop);
         if(ctrlMAP.hasOwnProperty(prop)) {
@@ -188,48 +104,32 @@ define(['@api'], function(apiFunction) {
 
 
 
-
-    function runMAP(el) {
-        var prop = el.name.split('$').pop();
-        console.log(prop, ctrlMAP[prop], el.value);
-        if(ctrlMAP.hasOwnProperty(prop)) {
-            switch (el.constructor.name) {
-                case "HTMLSelectElement":
-                    eval(ctrlMAP[prop] + "='" + el.selectedOptions[0].label + "'")
-                    break;
-                default:
-                    eval(ctrlMAP[prop] + "='" + el.value + "'")
-                    break;
-            }
-        }
-    }
-
+    var user = {}
 
 
     function setUser2() {
 
-        // [...document.querySelectorAll('input')].forEach(runMAP);
-        [...document.querySelectorAll('select')].forEach(runMAP);
-
-
+        console.log([...document.querySelectorAll('input')].forEach(runMAP));
 
         console.log(user);
+        //var arr = [...new FormData(aspnetForm)].forEach(runMAP);
+        //console.log([new FormData(aspnetForm)]);
 
+        /*.filter(function([name, value]) {
+            var prop = name.split('$').pop();
+            //console.log(prop);
+            return ctrlMAP[prop];
+        });*/
+
+        // console.log(arr);
     }
 
-    //setUser2()
+    // setUser2()
 
-
-    function entries() {
-        Object.entries(arguments[0]).map(([name, value]) => { return { name, value } }).forEach(runMAP);
-    }
 
     function setUser() {
 
-        apiFunction.getAllUser().then(entries)
-
-
-        console.log(user);
+        apiFunction.getAllUser().then(s)
 
         return
 
@@ -352,6 +252,47 @@ define(['@api'], function(apiFunction) {
             "f_blackList": "isBlack",
             "f_time": "f_time",*/
 
+/* var user3 = {
+        author: {
+            title: ,
+            value: ,
+            region: {
+
+            }
+        },
+        locate: {
+            title: ,
+            value: ,
+            region: {
+
+            }
+
+        },
+        mobile: {
+            title: ,
+            value: ,
+            region: {
+
+            }
+
+        },
+        idcard: {
+            title: ,
+            value: ,
+            region: {
+
+            }
+        },
+
+        banker: [{
+            title: ,
+            value: ,
+            region: {
+
+            }
+        }]
+    }
+*/
 
 
 /*

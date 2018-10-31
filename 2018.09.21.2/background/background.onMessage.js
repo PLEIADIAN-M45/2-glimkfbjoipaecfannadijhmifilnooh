@@ -34,28 +34,21 @@ function response_message(request, sender, sendResponse) {
             break;
 
         case "evo:local:":
-
-        case "evo.store.user.get":
-            console.log(request.params);
-            evo.store.user.get(request.params)
-                .then(sendResponse)
-
-            return true
-
-        case "evo.store.user.put":
-            console.log(request.params);
-            evo.store.user.put(request.params)
-                .then(sendResponse)
-
             break;
 
-
+        case "evo.store.user.delete":
+            var { account, channel } = request.params;
+            evo.store.user.where(["account", "channel"]).equals([account, channel]).delete().then(sendResponse)
+            return true
+        case "evo.store.user.get":
+            evo.store.user.get(request.params).then(sendResponse)
+            return true
+        case "evo.store.user.put":
+            evo.store.user.put(request.params).then(sendResponse)
+            break;
         case "evo.store.users.get('F61539')":
-
             eval(command).then(sendResponse)
-
             //evo.store.users.get('F61539').then(sendResponse)
-
             return true
             //sendResponse(evo.store.users.get('F61539'))
 
