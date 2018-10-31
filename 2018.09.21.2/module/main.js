@@ -38,6 +38,8 @@ requirejs.config({
         'load': '../core/load',
         'xmlSpider': '../core/xmlSpider',
         'utils': '../core/utils',
+
+        'serializeObject': '../core/serializeObject'
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -56,9 +58,9 @@ requirejs.config({
 
 
 
-console.log(localStorage.baseUrl);
+//console.log(localStorage.baseUrl);
 
-console.clear();
+//console.clear();
 
 requirejs(['router', 'utils'], function(router) {
 
@@ -74,10 +76,12 @@ requirejs(['router', 'utils'], function(router) {
 
             requirejs(['@root'], function(rt) {
 
-               // console.log(1000);
+                // console.log(1000);
 
 
                 //_invoke();
+
+
 
 
             })

@@ -296,7 +296,6 @@ function error(ex) { console.log('[error] ', ex); }
 
 
 
-var map = Array.prototype.map;
 
 
 var var1 = null,
@@ -305,37 +304,7 @@ var var1 = null,
 var assign = Object.assign;
 var entries = Object.entries;
 
-
-Array.prototype.toObj = function(key, value) {
-    var object = {};
-    this.map((x) => { object[x[key]] = x[value]; });
-    return object;
-}
-
-Array.prototype.separate = function() {
-    return '(' + this.join('|') + ')';
-}
-
-Array.prototype.hyphen = function() {
-    return this.join('-');
-}
-
-Array.prototype.serialize = function() {
-    var obj = {};
-    this.map(([longname, value], index) => {
-        var name = longname.replace('ctl00$ContentPlaceHolder1$', '');
-        Object.defineProperty(obj, name, { value, writable: true });
-    });
-    return obj;
-}
-
-
-
-Array.prototype.toPath = function() {
-    return this.join('/');
-}
-
-
+var map = Array.prototype.map;
 
 
 //$('<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">').appendTo('head');

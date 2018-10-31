@@ -1,35 +1,24 @@
 define(['@api'], function(apiFunction) {
-
-    function findTransferTime2(rows) { //用户状态   【审核中】   被修改为   【正常户】
-        return rows.find(function({ f_field, f_oldData, f_newData }) {
-            return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1"
-        });
+    var user = {
+        timer: [],
+        author: { title: null, value: null, },
+        locate: { title: null, value: null, region: {} },
+        mobile: { title: null, value: null, region: {} },
+        idcard: { title: null, value: null, region: {} },
+        banker: { title: [], value: [], name: [], city: [], prov: [] }
     }
 
-    function findTransferTime1(rows) { //用户状态   【静止户】   被修改为   【审核中】
-        return rows.find(function({ f_field, f_oldData, f_newData }) {
-            return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3"
-        });
-    }
-    var title = null,
-        value = null;
-    var user = { timer: [], author: { title: null, value: null, }, locate: { title: null, value: null, region: {} }, mobile: { title: null, value: null, region: {} }, idcard: { title: null, value: null, region: {} }, banker: { decode: null, code: [], name: [], city: [], prov: [] } /* [{ title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} }, { title, value, region: {} } ]*/ }
+    if (['21', '2'].includes(evo.channel)) {}
 
-    if(['21', '2'].includes(evo.channel)) {}
-
-    if(['26', '35', '17'].includes(evo.channel)) {
-
-        var ctrlMAP = {
+    if (['26', '35', '17'].includes(evo.channel)) {
+        var USERMAP = {
             "f_ishow": "user.status",
             "f_depositStatus": "user.deposit",
-            //"isOpenDeposit": "user.deposit",
             "f_accounts": "user.account",
-            "f_RemittanceAccount": "user.banker.decode",
-            //"f_BankCode": "user.banker.name",
+            "f_RemittanceAccount": "user.banker.value",
             "f_photo": "user.mobile.value",
             "f_idCard": "user.idcard.value",
-            "f_blacklist": "user.isBlack",
-            "f_accounts": "user.account",
+            "f_blacklist": "user.black",
             "f_RemittanceName": "user.author.value",
             "f_alagent": "user.agency",
             "f_birthday": "user.birthday",
@@ -37,78 +26,57 @@ define(['@api'], function(apiFunction) {
             "f_peril": "user.peril",
             "f_time": "user.timer[0]",
             "lblIp": "user.locate.value",
-            //"lblIp": "user.locate.title",
             "txtIdCard": "user.idcard.title",
             "txtPhoto": "user.mobile.title",
             "txtRemittaceName": "user.author.title",
-
-            "BankCode111": "user.banker.name[0]",
-            "BankCode111_2": "user.banker.name[1]",
-            "BankCode111_3": "user.banker.name[2]",
-            "BankCode111_4": "user.banker.name[3]",
-            "BankCode111_5": "user.banker.name[4]",
-
-            "ddlCityArea": "user.banker.city[0]",
-            "ddlCityArea2": "user.banker.city[1]",
-            "ddlCityArea3": "user.banker.city[2]",
-            "ddlCityArea4": "user.banker.city[3]",
-            "ddlCityArea5": "user.banker.city[4]",
-
-            "ddlCity": "user.banker.prov[0]",
-            "ddlCity2": "user.banker.prov[1]",
-            "ddlCity3": "user.banker.prov[2]",
-            "ddlCity4": "user.banker.prov[3]",
-            "ddlCity5": "user.banker.prov[4]",
-
-            "txtRemittanceAccount111": "user.banker.code[0]",
-            "txtRemittanceAccount111_2": "user.banker.code[1]",
-            "txtRemittanceAccount111_3": "user.banker.code[2]",
-            "txtRemittanceAccount111_4": "user.banker.code[3]",
-            "txtRemittanceAccount111_5": "user.banker.code[4]",
+            "txtRemittanceAccount": "user.banker.title",
+            "BankCode": "user.banker.meta",
+            "ddlCity": "user.banker.prov",
+            "ddlCityArea": "user.banker.city"
         }
-    }
-
-    function runMAP([prop, value]) {
-        var prop = prop.split('$').pop();
-        if(ctrlMAP.hasOwnProperty(prop)) { eval(ctrlMAP[prop] + "='" + value + "'") }
-    }
-
-    function forEach(entries) { entries.forEach(runMAP) }
-
-    function assign(args) { return Object.assign({}, ...args); }
-
-    function extend(obj) {
-        var { account, channel, host, origin, operator } = evo;
-        return Object.assign(user, { account, channel, host, origin, operator })
     }
 
     function setUser() {
         return Promise.all([
+            $serializeObject('#lblIp'),
+            $serializeObject('input'),
+            $serializeObject('select'),
             apiFunction.getPhoneDate(),
-            apiFunction.getAllUser(),
-            apiFunction.getSystemLog().then(findTransferTime1),
-        ]).then(assign).then(entries).then(forEach);
-    }
-
-
-    function setUser2() {;;
-        [...document.querySelectorAll('select')].map(({ name, value }) => { return [name, value]; })
-            .forEach(runMAP);;;
-        [...document.querySelectorAll('input')].map(({ name, value }) => { return [name, value]; })
-            .forEach(runMAP);;
-        [...document.querySelectorAll('span')].map(({ id, outerText }) => { return [id, outerText]; })
-            .forEach(runMAP);
-
-        console.log(user);
-
+            apiFunction.getUserStore(),
+            apiFunction.getSystemLog().then(timerFilter1),
+        ]).then((args) => {
+            var obj = Object.assign({}, ...args);
+            var arr = Object.entries(obj);
+            arr.forEach(([prop, value]) => { if (USERMAP.hasOwnProperty(prop)) { eval(USERMAP[prop] + "=value") } });
+            /****************************************/
+            user.locate.title = user.locate.value;
+            user.banker = user.banker.value.map((value, index) => {
+                return {
+                    title: user.banker.title[index],
+                    value: user.banker.value[index],
+                    region: { prov: user.banker.prov[index], meta: user.banker.meta[index], city: user.banker.city[index] }
+                }
+            });
+            console.log(user);
+        })
     }
 
     setUser()
 
-    setUser2()
 
 
-    var ddl = dropdownTransfer(ctl00_ContentPlaceHolder1_ishow)
+
+    function timerFilter2(rows) { //用户状态   【审核中】   被修改为   【正常户】
+        return rows.find(function({ f_field, f_oldData, f_newData }) {
+            return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1"
+        });
+    }
+
+    function timerFilter1(rows) { //用户状态   【静止户】   被修改为   【审核中】
+        return rows.find(function({ f_field, f_oldData, f_newData }) {
+            return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3"
+        });
+    }
 
     function openDeposit({ host }) {
         evo.ctrl.deposit.value = 1;
@@ -116,7 +84,7 @@ define(['@api'], function(apiFunction) {
     }
 
     function openLoginLog() {
-        if(evo.test) {
+        if (evo.test) {
             window.open(`${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
         } else {
             window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
@@ -127,9 +95,7 @@ define(['@api'], function(apiFunction) {
 });
 
 
-
-return
-
+//var ddl = dropdownTransfer(ctl00_ContentPlaceHolder1_ishow)
 
 //console.log($("input").serializeArray());
 //console.log($("input").serialize());
