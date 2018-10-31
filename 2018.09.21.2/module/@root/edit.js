@@ -14,10 +14,11 @@ define(['@page', 'sendsms'], function(factory, sendsms) {;
 
 
 
-    getUser()
-        .then(setUser)
-        .then(s)
-        //.then(putUser)
+   // getUser().then(setUser)
+
+
+    //.then(s)
+    //.then(putUser)
     //.then(s)
 
 

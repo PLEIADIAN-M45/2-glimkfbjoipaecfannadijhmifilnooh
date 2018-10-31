@@ -1,3 +1,27 @@
+ /*"BankCode111": "banker.meta",
+            "BankCode111_2": "banker.meta",
+            "BankCode111_3": "banker.meta",
+            "BankCode111_4": "banker.meta",
+            "BankCode111_5": "banker.meta",
+            "txtRemittanceAccount111_2": "banker.title[1]",
+            "txtRemittanceAccount111_3": "banker.title[2]",
+            "txtRemittanceAccount111_4": "banker.title[3]",
+            "txtRemittanceAccount111_5": "banker.title[4]",
+            "ddlCityArea": "banker.city",
+            "ddlCityArea2": "banker.city",
+            "ddlCityArea3": "banker.city",
+            "ddlCityArea4": "banker.city",
+            "ddlCityArea5": "banker.city",
+            "ddlCity": "banker.prov",
+            "ddlCity2": "banker.prov",
+            "ddlCity3": "banker.prov",
+            "ddlCity4": "banker.prov",
+            "ddlCity5": "banker.prov",*/
+
+
+
+
+
 //define(['host.Api'], function(apiFunction) {
 define(['@api'], function(apiFunction) {
 
