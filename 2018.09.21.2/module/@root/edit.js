@@ -1,32 +1,74 @@
-define(['@page', 'sendsms'], function(factory, sendsms) {
-    console.log(sendsms);
-    window.extend(factory);
+define(['@page', 'SendSms', 'xmlSpider', 'Spreadsheets'], function({ setUser }, SendSms, xmlSpider, Spreadsheets) {
+
+    ;
     'use strict';
+
+    xmlSpider.loadend = function() {
+        //console.log(this);
+        if(this.postData) {
+            switch (this.postData.action) {
+                case "StopMember":
+                    var pastData = $scope.user;
+                    var postData = { ishow: 2, isOpenDeposit: 0 }
+                    Spreadsheets.upload_111(pastData, postData);
+                    break;
+                case "getmodel":
+                    var { f_ishow, f_depositStatus } = this.respData;
+                    var pastData = $scope.user;
+                    var postData = { ishow: f_ishow, isOpenDeposit: f_depositStatus }
+                    Spreadsheets.upload_111(pastData, postData);
+                    break;
+            }
+        }
+    }
+
     return function main() {
         return new Promise(async function(resolve, reject) {
-            myApp.factory = factory;
-            myApp.stylesheet = ['edit'];
-            myApp.components = ['edit', 'dialog'];
-
-            var user = await getUser() || await setUser();
-
-            $scope.sendsms = sendsms.bind(user)
-
-            //setTimeout(resolve, 10000)
+            $scope.stylesheet = ['edit'];
+            $scope.components = ['edit', 'dialog'];
+            //return delUser();
+            //$scope.user = await setUser();
+            $scope.user = await getUser() || await setUser();
+            $scope.sendsms = new SendSms($scope.user);
+            console.log($scope.user);
             resolve($scope);
         })
     }
-
-
-
-
 })
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//setTimeout(resolve, 10000)
 //setTimeout(resolve, 3000)
-
-
-
+//console.log(sendsms);
+//window.extend(factory);
 
 
 

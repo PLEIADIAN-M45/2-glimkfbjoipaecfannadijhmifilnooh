@@ -14,6 +14,18 @@ function jsonqs(str) {
     }
 };
 
+
+function $serializeQueryString(querystring) {
+    if(!querystring.includes('=')) { return }
+    var result = {};
+    querystring.split('&').forEach(function(pair) {
+        pair = pair.split('=');
+        result[pair[0]] = decodeURIComponent(pair[1] || '');
+    });
+    return result;
+}
+
+
 ;
 (function webpackUniversalModuleDefinition(root, factory) {
     if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
@@ -42,18 +54,30 @@ function jsonqs(str) {
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
         this.hostname = hostname.split('.')[1];
         this.lastPath = pathname.split('/').pop().replace(/\.\w+/, '');
-        this.postData = json(postData);
         this.params = jsonqs(responseURL);
+        //console.log(method);
+        //console.log(this.lastPath, this.postData);
+        if(method == "POST") {
+            this.postData = $serializeQueryString(postData);
+            //this.postData = json(postData);
+            //console.log(this.postData2);
+        }
+
+        //this.resp = json(response);
+        this.respData = json(response);
+
+
         try {
-            var resp = json(response);
-            //console.log(resp);
-            //console.log(resp.Data.Data);
-            this.rows = resp.rows || resp.Data.Data;
+            this.rows = this.respData.rows || this.respData.Data.Data;
             //console.log('%c' + this.lastPath, 'color:Gold;', this.rows);
             //this.resp = resp.rows || resp.Data.Data;
         } catch (ex) {
             //console.log(this.lastPath, response);
         }
+
+        //console.log(this.resp);
+
+        // console.log(this.rows);
     }
     return xmlSpider;
 });
@@ -61,47 +85,6 @@ function jsonqs(str) {
 
 
 
-
-
-
-
-
-
-
-//var query = searchParams;
-
-//try {} catch (ex) {}
-
-/*
-this.isEquel = function(pathString) {
-    var reg = new RegExp('^' + this.lastPath + '$', 'i');
-    return pathString.match(reg);
-}*/
-
-
-/*
-switch (method) {
-    case 'GET':
-        [...searchParams.entries()].map(function([name, value]) { return this[name] = value; }, params);
-        break;
-    case 'POST':
-        if (postData && postData.indexOf('{') == 0) {
-            postData = json(postData);
-
-        } else {
-            try {
-                postData.split('&').map((x) => { return x.split('='); }).map(function([name, value]) {
-                    postData[name] = value;
-                })
-            } catch (ex) {
-                postData = postData;
-            }
-        }
-        break;
-}*/
-
-//Object.assign(this, { hostname, lastPath, method });
-//recorddb.apply(this);
 
 
 
@@ -157,6 +140,7 @@ function recorddb() {
     if(this.isEquel('MemberModify')) {
         var { action, ishow, isOpenDeposit, wujiMarkID } = _postData;
         var { f_ishow, f_depositStatus } = _response;
+
         switch (action) {
             case "btnUserSet":
                 if(_response == "u-ok") {
@@ -188,3 +172,54 @@ function recorddb() {
         localStorage["MemberStatus"] = json(MemberStatus);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//var query = searchParams;
+
+//try {} catch (ex) {}
+
+/*
+this.isEquel = function(pathString) {
+    var reg = new RegExp('^' + this.lastPath + '$', 'i');
+    return pathString.match(reg);
+}*/
+
+
+/*
+switch (method) {
+    case 'GET':
+        [...searchParams.entries()].map(function([name, value]) { return this[name] = value; }, params);
+        break;
+    case 'POST':
+        if (postData && postData.indexOf('{') == 0) {
+            postData = json(postData);
+
+        } else {
+            try {
+                postData.split('&').map((x) => { return x.split('='); }).map(function([name, value]) {
+                    postData[name] = value;
+                })
+            } catch (ex) {
+                postData = postData;
+            }
+        }
+        break;
+}*/
+
+//Object.assign(this, { hostname, lastPath, method });
+//recorddb.apply(this);

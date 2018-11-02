@@ -1,107 +1,110 @@
-define(['@api'], function(apiFunction) {
-
-    var user = {
-        timer: [],
-        author: { title: null, value: null, },
-        locate: { title: null, value: null, region: {} },
-        mobile: { title: null, value: null, region: {} },
-        idcard: { title: null, value: null, region: {} },
-        banker: { title: [], value: [], name: [], city: [], prov: [] }
-    }
-
-    if (['21', '2'].includes(evo.channel)) {}
-
-    if (['26', '35', '17'].includes(evo.channel)) {
-        var USERMAP = {
-            "f_ishow": "user.status",
-            "f_depositStatus": "user.deposit",
-            "f_accounts": "user.account",
-            "f_RemittanceAccount": "user.banker.value",
-            "f_photo": "user.mobile.value",
-            "f_idCard": "user.idcard.value",
-            "f_blacklist": "user.black",
-            "f_RemittanceName": "user.author.value",
-            "f_alagent": "user.agency",
-            "f_birthday": "user.birthday",
-            "f_joindate": "user.attach",
-            "f_peril": "user.peril",
-            "f_time": "user.timer[0]",
-            "lblIp": "user.locate.value",
-            "txtIdCard": "user.idcard.title",
-            "txtPhoto": "user.mobile.title",
-            "txtRemittaceName": "user.author.title",
-            "txtRemittanceAccount": "user.banker.title",
-            "BankCode": "user.banker.meta",
-            "ddlCity": "user.banker.prov",
-            "ddlCityArea": "user.banker.city"
-        }
-    }
-
-    function binding(user) {
-        var { channel, host, origin, operator } = evo;
-        return Object.assign(user, { channel, host, origin, operator });
-    }
-
+define(['@wa111/edit.map', '@wa111/api' ], function(map, apiFunction) {
+    /*【审核中】 -> 【正常户】*/
+    function timerFilter2(rows) { return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1" }); }
+    /*【静止户】 -> 【审核中】*/
+    function timerFilter1(rows) { return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3" }); }
+    function $apply() { if(!$scope.$$phase) { $scope.$apply(); } }
+    function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
     function setUser() {
-        console.log('++++++++++');
-        return Promise.all([
-            $serializeObject('#lblIp'), $serializeObject('input'), $serializeObject('select'), apiFunction.getPhoneDate(), apiFunction.getUserStore(), apiFunction.getSystemLog().then(timerFilter1),
+        return Promise.all([$serializeObject('#lblIp'),
+            $serializeObject('input'),
+            $serializeObject('select'), apiFunction.getPhoneDate(), apiFunction.getUserStore(), apiFunction.getSystemLog().then(timerFilter1),
         ]).then((args) => {
             var obj = Object.assign({}, ...args);
-            var arr = Object.entries(obj);
-            arr.forEach(([prop, value]) => { if (USERMAP.hasOwnProperty(prop)) { eval(USERMAP[prop] + "=value") } });
-            /****************************************/
-            user.locate.title = user.locate.value;
-            user.banker = user.banker.value.map((value, index) => {
+            $scope.updateUser(obj);
+            $scope.user.locate.title = $scope.user.locate.value;
+            $scope.user.banker = $scope.user.banker.value.map((value, index) => {
                 return {
-                    title: user.banker.title[index],
-                    value: user.banker.value[index],
-                    region: { prov: user.banker.prov[index], meta: user.banker.meta[index], city: user.banker.city[index] }
+                    title: $scope.user.banker.title[index],
+                    value: $scope.user.banker.value[index],
+                    meta: $scope.user.banker.meta[index],
+                    prov: $scope.user.banker.prov[index],
+                    city: $scope.user.banker.city[index]
                 }
             });
-            return user;
-        }).then(binding).then(putUser)
-
+            return $scope.user;
+        }).then(bindEvo).then(putUser)
     }
-
-
-
-
-
-
-
-
-
-
-    function timerFilter2(rows) { //用户状态   【审核中】   被修改为   【正常户】
-        return rows.find(function({ f_field, f_oldData, f_newData }) {
-            return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1"
+    $scope.updateUser = function updateUser(obj) {
+        Object.entries(obj).forEach(([prop, value]) => {
+            if(USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
         });
+        $scope.$apply();
     }
-
-    function timerFilter1(rows) { //用户状态   【静止户】   被修改为   【审核中】
-        return rows.find(function({ f_field, f_oldData, f_newData }) {
-            return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3"
-        });
-    }
-
-    function openDeposit({ host }) {
-        evo.ctrl.deposit.value = 1;
-        evo.ctrl.btnSave.click();
-    }
-
-    function openLoginLog() {
-        if (evo.test) {
-            window.open(`${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
-        } else {
-            window.open(`http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, '_blank');
-        }
-    }
-
-    return { setUser, openDeposit, openLoginLog }
+    $scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
+    $scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
+    $scope.openDeposit = function() {
+        this.ctrl.deposit.value = 1;
+        this.ctrl.btnSaveInfo.click();
+    };
+    $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
+    $scope.createTab = function(url, params) { window.open(url, '_blank'); };
+    return { setUser }
 });
 
 
+
+
+
+
+
+
+
+
+/*
+    evo.sendMessage({
+        command: "localStorage"
+    }).then((res) => {
+        for(var key in res) {
+            localStorage[key] = res[key];
+            //console.log(evo.decoder(res[key]));
+        }
+    });*/
+
+
+
+
+
+
+//$('button').each((i, el) => { console.log(el.getAttribute('onclick')); })
+
+/*var arr = Object.entries(obj);
+arr.forEach(([prop, value]) => {
+    if(USERMAP.hasOwnProperty(prop)) { eval(USERMAP[prop] + "=value") }
+});*/
+
+/*
+    xmlSpider.loadend = function() {
+        //console.log(this.postData);
+        if(this.postData) { var { action } = this.postData }
+        switch (action) {
+            case "getmodel":
+                var obj = this.resp;
+                var arr = Object.entries(obj);
+                arr.forEach(([prop, value]) => {
+                    if(USERMAP.hasOwnProperty(prop) && value.toString()) {
+                        //console.log(prop, value);
+                        eval(USERMAP[prop] + "=value")
+                    }
+                });
+                console.log($scope.user);
+                $scope.$apply();
+                break;
+            default:
+                break;
+        }
+    }
+
+myApp.factory('LuffyFactory', function() {
+    var factory = {};
+    factory.word = '我要成成海賊王!';
+    return factory;
+})
+
+myApp.service('LuffyService', function() {
+    this.word = '我要成為海賊王！';
+})
+*/
 //var ddl = dropdownTransfer(ctl00_ContentPlaceHolder1_ishow)
 
 //console.log($("input").serializeArray());

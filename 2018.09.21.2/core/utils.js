@@ -6,7 +6,7 @@ document.addEventListener('copy', function(e) {
 });
 
 
-var $$ = {}
+var $$ = {};
 
 function $serializeObject(selector) {
     var obj = {};
@@ -18,19 +18,28 @@ function $serializeObject(selector) {
                 var value = this.textContent;
                 break;
             case 'select':
-                var value = (this.value) ? this.selectedOptions[0].label : '';
+                if(name == "ddlCity") {
+                    var value = this.selectedOptions[0].label
+                } else {
+                    var value = this.value;
+                }
                 break;
             default:
                 var value = this.value;
         }
-        if (obj[name] == undefined) {
+        if(obj[name] == undefined) {
             obj[name] = value;
         } else {
-            if (!obj[name].push) { obj[name] = [obj[name]]; }
+            if(!obj[name].push) { obj[name] = [obj[name]]; }
             obj[name].push(value);
         }
     })
     return obj;
+}
+
+function $serializeQueryString2(querystring) {
+    var search = location.search.substring(1);
+    JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
 }
 
 

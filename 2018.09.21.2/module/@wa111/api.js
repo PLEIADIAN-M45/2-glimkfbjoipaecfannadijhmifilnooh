@@ -4,7 +4,7 @@ define([], function() {
             return new Promise((resolve, reject) => {
                 $.ajax(evo.assign(mod, { dataType: "json" })).then((d) => {
                     var res = d.rows || d;
-                    try { if (res.length == 1) { resolve(...res) } else { resolve(res) } } catch (ex) {}
+                    try { if(res.length == 1) { resolve(...res) } else { resolve(res) } } catch (ex) {}
                 })
             })
         }

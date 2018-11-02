@@ -22,7 +22,7 @@ define([], function() {
             "memberlist": "list",
             "membermodify": "edit",
             "depositbonus": "bonus",
-            "igetmemberinfo": "log",
+            "igetmemberinfo": "logs",
             "samebrowserlist": "log",
             "deltabank": "cash",
             "deltaonline": "cash",
@@ -37,7 +37,7 @@ define([], function() {
             "memberinfomanage": "list",
             "editmemberinfomanage": "edit",
             "bonuslog": "bonus",
-            "memberloginlog": "log"
+            "memberloginlog": "logs"
         }
     } [host.toLowerCase()][pathname.toLowerCase()];
 
@@ -50,7 +50,9 @@ define([], function() {
             '*': {
                 '@root': ['@root', name].join('/'),
                 '@page': ['@' + host, name].join('/'),
-                '@api': ['@' + host, 'api'].join('/')
+                //'@api': ['@' + host, 'api'].join('/'),
+                //'@map': ['@' + host, 'edit.map'].join('/')
+
             }
         }
     })

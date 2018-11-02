@@ -16,7 +16,7 @@ body {
   width: 100%;
   align-items: flex-start;
   justify-content: center; }
-  .ui.cards .card.danger {
+  .ui.cards .card.negative {
     background-image: url("chrome-extension://__MSG_@@extension_id__/images/2.jpg") !important; }
   .ui.cards .card.success,
   .ui.cards .card {

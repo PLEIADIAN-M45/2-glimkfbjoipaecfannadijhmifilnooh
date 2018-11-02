@@ -16,12 +16,12 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             return localStorage.chrome_runtime_id;
 
-            if (chrome.runtime.id) {
+            if(chrome.runtime.id) {
                 return chrome.runtime.id;
             } else {
 
-                for (var s of document.scripts) {
-                    if (this.baseUrl.search(s.id)) {
+                for(var s of document.scripts) {
+                    if(this.baseUrl.search(s.id)) {
                         return s.id
                     }
                 }
@@ -56,7 +56,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')
-            }[this.host];
+            } [this.host];
         }
 
         get formData() {
@@ -74,9 +74,51 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             chrome.runtime.connect(this.extensionId, { name: this.channel })
         }
 
-        apiFunctions(request) {
+
+        apiFunctions(params) {
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, params, ([result, status]) => {
+                    //console.log(result);
+                    result.active = false;
+                    resolve(result);
+                });
+            });
+
+            //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
+
+            //chrome.runtime.sendMessage(evo.extensionId, { command, property, value, host, channel, account, region }, callback)
+
+            //apiFunctions:region:host:channel
+
+
+
+
+            /*
+                        console.log(request);
+                        return new Promise(function(resolve, reject) {
+                            chrome.runtime.sendMessage(evo.extensionId, request, function([result, status, xhr]) {
+                                console.log(result);
+
+                            })
+                        })*/
+
+            //console.log(request);
+            /*
+            var { value, proto, account, channel, host } = request;
+            console.log({ value, proto, account, channel, host });
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, { value, proto, account, channel, host }, function([result, status, xhr]) {
+                    console.log(result);
+                    //resolve({ ...result, status, active: false });
+                    //console.log(request.command, result);
+                    //resolve({ ...result, status, active: false });
+                })
+            })*/
+            return
             try { var req = assign(...request); } catch (ex) { var req = request; }
+
             req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
+
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
                     //resolve({ ...result, status, active: false });
@@ -85,13 +127,14 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
                 })
             })
+
         }
+
+
 
         sendMessage(message) {
             message.command = message.command.replace('host', evo.host).replace('channel', evo.channel)
-
             return new Promise(function(resolve, reject) {
-
                 chrome.runtime.sendMessage(evo.extensionId, message, function(res) {
                     //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
@@ -136,13 +179,26 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                 this.params.accounts;
         }
 
-
-
         get operator() { return localStorage['operator']; }
 
 
+        encoder(value) {
+            //var str = JSON.stringify(value);
+            //console.log(str);
+            return btoa(encodeURI(JSON.stringify(value)))
+        }
+
+        decoder(value) {
+            try {
+                return JSON.parse(decodeURI(atob(value)))
+            } catch (ex) {
+                return decodeURI((value))
+                //return decodeURI(atob(value))
+            }
+        }
+
         moment(t) {
-            if (Number(t)) {
+            if(Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
             } else {}
 
@@ -154,8 +210,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get siteNumber() {
-            if (this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
-            if (this.domain[1] == "github") { return this.params.siteNumber; } else {
+            if(this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
+            if(this.domain[1] == "github") { return this.params.siteNumber; } else {
                 return localStorage.siteNumber || this.params.siteNumber;
             }
         }
@@ -176,7 +232,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                 "26": "wa111",
                 "16": "ku711",
                 "": location.host.split('.')[1]
-            }[location.port];
+            } [location.port];
         }
 
         get apiPath() {
@@ -195,7 +251,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             var paramsString = arguments[0].split('?')[1];
             var searchParams = new URLSearchParams(paramsString);
             var parameters = {};
-            for (var [key, value] of searchParams.entries()) { parameters[key] = value; }
+            for(var [key, value] of searchParams.entries()) { parameters[key] = value; }
             return parameters;
         }
 
@@ -253,7 +309,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "bonuslog": "bonus",
                     "memberloginlog": "log"
                 }
-            }[this.host][this.filename];
+            } [this.host][this.filename];
         }
 
         get router() { return [this.host, this.path].join('/'); }
@@ -265,7 +321,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get test() {
-            if (location.hostname == "127.0.0.1") {
+            if(location.hostname == "127.0.0.1") {
                 return true
             } else {
                 return false;

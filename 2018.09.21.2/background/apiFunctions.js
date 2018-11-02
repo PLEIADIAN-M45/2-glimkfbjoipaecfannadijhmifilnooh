@@ -2,120 +2,168 @@ function json(a) { return (typeof a == 'string') ? JSON.parse(a) : JSON.stringif
 
 function pathOf(url) { return url.split('/').pop(); }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function $serializeParameters(str) {
+    var obj = {};
+    str.split('?')[1].split('&').map((x) => { return x.split('=') }).map(([name, value]) => {
+        obj[name] = value;
+    })
+    return obj;
+}
+
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+
 var assign = Object.assign;
-
 var counter = { locate: 0, mobile: 0, idcard: 0 };
-
-
-
-
-var apiFunctions = function(request, sender, sendResponse) {
-    //return sendResponse('暫停服務')
-    var [commander, property, proxy, channel] = request.command.split(':');
-    //console.log(request.command);
-    //console.log(commander, property, proxy, channel, window.origins.get(channel));
-
-    request.url = window.origins.get(channel);
-
-    request.time = Date.now();
-
-    if (request.url) {
-        if (proxy) {
-            var module = this[property][proxy].call(request);
-            //console.log(module);
-        } else {
-            //var module = this[property].call(request);
-        }
-    } else {
-        return sendResponse(['', 'error'])
+var search = {
+    idcard: function(value) {
+        return undefined;
+    },
+    author: function(value) {
+        return evo.decoder(localStorage.author).find((d) => {
+            return trim(d[0]) == value;
+        })
+    },
+    banker: function(value) {
+        return evo.decoder(localStorage.banker).find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    mobile: function(value) {
+        return evo.decoder(localStorage.mobile).find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    locate: function(value) {
+        return evo.decoder(localStorage.locate).find((d) => {
+            return value.startsWith(trim(d[0]))
+        })
+    },
+    danger: function(value) {
+        return evo.decoder(localStorage.danger).find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    notice: function(value) {
+        return evo.decoder(localStorage.notice).find((d) => {
+            return value.includes(trim(d[0]))
+        })
+    },
+    region: function({ prov, city, area, ctry, property }) {
+        var value = Object.values({ prov, city, area, ctry }).toString();
+        return evo.decoder(localStorage.region).find((d) => {
+            return value.includes(trim(d[0]))
+        })
     }
-
-
-    if (module.career == "ku711") {
-
-        module.settings.data = json(module.settings.data);
-    }
-
-
-
-    try {
-        module.settings.timeout = 5000;
-
-        $.ajax(module.settings)
-            .done(function(data, textStatus, xhr) {
-                //console.log(data);
-                try {
-                    var result = module.callback(data);
-                    result.career = module.career;
-                    result.host = module.career;
-                    result.origin = request.url;
-
-                    var status = result.status || textStatus;
-                    if (['locate', 'idcard', 'mobile'].includes(property)) { result = { property, region: result } }
-                    sendResponse([result, status, xhr]);
-                } catch (ex) {
-                    sendResponse([null, 'error', xhr]);
-                }
-            })
-            .fail(function(jqXHR, textStatus, errorThrown) {
-                sendResponse([null, 'error'])
-            });
-    } catch (ex) {
-        sendResponse([null, 'ex'])
-        console.warn(ex);
-    }
-    return true;
 }
 
 
-apiFunctions.prototype.smsService = {};
+
+//evo.store.user.where(["account", "channel"]).equals([account, channel]).modify((value, ref) => { console.log(value, ref); })
+//var parameters = $serializeParameters(sender.url);
+//var account = parameters.member || parameters.AccountID;
+//var { value, property, account, channel, host, region } = request;
+
+
+function apiFunctions(request, sender, sendResponse) {
+
+    Object.assign(this, request);
+
+    switch (this.property) {
+        case "author":
+            var result = { negative: { sheets: search.author(this.value) || false } };
+            return sendResponse([result]);
+        case "banker":
+            var result = {
+                negative: {
+                    region: search.region(this) || false,
+                    sheets: search.banker(this.value) || false
+                }
+            };
+            return sendResponse([result]);
+        case "locate":
+        case "idcard":
+        case "mobile":
+            var module = this[this.property][this.host].call(request);
+            module.settings.timeout = 5000;
+            module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
+            module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
+            $.ajax(module.settings)
+                .done((data, status, xhr) => {
+                    var result = module.callback(data);
+                    result.negative = {
+                        region: search.region(result) || false,
+                        sheets: search[this.property](this.value) || false
+                    }
+                    sendResponse([result, status])
+                }).fail(function(xhr, status, error) {
+                    var result = { meta: status };
+                    result.negative = {
+                        region: true,
+                        sheets: search[this.property](this.value) || false
+                    }
+                    sendResponse([result, status]);
+                });
+            break;
+        case "member":
+            var module = this[this.property][this.host].call(request);
+            module.settings.timeout = 5000;
+            module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
+            module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
+            $.ajax(module.settings)
+                .done((data, status, xhr) => {
+                    var result = module.callback(data);
+                    sendResponse([result, status]);
+                })
+
+            break;
+        default:
+            // statements_def
+            break;
+    }
+
+}
+
 apiFunctions.prototype.mobile = {};
 apiFunctions.prototype.idcard = {};
 apiFunctions.prototype.locate = {};
-apiFunctions.prototype.Member = {};
-apiFunctions.prototype.Alerts = {};
-apiFunctions.prototype.MemberBonus = {};
-apiFunctions.prototype.SystemLog = {};
-apiFunctions.prototype.getPhoneDate = {};
-apiFunctions.prototype.getAllUser = {};
-/*
-apiFunctions.prototype["getAllUser"]["wa111"] = function() {
-    console.log(this);
-    console.log(this.url);
-    console.log(this.account);
-
-    fetch(this.url + "/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=0&f_Account=" + this.account + "&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=&pageIndex=1&hidevalue_RecordCount=0&type=getAllUser&_=" + this.time, {
-            "method": "GET",
-        }).then((res) => { return response.json() })
-        .then((res) => {
-            console.log(res);
-            return res
-        })
-}*/
-
-apiFunctions.prototype["Member"]["ku711"] = function() {
-    var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
-    //console.log(this.url);
-
-
+apiFunctions.prototype.member = {};
+apiFunctions.prototype.alerts = {};
+apiFunctions.prototype.sendsms = {};
+apiFunctions.prototype["mobile"]["ku711"] = function() {
     return {
-        career: 'ku711',
+        settings: { "method": 'post', "dataType": 'json', "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal', "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 }, },
         callback: function(res) {
-            //console.log(res);
             var d = res.Data;
-            return {
-                rows: d.Data,
-                //index: d.Pager.PageNumber,
-                records: d.Pager.PageCount,
-                total: d.TotalItemCount
-            }
+            return { "meta": d.Cardtype, "prov": d.Province, "city": d.City }
+        }
+    }
+}
+apiFunctions.prototype["mobile"]["wa111"] = function() {
+    return {
+        settings: {
+            "dataType": 'json',
+            "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx',
+            "data": { 'type': 'getPhone', 'phone': this.value, 'account': this.account, _: new Date().getTime() }
+        },
+        callback: function(res) {
+            var str = res.msg.replace('<br />', '<br/>').split('<br/>');
+            var arr = str[0].split('&nbsp;');
+            return { "prov": arr[0], "city": arr[1], "meta": str[1] }
+        }
+    }
+}
+apiFunctions.prototype["member"]["ku711"] = function() {
+    var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
+    return {
+        callback: function(res) {
+            var d = res.Data;
+            return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
         },
         settings: {
-            dataType: 'json',
-            method: 'post',
-            url: this.url + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
-            data: {
+            "dataType": 'json',
+            "method": 'post',
+            "url": '@/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
+            "data": {
                 "AccountID": "",
                 "IDNumber": idcard,
                 "RigistedIP": "",
@@ -156,277 +204,71 @@ apiFunctions.prototype["Member"]["ku711"] = function() {
         }
     }
 }
-apiFunctions.prototype["Member"]["wa111"] = function() {
-    //console.log(this);
+apiFunctions.prototype["member"]["wa111"] = function() {
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
-    //console.log(index, banker, mobile, idcard, author, account);
     return {
-        career: 'wa111',
         callback: function(res) {
             return assign(res, { index });
         },
         settings: {
-            dataType: 'json',
-            url: this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
-            data: {
-                f_BankAccount: banker,
-                txtPhoto: mobile,
-                txtIdCard: idcard,
-                f_RemittanceName: author,
-                f_Account: account,
-                txtAlipayAccount: "",
-                txtEmail: "",
-                txtPickName: "",
-                txtChat: "",
-                ddlBankInfo: "",
-                zwrq: "",
-                zwrq2: "",
-                selSurplus: "",
-                selShow: "",
-                selIsDeposit: "",
-                selLevel: "",
-                selBank: "",
-                selMutualStatus: "",
-                ddlAliPay: "",
-                ddlWeChat: "",
-                ddlWarn: 0,
-                hidevalue_totals: "",
-                pageIndex: index, //start at 1
-                hidevalue_RecordCount: 0,
-                type: "getAllUser",
-                _: time
+            "dataType": 'json',
+            "url": '@/LoadData/AccountManagement/GetMemberList.ashx',
+            "data": {
+                "f_BankAccount": banker,
+                "txtPhoto": mobile,
+                "txtIdCard": idcard,
+                "f_RemittanceName": author,
+                "f_Account": account,
+                "txtAlipayAccount": "",
+                "txtEmail": "",
+                "txtPickName": "",
+                "txtChat": "",
+                "ddlBankInfo": "",
+                "zwrq": "",
+                "zwrq2": "",
+                "selSurplus": "",
+                "selShow": "",
+                "selIsDeposit": "",
+                "selLevel": "",
+                "selBank": "",
+                "selMutualStatus": "",
+                "ddlAliPay": "",
+                "ddlWeChat": "",
+                "ddlWarn": 0,
+                "hidevalue_totals": "",
+                "pageIndex": index,
+                "hidevalue_RecordCount": 0,
+                "type": "getAllUser",
+                "_": this.time
             }
         }
     }
 }
-
-apiFunctions.prototype["getPhoneDate"]["wa111"] = function() {
-    var { account } = this.params;
+apiFunctions.prototype["alerts"]["ku711"] = function() {
     return {
-        career: 'wa111',
         settings: {
-            url: this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
-            dataType: 'json',
-            data: { type: 'getPhoneDate', account }
+            "method": 'post',
+            "dataType": 'json',
+            "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
+            "data": this.params
         },
         callback: function(res) {
-            try {
-                return res.rows[0];
-            } catch (ex) { return null; }
-        }
-    }
-}
-
-apiFunctions.prototype["SystemLog"]["wa111"] = function() {
-    return {
-        career: 'wa111',
-        settings: {
-            url: this.url + '/LoadData/AccountManagement/GetSystemLog.ashx',
-            method: 'post',
-            dataType: 'json',
-            data: {
-                tabName: '',
-                zwrq: '',
-                pageIndex: '',
-                f_target: '',
-                f_handler: '',
-                ddlType: 0,
-                f_accounts: this.account,
-                zwrq2: '',
-                logType: 'memberlog',
-                f_number: null,
-                type: null,
-                selType: '',
-                selShow: -1,
-                txtID: '',
-                selDengji: ''
-            }
-        },
-        callback: function(res) {
-            try { return res.rows; } catch (ex) { return null; }
-        }
-    }
-}
-apiFunctions.prototype["SystemLog"]["ku711"] = function() {
-    // console.log(xmlhttp.GetMemberInfoOperationLogByMultiAccountID);
-    // console.log(this);
-    return {
-        career: 'ku711',
-        settings: {
-            url: this.url + '/member/api/Common/GetMemberInfoOperationLogByMultiAccountID',
-            method: 'post',
-            dataType: 'json',
-            data: {
-                "OperateType": 0,
-                "OperatorList": [],
-                "DataIDList": [],
-                "PageIndex": 0,
-                "PageSize": 5,
-                "DataID": this.account,
-                "Operated": this.account,
-                "Platform": 0
-            }
-        },
-        callback: function(res) {
-            //console.log(res);
-            try { try { return res.Data.Data; } catch (ex) { return null; } } catch (ex) { return null; }
-        }
-    }
-}
-apiFunctions.prototype["MemberBonus"]["ku711"] = function() {
-    var { AccountID, BonusNumber, BonusID } = this;
-    return {
-        career: 'ku711',
-        callback: function(d) {
-            try {
-                var res = d.Data.Data.filter(function(row) {
-                    console.log(row.BonusNumber, BonusNumber);
-                    return row.BonusNumber == BonusNumber;
-                });
-
-                console.log(res);
-
-                return res[0];
-            } catch (ex) {
-                return null;
-            }
-        },
-        settings: {
-            method: 'post',
-            dataType: 'json',
-            url: this.url + '/member/api/Bonus/GetMemberBonusLogBackendByCondition',
-            data: {
-                AccountID: AccountID,
-                //AccountID: AccountID,
-                StartTime: moment().format('YYYY-MM-dd'),
-                EndTime: moment().format('YYYY-MM-dd'),
-                //StartTime: '2018-01-01',
-                //EndTime: '2018-10-10',
-                PageNumber: 0,
-                RecordCounts: 20,
-                OrderField: '',
-                Desc: 'true',
-                DirectorID: null,
-                BonusType: null,
-                DealType: null
-            }
-        }
-    }
-}
-apiFunctions.prototype["MemberBonus"]["wa111"] = function() {
-    var { account } = this.params;
-    console.log(account);
-    return {
-        career: 'wa111',
-        callback: function(res) {
-            console.log(res);
-            return res.rows[0];
-        },
-        settings: {
-            method: 'get',
-            dataType: 'json',
-            url: this.url + '/LoadData/LoadDataList/DepositBonus.ashx',
-            data: {
-                type: "getDepositBonusList",
-                f_Account: account,
-                zwrq: "",
-                zwrq2: "",
-                pageSize: 20,
-                pageIndex: "",
-                action: "",
-                isAduit: "",
-                txtMoney: "",
-                txtMoney2: "",
-                _: new Date().getTime()
-            }
-        }
-    }
-}
-
-apiFunctions.prototype["mobile"]["ku711"] = function() {
-    return {
-        career: 'ku711',
-        settings: {
-            method: 'post',
-            dataType: 'json',
-            url: this.url + '/Member/api/MemberInfoManage/GetVerifyPhoneLocal',
-            data: {
-                "Name": this.account,
-                "AccountID": this.account,
-                "CellPhone": this.value,
-                "EnabledVerified": true,
-                "Identitycard": "",
-                "VerifyUsage": 13
-            },
-        },
-        callback: function(res) {
-            var d = res.Data;
-            return {
-                meta: d.Cardtype,
-                prov: d.Province,
-                city: d.City
-            }
-        }
-    }
-}
-apiFunctions.prototype["mobile"]["wa111"] = function() {
-    return {
-        career: 'wa111',
-        settings: {
-            dataType: 'json',
-            url: this.url + '/LoadData/AccountManagement/GetInfoAPI.ashx',
-            data: {
-                'type': 'getPhone',
-                'phone': this.value,
-                //'phone': this.mobile,
-                'account': this.account,
-                _: new Date().getTime()
-            }
-        },
-        callback: function(res) {
-            console.log(res);
-            var str = res.msg.replace('<br />', '<br/>').split('<br/>');
-            var arr = str[0].split('&nbsp;');
-            return {
-                prov: arr[0],
-                city: arr[1],
-                meta: str[1]
-            }
+            return { "list_Accounts": res.Data }
         }
     }
 }
 apiFunctions.prototype["locate"]["evo"] = function() {
     function pconline() {
         return {
-            career: 'pconline',
-            settings: {
-                dataType: 'html',
-                url: 'http://whois.pconline.com.cn/ipJson.jsp',
-                data: { ip: this.value },
-            },
+            settings: { "dataType": 'html', "url": 'http://whois.pconline.com.cn/ipJson.jsp', "data": { "ip": this.value }, },
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if (d.proCode == "999999") {
-                            return {
-                                meta: 'pconline',
-                                prov: d.pro,
-                                city: d.city,
-                                ctry: d.addr
-                            }
-                        } else {
-                            return {
-                                meta: 'pconline',
-                                prov: d.pro,
-                                city: d.city,
-                                area: d.region
-                            }
-                        }
-                    } catch (ex) {
-                        return false
-                    }
-
-                }
+                        if(d.proCode == "999999") {
+                            return { meta: 'pconline', "prov": d.pro, "city": d.city, "ctry": d.addr }
+                        } else { return { meta: 'pconline', prov: d.pro, city: d.city, area: d.region } }
+                    } catch (ex) { return false }
+                };
                 return eval(d);
             }
         }
@@ -434,258 +276,105 @@ apiFunctions.prototype["locate"]["evo"] = function() {
 
     function baidu() {
         return {
-            career: 'baidu',
-            settings: {
-                dataType: 'json',
-                url: 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974',
-                data: { ip: this.value },
-            },
+            settings: { "dataType": 'json', "url": 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974', "data": { "ip": this.value }, },
             callback: function(d) {
-                //console.log(d);
                 try {
-                    return {
-                        //region: {
-                        meta: 'baidu',
-                        prov: d.content.address_detail.province,
-                        city: d.content.address_detail.city,
-                        ctry: d.address.split('|')[0].replace('CN', '中国')
-                        //}
-
-                    }
-                } catch (ex) {
-                    //throw 'error'
-                    return null
-                }
+                    return { "meta": 'baidu', "prov": d.content.address_detail.province, "city": d.content.address_detail.city, "ctry": d.address.split('|')[0].replace('CN', '中国') }
+                } catch (ex) { return null }
             }
         }
     }
 
     function ipapi() {
         return {
-            career: 'ipapi',
-            settings: {
-                dataType: 'json',
-                url: 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN',
-            },
+            settings: { "dataType": 'json', "url": 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN', },
             callback: function(d) {
-                //console.log(d);
                 try {
-                    return {
-                        //region: {
-                        meta: 'ipapi',
-                        prov: d.regionName,
-                        city: d.city,
-                        ctry: d.country
-                        //}
-                    }
-                } catch (ex) {
-                    //throw 'error'
-                    return null
-                }
+                    return { "meta": 'ipapi', "prov": d.regionName, "city": d.city, "ctry": d.country }
+                } catch (ex) { return null }
             }
         }
     }
 
     function taobao() {
         return {
-            career: 'taobao',
             settings: {
-                dataType: 'json',
-                url: 'http://ip.taobao.com/service/getIpInfo.php',
-                data: { ip: this.value },
+                "dataType": 'json',
+                "url": 'http://ip.taobao.com/service/getIpInfo.php',
+                "data": { ip: this.value },
             },
             callback: function(res) {
-                //console.log(res);
                 try {
                     var d = res.data;
-                    return {
-                        //region: {
-                        meta: 'taobao',
-                        prov: d.region.replace('XX', ''),
-                        city: d.city.replace('XX', ''),
-                        ctry: d.country.replace('XX', '')
-                        //}
-                    }
-                } catch (ex) {
-                    //throw 'error'
-                    return null
-                }
-
+                    return { meta: 'taobao', prov: d.region.replace('XX', ''), city: d.city.replace('XX', ''), ctry: d.country.replace('XX', '') }
+                } catch (ex) { return null }
             }
         }
     }
-
     var modules = [pconline, baidu, ipapi, taobao];
     var c = (counter.locate++) % (modules.length);
     return modules[c].call(this);
 }
-apiFunctions.prototype["idcard"]["ku711"] = function() {
-    return {
-        career: 'ku711',
-        settings: {
-            url: this.url + '/Member/api/MemberInfoManage/GetVerifyIdentity',
-            data: {
-                "AccountID": this.account,
-                //"Identitycard": this.value,
-                "Identitycard": this.idcard,
-                "Name": this.author,
-                "CellPhone": "",
-                "EnabledVerified": true,
-                "VerifyUsage": 1
-            },
-        },
-        callback: function(res) {
-            var d = res.Data.IdCardInfo;
-            return {
-                prov: d.ResidentAddress,
-                meta: d.BirthDay + '/' + d.Sex + '/' + getMemberAge(d.BirthDay)
-            }
-        }
-    }
-}
-apiFunctions.prototype["idcard"]["wa111"] = function() {
-    return {
-        career: 'wa111',
-        settings: {
-            dataType: 'json',
-            url: this.url + '/LoadData/AccountManagement/GetInfoAPI.ashx',
-            data: {
-                'type': 'getID',
-                'f_account': this.account,
-                _: this.time
-            }
-        },
-        callback: function(res) {
-            var arr = res.address.split(' ');
-            return {
-                prov: arr[0],
-                city: arr[1],
-                area: arr[2],
-            }
-        }
-    }
-}
 apiFunctions.prototype["idcard"]["evo"] = function() {
-    var [$1, $2, $3, $4, $5, $6, $7] =
-    this.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
-    //console.log($1, $2, $3, $4, $5, $6, $7);
-    var prov = GB2260MAP.get($1),
-        city = GB2260MAP.get($2),
-        area = GB2260MAP.get($3),
-        sex = FnGetGender($5),
-        age = FnGetOldAge($4),
-        adult = FnIsAdult($4),
-        birth = FnSetLocale($4, 'LL', 'zh-tw'),
-        meta = [birth, sex, age].join('/');
+    var GBMAP = new Map(evo.decoder(localStorage["gb2260"]));
+    var [$1, $2, $3, $4, $5, $6, $7] = this.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
+    var sex = (Number($5) % 2 == 1) ? '男性' : '女性',
+        age = moment().diff(moment($4), 'years') + '岁',
+        birth = moment($4).locale('zh-tw').format('LL');
     return {
-        settings: {},
-        career: 'evo',
+        settings: { url: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard' },
         callback: function() {
-            return { prov, city, area, meta }
+            return {
+                "prov": GBMAP.get(Number($1)),
+                "city": GBMAP.get(Number($2)),
+                "area": GBMAP.get(Number($3)),
+                "meta": [birth, sex, age].join('/')
+            }
         }
     }
 }
-apiFunctions.prototype["Alerts"]["ku711"] = function() {
-    return {
-        career: 'ku711',
-        callback: function(res) {
-            return { list_Accounts: res.Data }
-        },
-        settings: {
-            method: 'post',
-            dataType: 'json',
-            url: this.url + '/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
-            data: this.params
-        }
-    }
-}
-apiFunctions.prototype["smsService"]["smsc"] = function() {
+
+apiFunctions.prototype["sendsms"]["motosms"] = function() {
     var { account, mobile, status, channel, operator } = this.params;
-    var smss = aes.decrypt(localStorage.sms);
+    if(channel == undefined) { return false }
+    if(mobile == undefined) { return false }
+    if(mobile.includes('*') == undefined) { return false }
+    var smss = new Map(evo.decoder(localStorage.sms));
+    if(smss == undefined) { return false };
+    var message = smss.get(Number(channel));
+    if(message == undefined) { return false }
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
+    if(countrycode == undefined) { return false }
     var mobile = countrycode + mobile;
-    var message = smss[channel];
-    if (smss == undefined) { return false }
-    if (channel == undefined) { return false }
-    if (mobile == undefined) { return false }
-    if (mobile.includes('*') == undefined) { return false }
-    if (countrycode == undefined) { return false }
-    if (message == undefined) { return false }
     return {
-        career: 'smsc',
         settings: {
-            dataType: 'html',
-            method: 'post',
-            url: 'https://client.motosms.com/smsc/smssend',
-            data: { sender: '', phones: mobile, smscontent: message, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
+            "dataType": 'html',
+            "method": 'post',
+            "url": 'https://client.motosms.com/smsc/smssend',
+            "data": { "sender": '', "phones": "mobile", smscontent: "message", "taskType": 1, "taskTime": '', "batch": 1, "splittime": 0, "packid": '' }
         },
         callback: function(res) {
-            if (res.match(/(會員登錄)/)) { var status = 3; }
-            if (res.match(/(msg = '')/)) { var status = 0; }
-            if (res.match(/(msg = '101')/)) { var status = 101; }
-            if (res.match(/(msg = '102')/)) { var status = 102; }
+            if(res.match(/(會員登錄)/)) { var status = 3; }
+            if(res.match(/(msg = '')/)) { var status = 0; }
+            if(res.match(/(msg = '101')/)) { var status = 101; }
+            if(res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }
 }
 
-FnGetOldAge = (s) => { var a = moment(s); var b = moment(); return Number(b.diff(a, 'years')) + '岁'; }
-FnGetGender = (s) => { return (Number(s) % 2 == 1) ? '男性' : '女性' }
-FnIsAdult = (s) => { return (FnGetOldAge(s) > 17) }
-FnSetLocale = (time, format, locale) => { return moment(time).locale(locale).format(format) }
 
-
-
-evo.search = {
-    author: function(value) {
-        return evo.local.author.find((d) => {
-            return trim(d[0]) == value;
-        })
-    },
-    banker: function(value) {
-        return evo.local.banker.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    mobile: function(value) {
-        return evo.local.mobile.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    locate: function(value) {
-        return evo.local.locate.find((d) => {
-            return value.startsWith(trim(d[0]))
-        })
-    },
-    danger: function(value) {
-        return evo.local.danger.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    },
-    notice: function(value) {
-        return evo.local.notice.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    },
-    region: function(value) {
-        return evo.local.region.find((d) => {
-            return value.includes(trim(d[0]))
-        })
-    }
-}
+apiFunctions.prototype["idcard"]["ku711"] = apiFunctions.prototype["idcard"]["evo"];
+apiFunctions.prototype["idcard"]["wa111"] = apiFunctions.prototype["idcard"]["evo"];
+apiFunctions.prototype["locate"]["ku711"] = apiFunctions.prototype["locate"]["evo"];
+apiFunctions.prototype["locate"]["wa111"] = apiFunctions.prototype["locate"]["evo"];
 
 
 function s(array) { console.log(array); }
 
 function flat(array) { return array.flat(); }
 
-function save(arr) {
-    arr.forEach(([name, value]) => {
-        localStorage[name] = value;
-        evo.local[name] = evo.decoder(value);
-    })
-}
-
+function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
 
 function download() {
     return Promise.all([
@@ -698,6 +387,19 @@ function download() {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /*
 var b = evo.search.author('杨吉')
 var b = evo.search.banker('62170008500012323')
@@ -705,114 +407,4 @@ var b = evo.search.locate('116.20.60.169')
 var b = evo.search.danger('他是打水套利客')
 var b = evo.search.region('台灣省')
 console.log(b);
-*/
-
-
-
-
-/*
-fetch('gb2260').then(_toText)
-    .then((value) => {
-        return localStorage["gb2260"] = value;
-    }).then((value) => {
-        window.GB2260MAP = new Map(evo.decoder(value))
-    });
-
-fetch('ga2260').then(_toText)
-    .then((value) => {
-        console.log(evo.decoder(value));
-        return localStorage["ga2260"] = value;
-    });
-    */
-
-
-//fetch('https://www.evo.com/?commands=GMB').then(_toJson).then(_toLocalStorage)
-//fetch('https://www.evo.com/?commands=GMA').then(_toJson).then(_toLocalStorage)
-
-/*
-for (var key in window.localStorage) {
-    try {
-        var value = window.localStorage[key];
-        evo.local[key] = JSON.parse(decodeURI(atob(value)));
-        // console.log(evo.local[key]);
-        evo.local[key].forEach(function(value, index) {
-            //console.log(value);
-            store[key].put(value)
-        });
-    } catch (e) {}
-}
-*/
-
-/*
-var search = function() {
-    console.log(this);
-    this._author = evo.decoder()
-}
-
-search.prototype.author = function() {
-    console.log(this);
-
-}
-
-search.prototype.banker = function() {}
-
-search.prototype.mobile = function() {}
-
-search.prototype.locate = function() {}
-
-search.prototype.danger = function() {}
-
-search.prototype.notice = function() {}
-
-search.prototype.region = function() {}
-
-
-var sea = new search();
-
-sea.author()
-
-*/
-
-
-
-
-
-
-
-
-/*
-evo.local.gb2260.forEach(function([code, area], index) {
-    console.log(code, area);
-    store.gb2260.put({ code, area })
-});
-*/
-//console.log(gb2260);
-//console.log(evo.decoder(gb2260));
-//JSON.parse("\"'\"")
-/*
->>> s = "Hello world !!"
->>> ":".join("{:02x}".format(ord(c)) for c in s)
-'48:65:6c:6c:6f:20:77:6f:72:6c:64:20:21:21
-*/
-
-/*
-http://www.admin10000.com/document/8185.html
-*/
-/*
-var arr = [
-    [110000, "北京市"],
-    [110101, "东城区"],
-    [110102, "西城区"]
-]
-console.log(evo.json(arr).replace(/\u2034/g, '\\u2034'));
-console.log(JSON.stringify(arr));
-console.log(String.fromCharCode(34));
-console.log(2028);
-*/
-/*
-console.log(evo.encoder(arr));
-var s = evo.encoder(arr)
-console.log(s);
-console.log(evo.decoder(s));
-
 */
