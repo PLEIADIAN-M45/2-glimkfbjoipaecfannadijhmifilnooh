@@ -195,11 +195,12 @@ var Spreadsheets = {
 
 var $robot = {
 
-    
+
     getAllUser: function() {
         this.dataRows.forEach((row, index) => { evo.store.user.put(row); });
     },
 
+    /*開通或停權*/
     StopMember: function() {
         if (this.respData == 1) { return };
         var pastData = $scope.user;
@@ -212,33 +213,23 @@ var $robot = {
         Spreadsheets.authorize_wa111(pastData, postData);
     },
 
-
+    /*開通或停權*/
     UpdateMemberSNInfoBackend: function() {
-        //判斷一下是否成功
-        //這個動作用於 轉為停權
-        Spreadsheets.authorize_ku711($scope.user, this.sendData);
+        //判斷一下是否執行成功 //這個動作用於 轉為停權
+        var pastData = $scope.user;
+        var postData = this.sendData;
+        Spreadsheets.authorize_ku711(pastData, postData);
     },
 
     UpdateMemberRiskInfoAccountingBackend: function() {
-        return
-        if (this.respData.Data.Message == "更新成功") {
-
-            var { MemberStatus, IsDeposit } = $scope.user;
-            var pastData = {
-                MemberStatus: Number(MemberStatus),
-                IsDeposit: Number(IsDeposit)
-            };
-            var { MemberStatus, IsDeposit } = this.sendData;
-            var sendData = {
-                MemberStatus: Number(MemberStatus),
-                IsDeposit: Number(IsDeposit)
-            };
-
-            if (sendData.MemberStatus !== pastData.MemberStatus) {
-                Spreadsheets.authorize(sendData);
-            }
-        }
+        if (this.respData.Data.Message != "更新成功") { return }
+        var pastData = $scope.user;
+        var postData = this.sendData;
+        Spreadsheets.authorize_ku711(pastData, postData);
     },
+
+
+
 
     //禮金表
     DelDiceWinRecords: function() {
@@ -301,6 +292,27 @@ xmlSpider.loadend = function() {
 }
 
 
+
+
+/*
+return
+if (this.respData.Data.Message == "更新成功") {
+
+    var { MemberStatus, IsDeposit } = $scope.user;
+    var pastData = {
+        MemberStatus: Number(MemberStatus),
+        IsDeposit: Number(IsDeposit)
+    };
+    var { MemberStatus, IsDeposit } = this.sendData;
+    var sendData = {
+        MemberStatus: Number(MemberStatus),
+        IsDeposit: Number(IsDeposit)
+    };
+
+    if (sendData.MemberStatus !== pastData.MemberStatus) {
+        Spreadsheets.authorize(sendData);
+    }
+}*/
 //Spreadsheets.suspend(postData);
 //Spreadsheets.suspended(postData);
 //Spreadsheets.authorize(postData);
