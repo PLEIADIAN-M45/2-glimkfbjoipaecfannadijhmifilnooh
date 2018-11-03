@@ -106,12 +106,7 @@ function $fromJson(obj) {
                 } else {
                     this.sendData = $serializeQueryString('?' + this.postData);
                 }
-
                 this.command = this.sendData.action || this.sendData.type;
-                //console.log(this.sendData);
-
-                //console.log(this.command);
-
                 break;
             case "ku711":
             case "16":
@@ -128,6 +123,10 @@ function $fromJson(obj) {
 
         this.respData = $toJson(this.responseText);
         this.responseJSON = $toJson(this.responseText);
+        if (this.respData) {
+            if (this.respData.Data) { if (this.respData.Data.Message == "更新成功") { this.success = true; } }
+        }
+
         try {
             this.dataRows = this.respData.rows || this.respData.Data.Data;
         } catch (ex) {}
@@ -156,7 +155,8 @@ function $fromJson(obj) {
 
 
 var Spreadsheets = {
-    bonus: function() {
+    bonus: function(postData) {
+        console.log(postData);
         alert('bonus')
     },
     authorize_wa111: function(pastData, postData) {
@@ -169,20 +169,20 @@ var Spreadsheets = {
         if (pastData.f_ishow == postData.f_ishow) { return }
 
         if (pastData.f_ishow == 3) {
-            //審核轉停權=開通表
+            alert('審核 -> 開通表')
         } else {
+            alert('其它轉停權=停權表')
             //其它轉停權=停權表
         }
         alert('authorize')
     },
-    authorize_ku711: function(pastData, sendData) {
-        if (pastData.MemberStatus == sendData.MemberStatus) { return }
+    authorize_ku711: function(pastData, postData) {       
         if (pastData.MemberStatus == 3) {
-            //審核轉停權=開通表
+            console.log(postData.MemberStatus);
+            alert('審核 -> 開通表')
         } else {
-            //其它轉停權=停權表
+            alert('其它轉停權=停權表')
         }
-        alert('authorize')
         /*var { MemberStatus, IsDeposit } = pastData;
         console.log({ MemberStatus, IsDeposit });
         var { MemberStatus, IsDeposit } = sendData;
@@ -194,14 +194,9 @@ var Spreadsheets = {
 }
 
 var $robot = {
-
-
-    getAllUser: function() {
-        this.dataRows.forEach((row, index) => { evo.store.user.put(row); });
-    },
-
     /*開通或停權*/
     StopMember: function() {
+        //還原或停權
         if (this.respData == 1) { return };
         var pastData = $scope.user;
         var postData = { f_ishow: 2, f_depositStatus: 0 }
@@ -213,82 +208,69 @@ var $robot = {
         Spreadsheets.authorize_wa111(pastData, postData);
     },
 
+
     /*開通或停權*/
-    UpdateMemberSNInfoBackend: function() {
-        //判斷一下是否執行成功 //這個動作用於 轉為停權
+    UpdateMemberSNInfoBackend: function() { //控制用户状态開關 //判斷一下是否執行成功 //這個動作用於 轉為停權
         var pastData = $scope.user;
         var postData = this.sendData;
+        if (pastData.MemberStatus == postData.MemberStatus) { return }
         Spreadsheets.authorize_ku711(pastData, postData);
     },
 
-    UpdateMemberRiskInfoAccountingBackend: function() {
-        if (this.respData.Data.Message != "更新成功") { return }
+    UpdateMemberRiskInfoAccountingBackend: function() { //控制存款開關
+        if (this.success) {} else { return };
         var pastData = $scope.user;
         var postData = this.sendData;
+        if (pastData.IsDeposit == postData.IsDeposit) { return }
         Spreadsheets.authorize_ku711(pastData, postData);
     },
 
-
-
+    UpdateMemberRisksInfoBackendIsFSuspension: function() { //還原或停權
+        if (this.success) {} else { return };
+        if (this.sendData.IsFSuspension == false) { return };
+        var pastData = $scope.user;
+        var postData = { MemberStatus: 0, IsDeposit: 0 };
+        Spreadsheets.authorize_ku711(pastData, postData);
+    },
 
     //禮金表
-    DelDiceWinRecords: function() {
-        if (this.respData == 1) {
-            this.cacheBonusData = this.sendData;
-        }
+    delDiceWinRecords: function() { /*用於刪除*/
+        if (this.respData == 1) { this.cacheBonusData = this.sendData; }
+    },
+    DelDiceWinRecords: function() { /*用於給點*/
+        if (this.respData == 1) { this.cacheBonusData = this.sendData; }
     },
     DepositBonus: function() {
         if (this.cacheBonusData) {
-            var postData = this.dataRows.find((row) => {
-                return row.f_id == this.cacheBonusData.id;
-            });
-            //RecordCounts
+            var postData = this.dataRows.find((row) => { return row.f_id == this.cacheBonusData.id; });
             if (postData) {
                 this.cacheBonusData = null;
                 Spreadsheets.bonus(postData);
             }
         }
     },
-
-
     //禮金表
     UpdateMemberBonusLog: function() {
-        if (this.respData.Data.Message == "更新成功") {
-            this.cacheBonusData = this.sendData;
-        }
+        if (this.success) {} else { return };
+        this.cacheBonusData = this.sendData;
     },
     GetMemberBonusLogBackendByCondition: function() {
         if (this.cacheBonusData) {
-            var postData = this.dataRows.find((row) => {
-                return row.BonusNumber == this.cacheBonusData.BonusNumber;
-            });
+            var postData = this.dataRows.find((row) => { return row.BonusNumber == this.cacheBonusData.BonusNumber; });
             if (postData) {
-                //console.log(postData);
                 this.cacheBonusData = null;
                 Spreadsheets.bonus(postData);
             }
         }
     },
-
-
-
-
-
 }
 
 
 xmlSpider.loadend = function() {
-    //console.log(this.command);
     var robot = $robot[this.command];
-    if (robot) {
-        //console.log(this.command);
-        return robot.call(this);
-    }
+    if (robot) { return robot.call(this); }
     var robot = $robot[this.lastPath];
-    if (robot) {
-        // console.log(this.lastPath);
-        return robot.call(this);
-    }
+    if (robot) { return robot.call(this); }
 }
 
 

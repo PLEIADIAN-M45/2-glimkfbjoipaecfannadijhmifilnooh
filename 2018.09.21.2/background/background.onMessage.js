@@ -31,6 +31,7 @@ function response_message(request, sender, sendResponse) {
 
 
         case "apiFunctions":
+            console.log(request);
             //request.time = Date.now();
             var api = new apiFunctions(request, sender, sendResponse);
             //.call(request, sender, sendResponse)
@@ -69,7 +70,7 @@ function response_message(request, sender, sendResponse) {
             break;
 
         case "localStorage:getItem":
-            if(key) {
+            if (key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -77,7 +78,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for(var key in res) {
+                for (var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -114,8 +115,8 @@ try {
 
 
 
-if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 

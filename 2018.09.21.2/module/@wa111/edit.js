@@ -9,6 +9,8 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
 
     function setUser() {
+
+        
         return Promise.all([$serializeObject('#lblIp'),
             $serializeObject('input'),
             $serializeObject('select'), apiFunction.getPhoneDate(), apiFunction.getUserStore(), apiFunction.getSystemLog().then(timerFilter1),

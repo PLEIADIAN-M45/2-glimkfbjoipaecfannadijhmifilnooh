@@ -54,7 +54,9 @@ function getModule(objPath) {
 
 async function checkSensitiveWords() {
     function sensitive({ outerText }) { return outerText.match(evo.regexp.sensitive.full) }
+
     function addclassList(el) { el.classList.add('danger'); return el; }
+
     function removeClass(el) {
         if (el.outerText == "正常户") { el.classList.add('normal'); }
         $(el).removeClass('w10', 'w20').find('br').remove();
@@ -150,7 +152,9 @@ function getTableCellCollection() {
 
 
 
-
+function getAllIPAddress() {
+    console.log(12);
+}
 
 
 

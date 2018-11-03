@@ -1,26 +1,10 @@
-
-
-
-
-
-
-
-//console.log(XMLHttpSpider);
-//console.log(xml);
-
-/*xml._loadend = function() {
-    var { _lastPath, _response } = this;
-    if (evo.IDB[_lastPath]) {
-        console.log(_lastPath);
-        try {
-            for (let row of _response.rows) {
-                console.log(row);
-                evo.IDB[_lastPath].put(row);
-            }
-        } catch (ex) {
-            console.log(ex);
+define(["xmlSpider"], function(xmlSpider) {
+    xmlSpider.loadend = function() {
+        //console.log(this.command);
+        if (this.command == "getAllUser") {
+            this.dataRows.forEach((row) => {
+                evo.store.user.put(row);
+            });
         }
-    } else {
-        console.log(_lastPath);
     }
-}*/
+});

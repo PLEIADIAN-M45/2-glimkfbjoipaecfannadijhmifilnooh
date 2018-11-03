@@ -6,11 +6,21 @@ define(['@page'], function() {;
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
             var user = await getUser();
+
+            console.log(user);
+
             user.banker = user.banker.filter((x) => { x.property = "banker"; return x.value; });
 
-            test(user);
+            //test(user);
 
-            Object.keys(user).map((key) => { user[key]["property"] = key; });
+            //console.log(Object.keys(user));
+
+
+            Object.keys(user).map((key) => {
+                if (user[key]) { user[key]["property"] = key; }
+            });
+
+
             $scope.user = user;
             $scope.datalist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
 
@@ -29,12 +39,18 @@ define(['@page'], function() {;
             $scope.getAllIPAddress = getAllIPAddress;
 
 
-            $scope.assign = function() { Object.assign(...arguments); if(!this.$$phase) { this.$apply(); } }
+            $scope.assign = function() { Object.assign(...arguments); if (!this.$$phase) { this.$apply(); } }
             $scope.apiFunctions = function(me, ev) {
                 var { host, channel, account } = evo;
                 var params = Object.assign({}, me, { command: "apiFunctions", host, channel, account });
-                if(me.active == undefined || ev) { me.active = true; } else { return };
+
+                console.log(params);
+
+                if (me.active == undefined || ev) { me.active = true; } else { return };
+
+
                 evo.apiFunctions(params).then((res) => {
+                    console.log(res);
                     return this.assign(me, res);
                 }).then(putUser);
             }

@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -86,7 +86,11 @@ function apiFunctions(request, sender, sendResponse) {
             var module = this[this.property][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
-            module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
+            module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
+            //(this.channel == "16") ? json(module.settings.data): module.settings.data;
+            //console.log(module);
+            //console.log(module.settings.url.split('.')[1]);
+            module.carrer = module.settings.url.split('.')[1];
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
                     var result = module.callback(data);
@@ -95,8 +99,15 @@ function apiFunctions(request, sender, sendResponse) {
                         sheets: search[this.property](this.value) || false
                     }
                     sendResponse([result, status])
-                }).fail(function(xhr, status, error) {
-                    var result = { meta: status };
+                }).fail((xhr, status, error) => {
+                    var result = {
+                        error: status,
+                        prov: null,
+                        city: null,
+                        ctry: null,
+                        area: null,
+                        meta: module.carrer
+                    };
                     result.negative = {
                         region: true,
                         sheets: search[this.property](this.value) || false
@@ -108,7 +119,11 @@ function apiFunctions(request, sender, sendResponse) {
             var module = this[this.property][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
-            module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
+            //module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
+            module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
+
+            //console.log(module);
+
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
                     var result = module.callback(data);
@@ -260,14 +275,20 @@ apiFunctions.prototype["alerts"]["ku711"] = function() {
 apiFunctions.prototype["locate"]["evo"] = function() {
     function pconline() {
         return {
-            settings: { "dataType": 'html', "url": 'http://whois.pconline.com.cn/ipJson.jsp', "data": { "ip": this.value }, },
+            settings: {
+                "dataType": 'html',
+                "url": 'http://whois.pconline.com.cn/ipJson.jsp',
+                "data": { ip: this.value },
+            },
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if(d.proCode == "999999") {
+                        if (d.proCode == "999999") {
                             return { meta: 'pconline', "prov": d.pro, "city": d.city, "ctry": d.addr }
                         } else { return { meta: 'pconline', prov: d.pro, city: d.city, area: d.region } }
-                    } catch (ex) { return false }
+                    } catch (ex) {
+                        return { meta: 'pconline' }
+                    }
                 };
                 return eval(d);
             }
@@ -280,7 +301,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
             callback: function(d) {
                 try {
                     return { "meta": 'baidu', "prov": d.content.address_detail.province, "city": d.content.address_detail.city, "ctry": d.address.split('|')[0].replace('CN', '中国') }
-                } catch (ex) { return null }
+                } catch (ex) { return { meta: 'baidu' } }
             }
         }
     }
@@ -291,7 +312,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
             callback: function(d) {
                 try {
                     return { "meta": 'ipapi', "prov": d.regionName, "city": d.city, "ctry": d.country }
-                } catch (ex) { return null }
+                } catch (ex) { return { meta: 'ipapi' } }
             }
         }
     }
@@ -307,7 +328,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
                 try {
                     var d = res.data;
                     return { meta: 'taobao', prov: d.region.replace('XX', ''), city: d.city.replace('XX', ''), ctry: d.country.replace('XX', '') }
-                } catch (ex) { return null }
+                } catch (ex) { return { meta: 'taobao' } }
             }
         }
     }
@@ -336,15 +357,15 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 
 apiFunctions.prototype["sendsms"]["motosms"] = function() {
     var { account, mobile, status, channel, operator } = this.params;
-    if(channel == undefined) { return false }
-    if(mobile == undefined) { return false }
-    if(mobile.includes('*') == undefined) { return false }
+    if (channel == undefined) { return false }
+    if (mobile == undefined) { return false }
+    if (mobile.includes('*') == undefined) { return false }
     var smss = new Map(evo.decoder(localStorage.sms));
-    if(smss == undefined) { return false };
+    if (smss == undefined) { return false };
     var message = smss.get(Number(channel));
-    if(message == undefined) { return false }
+    if (message == undefined) { return false }
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
-    if(countrycode == undefined) { return false }
+    if (countrycode == undefined) { return false }
     var mobile = countrycode + mobile;
     return {
         settings: {
@@ -354,10 +375,10 @@ apiFunctions.prototype["sendsms"]["motosms"] = function() {
             "data": { "sender": '', "phones": "mobile", smscontent: "message", "taskType": 1, "taskTime": '', "batch": 1, "splittime": 0, "packid": '' }
         },
         callback: function(res) {
-            if(res.match(/(會員登錄)/)) { var status = 3; }
-            if(res.match(/(msg = '')/)) { var status = 0; }
-            if(res.match(/(msg = '101')/)) { var status = 101; }
-            if(res.match(/(msg = '102')/)) { var status = 102; }
+            if (res.match(/(會員登錄)/)) { var status = 3; }
+            if (res.match(/(msg = '')/)) { var status = 0; }
+            if (res.match(/(msg = '101')/)) { var status = 101; }
+            if (res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }

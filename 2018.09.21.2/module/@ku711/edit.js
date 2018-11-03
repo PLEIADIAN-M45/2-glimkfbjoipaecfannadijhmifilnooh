@@ -22,11 +22,7 @@ define(['@ku711/api'], function(apiFunction) {
 
             $scope.user.MemberStatus = status
             $scope.user.IsDeposit = deposit;
-
-            return evo.assign($scope.user, {
-                status,
-                deposit: Number(deposit)
-            })
+            return evo.assign($scope.user, { status, deposit })
         })
     }
 
@@ -44,7 +40,6 @@ define(['@ku711/api'], function(apiFunction) {
 
 
     function setUser() {
-
         //if ($scope.user) { return updateUserStatus().then(putUser) } else { $scope.user = {}; }
         $scope.user = {};
 
@@ -61,14 +56,27 @@ define(['@ku711/api'], function(apiFunction) {
             var sheets = {},
                 region = {};
             var property = {
-                author: { property: 'author', value: c.AccountName, title: c.AccountNameShow, sheets },
-                locate: { property: 'locate', value: c.RegistedIP, title: c.RegistedIP, sheets, region },
-                mobile: { property: 'mobile', value: c.CellPhone, title: c.CellPhoneShow, sheets, region, },
-                idcard: { property: 'idcard', value: c.IDNumber, title: c.IDNumberShow, region, },
+                author: { value: c.AccountName, title: c.AccountNameShow },
+                locate: { value: c.RegistedIP, title: c.RegistedIP },
+                mobile: { value: c.CellPhone, title: c.CellPhoneShow },
+                idcard: { value: c.IDNumber, title: c.IDNumberShow },
             }
-            var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: isBlack } = c;
-            assign($scope.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack, region: [] }, property);
-            //console.log($scope.user);
+            var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: black } = c;
+
+            assign($scope.user, { account, channel, host, origin, operator, birthday, agency, attach, black, region: [] }, property);
+
+
+            $scope.user.MemberStatus = $Num($scope.user.MemberStatus);
+            $scope.user.IsDeposit = $Num($scope.user.IsDeposit);
+            $scope.user.deposit = $Num($scope.user.deposit);
+            $scope.user.status = $Num($scope.user.status);
+            $scope.user.black = $Num($scope.user.black);
+            //$scope.user.account = $upper($scope.user.account)
+            $scope.user.attach = $formatTime($scope.user.attach);
+            $scope.user.timing = $scope.user.timing.map($formatTime);
+
+            console.log($scope.user);
+
             return $scope.user;
         }).then(putUser);
 
@@ -82,11 +90,11 @@ define(['@ku711/api'], function(apiFunction) {
             $scope.user.banker = [];
             return $scope.user.banker = banker.filter((x) => x.IsSQL).map(function(c, i) {
                 return {
-                    property: 'banker',
                     title: c.PayeeAccountNoShow,
                     value: c.PayeeAccountNo,
-                    sheets: {},
-                    region: { meta: codeID[c.BankCodeID], prov: provID[c.BankProID], city: cityID[c.BankCityID], }
+                    meta: codeID[c.BankCodeID],
+                    prov: provID[c.BankProID],
+                    city: cityID[c.BankCityID]
                 }
             })
         })
@@ -129,15 +137,15 @@ define(['@ku711/api'], function(apiFunction) {
         return ['PayeeAccountNo0', 'PayeeAccountNo1', 'PayeeAccountNo2', 'PayeeAccountNo3', 'PayeeAccountNo4'].map(getElementById);
     }
 
-    function openDeposit() {
+    $scope.openDeposit = function() {
         $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
         $scope.ctrl.DepositChanged();
         $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
     }
 
-    function openLoginLog() {
+    $scope.openLogPage = function() {
         window.open(`${evo.origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
     }
 
-    return { setUser, openDeposit, openLoginLog }
+    return { setUser }
 });
