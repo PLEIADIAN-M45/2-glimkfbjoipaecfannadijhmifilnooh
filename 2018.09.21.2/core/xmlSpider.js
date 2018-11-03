@@ -92,7 +92,7 @@ function $fromJson(obj) {
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
 
         this.hostname = hostname.split('.')[1];
-        this.hostname = location.port;
+        this.hostname = location.port || hostname.split('.')[1];
         //hostname.split('.')[1];
 
 
@@ -147,62 +147,134 @@ function $fromJson(obj) {
 });
 
 
-var $robot = {
-    getAllUser: function() {
-        this.dataRows.forEach((row, index) => {
-            //console.log(row);
-            evo.store.user.put(row);
-        });
+//Spreadsheets.suspend(postData);
+//Spreadsheets.suspended(postData);
+//Spreadsheets.authorize(postData);
+//Spreadsheets.authorization(postData);    
+//Spreadsheets.suspension(postData);
+//Spreadsheets.bonus(postData);
+
+
+var Spreadsheets = {
+    bonus: function() {
+        alert('bonus')
     },
+    authorize_wa111: function(pastData, postData) {
+        pastData.f_ishow = Number(pastData.f_ishow);
+        postData.f_ishow = Number(postData.f_ishow);
+        pastData.f_depositStatus = Number(pastData.f_depositStatus);
+        postData.f_depositStatus = Number(postData.f_depositStatus);
+        console.log(pastData.f_ishow, postData.f_ishow);
+        //console.log(pastData.f_depositStatus, postData.f_depositStatus);
+        if (pastData.f_ishow == postData.f_ishow) { return }
+
+        if (pastData.f_ishow == 3) {
+            //審核轉停權=開通表
+        } else {
+            //其它轉停權=停權表
+        }
+        alert('authorize')
+    },
+    authorize_ku711: function(pastData, sendData) {
+        if (pastData.MemberStatus == sendData.MemberStatus) { return }
+        if (pastData.MemberStatus == 3) {
+            //審核轉停權=開通表
+        } else {
+            //其它轉停權=停權表
+        }
+        alert('authorize')
+        /*var { MemberStatus, IsDeposit } = pastData;
+        console.log({ MemberStatus, IsDeposit });
+        var { MemberStatus, IsDeposit } = sendData;
+        console.log({ MemberStatus, IsDeposit });*/
+    },
+    suspended: function() {
+        alert('suspended')
+    },
+}
+
+var $robot = {
+
+    
+    getAllUser: function() {
+        this.dataRows.forEach((row, index) => { evo.store.user.put(row); });
+    },
+
     StopMember: function() {
-        //審核轉停權 或 正常轉停權
-        console.log(this);
-        console.log(this.sendData);
-        console.log(this.respData);
-        //this.respData==1 //還原
-        //this.respData==0 //停權
+        if (this.respData == 1) { return };
+        var pastData = $scope.user;
+        var postData = { f_ishow: 2, f_depositStatus: 0 }
+        Spreadsheets.authorize_wa111(pastData, postData);
     },
     getmodel: function() {
-        //開通的情況
-        //console.log(this);
-        console.log(this.respData);
-        //console.log($scope.user);
-        console.log($scope.user.ishow, $scope.user.isOpenDeposit);
-        console.log(this.respData.f_ishow, this.respData.f_depositStatus);
+        var pastData = $scope.user;
+        var postData = this.respData;
+        Spreadsheets.authorize_wa111(pastData, postData);
     },
+
+
+    UpdateMemberSNInfoBackend: function() {
+        //判斷一下是否成功
+        //這個動作用於 轉為停權
+        Spreadsheets.authorize_ku711($scope.user, this.sendData);
+    },
+
+    UpdateMemberRiskInfoAccountingBackend: function() {
+        return
+        if (this.respData.Data.Message == "更新成功") {
+
+            var { MemberStatus, IsDeposit } = $scope.user;
+            var pastData = {
+                MemberStatus: Number(MemberStatus),
+                IsDeposit: Number(IsDeposit)
+            };
+            var { MemberStatus, IsDeposit } = this.sendData;
+            var sendData = {
+                MemberStatus: Number(MemberStatus),
+                IsDeposit: Number(IsDeposit)
+            };
+
+            if (sendData.MemberStatus !== pastData.MemberStatus) {
+                Spreadsheets.authorize(sendData);
+            }
+        }
+    },
+
+    //禮金表
     DelDiceWinRecords: function() {
-        if (this.respData == 1) { this.cacheBonusData = this.sendData; }
+        if (this.respData == 1) {
+            this.cacheBonusData = this.sendData;
+        }
     },
     DepositBonus: function() {
         if (this.cacheBonusData) {
             var postData = this.dataRows.find((row) => {
                 return row.f_id == this.cacheBonusData.id;
             });
-            //Spreadsheets.DepositBonus(postData);
+            //RecordCounts
+            if (postData) {
+                this.cacheBonusData = null;
+                Spreadsheets.bonus(postData);
+            }
         }
     },
 
 
-
+    //禮金表
     UpdateMemberBonusLog: function() {
         if (this.respData.Data.Message == "更新成功") {
-            console.log(this.sendData);
             this.cacheBonusData = this.sendData;
-            console.log(this.sendData);
-            
         }
     },
-
     GetMemberBonusLogBackendByCondition: function() {
         if (this.cacheBonusData) {
-            console.log(1);
             var postData = this.dataRows.find((row) => {
                 return row.BonusNumber == this.cacheBonusData.BonusNumber;
             });
             if (postData) {
-                console.log(postData);
+                //console.log(postData);
                 this.cacheBonusData = null;
-                //Spreadsheets.DepositBonus(postData);
+                Spreadsheets.bonus(postData);
             }
         }
     },
@@ -215,7 +287,7 @@ var $robot = {
 
 
 xmlSpider.loadend = function() {
-
+    //console.log(this.command);
     var robot = $robot[this.command];
     if (robot) {
         //console.log(this.command);
@@ -235,7 +307,35 @@ xmlSpider.loadend = function() {
 //Spreadsheets.authorization(postData);    
 //Spreadsheets.suspension(postData);
 //Spreadsheets.bonus(postData);
+/*
+       Object.entries(this.respData).map(([key, value]) => {
+           var name = key.replace('f_', '');
+           postData[name] = value;
+       });*/
+//console.log(pastData.f_ishow, pastData.f_depositStatus);
+//console.log(postData.f_ishow, postData.f_depositStatus);
 
+
+//console.log(postData);
+//Spreadsheets.authorize_wa111(pastData, postData);
+
+//開通的情況
+//console.log(this);
+//console.log(this.respData);
+//console.log($scope.user);
+//console.log($scope.user.ishow, $scope.user.isOpenDeposit);
+//console.log(this.respData.f_ishow, this.respData.f_depositStatus);
+/*var pastData = {
+    MemberStatus: Number(MemberStatus),
+    IsDeposit: Number(IsDeposit)
+};
+
+var { MemberStatus, IsDeposit } = this.sendData;
+var sendData = {
+    MemberStatus: Number(MemberStatus),
+    IsDeposit: Number(IsDeposit)
+};
+*/
 /*
 Object.defineProperty(this, 'cacheBonusData', {
     get: function() {

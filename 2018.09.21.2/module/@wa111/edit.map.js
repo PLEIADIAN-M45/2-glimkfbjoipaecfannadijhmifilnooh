@@ -12,15 +12,15 @@ if(['21', '2'].includes(evo.channel)) {}
 if(['26', '35', '17'].includes(evo.channel)) {
     var USERMAP = {
 
-        "ishow": "$scope.user.ishow",
-
-        "isOpenDeposit": "$scope.user.isOpenDeposit",
+        "f_ishow": "$scope.user.f_ishow",
+        "f_depositStatus": "$scope.user.f_depositStatus",
 
         //"ishow": "$scope.user.ishow",
+        //"isOpenDeposit": "$scope.user.isOpenDeposit",
+        //"ishow": "$scope.user.ishow",
         //"f_depositStatus": "$scope.user.depositStatus",
-
-        "f_ishow": "$scope.user.status",
-        "f_depositStatus": "$scope.user.deposit",
+        "ishow": "$scope.user.status",
+        "isOpenDeposit": "$scope.user.deposit",
 
         "f_accounts": "$scope.user.account",
         "f_RemittanceAccount": "$scope.user.banker.value",

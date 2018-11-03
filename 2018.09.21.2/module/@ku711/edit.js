@@ -1,13 +1,13 @@
-define(['@api'], function(apiFunction) {
+define(['@ku711/api'], function(apiFunction) {
 
     function getModule(objPath) {
         return new Promise(function(resolve, reject) {
             var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
             (function repeater(object) {
                 var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                    if(typeof alphaVal == "object") {
-                        if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                    if (typeof alphaVal == "object") {
+                        if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                     } else { resolve(alphaVal); }
                 }
             }(object));
@@ -19,7 +19,14 @@ define(['@api'], function(apiFunction) {
             getModule('UpdateEditMemberInfoManage.MemberStatus'),
             getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
         ]).then(function([status, deposit]) {
-            return evo.assign(evo.user, { status, deposit: Number(deposit) })
+
+            $scope.user.MemberStatus = status
+            $scope.user.IsDeposit = deposit;
+
+            return evo.assign($scope.user, {
+                status,
+                deposit: Number(deposit)
+            })
         })
     }
 
@@ -27,8 +34,8 @@ define(['@api'], function(apiFunction) {
         return apiFunction.getSystemLog().then((logs) => {
             return logs.filter(({ Content, OperateTime, Operator }) => {
                 return Content.filter((obj) => {
-                    if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
-                        return evo.assign(evo.user, { timing: [OperateTime] });
+                    if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                        return evo.assign($scope.user, { timing: [OperateTime] });
                     }
                 })
             })
@@ -38,7 +45,8 @@ define(['@api'], function(apiFunction) {
 
     function setUser() {
 
-        if(evo.user) { return updateUserStatus().then(putUser) } else { evo.user = {}; }
+        //if ($scope.user) { return updateUserStatus().then(putUser) } else { $scope.user = {}; }
+        $scope.user = {};
 
         return Promise.all([
             getModule('OldMemberBaseInfo'),
@@ -59,8 +67,9 @@ define(['@api'], function(apiFunction) {
                 idcard: { property: 'idcard', value: c.IDNumber, title: c.IDNumberShow, region, },
             }
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: isBlack } = c;
-            assign(evo.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack, region: [] }, property);
-            return evo.user;
+            assign($scope.user, { account, channel, host, origin, operator, birthday, agency, attach, isBlack, region: [] }, property);
+            //console.log($scope.user);
+            return $scope.user;
         }).then(putUser);
 
     }
@@ -70,7 +79,8 @@ define(['@api'], function(apiFunction) {
             getModule('GetMemberWithdrawalBankInfoBackendByAccountIDOutput'),
             getBANKCODE(), getBANKCITY(), getBANKPROV(),
         ]).then(function([banker, codeID, cityID, provID]) {
-            return evo.user.banker = banker.filter((x) => x.IsSQL).map(function(c, i) {
+            $scope.user.banker = [];
+            return $scope.user.banker = banker.filter((x) => x.IsSQL).map(function(c, i) {
                 return {
                     property: 'banker',
                     title: c.PayeeAccountNoShow,
@@ -84,7 +94,7 @@ define(['@api'], function(apiFunction) {
 
     function getBANKCODE() {
         var $$ = 'BANKCODE';
-        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('EditBankInfoList').then((arr) => {
                 var obj = arr.toObj('BankCodeID', 'BankCodeName');
                 localStorage[$$] = angular.toJson(obj);
@@ -95,7 +105,7 @@ define(['@api'], function(apiFunction) {
 
     function getBANKCITY() {
         var $$ = 'BANKCITY';
-        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('CityInfoList').then((arr) => {
                 var obj = arr.toObj('CityID', 'CityName');
                 localStorage[$$] = angular.toJson(obj);
@@ -106,7 +116,7 @@ define(['@api'], function(apiFunction) {
 
     function getBANKPROV() {
         var $$ = 'BANKPROV';
-        if(localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
+        if (localStorage[$$]) { return angular.fromJson(localStorage[$$]) } else {
             return getModule('GetProvincesInfoByLanguageCodeOutput').then((arr) => {
                 var obj = arr.ValueKey;
                 localStorage[$$] = angular.toJson(obj);

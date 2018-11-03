@@ -27,8 +27,8 @@ define(['@page', 'SendSms', 'Spreadsheets'], function({ setUser }, SendSms, Spre
             $scope.stylesheet = ['edit'];
             $scope.components = ['edit', 'dialog'];
             //return delUser();
-            //$scope.user = await setUser();
-            $scope.user = await getUser() || await setUser();
+            $scope.user = await setUser();
+            //$scope.user = await getUser() || await setUser();
             $scope.sendsms = new SendSms($scope.user);
             //console.log($scope.user);
             resolve($scope);

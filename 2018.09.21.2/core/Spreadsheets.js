@@ -1,7 +1,9 @@
 define([], function() {
 
+
     function upload_888(pastData, postData) {
         if(pastData.MemberStatus == postData.MemberStatus) { return };
+        
         getUser(evo).then((user) => {
             if(pastData.MemberStatus == postData.MemberStatus) { return }
             user.command = (pastData.MemberStatus == 3) ? "google:apiScripts:m88" : "google:apiScripts:m22";

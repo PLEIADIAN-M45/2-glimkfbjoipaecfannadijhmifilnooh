@@ -14,6 +14,8 @@ define([], function() {
         "": location.host.split('.')[1]
     } [location.port];
 
+    console.log(host);
+
     var name = {
         "wa111": {
             "": "home",
