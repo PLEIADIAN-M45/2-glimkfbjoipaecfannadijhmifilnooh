@@ -1,8 +1,8 @@
-define(['@page', 'SendSms', 'xmlSpider', 'Spreadsheets'], function({ setUser }, SendSms, xmlSpider, Spreadsheets) {
+define(['@page', 'SendSms', 'Spreadsheets'], function({ setUser }, SendSms, Spreadsheets) {
 
     ;
     'use strict';
-
+    /*
     xmlSpider.loadend = function() {
         //console.log(this);
         if(this.postData) {
@@ -20,7 +20,7 @@ define(['@page', 'SendSms', 'xmlSpider', 'Spreadsheets'], function({ setUser }, 
                     break;
             }
         }
-    }
+    }*/
 
     return function main() {
         return new Promise(async function(resolve, reject) {
@@ -30,7 +30,7 @@ define(['@page', 'SendSms', 'xmlSpider', 'Spreadsheets'], function({ setUser }, 
             //$scope.user = await setUser();
             $scope.user = await getUser() || await setUser();
             $scope.sendsms = new SendSms($scope.user);
-            console.log($scope.user);
+            //console.log($scope.user);
             resolve($scope);
         })
     }
