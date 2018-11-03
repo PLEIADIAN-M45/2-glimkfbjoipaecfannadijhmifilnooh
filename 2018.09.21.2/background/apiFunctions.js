@@ -370,22 +370,6 @@ apiFunctions.prototype["locate"]["ku711"] = apiFunctions.prototype["locate"]["ev
 apiFunctions.prototype["locate"]["wa111"] = apiFunctions.prototype["locate"]["evo"];
 
 
-function s(array) { console.log(array); }
-
-function flat(array) { return array.flat(); }
-
-function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
-
-function download() {
-    return Promise.all([
-        fetch('https://www.evo.com/?commands=GMA').then(_toJson),
-        fetch('https://www.evo.com/?commands=GMB').then(_toJson)
-    ]).then(flat).then(save);
-}
-
-//download()
-
-
 
 
 
