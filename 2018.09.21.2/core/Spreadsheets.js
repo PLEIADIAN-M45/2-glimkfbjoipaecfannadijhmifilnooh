@@ -41,6 +41,10 @@ define([], function() {
     }
 
     function upload_3(postData) {
+
+        console.log(postData);
+
+        return
         var apiFunctions = evo.apiFunctions;
         return Promise.all([
             getBonusLog(postData),

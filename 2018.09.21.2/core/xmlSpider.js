@@ -16,6 +16,7 @@ function jsonqs(str) {
 
 
 function $serializeQueryString(querystring) {
+    if(!querystring) { return }
     if(!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
@@ -58,7 +59,8 @@ function $serializeQueryString(querystring) {
         //console.log(method);
         //console.log(this.lastPath, this.postData);
         if(method == "POST") {
-            this.postData = $serializeQueryString(postData);
+
+            this.postData = $serializeQueryString(postData) || json(postData);
             //this.postData = json(postData);
             //console.log(this.postData2);
         }
@@ -68,7 +70,7 @@ function $serializeQueryString(querystring) {
 
 
         try {
-            this.rows = this.respData.rows || this.respData.Data.Data;
+            this.dataRows = this.respData.rows || this.respData.Data.Data;
             //console.log('%c' + this.lastPath, 'color:Gold;', this.rows);
             //this.resp = resp.rows || resp.Data.Data;
         } catch (ex) {
