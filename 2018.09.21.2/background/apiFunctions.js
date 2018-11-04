@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -48,11 +48,13 @@ var search = {
             return value.includes(trim(d[0]))
         })
     },
-    region: function({ prov, city, area, ctry, property }) {
-        var value = Object.values({ prov, city, area, ctry }).toString();
-        return evo.decoder(localStorage.region).find((d) => {
-            return value.includes(trim(d[0]))
-        })
+    region: function({ prov, city, area, country }) {
+        var value = [prov, city, area, country].join('');
+        if(value) {
+            return evo.decoder(localStorage.region).find((d) => {
+                return value.includes(trim(d[0]))
+            });
+        } else { return true; }
     }
 }
 
@@ -62,23 +64,17 @@ var search = {
 //var parameters = $serializeParameters(sender.url);
 //var account = parameters.member || parameters.AccountID;
 //var { value, property, account, channel, host, region } = request;
-
+//console.log(window.origins);
 
 function apiFunctions(request, sender, sendResponse) {
-
     Object.assign(this, request);
 
     switch (this.property) {
         case "author":
-            var result = { negative: { sheets: search.author(this.value) || false } };
+            var result = { verify: { sheets: search.author(this.value) || false } };
             return sendResponse([result]);
         case "banker":
-            var result = {
-                negative: {
-                    region: search.region(this) || false,
-                    sheets: search.banker(this.value) || false
-                }
-            };
+            var result = { region: this.region, verify: { region: search.region(this) || false, sheets: search.banker(this.value) || false } };
             return sendResponse([result]);
         case "locate":
         case "idcard":
@@ -87,31 +83,25 @@ function apiFunctions(request, sender, sendResponse) {
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
             module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
-            //(this.channel == "16") ? json(module.settings.data): module.settings.data;
-            //console.log(module);
-            //console.log(module.settings.url.split('.')[1]);
-            module.carrer = module.settings.url.split('.')[1];
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
-                    var result = module.callback(data);
-                    result.negative = {
-                        region: search.region(result) || false,
-                        sheets: search[this.property](this.value) || false
-                    }
+                    var region = module.callback(data);
+                    //region.provider = module.provider;
+                    var result = {
+                        provider: module.provider,
+                        region: region,
+                        verify: {
+                            region: search.region(region) || false,
+                            sheets: search[this.property](this.value) || false
+                        }
+                    };
                     sendResponse([result, status])
                 }).fail((xhr, status, error) => {
                     var result = {
-                        error: status,
-                        prov: null,
-                        city: null,
-                        ctry: null,
-                        area: null,
-                        meta: module.carrer
+                        provider: module.provider,
+                        region: {},
+                        verify: { region: true }
                     };
-                    result.negative = {
-                        region: true,
-                        sheets: search[this.property](this.value) || false
-                    }
                     sendResponse([result, status]);
                 });
             break;
@@ -119,17 +109,12 @@ function apiFunctions(request, sender, sendResponse) {
             var module = this[this.property][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
-            //module.settings.data = (this.channel == "16") ? json(module.settings.data) : module.settings.data;
             module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
-
-            //console.log(module);
-
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
                     var result = module.callback(data);
                     sendResponse([result, status]);
-                })
-
+                });
             break;
         default:
             // statements_def
@@ -146,15 +131,22 @@ apiFunctions.prototype.alerts = {};
 apiFunctions.prototype.sendsms = {};
 apiFunctions.prototype["mobile"]["ku711"] = function() {
     return {
-        settings: { "method": 'post', "dataType": 'json', "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal', "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 }, },
+        provider: "ku711",
+        settings: {
+            "method": 'post',
+            "dataType": 'json',
+            "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal',
+            "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 },
+        },
         callback: function(res) {
             var d = res.Data;
-            return { "meta": d.Cardtype, "prov": d.Province, "city": d.City }
+            return { "prov": d.Province, "city": d.City, "meta": d.Cardtype }
         }
     }
 }
 apiFunctions.prototype["mobile"]["wa111"] = function() {
     return {
+        provider: "wa111",
         settings: {
             "dataType": 'json',
             "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx',
@@ -275,19 +267,20 @@ apiFunctions.prototype["alerts"]["ku711"] = function() {
 apiFunctions.prototype["locate"]["evo"] = function() {
     function pconline() {
         return {
+            provider: "pconline",
             settings: {
                 "dataType": 'html',
                 "url": 'http://whois.pconline.com.cn/ipJson.jsp',
-                "data": { ip: this.value },
+                "data": { "ip": this.value },
             },
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if (d.proCode == "999999") {
-                            return { meta: 'pconline', "prov": d.pro, "city": d.city, "ctry": d.addr }
-                        } else { return { meta: 'pconline', prov: d.pro, city: d.city, area: d.region } }
+                        if(d.proCode == "999999") {
+                            return { "prov": d.pro, "city": d.city, "country": d.addr }
+                        } else { return { "prov": d.pro, "city": d.city, "area": d.region } }
                     } catch (ex) {
-                        return { meta: 'pconline' }
+                        return {}
                     }
                 };
                 return eval(d);
@@ -297,38 +290,49 @@ apiFunctions.prototype["locate"]["evo"] = function() {
 
     function baidu() {
         return {
-            settings: { "dataType": 'json', "url": 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974', "data": { "ip": this.value }, },
+            provider: "baidu",
+            settings: {
+                "dataType": 'json',
+                "url": 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974',
+                "data": { "ip": this.value },
+            },
             callback: function(d) {
                 try {
-                    return { "meta": 'baidu', "prov": d.content.address_detail.province, "city": d.content.address_detail.city, "ctry": d.address.split('|')[0].replace('CN', '中国') }
-                } catch (ex) { return { meta: 'baidu' } }
+                    return { "prov": d.content.address_detail.province, "city": d.content.address_detail.city, "country": d.address.split('|')[0].replace('CN', '中国') }
+                } catch (ex) { return {} }
             }
         }
     }
 
     function ipapi() {
         return {
-            settings: { "dataType": 'json', "url": 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN', },
+            provider: "ipapi",
+            settings: {
+                "provider": "ipapi",
+                "dataType": 'json',
+                "url": 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN',
+            },
             callback: function(d) {
                 try {
-                    return { "meta": 'ipapi', "prov": d.regionName, "city": d.city, "ctry": d.country }
-                } catch (ex) { return { meta: 'ipapi' } }
+                    return { "prov": d.regionName, "city": d.city, "country": d.country }
+                } catch (ex) { return {} }
             }
         }
     }
 
     function taobao() {
         return {
+            provider: "taobao",
             settings: {
                 "dataType": 'json',
                 "url": 'http://ip.taobao.com/service/getIpInfo.php',
-                "data": { ip: this.value },
+                "data": { "ip": this.value },
             },
             callback: function(res) {
                 try {
                     var d = res.data;
-                    return { meta: 'taobao', prov: d.region.replace('XX', ''), city: d.city.replace('XX', ''), ctry: d.country.replace('XX', '') }
-                } catch (ex) { return { meta: 'taobao' } }
+                    return { "prov": d.region.replace('XX', ''), "city": d.city.replace('XX', ''), "country": d.country.replace('XX', '') }
+                } catch (ex) { return {} }
             }
         }
     }
@@ -357,28 +361,29 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 
 apiFunctions.prototype["sendsms"]["motosms"] = function() {
     var { account, mobile, status, channel, operator } = this.params;
-    if (channel == undefined) { return false }
-    if (mobile == undefined) { return false }
-    if (mobile.includes('*') == undefined) { return false }
+    if(channel == undefined) { return false }
+    if(mobile == undefined) { return false }
+    if(mobile.includes('*') == undefined) { return false }
     var smss = new Map(evo.decoder(localStorage.sms));
-    if (smss == undefined) { return false };
+    if(smss == undefined) { return false };
     var message = smss.get(Number(channel));
-    if (message == undefined) { return false }
+    if(message == undefined) { return false }
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
-    if (countrycode == undefined) { return false }
+    if(countrycode == undefined) { return false }
     var mobile = countrycode + mobile;
     return {
         settings: {
+            "provider": "motosms",
             "dataType": 'html',
             "method": 'post',
             "url": 'https://client.motosms.com/smsc/smssend',
             "data": { "sender": '', "phones": "mobile", smscontent: "message", "taskType": 1, "taskTime": '', "batch": 1, "splittime": 0, "packid": '' }
         },
         callback: function(res) {
-            if (res.match(/(會員登錄)/)) { var status = 3; }
-            if (res.match(/(msg = '')/)) { var status = 0; }
-            if (res.match(/(msg = '101')/)) { var status = 101; }
-            if (res.match(/(msg = '102')/)) { var status = 102; }
+            if(res.match(/(會員登錄)/)) { var status = 3; }
+            if(res.match(/(msg = '')/)) { var status = 0; }
+            if(res.match(/(msg = '101')/)) { var status = 101; }
+            if(res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }

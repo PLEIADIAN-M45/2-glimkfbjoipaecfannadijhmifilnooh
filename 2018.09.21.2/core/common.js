@@ -8,19 +8,19 @@ function delUser() {
     }).then(() => { console.log('user deleted.'); });
 }
 
-function putUser() {
-    $scope.user.region = $scope.user.region || [];
+function putUser(user) {
+
+    //$scope.user.region = $scope.user.region || [];
     return evo.sendMessage({
         command: 'evo.store.user.put',
-        params: $scope.user
+        params: user || $scope.user
     }).then(bindUser)
 }
 
 
 function getUser() {
     var { account, channel } = evo;
-    console.log(account, channel);
-    
+    //console.log(account, channel);
     return evo.sendMessage({
         command: 'evo.store.user.get',
         params: { account, channel }
@@ -36,6 +36,12 @@ function test(user) {
     user.idcard.value = "320684199901017199"
     user.banker[0].value = "6212264301022817389"
 
+}
+
+function timeDiff([t1, t2]) {
+    t1 = moment(t1)
+    t2 = moment(t2)
+    return t2.diff(t1, "day", true);
 }
 
 function $formatTime(t) {
@@ -55,7 +61,9 @@ function $upper(str) {
 }
 
 function dropdownTransfer(dropdown) {
-    [...dropdown.options].forEach(function({ value, label }) { this[value] = label; }, obj = {});
+    [...dropdown.options].forEach(function({ value, label }) {
+        this[value] = label;
+    }, obj = {});
     return obj;
 }
 
@@ -96,7 +104,7 @@ function google() {
             })
         },
         region: function(value) {
-            if (!value) { return }
+            if(!value) { return }
             var { prov, city, area, country } = value
             var region = [prov, city, area, country].toString();
             return goo.region.find((d) => {
@@ -182,7 +190,7 @@ async function start2() {
     evo.sensitive.province = evo.sensitive.area;
 
 
-    if (evo.test) {
+    if(evo.test) {
         /*
                 author.push(["徐章庭", "A695000035", "26", "惡意投訴人", "異審-書辭"])
                 region.push(['云南'])
@@ -214,10 +222,10 @@ async function start2() {
     region.search = function(region) {
         //console.log(region);
 
-        if (this == window) { return undefined };
-        if (region == undefined) { return undefined };
+        if(this == window) { return undefined };
+        if(region == undefined) { return undefined };
         var values = evo.values(region);
-        if (values.length == 0) { return undefined };
+        if(values.length == 0) { return undefined };
         var value = values.join('').trim();
         var expression = this.separate();
         var re = new RegExp(expression, 'g');
@@ -299,16 +307,16 @@ function log(i) {
 
 
 
-function isEmptyObject(obj) { for (var key in obj) { return false; } return true; }
+function isEmptyObject(obj) { for(var key in obj) { return false; } return true; }
 
 function format(t) {
-    if (t) {
+    if(t) {
         var g = moment(t);
         var length = g._pf.parsedDateParts.length
-        if (length == 6) {
+        if(length == 6) {
             return g.format('YYYY/MM/DD HH:mm:ss');
         }
-        if (length == 3) {
+        if(length == 3) {
             return g.format('YYYY/MM/DD');
         }
     } else { return t }
@@ -326,8 +334,8 @@ var createTabs = function(url) {
 
 function scrollHeightListener() {
     window.addEventListener('message', function(e) {
-        if (e.data) {
-            if (e.data.id === "sameBrowserList") {
+        if(e.data) {
+            if(e.data.id === "sameBrowserList") {
                 var el = document.getElementById(e.data.id);
                 el.style.height = e.data.scrollHeight + 'px';
             }
@@ -356,8 +364,8 @@ var scrollHeight = new function() {
     }
     this.listener = function() {
         return window.addEventListener('message', function(e) {
-            if (e.data) {
-                if (e.data.id === "sameBrowserList") {
+            if(e.data) {
+                if(e.data.id === "sameBrowserList") {
                     var el = document.getElementById(e.data.id);
                     el.style.height = e.data.scrollHeight + 'px';
                 }

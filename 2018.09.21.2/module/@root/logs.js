@@ -3,27 +3,22 @@ define(['@page'], function() {;
 
     return function main() {
         return new Promise(async function(resolve, reject) {
+
+            dispatch()
+
+
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
             var user = await getUser();
-
-            console.log(user);
-
             user.banker = user.banker.filter((x) => { x.property = "banker"; return x.value; });
-
-            //test(user);
-
-            //console.log(Object.keys(user));
+            Object.keys(user).map((key) => { if(user[key]) { user[key]["property"] = key; } });
 
 
-            Object.keys(user).map((key) => {
-                if (user[key]) { user[key]["property"] = key; }
-            });
+            test(user);
 
 
             $scope.user = user;
             $scope.datalist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
-
             $scope.datalist.forEach((obj, index) => {
                 obj.sites = [{ channel: "26", host: "wa111" }, { channel: "35", host: "wa111" }, { channel: "17", host: "wa111" }, { channel: "16", host: "ku711" }]
                     .map((o) => {
@@ -33,30 +28,21 @@ define(['@page'], function() {;
                     })
             });
 
-            //console.log($scope.datalist);
             console.log($scope.user);
 
-            $scope.getAllIPAddress = getAllIPAddress;
+            $scope.assign = function() { Object.assign(...arguments); if(!this.$$phase) { this.$apply(); } }
 
-
-            $scope.assign = function() { Object.assign(...arguments); if (!this.$$phase) { this.$apply(); } }
             $scope.apiFunctions = function(me, ev) {
                 var { host, channel, account } = evo;
                 var params = Object.assign({}, me, { command: "apiFunctions", host, channel, account });
-
-                console.log(params);
-
-                if (me.active == undefined || ev) { me.active = true; } else { return };
-
-
+                if(me.active == undefined || ev) { me.active = true; } else { return };
+                me.region = {};
                 evo.apiFunctions(params).then((res) => {
-                    console.log(res);
                     return this.assign(me, res);
                 }).then(putUser);
             }
 
             $scope.apiMemberList = function(s) {
-                return
                 s.active = true;
                 var params = Object.assign({}, s, { command: "apiFunctions" });
                 evo.apiFunctions(params).then((res) => {

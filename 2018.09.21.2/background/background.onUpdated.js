@@ -1,8 +1,22 @@
 function refreshAllWindow() {
+
     chrome.tabs.getAllInWindow((tabs) => {
         tabs.filter((tab) => {
-            return ["127.0.0.1", "wa111", "ku711", "tp33"].filter((host) => { return tab.url.includes(host); })
-        }).forEach((tab) => { chrome.tabs.reload(tab.id) })
+            if(tab.url.includes('127.0.0.1')) {
+                //console.log(tab.url);
+                chrome.tabs.reload(tab.id)
+            }
+
+            //["127.0.0.1", "wa111", "ku711", "tp33"]
+
+            /*.filter((host) => {
+                return tab.url.includes(host);
+            }).forEach((tab) => {
+                console.log(tab.id);
+                //chrome.tabs.reload(tab.id)
+            })*/
+        })
+
     })
 }
 

@@ -1,6 +1,5 @@
 define([], function() {
 
-
     var pathname = location.pathname.split('.')[0].split('/').pop()
 
     var host = {
@@ -13,8 +12,6 @@ define([], function() {
         "16": "ku711",
         "": location.host.split('.')[1]
     } [location.port];
-
-    console.log(host);
 
     var name = {
         "wa111": {

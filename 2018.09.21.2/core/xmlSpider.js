@@ -1,10 +1,7 @@
-function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
-
-
-
+function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
 function jsonqs(str) {
-    if (str.indexOf('?') == -1) { return undefined }
+    if(str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
@@ -18,8 +15,8 @@ function jsonqs(str) {
 };
 
 function $serializeQueryString22(querystring) {
-    if (!querystring) { return }
-    if (!querystring.includes('=')) { return }
+    if(!querystring) { return }
+    if(!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
         pair = pair.split('=');
@@ -32,7 +29,7 @@ function $serializeQueryString22(querystring) {
 
 function $serializeQueryString(_url) {
     var obj = {};
-    if (_url.includes('?')) {
+    if(_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     }
@@ -60,9 +57,9 @@ function $fromJson(obj) {
 
 ;
 (function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if (typeof define === 'function' && define.amd) define([], factory);
-    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
+    if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if(typeof define === 'function' && define.amd) define([], factory);
+    else if(typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -101,7 +98,7 @@ function $fromJson(obj) {
         switch (this.hostname) {
             case "wa111":
             case "26":
-                if (this.method == "GET") {
+                if(this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $serializeQueryString('?' + this.postData);
@@ -110,7 +107,7 @@ function $fromJson(obj) {
                 break;
             case "ku711":
             case "16":
-                if (this.method == "GET") {
+                if(this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $toJson(this.postData);
@@ -118,13 +115,21 @@ function $fromJson(obj) {
                 break;
         }
 
+        if(this.sendData) {
+            if(moment) {
+                this.sendData.timespan = moment().format('YYYY-MM-DD HH:mm:ss')
+            } else {
+                this.sendData.timespan = Date.now();
+            }
+
+        }
         //console.log(this);
         //console.log(this.sendData);
 
         this.respData = $toJson(this.responseText);
         this.responseJSON = $toJson(this.responseText);
-        if (this.respData) {
-            if (this.respData.Data) { if (this.respData.Data.Message == "更新成功") { this.success = true; } }
+        if(this.respData) {
+            if(this.respData.Data) { if(this.respData.Data.Message == "更新成功") { this.success = true; } }
         }
 
         try {
@@ -149,129 +154,12 @@ function $fromJson(obj) {
 //Spreadsheets.suspend(postData);
 //Spreadsheets.suspended(postData);
 //Spreadsheets.authorize(postData);
-//Spreadsheets.authorization(postData);    
+//Spreadsheets.authorization(postData);
 //Spreadsheets.suspension(postData);
 //Spreadsheets.bonus(postData);
 
-
-var Spreadsheets = {
-    bonus: function(postData) {
-        console.log(postData);
-        alert('bonus')
-    },
-    authorize_wa111: function(pastData, postData) {
-        pastData.f_ishow = Number(pastData.f_ishow);
-        postData.f_ishow = Number(postData.f_ishow);
-        pastData.f_depositStatus = Number(pastData.f_depositStatus);
-        postData.f_depositStatus = Number(postData.f_depositStatus);
-        console.log(pastData.f_ishow, postData.f_ishow);
-        //console.log(pastData.f_depositStatus, postData.f_depositStatus);
-        if (pastData.f_ishow == postData.f_ishow) { return }
-
-        if (pastData.f_ishow == 3) {
-            alert('審核 -> 開通表')
-        } else {
-            alert('其它轉停權=停權表')
-            //其它轉停權=停權表
-        }
-        alert('authorize')
-    },
-    authorize_ku711: function(pastData, postData) {       
-        if (pastData.MemberStatus == 3) {
-            console.log(postData.MemberStatus);
-            alert('審核 -> 開通表')
-        } else {
-            alert('其它轉停權=停權表')
-        }
-        /*var { MemberStatus, IsDeposit } = pastData;
-        console.log({ MemberStatus, IsDeposit });
-        var { MemberStatus, IsDeposit } = sendData;
-        console.log({ MemberStatus, IsDeposit });*/
-    },
-    suspended: function() {
-        alert('suspended')
-    },
-}
-
-var $robot = {
-    /*開通或停權*/
-    StopMember: function() {
-        //還原或停權
-        if (this.respData == 1) { return };
-        var pastData = $scope.user;
-        var postData = { f_ishow: 2, f_depositStatus: 0 }
-        Spreadsheets.authorize_wa111(pastData, postData);
-    },
-    getmodel: function() {
-        var pastData = $scope.user;
-        var postData = this.respData;
-        Spreadsheets.authorize_wa111(pastData, postData);
-    },
-
-
-    /*開通或停權*/
-    UpdateMemberSNInfoBackend: function() { //控制用户状态開關 //判斷一下是否執行成功 //這個動作用於 轉為停權
-        var pastData = $scope.user;
-        var postData = this.sendData;
-        if (pastData.MemberStatus == postData.MemberStatus) { return }
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-    UpdateMemberRiskInfoAccountingBackend: function() { //控制存款開關
-        if (this.success) {} else { return };
-        var pastData = $scope.user;
-        var postData = this.sendData;
-        if (pastData.IsDeposit == postData.IsDeposit) { return }
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-    UpdateMemberRisksInfoBackendIsFSuspension: function() { //還原或停權
-        if (this.success) {} else { return };
-        if (this.sendData.IsFSuspension == false) { return };
-        var pastData = $scope.user;
-        var postData = { MemberStatus: 0, IsDeposit: 0 };
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-    //禮金表
-    delDiceWinRecords: function() { /*用於刪除*/
-        if (this.respData == 1) { this.cacheBonusData = this.sendData; }
-    },
-    DelDiceWinRecords: function() { /*用於給點*/
-        if (this.respData == 1) { this.cacheBonusData = this.sendData; }
-    },
-    DepositBonus: function() {
-        if (this.cacheBonusData) {
-            var postData = this.dataRows.find((row) => { return row.f_id == this.cacheBonusData.id; });
-            if (postData) {
-                this.cacheBonusData = null;
-                Spreadsheets.bonus(postData);
-            }
-        }
-    },
-    //禮金表
-    UpdateMemberBonusLog: function() {
-        if (this.success) {} else { return };
-        this.cacheBonusData = this.sendData;
-    },
-    GetMemberBonusLogBackendByCondition: function() {
-        if (this.cacheBonusData) {
-            var postData = this.dataRows.find((row) => { return row.BonusNumber == this.cacheBonusData.BonusNumber; });
-            if (postData) {
-                this.cacheBonusData = null;
-                Spreadsheets.bonus(postData);
-            }
-        }
-    },
-}
-
-
-xmlSpider.loadend = function() {
-    var robot = $robot[this.command];
-    if (robot) { return robot.call(this); }
-    var robot = $robot[this.lastPath];
-    if (robot) { return robot.call(this); }
-}
+//console.log(ctrl.select.ishow[pastData.f_ishow]);
+//console.log(ctrl.select.ishow[postData.f_ishow]);
 
 
 
@@ -298,7 +186,7 @@ if (this.respData.Data.Message == "更新成功") {
 //Spreadsheets.suspend(postData);
 //Spreadsheets.suspended(postData);
 //Spreadsheets.authorize(postData);
-//Spreadsheets.authorization(postData);    
+//Spreadsheets.authorization(postData);
 //Spreadsheets.suspension(postData);
 //Spreadsheets.bonus(postData);
 /*

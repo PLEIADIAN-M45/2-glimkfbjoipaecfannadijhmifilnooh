@@ -1,4 +1,10 @@
 console.log("background.onMessage.js");
+var ports = {}
+chrome.runtime.onConnectExternal.addListener(function(port) {
+    //console.log(port);
+    ports[port.name] = port;
+    // port.postMessage("fuck to" + port.name)
+})
 
 function response_message(request, sender, sendResponse) {
 
@@ -10,7 +16,13 @@ function response_message(request, sender, sendResponse) {
     switch (command) {
 
         case "google":
-            console.log(request);
+            delete request.banker[0].sites;
+            delete request.idcard.sites;
+            delete request.locate.sites;
+            delete request.mobile.sites;
+            delete request.author.sites;
+            //console.log(request);
+            evo.store.user.put(request);
 
             $.ajax({
                 url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
@@ -31,7 +43,6 @@ function response_message(request, sender, sendResponse) {
 
 
         case "apiFunctions":
-            console.log(request);
             //request.time = Date.now();
             var api = new apiFunctions(request, sender, sendResponse);
             //.call(request, sender, sendResponse)
@@ -53,6 +64,21 @@ function response_message(request, sender, sendResponse) {
             evo.store.user.get(request.params).then(sendResponse)
             return true
         case "evo.store.user.put":
+
+            if(sender.url.includes("MemberLoginLog")) {
+                //console.log(1, request.params);
+                //ports["EditMemberInfoManage"].postMessage(request.params)
+
+                /*console.log(sender);
+                chrome.tabs.connect(sender.tab.id, {
+                    name: "EditMemberInfoManage"
+                })*/
+
+
+            }
+
+
+
             //console.log(request.params);
             evo.store.user.put(request.params).then(function() { sendResponse(request.params) })
             return true
@@ -70,7 +96,7 @@ function response_message(request, sender, sendResponse) {
             break;
 
         case "localStorage:getItem":
-            if (key) {
+            if(key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -78,7 +104,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for (var key in res) {
+                for(var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -115,8 +141,8 @@ try {
 
 
 
-if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 

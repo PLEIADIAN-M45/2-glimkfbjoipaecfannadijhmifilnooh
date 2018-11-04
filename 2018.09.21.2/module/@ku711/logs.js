@@ -1,15 +1,19 @@
-define([
+define(["xmlSpider"], function(xmlSpider) {
 
-
-], function() {
+    xmlSpider.loadend = function() {
+        //console.log(this.lastPath);
+        if(this.lastPath == "GetMemberMultiLoginLogCookieIDByAccountID") {
+            //console.log(this);
+            //console.log(this.respData.Data.PageData.Data);
+        }
+    }
 
 
 })
 
 var dispatch = function() {
     return new Promise(function(resolve, reject) {
-        if ($scope.ctrl.model.QueryInputModel.AccountID != undefined &&
-            $scope.ctrl.GetQueryLoginLog) {
+        if($scope.ctrl.model.QueryInputModel.AccountID != undefined && $scope.ctrl.GetQueryLoginLog) {
             $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
             $scope.ctrl.GetQueryLoginLog(evo.params.method);
             resolve(['dispatchMyEvent', []])
@@ -41,9 +45,9 @@ function getModule(objPath) {
         var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
         (function repeater(object) {
             var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-            if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                if (typeof alphaVal == "object") {
-                    if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+            if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                if(typeof alphaVal == "object") {
+                    if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                 } else { resolve(alphaVal); }
             }
         }(object));
@@ -58,7 +62,7 @@ async function checkSensitiveWords() {
     function addclassList(el) { el.classList.add('danger'); return el; }
 
     function removeClass(el) {
-        if (el.outerText == "正常户") { el.classList.add('normal'); }
+        if(el.outerText == "正常户") { el.classList.add('normal'); }
         $(el).removeClass('w10', 'w20').find('br').remove();
         return el;
     }
@@ -74,14 +78,14 @@ function addSiteNumberToAccountId() {
     var accountIdCollection = getAccountIdCollection();
     var siteNumberCollection = getSiteNumberCollection();
     accountIdCollection.each(function(index, element) {
-        if (element.textContent.trim()) {
+        if(element.textContent.trim()) {
             var accountId = element.textContent.trim();
             var siteNumber = '-' + siteNumberCollection[index];
             var uniqueId = accountId + siteNumber;
-            if (uniqueId == evo.uniqueId) {
+            if(uniqueId == evo.uniqueId) {
                 element.classList.add('self');
             }
-            if (evo.siteNumber != '16') {
+            if(evo.siteNumber != '16') {
                 element.setAttribute('data-content', accountId);
                 element.textContent = null;
                 $('<b>')
@@ -118,10 +122,10 @@ function getHTMLTableCells() {
     var flag = 0;
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
-            if (newValue) {
+            if(newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');
-                    if (flag == 0) {
+                    if(flag == 0) {
                         flag = 1;
                         resolve(HTMLTableCellElements);
                     } else {
@@ -138,7 +142,7 @@ function getHTMLTableCells() {
 function getTableCellCollection() {
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
-            if (newValue) {
+            if(newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');
                     resolve(HTMLTableCellElements)
@@ -151,9 +155,21 @@ function getTableCellCollection() {
 }
 
 
+var arrProvince = new Set();
+var arrProtocol = new Map();
 
-function getAllIPAddress() {
-    console.log(12);
+$scope.getAllIPAddress = function(me) {
+    getModule("ctrl.model.ResultList").then((a) => {
+        a.forEach((b) => {
+            if(b.AccountID == evo.account) {
+                arrProtocol.set(b.IPAddress, b.IPLocation);
+                arrProvince.add(b.IPLocation);
+            }
+        });
+        me.regions = Array.from(arrProtocol);
+        $scope.user.region = Array.from(arrProvince);
+        return $scope.user;
+    }).then(putUser)
 }
 
 

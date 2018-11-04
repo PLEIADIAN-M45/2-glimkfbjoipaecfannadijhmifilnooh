@@ -1,36 +1,31 @@
-define(['@page', 'SendSms', 'Spreadsheets'], function({ setUser }, SendSms, Spreadsheets) {
+var ctrl = { select: {}, span: {}, button: {} }
+
+define(['@page', 'SendSms'], function({ setUser }, SendSms) {
 
     ;
     'use strict';
-    /*
-    xmlSpider.loadend = function() {
-        //console.log(this);
-        if(this.postData) {
-            switch (this.postData.action) {
-                case "StopMember":
-                    var pastData = $scope.user;
-                    var postData = { ishow: 2, isOpenDeposit: 0 }
-                    Spreadsheets.upload_111(pastData, postData);
-                    break;
-                case "getmodel":
-                    var { f_ishow, f_depositStatus } = this.respData;
-                    var pastData = $scope.user;
-                    var postData = { ishow: f_ishow, isOpenDeposit: f_depositStatus }
-                    Spreadsheets.upload_111(pastData, postData);
-                    break;
-            }
-        }
-    }*/
+
+    function HTMLCollection() {
+        $('select').each((a, b) => {
+            var name = b.name.split("$").pop();
+            ctrl.select[name] = {};
+            $(b).find('option').each((a, b) => { if(b.value) { ctrl.select[name][b.value] = b.label; } });
+        });
+        $('span').each((a, b) => { if(b.id) { ctrl.span[b.id] = b.outerText; } });
+        $('button').each((a, b) => { if(b.id) { ctrl.button[b.id] = b.outerText; } });
+        //if(b.attributes.onclick) { console.log(b.attributes.onclick.value); }
+    }
+    HTMLCollection();
 
     return function main() {
         return new Promise(async function(resolve, reject) {
             $scope.stylesheet = ['edit'];
             $scope.components = ['edit', 'dialog'];
             //return delUser();
-            $scope.user = await setUser();
-            //$scope.user = await getUser() || await setUser();
+            //$scope.user = await setUser();
+            $scope.user = await getUser() || await setUser();
             $scope.sendsms = new SendSms($scope.user);
-            //console.log($scope.user);
+            console.log($scope.user);
             resolve($scope);
         })
     }

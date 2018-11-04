@@ -47,6 +47,7 @@ function addChannelToAccountsId(children) {
         catchProvinceProtocols(children);
     }
 }
+
 var arrProvince = new Set();
 var arrProtocol = new Map();
 
@@ -57,7 +58,7 @@ function catchProvinceProtocols(children) {
     arrProvince.add(province);
 }
 
-function getAllIPAddress(me) {
+$scope.getAllIPAddress = function(me) {
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {
@@ -69,7 +70,10 @@ function getAllIPAddress(me) {
         checkSensitiveMessages(children[6]);
         checkSensitiveMessages(children[11]);
     });
-    me.region = Array.from(arrProtocol);
-    $scope.user.region = Array.from(arrProvince);
+
+    me.regions = Array.from(arrProtocol);
+
+    $scope.user.regions = Array.from(arrProvince);
+
     putUser();
 }

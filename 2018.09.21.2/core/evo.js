@@ -333,7 +333,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get now() {
-            return moment().format('YYYY/MM/DD HH:mm:ss')
+            return moment().format('YYYY-MM-DD HH:mm:ss')
         }
 
         get time() {
