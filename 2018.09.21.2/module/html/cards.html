@@ -45,10 +45,10 @@
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s );" ng-disabled="s.index==1 || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s, me );" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s );" ng-disabled="s.index>=s.records || s.active"></i>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s, me );" ng-disabled="s.index>=s.records || s.active"></i>
                 </div>
                 <!-- account -->
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); getAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
