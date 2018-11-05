@@ -3,9 +3,10 @@ define(["xmlSpider"], function(xmlSpider) {
     console.log(xmlSpider);
     var Spreadsheets = {
 
-        bonus: function(postData) {
+        siribonus: function(postData) {
+            //user.command = "google:scripts:siribonus"
             console.log(postData);
-            alert('bonus')
+            alert('siribonus')
         },
         authorize_wa111: function(pastData, postData) {
 
@@ -27,28 +28,20 @@ define(["xmlSpider"], function(xmlSpider) {
             alert('authorize')
         },
         authorize_ku711: function(pastData, postData) {
-
             getUser(evo).then((user) => {
-                user.status[1] = postData.MemberStatus
-                user.permit[1] = postData.IsDeposit
-                user.timing[1] = postData.timespan
-                user.timing[2] = timeDiff(user.timing)
+                user.status[1] = postData.MemberStatus;
+                user.permit[1] = postData.IsDeposit;
+                user.timing[1] = postData.timespan;
+                user.timing[2] = timeDiff(user.timing);
                 user.permit = user.permit.map($Num);
                 if(user.status[0] == 3) {
                     user.command = "google:scripts:authorize"
-                    //alert('審核 -> 開通表')
                 } else {
                     user.command = "google:scripts:suspended"
-                    //user.command = "google:scripts:siribonus"
-
-                    //alert('其它轉停權=停權表')
                 }
                 evo.apiFunctions(user);
             })
-        },
-        suspended: function() {
-            alert('suspended')
-        },
+        }
     }
 
     var $robot = {
