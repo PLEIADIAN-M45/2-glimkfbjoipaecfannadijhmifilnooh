@@ -72,7 +72,9 @@ requirejs(['router', 'utils'], function(router) {
         requirejs(['myApp'], function(myApp) {
             requirejs(['Spreadsheets'], function(Spreadsheets) {
                 requirejs(['@root'], function(main) {
+
                     if(main) { main().then(_invoke) }
+                        
                 });
             });
         })

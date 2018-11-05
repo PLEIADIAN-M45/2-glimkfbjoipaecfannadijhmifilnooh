@@ -1,21 +1,49 @@
 define(['@page'], function() {;
     'use strict';
 
+
+    var getAlertInfo = function(user) {
+
+        return evo.apiFunctions({
+            command: "apiFunctions",
+            property: "alerts",
+            host: "ku711",
+            channel: "16",
+            params: { "DisplayArea": "1", "Account": [{ "AccountID": user.account, "AccountName": user.author.value }] }
+        }).then((res) => {
+            console.log('++++++++++++++++++++++++');
+            console.log(res);
+            return res.AlertInfoAccountName;
+            /*
+            s.list_RemittanceName = res.AlertInfoAccountName;
+            res.AlertInfoAccountName.forEach((r) => {
+                list_Accounts[r.AccountID] = list_Accounts[r.AccountID] || [];
+                list_Accounts[r.AccountID].push(r);
+            });
+
+            return res
+            */
+            console.log('++++++++++++++++++++++++');
+        })
+
+    };
+
     return function main() {
+
         return new Promise(async function(resolve, reject) {
 
             dispatch();
 
-
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
+
             var user = await getUser();
-            user.uid = [user.account, user.channel].join('-');
+
+            //var list_RemittanceName = await getAlertInfo(user); // 危险
 
 
             user.banker = user.banker.filter((x) => { x.property = "banker"; return x.value; });
             Object.keys(user).map((key) => { if (user[key]) { user[key]["property"] = key; } });
-
 
             //test(user);
 
@@ -56,19 +84,64 @@ define(['@page'], function() {;
                 }).then(putUser);
             }
 
-            $scope.apiMemberList = function(s, me) {
-                //console.log(s);
-                //return
+
+
+
+            $scope.apiMemberList = async function(s, me) {
+                if (me.property !== "author") { return }
+                if (s.channel !== "16") { return }
                 if (!me.value) { return };
+
                 Object.assign(s, { active: true, rows: {} });
+
+                if (s.channel == "16" && me.property == "author") {
+                    s.list_RemittanceName = await getAlertInfo(user);
+                }
+
                 var params = Object.assign({}, s, { command: "apiFunctions" });
                 evo.apiFunctions(params).then((res) => {
-                    //console.log($scope.user);
-                    return this.assign(s, res);
+                    Object.assign(s, res)
+                    this.$apply();
                 });
             }
 
+
+
+
+            $scope.changeColor = function(r, s, scope) {
+                if (s.list_RemittanceName && s.channel == "16" && s.author) { r.list_Accounts = s.list_RemittanceName.filter((x) => { return x.AccountID == r.AccountID; }) }
+                if (r.list_Accounts && r.list_Accounts.length) { r.color = "pink" };
+                var black = r.f_blacklist || r.IsBlackList;
+                if (black == 17 || black == true) { r.color = "black"; };
+                var sequel = r.f_id || r.MNO;
+                if (sequel == $scope.user.sequel) { r.color = "brown" };
+            };
+
+
+
+            //var payload = { "DisplayArea": "1", "Account": [] };
+            /*
+            $scope.getAlerts = function(row, scope) {
+                if (row.AccountID) {
+                   // payload.Account.push({ "AccountID": row.AccountID, "AccountName": row.AccountName });
+                    if (this.$last) {
+                        console.log(payload);
+                        evo.apiFunctions({
+                            command: "apiFunctions",
+                            property: "alerts",
+                            host: "ku711",
+                            channel: "16",
+                            params: payload
+                        }).then((res) => {
+                            console.log(res);
+                        })
+                    }
+                }
+            };*/
+
+
             $scope.getAlertInfoByID = function(row, scope) {
+                return
                 if (row.AccountID) {
                     //console.log(row.AccountID);
                     evo.apiFunctions({
@@ -80,7 +153,7 @@ define(['@page'], function() {;
                     }).then((res) => {
                         Object.assign(row, res);
                         $scope.changeColor(row, scope)
-                        this.$apply();                       
+                        this.$apply();
                     })
                 }
             };
@@ -88,14 +161,6 @@ define(['@page'], function() {;
 
 
 
-            $scope.changeColor = function(r, scope) {
-                //console.log(s.channel);
-                if (r.list_Accounts && r.list_Accounts.length) { r.color = "pink" };
-                var black = r.f_blacklist || r.IsBlackList;
-                if (black == 17 || black == true) { r.color = "black"; };
-                var sequel = r.f_id || r.MNO;
-                if (sequel == $scope.user.sequel) { r.color = "brown" };
-            };
 
             $scope.setPopup = function(row, scope, popid) {
                 var target = document.getElementById(popid);
@@ -107,6 +172,9 @@ define(['@page'], function() {;
 
 
             resolve($scope);
+
+            //getAlertInfo().then(function() {})
+
         })
     }
 })

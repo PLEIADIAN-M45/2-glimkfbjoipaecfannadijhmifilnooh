@@ -94,6 +94,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
     window.origins.set(port, details.initiator);
+    console.log(port, details.initiator);
 }, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {

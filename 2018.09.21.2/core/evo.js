@@ -78,6 +78,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         apiFunctions(params) {
             return new Promise(function(resolve, reject) {
                 //if (!params.value) { resolve({ active: false }) }
+                
                 chrome.runtime.sendMessage(evo.extensionId, params, ([result, status]) => {
                     //console.log(result);
                     result.active = false;

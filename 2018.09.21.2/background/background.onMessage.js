@@ -43,7 +43,7 @@ function response_message(request, sender, sendResponse) {
 
 
         case "apiFunctions":
-            //request.time = Date.now();
+            request.time = Date.now();
             var api = new apiFunctions(request, sender, sendResponse);
             //.call(request, sender, sendResponse)
 
