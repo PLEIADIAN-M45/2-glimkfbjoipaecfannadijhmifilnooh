@@ -5,14 +5,14 @@
         </div>
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                <i class="icon" ng-class="icon"></i>{{header}}<b ng-show="me.verify.sheets">{{me.verify.sheets}}</b>
+                <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="me.verify.sheets">{{me.verify.sheets}}</b>
             </div>
             <div class="right floated meta">
                 <i class="sync alternate icon pointer" ng-click="apiFunctions(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
-            <div class="header">{{me.value}}</div>
+            <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content center aligned" ng-if="me.property=='author'">
             <div class="header padded">
@@ -51,11 +51,11 @@
                     <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s );" ng-disabled="s.index>=s.records || s.active"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); GetAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="showMemberModify(row, s)" ng-init="changeColor(row, this); getAlertInfoByID(row, this);  popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
                     <div class="detail accounts">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息-->
                     <aside class="hidden">
-                        <table class="ui celled selectable striped collapsing table inverted pink small" ng-init="imPopup(row , this, popup_id)" ng-if="row.list_Accounts.length">
+                        <table class="ui celled selectable striped collapsing table inverted pink small" ng-init="setPopup(row , this, popup_id)" ng-if="row.list_Accounts.length">
                             <thead>
                                 <th>警示帐号</th>
                                 <th>汇款户名</th>

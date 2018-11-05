@@ -63,16 +63,16 @@ $scope.getAllIPAddress = function(me) {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {
         addChannelToAccountsId(children);
-        checkSensitiveUserName(children[4]);
-        checkSensitiveProtocol(children[7]);
-        checkSensitiveProvince(children[9]);
-        checkSensitiveMessages(children[5]);
-        checkSensitiveMessages(children[6]);
-        checkSensitiveMessages(children[11]);
+        
+        //checkSensitiveUserName(children[4]);
+        //checkSensitiveProtocol(children[7]);
+        //checkSensitiveProvince(children[9]);
+        //checkSensitiveMessages(children[5]);
+        //checkSensitiveMessages(children[6]);
+        //checkSensitiveMessages(children[11]);
     });
 
     me.regions = Array.from(arrProtocol);
-
     $scope.user.regions = Array.from(arrProvince);
 
     putUser();

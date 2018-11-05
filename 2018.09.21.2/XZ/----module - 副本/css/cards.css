@@ -16,10 +16,9 @@ body {
   width: 100%;
   align-items: flex-start;
   justify-content: center; }
-  .ui.cards .card.danger {
+  .ui.cards .card.danger:not(i) {
     background-image: url("chrome-extension://__MSG_@@extension_id__/images/2.jpg") !important; }
-  .ui.cards .card.success,
-  .ui.cards .card {
+  .ui.cards .card:not(i) {
     min-width: fit-content;
     background-repeat: round !important;
     background-image: url("chrome-extension://__MSG_@@extension_id__/images/1.jpg") !important;

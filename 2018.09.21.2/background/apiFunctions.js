@@ -106,6 +106,7 @@ function apiFunctions(request, sender, sendResponse) {
                 });
             break;
         case "member":
+        case "alerts":        
             var module = this[this.property][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));

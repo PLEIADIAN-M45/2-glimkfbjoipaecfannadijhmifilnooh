@@ -2,19 +2,31 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     /*【审核中】 -> 【正常户】*/
     function timerFilter2(rows) { return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1" }); }
     /*【静止户】 -> 【审核中】*/
-    function timerFilter1(rows) { return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3" }); }
 
-    function $apply() { if(!$scope.$$phase) { $scope.$apply(); } }
+
+    function timerFilter1(rows) {
+        return rows.find(function({ f_field, f_oldData, f_newData }) {
+            return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3"
+        });
+    }
+
+    function $apply() { if (!$scope.$$phase) { $scope.$apply(); } }
 
     function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
 
     function setUser() {
-        return Promise.all([$serializeObject('#lblIp'),
+        return Promise.all([
+            $serializeObject('#lblIp'),
             $serializeObject('input'),
-            $serializeObject('select'), apiFunction.getPhoneDate(), apiFunction.getUserStore(), apiFunction.getSystemLog().then(timerFilter1),
+            $serializeObject('select'),
+            apiFunction.getPhoneDate(),
+            apiFunction.getSystemLog().then(timerFilter1),
+            apiFunction.getUserStore(),
         ]).then((args) => {
             var obj = Object.assign({}, ...args);
+            console.log(obj);
             $scope.updateUser(obj);
+            //$scope.user.timing[0] = apiFunction.getSystemLog().then(timerFilter1)
             $scope.user.locate.title = $scope.user.locate.value;
             $scope.user.banker = $scope.user.banker.value.map((value, index) => {
                 return {
@@ -27,19 +39,21 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
                     }
                 }
             }).filter((a) => { return a.value });
-
-            console.log($scope.user);
             return $scope.user;
         }).then(bindEvo).then(putUser)
     }
     $scope.updateUser = function updateUser(obj) {
         Object.entries(obj).forEach(([prop, value]) => {
-            if(USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
+            if (USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
         });
         $scope.$apply();
     }
     $scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
-    $scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`, IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
+    $scope.url = {
+        IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
+        //IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
+    };
+
     $scope.openDeposit = function() {
         this.ctrl.deposit.value = 1;
         this.ctrl.btnSaveInfo.click();

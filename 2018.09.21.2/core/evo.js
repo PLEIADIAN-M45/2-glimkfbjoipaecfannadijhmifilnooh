@@ -16,12 +16,12 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             return localStorage.chrome_runtime_id;
 
-            if(chrome.runtime.id) {
+            if (chrome.runtime.id) {
                 return chrome.runtime.id;
             } else {
 
-                for(var s of document.scripts) {
-                    if(this.baseUrl.search(s.id)) {
+                for (var s of document.scripts) {
+                    if (this.baseUrl.search(s.id)) {
                         return s.id
                     }
                 }
@@ -77,6 +77,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         apiFunctions(params) {
             return new Promise(function(resolve, reject) {
+                //if (!params.value) { resolve({ active: false }) }
                 chrome.runtime.sendMessage(evo.extensionId, params, ([result, status]) => {
                     //console.log(result);
                     result.active = false;
@@ -85,14 +86,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             });
 
             //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
-
             //chrome.runtime.sendMessage(evo.extensionId, { command, property, value, host, channel, account, region }, callback)
-
             //apiFunctions:region:host:channel
-
-
-
-
             /*
                         console.log(request);
                         return new Promise(function(resolve, reject) {
@@ -198,7 +193,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         moment(t) {
-            if(Number(t)) {
+            if (Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
             } else {}
 
@@ -210,8 +205,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get siteNumber() {
-            if(this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
-            if(this.domain[1] == "github") { return this.params.siteNumber; } else {
+            if (this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
+            if (this.domain[1] == "github") { return this.params.siteNumber; } else {
                 return localStorage.siteNumber || this.params.siteNumber;
             }
         }
@@ -251,7 +246,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             var paramsString = arguments[0].split('?')[1];
             var searchParams = new URLSearchParams(paramsString);
             var parameters = {};
-            for(var [key, value] of searchParams.entries()) { parameters[key] = value; }
+            for (var [key, value] of searchParams.entries()) { parameters[key] = value; }
             return parameters;
         }
 
@@ -321,7 +316,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get test() {
-            if(location.hostname == "127.0.0.1") {
+            if (location.hostname == "127.0.0.1") {
                 return true
             } else {
                 return false;

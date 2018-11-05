@@ -15,8 +15,6 @@ function s(array) { console.log(array); }
 //createTabs('/app/app.html')
 
 
-
-
 var evo = {
     local: {},
     search: {},
@@ -105,7 +103,7 @@ function download() {
     ]).then(flat).then(save);
 }
 
-//download()
+//download();
 
 
 

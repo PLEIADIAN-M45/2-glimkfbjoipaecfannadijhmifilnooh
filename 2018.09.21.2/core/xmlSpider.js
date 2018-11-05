@@ -116,7 +116,7 @@ function $fromJson(obj) {
         }
 
         if(this.sendData) {
-            if(moment) {
+            if(window.moment) {
                 this.sendData.timespan = moment().format('YYYY-MM-DD HH:mm:ss')
             } else {
                 this.sendData.timespan = Date.now();

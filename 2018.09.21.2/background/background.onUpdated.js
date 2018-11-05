@@ -2,19 +2,16 @@ function refreshAllWindow() {
 
     chrome.tabs.getAllInWindow((tabs) => {
         tabs.filter((tab) => {
-            if(tab.url.includes('127.0.0.1')) {
-                //console.log(tab.url);
-                chrome.tabs.reload(tab.id)
-            }
+            var flag = false;
 
-            //["127.0.0.1", "wa111", "ku711", "tp33"]
+            if (tab.url.includes('127.0.0.1')) { flag = true; }
+            if (tab.url.includes('wa111')) { flag = true; }
+            if (tab.url.includes('ku711')) { flag = true; }
+            if (tab.url.includes('tp33')) { flag = true; }
+            if (tab.url.includes('IGetMemberInfo')) { flag = true; }
+            
+            if (flag) { chrome.tabs.reload(tab.id); }
 
-            /*.filter((host) => {
-                return tab.url.includes(host);
-            }).forEach((tab) => {
-                console.log(tab.id);
-                //chrome.tabs.reload(tab.id)
-            })*/
         })
 
     })

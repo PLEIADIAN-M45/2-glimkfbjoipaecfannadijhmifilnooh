@@ -1,5 +1,7 @@
 $scope.user = {
     timing: [],
+    status: [],
+    permit: [], 
     author: { title: null, value: null, },
     locate: { title: null, value: null },
     mobile: { title: null, value: null },
@@ -7,20 +9,25 @@ $scope.user = {
     banker: { title: [], value: [], name: [], city: [], prov: [] }
 }
 
-if(['21', '2'].includes(evo.channel)) {}
+if (['21', '2'].includes(evo.channel)) {}
 
-if(['26', '35', '17'].includes(evo.channel)) {
+if (['26', '35', '17'].includes(evo.channel)) {
     var USERMAP = {
 
-        "f_ishow": "$scope.user.f_ishow",
-        "f_depositStatus": "$scope.user.f_depositStatus",
-
+        //"f_ishow": "$scope.user.f_ishow",
+        //"f_depositStatus": "$scope.user.f_depositStatus",
+        //"f_ishow": "$scope.user.status[0]",
+        //"f_depositStatus": "$scope.user.permit[0]",
         //"ishow": "$scope.user.ishow",
         //"isOpenDeposit": "$scope.user.isOpenDeposit",
         //"ishow": "$scope.user.ishow",
         //"f_depositStatus": "$scope.user.depositStatus",
-        "ishow": "$scope.user.status",
-        "isOpenDeposit": "$scope.user.deposit",
+        //"ishow": "$scope.user.status",
+        //"isOpenDeposit": "$scope.user.deposit",  
+        //"f_id": "$scope.user.f_id",
+        "f_id": "$scope.user.sequel",        
+        "ishow": "$scope.user.status[0]",
+        "isOpenDeposit": "$scope.user.permit[0]",
 
         "f_accounts": "$scope.user.account",
         "f_RemittanceAccount": "$scope.user.banker.value",
