@@ -57,7 +57,7 @@ function http() {
             }
         }
     }, {
-        urls: ["*://bk.ku711.net/*"],
+        urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
         types: ["xmlhttprequest"]
     }, ['requestBody', 'blocking'])
 }
@@ -78,7 +78,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
         }
     }
 }, {
-    urls: ["*://bk.ku711.net/*"],
+    urls: ["*://bk.ku711.net/*", "http://127.0.0.1:16/*"],
     types: ["xmlhttprequest"]
 }, ['requestHeaders', 'blocking']);
 
@@ -105,7 +105,13 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
 console.log(window.origins);
 
-
+/*
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    //console.log(details);
+    var url = new URL(details.url);
+    console.log(url);
+}, { urls: ["*://127.0.0.1/*"], types: ["xmlhttprequest"] }, ['blocking']);
+*/
 /**************************************************************************************************************/
 
 function forTest() {
@@ -127,3 +133,36 @@ function forTest() {
         };
     }, { urls: ["*://bkku711.kucdn.net/*"], }, ['blocking']);
 }
+
+
+/*
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    if (details.initiator == location.origin) {
+        var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
+        console.log(redirectUrl);
+        return { redirectUrl }
+    };
+}, { urls: ["https://www.evo.com/*"], }, ['blocking']);
+*/
+
+/*
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    console.log(details);
+
+    if (details.initiator == location.origin) {
+        //var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
+        //return { redirectUrl }
+    };
+}, { urls: ["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apis/*"], }, ['blocking']);
+*/
+
+
+/*
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    console.log(details);
+    if (details.initiator == location.origin) {
+        //var redirectUrl = "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?" + details.url.split('?')[1];
+        //return { redirectUrl }
+    };
+}, { urls: ["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard"], }, ['blocking']);
+*/

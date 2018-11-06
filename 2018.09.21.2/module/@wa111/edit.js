@@ -5,14 +5,11 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
 
     //apiFunction.getAlertInfo();
 
-
     function timerFilter1(rows) {
-        return rows.find(function({ f_field, f_oldData, f_newData }) {
-            return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3"
-        });
+        return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow" && f_oldData == "0" && f_newData == "3" });
     }
 
-    function $apply() { if(!$scope.$$phase) { $scope.$apply(); } }
+    function $apply() { if (!$scope.$$phase) { $scope.$apply(); } }
 
     function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
 
@@ -46,15 +43,12 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     }
     $scope.updateUser = function updateUser(obj) {
         Object.entries(obj).forEach(([prop, value]) => {
-            if(USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
+            if (USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
         });
         $scope.$apply();
     }
     $scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
-    $scope.url = {
-        //IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
-        IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
-    };
+    $scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
 
     $scope.openDeposit = function() {
         this.ctrl.deposit.value = 1;

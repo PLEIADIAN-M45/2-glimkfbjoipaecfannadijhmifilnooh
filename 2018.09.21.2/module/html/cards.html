@@ -1,5 +1,5 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': verify.sheets||verify.region}" ng-init="extend(me);__apiFunctions(me);">
+    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': verify.sheets||verify.region}" ng-init="extend(me);">
         <div class="ui dimmer" ng-class="{'active':active}">
             <div class="ui text loader">{{me.title}}<br>归属地查询中</div>
         </div>
@@ -25,7 +25,7 @@
         </div>
         <div class="content center aligned" ng-if="me.property!='author'">
             <div class="header padded">
-                {{region.prov}} {{region.city}} {{region.area}} {{region.country}}
+                {{region.prov}} {{region.city}} {{region.area}} {{region.country}} {{region.status}}
             </div>
             <div class="sub meta">
                 {{region.meta||region.provider}}

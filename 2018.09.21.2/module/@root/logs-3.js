@@ -7,12 +7,15 @@ define(['@page'], function() {;
 
             $scope.assign = function() {
                 Object.assign(this, ...arguments);
-                this.active = !this.active;
                 if (!this.$$phase) { this.$apply(); }
             }
 
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
+
+            var property = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"]
+            var icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+            var heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
             var user = await getUser();
 
@@ -44,16 +47,26 @@ define(['@page'], function() {;
             }
 
 
-            var apiFunctions = function(params) {
-                console.log(params);
-
+            var apiFunctions = function(me, ev) {
+                var { host, channel, account, property, value, command } = this;
                 this.active = true;
-                //var { host, channel, account, property, value, command } = this;
                 return new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(evo.extensionId, params, (res) => {
+                    chrome.runtime.sendMessage(evo.extensionId, {
+                        command,
+                        property,
+                        host,
+                        channel,
+                        account,
+                        value,
+                        method: property
+                    }, ([res]) => {
+
                         console.log(res);
-                        this.assign(res);
-                        resolve(res)
+
+                        this.region = res;
+                        this.active = false;
+                        this.$apply();
+                        //resolve(res)
                     });
                 })
             }
@@ -62,33 +75,23 @@ define(['@page'], function() {;
             $scope.apiFunctions = apiFunctions;
             $scope.apiMemberList = apiMemberList;
 
-            $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
-            $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-            $scope.properties = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"];
-
             $scope.extend = async function() {
-
                 //Object.assign(this, ...arguments);
                 this.assign(...arguments);
-                this.property = $scope.properties[this.$index];
-                this.icon = this.icons[this.property];
-                this.head = this.heads[this.property];
-
-
-                /*******************************************/
                 this.command = "apiFunctions";
+                this.property = property[this.$index];
+                this.icon = icons[this.property];
+                this.head = heads[this.property];
+                /*******************************************/
                 this.account = evo.account;
+                
                 this.channel = evo.channel;
                 this.host = evo.host;
-                //this.property = property[this.$index];
-                var { command, property, value, host, channel, account } = this;
-                var params = { command, property, value, host, channel, account };
-                //this.region = 
-                this.apiFunctions(params);
+                
+                this.region = apiFunctions.call(this);
 
-                //console.log(this.region);
+                console.log(this);
 
-                //if (!this.$$phase) { this.$apply(); }
 
                 return
                 this.sites = [
@@ -114,10 +117,6 @@ define(['@page'], function() {;
 
 
             return
-            //Object.assign(this, res);
-            //this.active = false;
-            //this.$apply();
-            //console.log(this);
             /*********************************************************************************************************************/
             /*var module = {
                 account: 81,
