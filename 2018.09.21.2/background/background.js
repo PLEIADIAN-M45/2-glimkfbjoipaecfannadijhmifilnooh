@@ -56,7 +56,9 @@ store.version(4).stores({
     danger: '++id',
     notice: '++id',
     region: '++id',
-    GB2260: 'code, area'
+    GB2260: 'code, area',
+
+    alerts: 'author'
 });
 
 

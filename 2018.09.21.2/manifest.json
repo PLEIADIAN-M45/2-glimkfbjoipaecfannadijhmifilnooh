@@ -11,9 +11,9 @@
             "background/background.webRequest.js",//{2}
             "background/background.onUpdated.js",//{3}
             "background/background.onMessage.js", //{4}
-            /*"mock/mock.js",
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js",*/
+            "mock/mock.conf.js",
             "background/apiFunctions.js" //{5}
         ]
     },

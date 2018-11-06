@@ -103,7 +103,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     window.origins.set(port, details.initiator);
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
-
 /*
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     //console.log(details);

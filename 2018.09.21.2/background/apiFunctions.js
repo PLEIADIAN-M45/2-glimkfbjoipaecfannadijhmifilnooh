@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -50,7 +50,7 @@ var search = {
     },
     region: function({ prov, city, area, country }) {
         var value = [prov, city, area, country].join('');
-        if (value) {
+        if(value) {
             return evo.decoder(localStorage.region).find((d) => {
                 return value.includes(trim(d[0]))
             });
@@ -111,18 +111,42 @@ function apiFunctions(request, sender, sendResponse) {
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
             module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
+
+            //console.log(this.host, this.author);
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
 
                     var result = module.callback(data);
-
-                    console.log(result);
-                    
-                    /*if (this.property == "alerts") {
-                        console.log(result);
-                    }*/
                     sendResponse([result, status]);
+
+                    return
+                    if(this.host == "ku711" && this.author) {
+                        $.ajax({
+                            dataType: "json",
+                            url: "@/member/api/AlertInfoManage/GetMemberAlertInfoBackend".replace('@', window.origins.get("0")),
+                            data: json({ "DisplayArea": "1", "Account": [{ "AccountID": "", "AccountName": this.author }] })
+                        }).then((res) => {
+                            var list_RemittanceName = res.Data.AlertInfoAccountName;
+                            result.list_RemittanceName = list_RemittanceName;
+                            result.rows.map((r) => {
+                                r.list_Accounts = list_RemittanceName.filter(function(x) {
+                                    return x.AccountID == r.AccountID;
+                                });
+                            });
+                            sendResponse([result, status]);
+                        })
+                    } else {
+                        sendResponse([result, status]);
+                    }
+
                 });
+
+
+
+
+
+
+
             break;
         default:
             // statements_def
@@ -137,6 +161,37 @@ apiFunctions.prototype.locate = {};
 apiFunctions.prototype.member = {};
 apiFunctions.prototype.alerts = {};
 apiFunctions.prototype.sendsms = {};
+
+
+apiFunctions.prototype["alerts"]["Backend"] = function() {
+    console.log(this);
+    var author = this.params.Account[0].AccountName;
+    return {
+        settings: {
+            "method": 'post',
+            "dataType": 'json',
+            "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
+            "data": this.params
+        },
+        callback: function(res) {
+            console.log(res);
+            var list_RemittanceName = res.Data.AlertInfoAccountName;
+            var list_Accounts = {};
+            list_RemittanceName.forEach((r) => {
+                list_Accounts[r.AccountID] = list_Accounts[r.AccountID] || [];
+                list_Accounts[r.AccountID].push(r);
+            });
+            evo.store.alerts.put({
+                author,
+                list_Accounts,
+                list_RemittanceName
+            })
+            return { list_Accounts, list_RemittanceName }
+        }
+    }
+}
 
 apiFunctions.prototype["mobile"]["ku711"] = function() {
     return {
@@ -153,6 +208,21 @@ apiFunctions.prototype["mobile"]["ku711"] = function() {
         }
     }
 }
+apiFunctions.prototype["alerts"]["ku711"] = function() {
+    return {
+        settings: {
+            "method": 'post',
+            "dataType": 'json',
+            //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
+            "data": this.params
+        },
+        callback: function(res) {
+            return { "list_Accounts": res.Data }
+        }
+    }
+}
+
 apiFunctions.prototype["mobile"]["wa111"] = function() {
     return {
         provider: "wa111",
@@ -172,8 +242,35 @@ apiFunctions.prototype["member"]["ku711"] = function() {
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
     return {
         callback: function(res) {
+            //console.log(d);
             var d = res.Data;
             return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
+            /*var result = {}
+            result.rows = res.Data;
+            result.records = res.Pager.PageCount;
+            result.total = res.TotalItemCount;
+            result.index = index
+
+            if(author) {
+
+                $.ajax({
+                    dataType: "json",
+                    url: "@/member/api/AlertInfoManage/GetMemberAlertInfoBackend".replace('@', window.origins.get("0")),
+                    data: json({ "DisplayArea": "1", "Account": [{ "AccountID": "", "AccountName": author }] })
+                }).then((res) => {
+                    var list_RemittanceName = res.Data.AlertInfoAccountName;
+                    result.list_RemittanceName = list_RemittanceName;
+                    result.rows.map((r) => {
+                        r.list_Accounts = list_RemittanceName.filter(function(x) {
+                            return x.AccountID == r.AccountID;
+                        });
+                    });
+                    return result;
+                    //sendResponse([result, status]);
+
+                })
+            }
+            var d*/
         },
         settings: {
             "dataType": 'json',
@@ -224,6 +321,9 @@ apiFunctions.prototype["member"]["wa111"] = function() {
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
     return {
         callback: function(res) {
+            if(res && res.rows && res.rows.length) {
+                res.list_RemittanceName = res.rows[0].list_RemittanceName;
+            }
             return assign(res, { index });
         },
         settings: {
@@ -261,20 +361,6 @@ apiFunctions.prototype["member"]["wa111"] = function() {
     }
 }
 
-
-apiFunctions.prototype["alerts"]["ku711"] = function() {
-    return {
-        settings: {
-            "method": 'post',
-            "dataType": 'json',
-            //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-            "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',            
-            "data": this.params
-        },
-        callback: function(res) { return res.Data }
-    }
-}
-
 apiFunctions.prototype["locate"]["evo"] = function() {
     function pconline() {
         return {
@@ -287,7 +373,7 @@ apiFunctions.prototype["locate"]["evo"] = function() {
             callback: function(d) {
                 window.IPCallBack = function(d) {
                     try {
-                        if (d.proCode == "999999") {
+                        if(d.proCode == "999999") {
                             return { "prov": d.pro, "city": d.city, "country": d.addr }
                         } else { return { "prov": d.pro, "city": d.city, "area": d.region } }
                     } catch (ex) {
@@ -372,15 +458,15 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 
 apiFunctions.prototype["sendsms"]["motosms"] = function() {
     var { account, mobile, status, channel, operator } = this.params;
-    if (channel == undefined) { return false }
-    if (mobile == undefined) { return false }
-    if (mobile.includes('*') == undefined) { return false }
+    if(channel == undefined) { return false }
+    if(mobile == undefined) { return false }
+    if(mobile.includes('*') == undefined) { return false }
     var smss = new Map(evo.decoder(localStorage.sms));
-    if (smss == undefined) { return false };
+    if(smss == undefined) { return false };
     var message = smss.get(Number(channel));
-    if (message == undefined) { return false }
+    if(message == undefined) { return false }
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
-    if (countrycode == undefined) { return false }
+    if(countrycode == undefined) { return false }
     var mobile = countrycode + mobile;
     return {
         settings: {
@@ -391,10 +477,10 @@ apiFunctions.prototype["sendsms"]["motosms"] = function() {
             "data": { "sender": '', "phones": "mobile", smscontent: "message", "taskType": 1, "taskTime": '', "batch": 1, "splittime": 0, "packid": '' }
         },
         callback: function(res) {
-            if (res.match(/(會員登錄)/)) { var status = 3; }
-            if (res.match(/(msg = '')/)) { var status = 0; }
-            if (res.match(/(msg = '101')/)) { var status = 101; }
-            if (res.match(/(msg = '102')/)) { var status = 102; }
+            if(res.match(/(會員登錄)/)) { var status = 3; }
+            if(res.match(/(msg = '')/)) { var status = 0; }
+            if(res.match(/(msg = '101')/)) { var status = 101; }
+            if(res.match(/(msg = '102')/)) { var status = 102; }
             return { operator, account, channel, message, mobile, status }
         }
     }

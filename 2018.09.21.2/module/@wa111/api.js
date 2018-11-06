@@ -17,6 +17,7 @@ define([], function() {
             data: "action=getmodel&account=" + evo.account
         });
     }
+
     apiFunction.prototype.getAllUser = function() {
         return this.exec({
             url: "/LoadData/AccountManagement/GetMemberList.ashx",
@@ -46,6 +47,24 @@ define([], function() {
             })
         })
     }
+    /*
+    apiFunction.prototype.getAlertInfo = function() {
+        return new Promise(function(resolve, reject) {
+            user.author.value = "王杰"
+            evo.apiFunctions({
+                command: "apiFunctions",
+                property: "alerts",
+                host: "Backend",
+                channel: "0",
+                params: { "DisplayArea": "1", "Account": [{ "AccountID": user.account, "AccountName": user.author.value }] }
+            }).then((res) => {
+                console.log(res);
+                //Object.assign(s, res)
+                //console.log(s);
+            });
+
+        })
+    }*/
 
     return new apiFunction();
 })

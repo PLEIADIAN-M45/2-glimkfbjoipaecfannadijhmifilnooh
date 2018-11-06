@@ -10,7 +10,7 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
         });
     }
 
-    function $apply() { if (!$scope.$$phase) { $scope.$apply(); } }
+    function $apply() { if(!$scope.$$phase) { $scope.$apply(); } }
 
     function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
 
@@ -21,10 +21,10 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
             $serializeObject('select'),
             apiFunction.getPhoneDate(),
             apiFunction.getSystemLog().then(timerFilter1),
-            apiFunction.getUserStore(),
+            apiFunction.getUserStore()
         ]).then((args) => {
             var obj = Object.assign({}, ...args);
-            console.log(obj);
+            //console.log(obj);
             $scope.updateUser(obj);
             //$scope.user.timing[0] = apiFunction.getSystemLog().then(timerFilter1)
             $scope.user.locate.title = $scope.user.locate.value;
@@ -44,14 +44,14 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     }
     $scope.updateUser = function updateUser(obj) {
         Object.entries(obj).forEach(([prop, value]) => {
-            if (USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
+            if(USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
         });
         $scope.$apply();
     }
     $scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
     $scope.url = {
-        IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
-        //IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
+        //IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
+        IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`
     };
 
     $scope.openDeposit = function() {
@@ -60,6 +60,24 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     };
     $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
     $scope.createTab = function(url, params) { window.open(url, '_blank'); };
+
+    /*
+    $scope.getAlertInfo = function getAlertInfo(user) {
+        user.author.value = "王杰"
+        evo.apiFunctions({
+            command: "apiFunctions",
+            property: "alerts",
+            host: "Backend",
+            channel: "0",
+            params: { "DisplayArea": "1", "Account": [{ "AccountID": user.account, "AccountName": user.author.value }] }
+        }).then((res) => {
+            console.log(res);
+            //Object.assign(s, res)
+            //console.log(s);
+        });
+
+    };*/
+
     return { setUser }
 });
 

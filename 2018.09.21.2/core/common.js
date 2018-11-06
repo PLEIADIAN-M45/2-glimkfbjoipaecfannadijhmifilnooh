@@ -35,10 +35,10 @@ function getUser() {
 }
 
 function test(user) {
-    return
     user.author.value = "欧阳磊"
     user.idcard.value = "340122198710061671"
     user.mobile.value = "13514966818"
+
     user.author.value = "王杰"
     user.mobile.value = "17805182900"
     user.idcard.value = "320684199901017199"

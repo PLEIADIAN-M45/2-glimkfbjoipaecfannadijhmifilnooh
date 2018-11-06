@@ -1,5 +1,5 @@
 define(['common'], function() {
-    
+
     function Dialog({ status, message, mobile }) {
         $scope.mdcDialog = {
             "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -23,7 +23,7 @@ define(['common'], function() {
     }
 
     function SendSms({ channel, account, operator, status, mobile }) {
-        console.log(status, mobile);
+        //console.log(status, mobile);
         this.status = localStorage[mobile] || status[0];
         this.mobile = mobile.value;
         Object.assign(this, { channel, account, operator });
