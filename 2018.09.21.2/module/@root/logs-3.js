@@ -84,10 +84,10 @@ define(['@page'], function() {;
                 this.head = heads[this.property];
                 /*******************************************/
                 this.account = evo.account;
-                
+
                 this.channel = evo.channel;
                 this.host = evo.host;
-                
+
                 this.region = apiFunctions.call(this);
 
                 console.log(this);
@@ -114,6 +114,16 @@ define(['@page'], function() {;
 
 
 
+            /**chrome.runtime.sendMessage(evo.extensionId, this.params, (res) => {
+                this.active = false;
+                this.assign(res);
+            })*/
+
+            //var { host, channel, account, property, value, command } = this;
+            /*return new Promise((resolve, reject) => {
+                //console.log(this);
+                chrome.runtime.sendMessage(evo.extensionId, this.params, resolve)
+            })*/
 
 
             return

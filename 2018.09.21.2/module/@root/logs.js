@@ -1,26 +1,28 @@
 define(['@page'], function() {;
     'use strict';
+
+
     return function main() {
+
         return new Promise(async function(resolve, reject) {
 
             dispatch();
 
-            $scope.assign = function() {
-                Object.assign(this, ...arguments);
-                this.active = !this.active;
-                if (!this.$$phase) { this.$apply(); }
-            }
-
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
+            $scope.extend = function() { if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } } }
+            $scope.user = user = await getUser();
+            var combind = [
+                { property: "author", head: "汇款户名", icon: "icon universal access" },
+                { property: "locate", head: "登入网段", icon: "icon map marker alternate" },
+                { property: "mobile", head: "手机号码", icon: "icon address card" },
+                { property: "idcard", head: "身份证号", icon: "icon mobile alternate" },
+                { property: "banker", head: "银行卡号", icon: "icon cc visa" },
+            ];
+            var datalist = [user.author, user.locate, user.mobile, user.idcard]
+                .concat(user.banker).map((x, i) => { return Object.assign(x, combind[i]) })
 
-            var user = await getUser();
-
-            //$scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
-            //$scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-
-            $scope.datalist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
-            $scope.user = user;
+            $scope.datalist = datalist;
 
 
             var apiMemberList = function() {
@@ -44,51 +46,123 @@ define(['@page'], function() {;
             }
 
 
-            var apiFunctions = function(params) {
-                console.log(params);
 
+            var apiFunctions = function() {
+                //var { account, host, channel } = evo;
+                //var { command = "apiFunctions", property, value } = this;
+                //var params = { command, property, value, host, channel, account };
+                //console.log(params);
+                //apiFunctions:host:property:value
+                evo.apiFunctions.call(this);
+
+                /*
+                chrome.runtime.sendMessage(evo.extensionId, {
+                    command,
+                    property,
+                    value,
+                    host,
+                    channel,
+                    account
+                }, assign.bind(this))
+                */
+
+                /*  console.log(account, host);
+                  console.log(command, attr, value);*/
+
+                //this.params = { command, property, value, host, channel, account };
+                //console.log(this);
+                /*
+                console.log(this.account);
+                console.log(this.host);
+                console.log(this.channel);
+                console.log(this.command);*/
+                return
                 this.active = true;
-                //var { host, channel, account, property, value, command } = this;
-                return new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(evo.extensionId, params, (res) => {
-                        console.log(res);
-                        this.assign(res);
-                        resolve(res)
-                    });
-                })
             }
+
 
 
             $scope.apiFunctions = apiFunctions;
             $scope.apiMemberList = apiMemberList;
 
-            $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
-            $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-            $scope.properties = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"];
+
+
+
+
+            console.log(datalist);
+
+
+
+            resolve($scope);
+
+
+            /*$scope.heads = [
+                "汇款户名",
+                "登入网段",
+                "手机号码",
+                "身份证号",
+                "银行卡号",
+                "银行卡号",
+                "银行卡号",
+                "银行卡号",
+                "银行卡号"
+            ]
+            $scope.icons = [
+                "icon universal access",
+                "icon map marker alternate",
+                "icon mobile alternate",
+                "icon address card",
+                "icon cc visa",
+                "icon cc visa",
+                "icon cc visa",
+                "icon cc visa",
+                "icon cc visa",
+            ]*/
+
+
+            /*{
+                author: "icon universal access",
+                locate: "icon map marker alternate",
+                idcard: "icon address card",
+                mobile: "icon mobile alternate",
+                banker: "icon cc visa",
+                birthday: "icon birthday cake"
+            };*/
+
+            /*
+            .map((x, i) => {
+                var attr = attrs[i];
+                var icon = icons[attr];
+                var head = heads[attr];
+                return Object.assign(x, { attr, icon, head })
+                //assign(x, { attr, icon, head })
+            });*/
+
+
+            resolve($scope);
+
+
+            return
+
 
             $scope.extend = async function() {
-
+                return
                 //Object.assign(this, ...arguments);
                 this.assign(...arguments);
                 this.property = $scope.properties[this.$index];
                 this.icon = this.icons[this.property];
                 this.head = this.heads[this.property];
-
-
                 /*******************************************/
                 this.command = "apiFunctions";
-                this.account = evo.account;
-                this.channel = evo.channel;
-                this.host = evo.host;
-                //this.property = property[this.$index];
-                var { command, property, value, host, channel, account } = this;
-                var params = { command, property, value, host, channel, account };
-                //this.region = 
-                this.apiFunctions(params);
+                //this.account = evo.account;
+                //this.channel = evo.channel;
+                //this.host = evo.host;
 
-                //console.log(this.region);
 
-                //if (!this.$$phase) { this.$apply(); }
+                apiFunctions.bind(this, evo)();
+
+
+
 
                 return
                 this.sites = [
@@ -124,6 +198,9 @@ define(['@page'], function() {;
                 getX: function() { return this.x; }
             };*/
 
+            //$scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+            //$scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+
 
             //console.log(module.getX());
 
@@ -154,10 +231,7 @@ define(['@page'], function() {;
 
 
 
-            $scope.assign = function() {
-                Object.assign(...arguments);
-                if (!this.$$phase) { this.$apply(); }
-            }
+
 
             $scope.apiFunctions = function(me, ev) {
                 this.head = heads[me.property];
@@ -289,6 +363,10 @@ $scope.regionTestFunction = function sheetsTestFunction(me) {
     //this.extend();
 };*/
 
+//$scope.attrs = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"];
+//$scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+//$scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+
 /*
 evo.sendMessage({
     command: "localStorage"
@@ -365,4 +443,5 @@ myApp.filter('toArray', function() {
             $scope.sendsms = new SendSms($scope.user);
             console.log($scope.user);
             resolve($scope);
+            $scope.properties = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"];
             */

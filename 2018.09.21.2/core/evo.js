@@ -56,7 +56,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')
-            } [this.host];
+            }[this.host];
         }
 
         get formData() {
@@ -75,15 +75,40 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
 
-        apiFunctions(params) {
-            return new Promise(function(resolve, reject) {
+        apiFunctions() {
+            if (!this.value) { return };
+            var { account, host, channel } = evo;
+            var { command = "apiFunctions", property, value } = this;
+            var parameters = { command, property, value, host, channel, account };
+            this.active = true;
+            if (property == "banker") {
+                console.log(this.region);
+                parameters.region = this.region
+            } else {
+                this.region = {};
+            }
+
+            return new Promise((resolve, reject) => {
                 //if (!params.value) { resolve({ active: false }) }
-                
-                chrome.runtime.sendMessage(evo.extensionId, params, ([result, status]) => {
-                    //console.log(result);
-                    result.active = false;
-                    resolve(result);
+                chrome.runtime.sendMessage(evo.extensionId, parameters, (result) => {
+                    if (result) {
+                        console.log(result);
+                        //console.log(this);
+                        Object.assign(this, result)
+                        this.active = false;
+                        this.$apply();
+                    }
+                    try {
+
+
+                    } catch (ex) {
+
+                    }
+
+                    //result.active = false;
+                    //resolve(result);
                 });
+
             });
 
             //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
@@ -167,13 +192,14 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return obj;
         }
 
-
+        /*
         get account() {
             return this.params.account ||
                 this.params.member ||
                 this.params.accountId ||
                 this.params.accounts;
         }
+        */
 
         get operator() { return localStorage['operator']; }
 
@@ -228,7 +254,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                 "26": "wa111",
                 "16": "ku711",
                 "": location.host.split('.')[1]
-            } [location.port];
+            }[location.port];
         }
 
         get apiPath() {
@@ -305,7 +331,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "bonuslog": "bonus",
                     "memberloginlog": "log"
                 }
-            } [this.host][this.filename];
+            }[this.host][this.filename];
         }
 
         get router() { return [this.host, this.path].join('/'); }
@@ -373,6 +399,10 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     evo.values = Object.values;
     evo.keys = Object.keys;
     evo.entries = Object.entries;
+
+    var { account, member, accountId, accounts } = evo.params;
+    evo.account = account || member || accountId || accounts;
+
 
 
     return evo;

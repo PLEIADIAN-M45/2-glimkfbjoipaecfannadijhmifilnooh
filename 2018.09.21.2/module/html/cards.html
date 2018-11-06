@@ -1,12 +1,13 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': verify.sheets||verify.region}" ng-init="extend(me);">
+    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': sheets.verify||region.verify}" ng-init="extend(me);apiFunctions()">
         <div class="ui dimmer" ng-class="{'active':active}">
-            <div class="ui text loader">{{me.title}}<br>归属地查询中</div>
+            <div class="ui text loader">{{me.title}}
+                <br>归属地查询中</div>
         </div>
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 {{property}}
-                <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="me.verify.sheets">{{me.verify.sheets}}</b>
+                <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
             </div>
             <div class="right floated meta">
                 <i class="sync alternate icon pointer" ng-click="apiFunctions(me, $event); "></i>
@@ -17,10 +18,10 @@
         </div>
         <div class="content center aligned" ng-if="me.property=='author'">
             <div class="header padded">
-                {{verify.sheets[3]}}
+                {{sheets.verify[3]}}
             </div>
             <div class="sub meta">
-                {{verify.sheets[1]}}-{{verify.sheets[2]}}
+                {{sheets.verify[1]}}-{{sheets.verify[2]}}
             </div>
         </div>
         <div class="content center aligned" ng-if="me.property!='author'">

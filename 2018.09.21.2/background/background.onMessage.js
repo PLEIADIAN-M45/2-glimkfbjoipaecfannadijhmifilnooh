@@ -10,11 +10,63 @@ function response_message(request, sender, sendResponse) {
 
     var [command, method, key] = array = request.command.split(':');
     // var [commander, property, proxy, channel] = request.command.split(':');
-
     //console.log(request.command);
-
     switch (command) {
+        case "apiFunctions":
+            //console.log(request);
+            request.time = Date.now();
+            var module = apiFunctions[request.host][request.property].call(request);
+            var sheets = { verify: search[request.property](request.value) || false };
 
+            if (module.settings.url) {
+                module.settings.timeout = 5000;
+                module.settings.url = module.settings.url.replace('@', window.origins.get(request.channel));
+                //console.log(module);
+                $.ajax(module.settings)
+                    .done((data, status, xhr) => {
+                        var region = module.callback(data);
+                        region.verify = search.region(region) || false;
+                        var result = { region, sheets };
+                        // console.log(result);
+                        sendResponse(result);
+                    })
+                    .fail((xhr, status, error) => {
+                        var region = { verify: true, meta: module.provider, status: status };
+                        var result = { region, sheets };
+                        sendResponse(result);
+                    })
+            } else {
+                console.log(request);
+                if (request.region) {
+                    var region = request.region;
+                    region.verify = search.region(region) || false;
+                    var result = { region, sheets };
+                } else {
+                    var result = { sheets };
+                }
+                sendResponse(result);
+            }
+
+            if (module) {
+
+
+
+            }
+            /*
+            if (request.property == "idcard") {
+                //console.log(request);
+                //console.log(evo.decoder(localStorage["gb2260"]));
+                $.ajax(module.settings)
+                    .done((data, status, xhr) => {
+                        console.log(data);
+                    })
+
+            } else {
+
+            }*/
+
+            return true;
+            break;
         case "google":
             delete request.banker[0].sites;
             delete request.idcard.sites;
@@ -23,7 +75,6 @@ function response_message(request, sender, sendResponse) {
             delete request.author.sites;
             //console.log(request);
             evo.store.user.put(request);
-
             $.ajax({
                 url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
                 method: 'get',
@@ -42,13 +93,6 @@ function response_message(request, sender, sendResponse) {
             break;
 
 
-        case "apiFunctions":
-            request.time = Date.now();
-            var api = new apiFunctions(request, sender, sendResponse);
-            //.call(request, sender, sendResponse)
-
-            return true;
-            break;
         case "evo.store.tables":
             var tb = eval(command);
             //console.log(tb);
@@ -64,8 +108,7 @@ function response_message(request, sender, sendResponse) {
             evo.store.user.get(request.params).then(sendResponse)
             return true
         case "evo.store.user.put":
-
-            if(sender.url.includes("MemberLoginLog")) {
+            if (sender.url.includes("MemberLoginLog")) {
                 //console.log(1, request.params);
                 //ports["EditMemberInfoManage"].postMessage(request.params)
 
@@ -96,7 +139,7 @@ function response_message(request, sender, sendResponse) {
             break;
 
         case "localStorage:getItem":
-            if(key) {
+            if (key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -104,7 +147,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for(var key in res) {
+                for (var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -141,8 +184,8 @@ try {
 
 
 
-if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 

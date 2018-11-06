@@ -127,3 +127,104 @@ function forTest() {
         };
     }, { urls: ["*://bkku711.kucdn.net/*"], }, ['blocking']);
 }
+
+
+
+chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+    var { url, method, type, requestHeaders, initiator } = details;
+
+    if (details.initiator == location.origin) {
+        var headers = JSON.parse(localStorage["baidu"])
+        headers.forEach((x) => {
+            //obj[x.name] = x.value
+            requestHeaders.push({ name: x.name, value: x.value });
+
+        });
+
+        return { requestHeaders: details.requestHeaders }
+
+        //requestHeaders.push({ name: 'referer', value: url });
+
+    } else {
+        localStorage["baidu"] = JSON.stringify(details.requestHeaders)
+    }
+    console.log(details.requestHeaders);
+
+    //json(details.requestHeaders)
+}, { urls: ["*://sp0.baidu.com/*/api.*"] }, ['requestHeaders', 'blocking']);
+
+
+/*
+https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?query=117.136.12.104&co=&resource_id=6006&t=1541515306651&ie=utf8&oe=gbk&cb=op_aladdin_callback&format=json&tn=baidu&cb=jQuery110202722053944449192_1541515281759&_=1541515281763
+*/
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+    var _idcard = details.url.split('=').pop();
+    var GBMAP = new Map(evo.decoder(localStorage["gb2260"]));
+    var [$1, $2, $3, $4, $5, $6, $7] = _idcard.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
+    var sex = (Number($5) % 2 == 1) ? '男性' : '女性',
+        age = moment().diff(moment($4), 'years') + '岁',
+        birth = moment($4).locale('zh-tw').format('LL');
+
+    console.log({
+        "prov": GBMAP.get(Number($1)),
+        "city": GBMAP.get(Number($2)),
+        "area": GBMAP.get(Number($3)),
+        "meta": [birth, sex, age].join('/')
+    });
+
+  
+
+}, { urls: ["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard?*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+
+*/
+
+
+
+/*return {
+      settings: { url: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard' },
+      callback: function() {
+          return {
+              "prov": GBMAP.get(Number($1)),
+              "city": GBMAP.get(Number($2)),
+              "area": GBMAP.get(Number($3)),
+              "meta": [birth, sex, age].join('/')
+          }
+      }
+  }*/
+
+/*
+chrome.webRequest.onBeforeRequest.addListener(
+    function(details) {
+        if (details.method == "POST") {
+            let formData = details.requestBody.formData;
+            let cancel = false;
+
+            if (formData) {
+                Object.keys(formData).forEach(key => {
+                    formData[key].forEach(value => {
+                        if (value.includes("foo")) {
+                            cancel = true;
+                        }
+                    });
+                });
+            }
+
+            return { cancel: cancel };
+        }
+    }, { urls: [""] }, ["blocking", "requestBody"]
+);
+*/

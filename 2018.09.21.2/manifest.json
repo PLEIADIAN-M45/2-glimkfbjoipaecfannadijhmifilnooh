@@ -7,11 +7,14 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
+            "lib/mock.js",
+
             "background/background.js", //{1}
-            "background/background.webRequest.js",//{2}
-            "background/background.onUpdated.js",//{3}
+            "background/background.webRequest.js", //{2}
+            "background/background.onUpdated.js", //{3}
             "background/background.onMessage.js", //{4}
-            /*"mock/mock.js",
+
+            /*
             "mock/mock.data.js",
             "mock/mock.conf.js",*/
             "background/apiFunctions.js" //{5}
@@ -61,7 +64,8 @@
         "accepts_tls_channel_id": false,
         "ids": ["*"],
         "matches": ["*://127.0.0.1/*",
-         "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"]
+            "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"
+        ]
     },
     "icons":
     {
