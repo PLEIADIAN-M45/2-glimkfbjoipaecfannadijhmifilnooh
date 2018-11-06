@@ -68,8 +68,9 @@ var search = {
 
 function apiFunctions(request, sender, sendResponse) {
     Object.assign(this, request);
-
-    switch (this.property) {
+    // console.log(this.method);
+    //this.method
+    switch (this.method) {
         case "author":
             var result = { verify: { sheets: search.author(this.value) || false } };
             return sendResponse([result]);
@@ -79,14 +80,17 @@ function apiFunctions(request, sender, sendResponse) {
         case "locate":
         case "idcard":
         case "mobile":
-            var module = this[this.property][this.host].call(request);
+            var module = this[this.method][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
             module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
-                    var region = module.callback(data);
+                    var result = module.callback(data);
+                    result.provider = module.provider;
+                    sendResponse([result, status])
                     //region.provider = module.provider;
+                    /*
                     var result = {
                         provider: module.provider,
                         region: region,
@@ -94,8 +98,8 @@ function apiFunctions(request, sender, sendResponse) {
                             region: search.region(region) || false,
                             sheets: search[this.property](this.value) || false
                         }
-                    };
-                    sendResponse([result, status])
+                    };*/
+                    //sendResponse([result, status])
                 }).fail((xhr, status, error) => {
                     var result = {
                         provider: module.provider,
@@ -107,16 +111,19 @@ function apiFunctions(request, sender, sendResponse) {
             break;
         case "member":
         case "alerts":
-            var module = this[this.property][this.host].call(request);
+            request[request.property] = request.value;
+            var module = this[this.method][this.host].call(request);
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.origins.get(this.channel));
             module.settings.data = (module.settings.url.includes("ku711")) ? json(module.settings.data) : module.settings.data;
+            // return
 
             //console.log(this.host, this.author);
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
 
                     var result = module.callback(data);
+                    console.log(result);
                     sendResponse([result, status]);
 
                     return
@@ -183,15 +190,17 @@ apiFunctions.prototype["alerts"]["Backend"] = function() {
                 list_Accounts[r.AccountID] = list_Accounts[r.AccountID] || [];
                 list_Accounts[r.AccountID].push(r);
             });
-            evo.store.alerts.put({
-                author,
-                list_Accounts,
-                list_RemittanceName
-            })
+
             return { list_Accounts, list_RemittanceName }
         }
     }
 }
+
+/*evo.store.alerts.put({
+    author,
+    list_Accounts,
+    list_RemittanceName
+})*/
 
 apiFunctions.prototype["mobile"]["ku711"] = function() {
     return {
@@ -239,7 +248,11 @@ apiFunctions.prototype["mobile"]["wa111"] = function() {
     }
 }
 apiFunctions.prototype["member"]["ku711"] = function() {
+
+
     var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
+
+
     return {
         callback: function(res) {
             //console.log(d);

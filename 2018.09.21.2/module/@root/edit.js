@@ -2,6 +2,9 @@ var ctrl = { select: {}, span: {}, button: {} }
 
 define(['@page', 'SendSms'], function({ setUser }, SendSms) {
 
+
+    ctl00_ContentPlaceHolder1_txtRemittaceName.value = "王杰"
+
     ;
     'use strict';
 
@@ -28,7 +31,6 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
             //console.log($scope.user);
             resolve($scope);
 
-            $scope.getAlertInfo($scope.user);
 
         })
     }

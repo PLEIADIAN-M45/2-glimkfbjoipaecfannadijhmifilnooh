@@ -1,11 +1,10 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': verify.sheets||verify.region}" ng-init="extend(me);__apiFunctions(me);">
-        <div class="ui dimmer" ng-class="{'active':active}">
+    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': me.verify.sheets||me.verify.region}" ng-init="apiFunctions(me);">
+        <div class="ui dimmer" ng-class="{'active':me.active}">
             <div class="ui text loader">{{me.title}}<br>归属地查询中</div>
         </div>
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                {{property}}
                 <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="me.verify.sheets">{{me.verify.sheets}}</b>
             </div>
             <div class="right floated meta">
@@ -13,22 +12,22 @@
             </div>
         </div>
         <div class="content compact center aligned">
-            <div class="header">{{value||"------"}}</div>
+            <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content center aligned" ng-if="me.property=='author'">
             <div class="header padded">
-                {{verify.sheets[3]}}
+                {{me.verify.sheets[3]}}
             </div>
             <div class="sub meta">
-                {{verify.sheets[1]}}-{{verify.sheets[2]}}
+                {{me.verify.sheets[1]}}-{{me.verify.sheets[2]}}
             </div>
         </div>
         <div class="content center aligned" ng-if="me.property!='author'">
             <div class="header padded">
-                {{region.prov}} {{region.city}} {{region.area}} {{region.country}}
+                {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}}
             </div>
             <div class="sub meta">
-                {{region.meta||region.provider}}
+                {{me.region.meta||me.provider}}
             </div>
         </div>
         <div class="extra content" ng-if="me.property=='locate'" ng-init="getAllIPAddress(me)">
@@ -39,10 +38,14 @@
                 </div>
             </div>
         </div>
-        <div class="extra content flex" ng-if="property!='locate'">
-            <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; _getAlertInfo(s, me); apiMemberList(s);">
+        <div class="extra content flex" ng-if="me.property!='locate'">
+
+            <div ng-repeat="s in me.sites" ng-init="shapeID='shape'+$id; getAlertInfo(s, me); apiMemberList( s, me );">
+
                 <div class="ui image label">
+
                     <div class="detail center">{{s.channel}}-<b>{{s.list_RemittanceName.length}}</b></div>
+
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">
@@ -52,9 +55,9 @@
                     <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s, me );" ng-disabled="s.index>=s.records || s.active"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in rows" ng-click="showMemberModify(row, s)" ng-init="
-                _getAlertInfoByID(row, s);
-            changeColor(row, s);
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="showMemberModify(row, s)" ng-init="
+                getAlertInfoByID(row, s);
+            __changeColor(row, s);
                 popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息-->

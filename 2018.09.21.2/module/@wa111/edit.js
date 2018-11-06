@@ -3,6 +3,8 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     function timerFilter2(rows) { return rows.find(function({ f_field, f_oldData, f_newData }) { return f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" && f_oldData == "3$log$0$log$0" && f_newData == "1$log$1$log$1" }); }
     /*【静止户】 -> 【审核中】*/
 
+    //apiFunction.getAlertInfo();
+
 
     function timerFilter1(rows) {
         return rows.find(function({ f_field, f_oldData, f_newData }) {
@@ -60,23 +62,6 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     };
     $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
     $scope.createTab = function(url, params) { window.open(url, '_blank'); };
-
-    /*
-    $scope.getAlertInfo = function getAlertInfo(user) {
-        user.author.value = "王杰"
-        evo.apiFunctions({
-            command: "apiFunctions",
-            property: "alerts",
-            host: "Backend",
-            channel: "0",
-            params: { "DisplayArea": "1", "Account": [{ "AccountID": user.account, "AccountName": user.author.value }] }
-        }).then((res) => {
-            console.log(res);
-            //Object.assign(s, res)
-            //console.log(s);
-        });
-
-    };*/
 
     return { setUser }
 });

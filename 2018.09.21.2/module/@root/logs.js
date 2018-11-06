@@ -1,32 +1,150 @@
 define(['@page'], function() {;
     'use strict';
-
-
-
-
     return function main() {
-
         return new Promise(async function(resolve, reject) {
-
             dispatch();
+
+            var property = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"]
+            var icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+            var heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+
+            /*$scope.account = evo.account;
+            $scope.channel = evo.channel;
+            $scope.host = evo.host;*/
+
+
+
+            var apiFunctions = function(me, ev) {
+                var { host, channel, account, property, value, command } = this;
+                this.active = true;
+                return new Promise((resolve, reject) => {
+                    chrome.runtime.sendMessage(evo.extensionId, {
+                        command,
+                        property,
+                        host,
+                        channel,
+                        account,
+                        value,
+                        method: property
+                    }, ([res]) => {
+                        //console.log(res);
+                        this.region = res;
+                        this.active = false;
+                        this.$apply();
+                        //resolve(res)
+                    });
+                })
+            }
+
+
+            var apiMemberList = function() {
+                Object.assign(this, ...arguments)
+                var { host, channel, property, value, command, method } = this;
+
+                return new Promise((resolve, reject) => {
+                    //console.log({ host, channel, account, property, value, command, method });
+                    chrome.runtime.sendMessage(evo.extensionId, {
+                        command,
+                        property,
+                        host,
+                        channel,
+                        value,
+                        method
+                    }, ([res]) => {
+                        Object.assign(this, res)
+                        this.$apply();
+                        console.log(res);
+                    });
+                });
+
+
+                /*if(!me.value) { return };
+                Object.assign(s, { active: true, rows: {} });
+                var params = Object.assign({}, s, { command: "apiFunctions" });
+                evo.apiFunctions(params).then((res) => {
+                    Object.assign(s, res);
+                    this.$apply();
+                });*/
+            }
+
+            $scope.apiFunctions = apiFunctions;
+            $scope.apiMemberList = apiMemberList;
+
+
+            $scope.extend = async function() {
+                Object.assign(this, ...arguments)
+
+                this.property = property[this.$index];
+                this.icon = icons[this.property];
+                this.head = heads[this.property];
+                this.account = evo.account;
+                this.channel = evo.channel;
+                this.host = evo.host;
+                this.command = "apiFunctions";
+                //this.region =
+                //apiFunctions.call(this);
+
+                this.sites = [
+                    { channel: "26", host: "wa111" },
+                    { channel: "35", host: "wa111" },
+                    { channel: "17", host: "wa111" },
+                    { channel: "16", host: "ku711" }
+                ].map((s) => {
+                    s[this.property] = this.value;
+                    s.method = "member";
+                    //apiMemberList(s)
+                    //s.command = "apiFunctions";
+                    return s;
+                })
+
+                /*.forEach((s) => {
+                    //console.log(s);
+                    //this.channel = s.channel;
+                    //apiMemberList.call(this);
+                })*/
+
+                //this.$apply();
+
+                // if(!this.$$phase) { this.$apply(); }
+
+
+
+                //console.log(this.region);
+                //if(!this.$$phase) { this.$apply(); }
+
+                //Object.assign(this, me)
+                //this.$apply()
+                //console.log(this);
+
+            }
 
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
             var user = await getUser();
-
             //var list_RemittanceName = await getAlertInfo(user); // 危险
-
-
-            user.banker = user.banker.filter((x) => { x.property = "banker"; return x.value; });
-            Object.keys(user).map((key) => { if(user[key]) { user[key]["property"] = key; } });
-
+            //user.banker = user.banker.filter((x) => { x.property = "banker"; return x.value; });
+            //Object.keys(user).map((key) => { if(user[key]) { user[key]["property"] = key; } });
             test(user);
-
-            var icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
-            var heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-
-            $scope.user = user;
+            $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+            $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
             $scope.datalist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
+            $scope.user = user;
+            resolve($scope);
+
+            /*var module = {
+                account: 81,
+                getX: function() { return this.x; }
+            };*/
+
+
+            //console.log(module.getX());
+
+
+
+
+            return
+
+            /*
             $scope.datalist.forEach((obj, index) => {
                 obj.sites = [{ channel: "26", host: "wa111" }, { channel: "35", host: "wa111" }, { channel: "17", host: "wa111" }, { channel: "16", host: "ku711" }]
                     .map((o) => {
@@ -34,9 +152,20 @@ define(['@page'], function() {;
                         o[obj.property] = obj.value;
                         return o;
                     })
-            });
+            });*/
 
-            console.log($scope.user);
+            /*
+                        $scope.datalist = [
+                            { property: "author", region: apiFunctions.apply("author") },
+                            { property: "locate" },
+                            { property: "mobile" },
+                            { property: "idcard" },
+                        ]*/
+
+            // console.log($scope.user);
+            //console.log($scope.datalist);
+
+
 
             $scope.assign = function() {
                 Object.assign(...arguments);
@@ -152,7 +281,6 @@ define(['@page'], function() {;
             };
 
 
-            resolve($scope);
 
             //getAlertInfo().then(function() {})
 
