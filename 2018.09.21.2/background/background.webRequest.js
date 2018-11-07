@@ -83,30 +83,37 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 }, ['requestHeaders', 'blocking']);
 
 
+
 /**************************************************************************************************************/
-window.origins = new Map();
+window.baseUrl = {};
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
-    window.origins.set("16", details.initiator);
-}, { urls: ["https://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+    window.baseUrl["16"] = details.initiator;
+}, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
-    window.origins.set(port, details.initiator);
-    //console.log(port, details.initiator);
+    window.baseUrl[port] = details.initiator;
 }, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://q51.tp33.net:63', '');
-    window.origins.set(port, details.initiator);
+    window.baseUrl[port] = details.initiator;
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
-
-console.log(window.origins);
-
-
 /**************************************************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
 
 function forTest() {
     chrome.webRequest.onBeforeRequest.addListener(function(details) {

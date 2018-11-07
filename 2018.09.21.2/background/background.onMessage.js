@@ -15,58 +15,36 @@ function response_message(request, sender, sendResponse) {
     switch (command) {
         case "apiFunctions":
 
+
             function _done(data, status, xhr) {
-                console.log(data);
-                var region = module.callback(data);
-                region.verify = search.region(region) || false;
-                var result = { region, sheets };
-                console.log(result);
+                var result = module.callback(data);
+                if (result.region) { verify.region = search.region(result.region) || false; }
+                result.verify = verify;
+                result.timediff = Date.now() - request.time;
                 sendResponse(result);
             }
 
             function _fail(xhr, status, error) {
-                var region = { verify: true, meta: module.provider, status: status };
-                var result = { region, sheets };
-                sendResponse(result);
+                //var region = { verify: true, meta: module.provider, status: status };
+                sendResponse({ verify, status, meta: status });
             }
 
-            var module = apiFunctions[request.host][request.attr].call(request);
-            //console.log(module);
-            var baseUrl = window.origins.get(request.channel);
-            //console.log(request.channel, baseUrl);
-            var sheets = {
-                verify: search[request.attr](request.value)
-            };
-            
+            var { attr, host, channel, value } = request;
 
+            var verify = {};
+
+            if (search[attr]) { verify.sheets = search[attr](value) || false };
+
+            var module = apiFunctions[host][attr].call(request);
             if (module.settings) {
                 module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', baseUrl);
-                console.log(module.settings);
+                module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
+                //console.log(module.settings);
                 $.ajax(module.settings).done(_done).fail(_fail);
+                return true;
             } else {
-                _done(request);
+                return _done(request);
             }
-
-            /*
-            $.ajax(module.settings)
-                .done((data, status, xhr) => {
-                    console.log(data);
-                    var region = module.callback(data);
-                    region.verify = search.region(region) || false;
-                    var result = { region, sheets };
-                    console.log(result);
-                    sendResponse(result);
-                })
-                .fail((xhr, status, error) => {
-                    console.log(error);
-                    return
-                    var region = { verify: true, meta: module.provider, status: status };
-                    var result = { region, sheets };
-                    sendResponse(result);
-                })*/
-
-            return true;
             break;
 
         case "google":

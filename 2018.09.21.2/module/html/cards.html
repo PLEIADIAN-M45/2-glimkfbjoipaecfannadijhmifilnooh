@@ -1,12 +1,12 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="parameters in datalist" ng-class="{'negative': sheets.verify||region.verify}" ng-init="extend(parameters); apiFunctions()">
+    <div class="ui card" ng-repeat="parameters in datalist" ng-class="{'negative': verify.sheets|| verify.region}" ng-init="extend(parameters); apiFunctions()">
         <div class="ui dimmer" ng-class="{'active':active}">
             <div class="ui text loader">{{title}}
                 <br>归属地查询中</div>
         </div>
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                {{property}}
+                {{attr}}
                 <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
             </div>
             <div class="right floated meta">
@@ -16,23 +16,23 @@
         <div class="content compact center aligned">
             <div class="header">{{value||"------"}}</div>
         </div>
-        <div class="content center aligned" ng-if="property=='author'">
+        <div class="content center aligned" ng-if="attr=='author'">
             <div class="header padded">
-                {{sheets.verify[3]}}
+                {{verify.sheets[3]}}
             </div>
             <div class="sub meta">
-                {{sheets.verify[1]}}-{{sheets.verify[2]}}
+                {{verify.sheets[1]}}-{{verify.sheets[2]}}
             </div>
         </div>
-        <div class="content center aligned" ng-if="property!='author'">
+        <div class="content center aligned" ng-if="attr!='author'">
             <div class="header padded">
                 {{region.prov}} {{region.city}} {{region.area}} {{region.country}} {{region.status}}
             </div>
             <div class="sub meta">
-                {{region.meta||region.provider}}
+                {{region.meta||region.provider}}-{{timediff}}
             </div>
         </div>
-        <div class="extra content" ng-if="me.property=='locate'" ng-init="getAllIPAddress(me)">
+        <div class="extra content" ng-if="me.attr=='locate'" ng-init="getAllIPAddress(me)">
             <div class="grid-2">
                 <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="region in me.regions">
                     <span>{{region[0]}}</span>
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="extra content flex" ng-if="property!='locate'">
+        <div class="extra content flex" ng-if="attr!='locate'">
             <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; _getAlertInfo(s, me); apiMemberList(s);">
                 <div class="ui image label">
                     <div class="detail center">{{s.channel}}-<b>{{s.list_RemittanceName.length}}</b></div>

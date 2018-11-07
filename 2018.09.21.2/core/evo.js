@@ -12,9 +12,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         apiFunctions() {
 
             //if (this.attr == "mobile" || this.attr == "locate" || this.attr == "idcard") {} else { return }
-
             //if (this.attr == "banker") {} else { return }
-            if (this.attr == "author") {} else { return }
+            //if (["author", "banker"].includes(this.attr)) {} else { return }
+            //if (["locate"].includes(this.attr)) {} else { return }
 
 
 

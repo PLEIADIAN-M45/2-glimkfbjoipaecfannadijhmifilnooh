@@ -62,31 +62,28 @@ var search = {
 
 function callback_baidu_mobile(res) {
     var d = res.data[0];
-    return {
-        city: d.city,
-        prov: d.prov,
-        meta: d.type
-    }
+    var region = { city: d.city, prov: d.prov, meta: d.type || "baidu" }
+    return { region };
 }
 
 function callback_baidu_locate(res) {
     var arr = res.data[0].location.split(' ');
     var regexp = new RegExp(/(省|市|区|县)/, "g");
-    arr[0] = arr[0].replace(regexp, '$1 ');
-    return { meta: arr[1], prov: arr[0].trim() }
+    var prov = arr[0].replace(regexp, '$1 ');
+    var region = {
+        prov: prov,
+        meta: "baidu"
+    }
+    return { region };
 }
-
-/*
-var callback = {
-   mobile:{} 
-}
-*/
 
 
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 
 
 var apiFunctions = {
+
+    baseUrl: {},
 
     baidu: {
         mobile() {
@@ -139,12 +136,11 @@ var apiFunctions = {
         }
     },
 
-
     wa111: {
         author() {
             return {
-                callback: function(res) {
-                    return res
+                callback: function(req) {
+                    return {}
                 }
             }
         },
@@ -154,7 +150,8 @@ var apiFunctions = {
                 callback: function(res) {
                     var str = res.msg.replace('<br />', '<br/>').split('<br/>');
                     var arr = str[0].split('&nbsp;');
-                    return { "prov": arr[0], "city": arr[1], "meta": str[1] }
+                    var region = { "prov": arr[0], "city": arr[1], "meta": str[1] }
+                    return { region }
                 }
             }
         },
@@ -166,7 +163,7 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
-                callback: function(res) { return res; }
+                callback: function(region) { return { region }; }
             }
         },
         banker() {
@@ -177,16 +174,15 @@ var apiFunctions = {
                     "method": "post",
                     "data": this.region
                 },*/
-                callback: function(res) {
-                    return res.region;
+                callback: function(req) {
+                    var region = req.region;
+                    return { region }
                 }
             }
         },
         locate() {
             return {
-                callback: function(res) {
-                    return eval(res);
-                },
+                callback: function(res) { return eval(res); },
                 settings: {
                     dataType: "text",
                     url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
@@ -227,7 +223,8 @@ var apiFunctions = {
                 },
                 callback: function(res) {
                     var d = res.Data;
-                    return { "prov": d.Province, "city": d.City, "meta": d.Cardtype }
+                    var region = { "prov": d.Province, "city": d.City, "meta": d.Cardtype };
+                    return { region }
                 }
             }
         },
@@ -239,13 +236,17 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
-                callback: function(res) { return res; }
+                callback: function(region) {
+                    return { region }
+                }
             }
         },
         banker() {
             return {
                 settings: {},
-                callback: function() {}
+                callback: function() {
+
+                }
             }
         },
         locate() {
