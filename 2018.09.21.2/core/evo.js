@@ -8,20 +8,19 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             this.version = '7.0';
         }
 
-
         apiFunctions() {
-
             //if (this.attr == "mobile" || this.attr == "locate" || this.attr == "idcard") {} else { return }
             //if (this.attr == "banker") {} else { return }
             //if (["author", "banker"].includes(this.attr)) {} else { return }
             //if (["locate"].includes(this.attr)) {} else { return }
-
-
-
             if (!this.value) { return };
             var { account, host, channel, extensionId } = evo;
             Object.assign(this.parameters, { command: "apiFunctions", account, host, channel });
             Object.assign(this, { active: true, region: {}, extensionId });
+
+            console.log(this.parameters);
+            return
+
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(
                     this.extensionId,

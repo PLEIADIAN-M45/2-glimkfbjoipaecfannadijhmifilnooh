@@ -14,6 +14,7 @@ define(['@page'], function() {;
             $scope.components = ['cards'];
 
             var property = ["author", "locate", "mobile", "idcard", "banker", "banker", "banker", "banker", "banker", "banker"]
+            
             var icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
             var heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 

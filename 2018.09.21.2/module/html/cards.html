@@ -1,5 +1,5 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="parameters in datalist" ng-class="{'negative': verify.sheets|| verify.region}" ng-init="extend(parameters); apiFunctions()">
+    <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative': verify.sheets|| verify.region}" ng-init="init(me); apiFunctions(me)">
         <div class="ui dimmer" ng-class="{'active':active}">
             <div class="ui text loader">{{title}}
                 <br>归属地查询中</div>
@@ -7,10 +7,10 @@
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 {{attr}}
-                <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
+                <i class="icon" ng-class="icons[attr]"></i>{{heads[attr]}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon pointer" ng-click="apiFunctions($event); "></i>
+                <i class="sync alternate icon pointer" ng-click="apiFunctions(me, $event); "></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -29,7 +29,7 @@
                 {{region.prov}} {{region.city}} {{region.area}} {{region.country}} {{region.status}}
             </div>
             <div class="sub meta">
-                {{region.meta||region.provider}}-{{timediff}}
+                {{region.meta||region.provider}}-{{time}}
             </div>
         </div>
         <div class="extra content" ng-if="me.attr=='locate'" ng-init="getAllIPAddress(me)">
@@ -43,7 +43,7 @@
         <div class="extra content flex" ng-if="attr!='locate'">
             <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; _getAlertInfo(s, me); apiMemberList(s);">
                 <div class="ui image label">
-                    <div class="detail center">{{s.channel}}-<b>{{s.list_RemittanceName.length}}</b></div>
+                    <div class="detail center">{{channel}}-<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">

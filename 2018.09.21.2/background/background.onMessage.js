@@ -14,13 +14,11 @@ function response_message(request, sender, sendResponse) {
     //console.log(request.command);
     switch (command) {
         case "apiFunctions":
-
-
             function _done(data, status, xhr) {
                 var result = module.callback(data);
                 if (result.region) { verify.region = search.region(result.region) || false; }
                 result.verify = verify;
-                result.timediff = Date.now() - request.time;
+                result.time = Date.now() - request.time;
                 sendResponse(result);
             }
 
@@ -28,6 +26,11 @@ function response_message(request, sender, sendResponse) {
                 //var region = { verify: true, meta: module.provider, status: status };
                 sendResponse({ verify, status, meta: status });
             }
+
+            //console.log(sender.url);
+            var pm = $serializeQueryString(sender.url);
+            console.log(pm);
+
 
             var { attr, host, channel, value } = request;
 

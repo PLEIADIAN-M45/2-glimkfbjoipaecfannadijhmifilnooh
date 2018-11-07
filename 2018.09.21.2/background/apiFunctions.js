@@ -137,7 +137,54 @@ var apiFunctions = {
     },
 
     wa111: {
+        member() {
+            this.index = 1;
+            //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
+            return {
+                callback: function(res) {
+                    console.log(res);
+
+                    /*if (res && res.rows && res.rows.length) {
+                        res.list_RemittanceName = res.rows[0].list_RemittanceName;
+                    }*/
+                    return assign(res, { index });
+                },
+                settings: {
+                    "dataType": 'json',
+                    "url": '@/LoadData/AccountManagement/GetMemberList.ashx',
+                    "data": {
+                        "f_BankAccount": this.banker,
+                        "txtPhoto": this.mobile,
+                        "txtIdCard": this.idcard,
+                        "f_RemittanceName": this.author,
+                        "f_Account": "",
+                        "txtAlipayAccount": "",
+                        "txtEmail": "",
+                        "txtPickName": "",
+                        "txtChat": "",
+                        "ddlBankInfo": "",
+                        "zwrq": "",
+                        "zwrq2": "",
+                        "selSurplus": "",
+                        "selShow": "",
+                        "selIsDeposit": "",
+                        "selLevel": "",
+                        "selBank": "",
+                        "selMutualStatus": "",
+                        "ddlAliPay": "",
+                        "ddlWeChat": "",
+                        "ddlWarn": 0,
+                        "hidevalue_totals": "",
+                        "pageIndex": this.index,
+                        "hidevalue_RecordCount": 0,
+                        "type": "getAllUser",
+                        "_": this.time
+                    }
+                }
+            }
+        },
         author() {
+
             return {
                 callback: function(req) {
                     return {}
@@ -146,6 +193,30 @@ var apiFunctions = {
         },
         mobile() {
             return {
+                callback: function(res) {
+                    return eval(res);
+                },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6004,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_mobile",
+                        "_": this.time,
+                    }
+                }
+            }
+
+            /*
+            return {
                 settings: { "dataType": 'json', "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx', "data": { 'type': 'getPhone', 'phone': this.value, 'account': this.account, "_": this.time } },
                 callback: function(res) {
                     var str = res.msg.replace('<br />', '<br/>').split('<br/>');
@@ -153,7 +224,7 @@ var apiFunctions = {
                     var region = { "prov": arr[0], "city": arr[1], "meta": str[1] }
                     return { region }
                 }
-            }
+            }*/
         },
         idcard() {
             return {

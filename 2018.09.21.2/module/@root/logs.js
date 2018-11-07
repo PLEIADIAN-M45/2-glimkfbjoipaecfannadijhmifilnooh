@@ -5,9 +5,12 @@ define(['@page'], function() {;
     return function main() {
 
         return new Promise(async function(resolve, reject) {
-
+            $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+            $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+            $scope.extensionId = evo.extensionId;
             $scope.extend = function() {
                 if (this == window) { return } else {
+                    //this.active = !this.active;
                     Object.assign(this, ...arguments);
                     if (!this.$$phase) { this.$apply(); }
                 }
@@ -16,7 +19,38 @@ define(['@page'], function() {;
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
             $scope.user = user = await getUser();
+            $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
 
+            $scope.init = function(parameters) {
+                this.extend(parameters);
+                this.parameters = Object.assign({ command: "apiFunctions", host: evo.host }, parameters);
+            }
+
+            $scope.apiFunctions = function(me) {
+                this.active = true;
+                chrome.runtime.sendMessage(
+                    this.extensionId,
+                    this.parameters,
+                    (result) => {
+                        if (result) {
+                            this.active = false;
+                            this.extend(result);
+                        }
+                    });
+            }
+
+
+
+            //apiFunctions:host:property:value
+            //evo.apiFunctions.call(this);
+
+            $scope.apiMemberList = apiMemberList;
+
+            dispatch();
+
+            resolve($scope);
+
+            return;
 
 
             /*var datalist = [
@@ -28,23 +62,78 @@ define(['@page'], function() {;
             ];*/
 
 
-            var datalist = [
-                { attr: "author", head: "汇款户名", icon: "icon universal access" },
-                { attr: "locate", head: "登入网段", icon: "icon map marker alternate" },
-                { attr: "mobile", head: "手机号码", icon: "icon address card" },
-                { attr: "idcard", head: "身份证号", icon: "icon mobile alternate" },
-                { attr: "banker", head: "银行卡号", icon: "icon cc visa" },
-            ];
-
-            ;
-            [user.author, user.locate, user.mobile, user.idcard]
-            .concat(user.banker).map((x, i) => { return Object.assign(datalist[i], x) })
 
 
-            var apiMemberList = function() {
+            /*.map((x, i) => {
+                //console.log(x);
+                //return Object.assign(x, temp[i])
+                /*
+                x.sites = [
+                    { command: "apiFunctions", channel: "26", host: "wa111", attr: "member", [d.attr]: x.value },
+                    //{ channel: "35", host: "wa111", attr: "member", [x.attr]: x.attr },
+                    //{ channel: "17", host: "wa111", attr: "member", [x.attr]: x.attr },
+                    //{ channel: "16", host: "ku711", attr: "member", [x.attr]: x.attr }
+                ]*/
+            //})
+
+            //.map((x) => {
+
+            /*x.sites = [
+                        { command: "apiFunctions", channel: "26", host: "wa111", attr: "member", [x.attr]: x.value },
+                        //{ channel: "35", host: "wa111", attr: "member", [x.attr]: x.attr },
+                        //{ channel: "17", host: "wa111", attr: "member", [x.attr]: x.attr },
+                        //{ channel: "16", host: "ku711", attr: "member", [x.attr]: x.attr }
+                    ]
+                    return x;
+                    console.log(x);
+                //})
+
+
+
+
+            /*
+            .map((x, i) => {
+                var d = datalist[i];
+                x.sites = [
+                    { command: "apiFunctions", channel: "26", host: "wa111", attr: "member", [d.attr]: x.value },
+                    //{ channel: "35", host: "wa111", attr: "member", [x.attr]: x.attr },
+                    //{ channel: "17", host: "wa111", attr: "member", [x.attr]: x.attr },
+                    //{ channel: "16", host: "ku711", attr: "member", [x.attr]: x.attr }
+                ]
+
+
+                return Object.assign(datalist[i], x)
+            });
+            */
+
+
+
+
+
+
+            var apiMemberList = function(args) {
+                //this.extend(args);
                 return
-                Object.assign(this, ...arguments)
 
+                console.log(args);
+                return
+
+                chrome.runtime.sendMessage(evo.extensionId, {
+                    command,
+                    host,
+                    channel,
+                    value,
+                    method
+                }, ([res]) => {
+                    Object.assign(this, res)
+                    this.$apply();
+                    console.log(res);
+                });
+                //evo.apiFunctions.call(this);
+
+                console.log(this);
+
+                return
                 var { host, channel, property, value, command, method } = this;
 
                 return new Promise((resolve, reject) => {
@@ -65,8 +154,14 @@ define(['@page'], function() {;
             }
 
 
+            var apiFunctions = function() {
+                //apiFunctions:host:property:value
+                //evo.apiFunctions.call(this);
+            }
 
-            var apiFunctions = function() {              
+
+
+            var apiFunctions33 = function() {
                 //apiFunctions:host:property:value
                 evo.apiFunctions.call(this);
             }
@@ -75,7 +170,6 @@ define(['@page'], function() {;
 
 
 
-            console.log(datalist);
 
             $scope.datalist = datalist;
             $scope.apiFunctions = apiFunctions;
