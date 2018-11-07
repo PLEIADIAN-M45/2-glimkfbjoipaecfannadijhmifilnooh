@@ -1,43 +1,31 @@
-var ctrl = { select: {}, span: {}, button: {} }
-
 define(['@page', 'SendSms'], function({ setUser }, SendSms) {
- 
-
 
     ;
     'use strict';
 
-    function HTMLCollection() {
-        $('select').each((a, b) => {
-            var name = b.name.split("$").pop();
-            ctrl.select[name] = {};
-            $(b).find('option').each((a, b) => { if (b.value) { ctrl.select[name][b.value] = b.label; } });
-        });
-        $('span').each((a, b) => { if (b.id) { ctrl.span[b.id] = b.outerText; } });
-        $('button').each((a, b) => { if (b.id) { ctrl.button[b.id] = b.outerText; } });
-        //if(b.attributes.onclick) { console.log(b.attributes.onclick.value); }
-    }
-    HTMLCollection();
-
     return function main() {
         return new Promise(async function(resolve, reject) {
-
             $scope.stylesheet = ['edit'];
             $scope.components = ['edit', 'dialog'];
             //return delUser();
             $scope.user = await setUser();
-
-            $scope.user = await getUser() || await setUser();
+            //$scope.user = await getUser() || await setUser();
             $scope.sendsms = new SendSms($scope.user);
-
-
             console.log($scope.user);
+
             resolve($scope);
-
-
         })
     }
 })
+
+
+
+
+
+
+
+
+
 
 
 

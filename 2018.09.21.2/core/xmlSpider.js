@@ -1,7 +1,7 @@
-function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
 function jsonqs(str) {
-    if(str.indexOf('?') == -1) { return undefined }
+    if (str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
@@ -15,8 +15,8 @@ function jsonqs(str) {
 };
 
 function $serializeQueryString22(querystring) {
-    if(!querystring) { return }
-    if(!querystring.includes('=')) { return }
+    if (!querystring) { return }
+    if (!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
         pair = pair.split('=');
@@ -29,9 +29,11 @@ function $serializeQueryString22(querystring) {
 
 function $serializeQueryString(_url) {
     var obj = {};
-    if(_url.includes('?')) {
+    if (_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
+    } else {
+        _url.split('=').forEach(([name, value]) => { obj[name] = value; });
     }
     return obj;
 }
@@ -57,9 +59,9 @@ function $fromJson(obj) {
 
 ;
 (function webpackUniversalModuleDefinition(root, factory) {
-    if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if(typeof define === 'function' && define.amd) define([], factory);
-    else if(typeof exports === 'object') exports["xmlSpider"] = factory();
+    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if (typeof define === 'function' && define.amd) define([], factory);
+    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -98,7 +100,7 @@ function $fromJson(obj) {
         switch (this.hostname) {
             case "wa111":
             case "26":
-                if(this.method == "GET") {
+                if (this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $serializeQueryString('?' + this.postData);
@@ -107,7 +109,7 @@ function $fromJson(obj) {
                 break;
             case "ku711":
             case "16":
-                if(this.method == "GET") {
+                if (this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $toJson(this.postData);
@@ -115,8 +117,8 @@ function $fromJson(obj) {
                 break;
         }
 
-        if(this.sendData) {
-            if(window.moment) {
+        if (this.sendData) {
+            if (window.moment) {
                 this.sendData.timespan = moment().format('YYYY-MM-DD HH:mm:ss')
             } else {
                 this.sendData.timespan = Date.now();
@@ -128,8 +130,8 @@ function $fromJson(obj) {
 
         this.respData = $toJson(this.responseText);
         this.responseJSON = $toJson(this.responseText);
-        if(this.respData) {
-            if(this.respData.Data) { if(this.respData.Data.Message == "更新成功") { this.success = true; } }
+        if (this.respData) {
+            if (this.respData.Data) { if (this.respData.Data.Message == "更新成功") { this.success = true; } }
         }
 
         try {

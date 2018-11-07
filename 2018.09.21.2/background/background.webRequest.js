@@ -94,7 +94,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
     window.origins.set(port, details.initiator);
-    console.log(port, details.initiator);
+    //console.log(port, details.initiator);
 }, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
@@ -130,34 +130,35 @@ function forTest() {
 
 
 
+
+
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
-
     if (details.initiator == location.origin) {
         var headers = JSON.parse(localStorage["baidu"])
-        headers.forEach((x) => {
-            //obj[x.name] = x.value
-            requestHeaders.push({ name: x.name, value: x.value });
-
-        });
-
+        headers.forEach((x) => { requestHeaders.push({ name: x.name, value: x.value }); });
         return { requestHeaders: details.requestHeaders }
-
-        //requestHeaders.push({ name: 'referer', value: url });
-
     } else {
+        console.log(details.requestHeaders);
         localStorage["baidu"] = JSON.stringify(details.requestHeaders)
     }
-    console.log(details.requestHeaders);
-
-    //json(details.requestHeaders)
 }, { urls: ["*://sp0.baidu.com/*/api.*"] }, ['requestHeaders', 'blocking']);
 
 
-/*
-https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?query=117.136.12.104&co=&resource_id=6006&t=1541515306651&ie=utf8&oe=gbk&cb=op_aladdin_callback&format=json&tn=baidu&cb=jQuery110202722053944449192_1541515281759&_=1541515281763
-*/
 
+
+
+
+
+
+
+
+/*
+https://stackoverflow.com/questions/18310484/modify-http-responses-from-a-chrome-extension
+
+https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php?query=117.136.12.104&co=&resource_id=6006&t=
+1541515306651&ie=utf8&oe=gbk&cb=op_aladdin_callback&format=json&tn=baidu&cb=jQuery110202722053944449192_1541515281759&_=1541515281763
+*/
 
 
 

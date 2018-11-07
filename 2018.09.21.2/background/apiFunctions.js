@@ -58,14 +58,94 @@ var search = {
     }
 }
 
+
+
+function callback_baidu_mobile(res) {
+    var d = res.data[0];
+    return {
+        city: d.city,
+        prov: d.prov,
+        meta: d.type
+    }
+}
+
+function callback_baidu_locate(res) {
+    var arr = res.data[0].location.split(' ');
+    var regexp = new RegExp(/(省|市|区|县)/, "g");
+    arr[0] = arr[0].replace(regexp, '$1 ');
+    return { meta: arr[1], prov: arr[0].trim() }
+}
+
+/*
+var callback = {
+   mobile:{} 
+}
+*/
+
+
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 
+
 var apiFunctions = {
+
+    baidu: {
+        mobile() {
+            return {
+                callback: function(res) {
+                    return eval(res);
+                },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6004,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_mobile",
+                        "_": this.time,
+                    }
+                }
+            }
+        },
+        locate() {
+            return {
+                callback: function(res) {
+                    return eval(res);
+                },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6006,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_locate",
+                        "_": this.time,
+                    }
+                }
+            }
+        }
+    },
+
+
     wa111: {
         author() {
             return {
-                settings: {},
-                callback: function() {}
+                callback: function(res) {
+                    return res
+                }
             }
         },
         mobile() {
@@ -76,7 +156,7 @@ var apiFunctions = {
                     var arr = str[0].split('&nbsp;');
                     return { "prov": arr[0], "city": arr[1], "meta": str[1] }
                 }
-            };
+            }
         },
         idcard() {
             return {
@@ -91,136 +171,41 @@ var apiFunctions = {
         },
         banker() {
             return {
-                settings: {},
-                callback: function() {}
+                /*settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this.region
+                },*/
+                callback: function(res) {
+                    return res.region;
+                }
             }
         },
         locate() {
-            function pconline() {
-                return {
-                    provider: "pconline",
-                    settings: {
-                        "dataType": 'html',
-                        "url": 'http://whois.pconline.com.cn/ipJson.jsp',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(d) {
-                        window.IPCallBack = function(d) {
-                            try {
-                                if (d.proCode == "999999") {
-                                    return { "prov": d.pro, "city": d.city, "country": d.addr, "meta": "pconline", }
-                                } else { return { "prov": d.pro, "city": d.city, "area": d.region, "meta": "pconline", } }
-                            } catch (ex) {
-                                return {}
-                            }
-                        };
-                        return eval(d);
-                    }
-                }
-            }
-
-            function baidu() {
-                return {
-                    provider: "baidu",
-                    settings: {
-                        "dataType": 'json',
-                        "url": 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(d) {
-                        try {
-                            return {
-                                "meta": "baidu",
-                                "prov": d.content.address_detail.province,
-                                "city": d.content.address_detail.city,
-                                "country": d.address.split('|')[0].replace('CN', '中国')
-                            }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-
-            function ipapi() {
-                return {
-                    provider: "ipapi",
-                    settings: {
-                        "provider": "ipapi",
-                        "dataType": 'json',
-                        "url": 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN',
-                    },
-                    callback: function(d) {
-                        try {
-                            return { "meta": "ipapi", "prov": d.regionName, "city": d.city, "country": d.country }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-
-            function taobao() {
-                return {
-                    provider: "taobao",
-                    settings: {
-                        "dataType": 'json',
-                        "url": 'http://ip.taobao.com/service/getIpInfo.php',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(res) {
-                        try {
-                            var d = res.data;
-                            return { "meta": "taobao", "prov": d.region.replace('XX', ''), "city": d.city.replace('XX', ''), "country": d.country.replace('XX', '') }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-            var modules = [pconline, baidu, ipapi, taobao];
-            var c = (counter.locate++) % (modules.length);
-            return modules[c].call(this);
-        },
-        member() {
-            var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
             return {
                 callback: function(res) {
-                    if (res && res.rows && res.rows.length) {
-                        res.list_RemittanceName = res.rows[0].list_RemittanceName;
-                    }
-                    return assign(res, { index });
+                    return eval(res);
                 },
                 settings: {
-                    "dataType": 'json',
-                    "url": '@/LoadData/AccountManagement/GetMemberList.ashx',
-                    "data": {
-                        "f_BankAccount": banker,
-                        "txtPhoto": mobile,
-                        "txtIdCard": idcard,
-                        "f_RemittanceName": author,
-                        "f_Account": account,
-                        "txtAlipayAccount": "",
-                        "txtEmail": "",
-                        "txtPickName": "",
-                        "txtChat": "",
-                        "ddlBankInfo": "",
-                        "zwrq": "",
-                        "zwrq2": "",
-                        "selSurplus": "",
-                        "selShow": "",
-                        "selIsDeposit": "",
-                        "selLevel": "",
-                        "selBank": "",
-                        "selMutualStatus": "",
-                        "ddlAliPay": "",
-                        "ddlWeChat": "",
-                        "ddlWarn": 0,
-                        "hidevalue_totals": "",
-                        "pageIndex": index,
-                        "hidevalue_RecordCount": 0,
-                        "type": "getAllUser",
-                        "_": this.time
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6006,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_locate",
+                        "_": this.time,
                     }
                 }
             }
-        },
-
-
+        }
     },
 
     ku711: {
@@ -335,287 +320,63 @@ var apiFunctions = {
         }
     }
 }
-var apiFunctions = {
-    wa111: {
-        author: {
-            settings: {},
-            callback: function() {}
-        },
-        mobile: {
-            settings: { "dataType": 'json', "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx', "data": { 'type': 'getPhone', 'phone': this.value, 'account': this.account, "_": this.time } },
-            callback: function(res) {
-                var str = res.msg.replace('<br />', '<br/>').split('<br/>');
-                var arr = str[0].split('&nbsp;');
-                return { "prov": arr[0], "city": arr[1], "meta": str[1] }
-            }
-        },
-        idcard: {
-            settings: {
-                "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
-                "dataType": 'json',
-                "method": "post",
-                "data": { "idcard": this.value }
-            },
-            callback: function(res) { return res; }
-        },
-        banker: {
-            settings: {},
-            callback: function() {}
-        },
-        locate() {
-            function pconline() {
-                return {
-                    provider: "pconline",
-                    settings: {
-                        "dataType": 'html',
-                        "url": 'http://whois.pconline.com.cn/ipJson.jsp',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(d) {
-                        window.IPCallBack = function(d) {
-                            try {
-                                if (d.proCode == "999999") {
-                                    return { "prov": d.pro, "city": d.city, "country": d.addr, "meta": "pconline", }
-                                } else { return { "prov": d.pro, "city": d.city, "area": d.region, "meta": "pconline", } }
-                            } catch (ex) {
-                                return {}
-                            }
-                        };
-                        return eval(d);
-                    }
-                }
-            }
-
-            function baidu() {
-                return {
-                    provider: "baidu",
-                    settings: {
-                        "dataType": 'json',
-                        "url": 'https://api.map.baidu.com/location/ip?ak=F454f8a5efe5e577997931cc01de3974',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(d) {
-                        try {
-                            return {
-                                "meta": "baidu",
-                                "prov": d.content.address_detail.province,
-                                "city": d.content.address_detail.city,
-                                "country": d.address.split('|')[0].replace('CN', '中国')
-                            }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-
-            function ipapi() {
-                return {
-                    provider: "ipapi",
-                    settings: {
-                        "provider": "ipapi",
-                        "dataType": 'json',
-                        "url": 'http://ip-api.com/json/' + this.value + '?fields=520191&lang=zh-CN',
-                    },
-                    callback: function(d) {
-                        try {
-                            return { "meta": "ipapi", "prov": d.regionName, "city": d.city, "country": d.country }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-
-            function taobao() {
-                return {
-                    provider: "taobao",
-                    settings: {
-                        "dataType": 'json',
-                        "url": 'http://ip.taobao.com/service/getIpInfo.php',
-                        "data": { "ip": this.value },
-                    },
-                    callback: function(res) {
-                        try {
-                            var d = res.data;
-                            return { "meta": "taobao", "prov": d.region.replace('XX', ''), "city": d.city.replace('XX', ''), "country": d.country.replace('XX', '') }
-                        } catch (ex) { return {} }
-                    }
-                }
-            }
-            var modules = [pconline, baidu, ipapi, taobao];
-            var c = (counter.locate++) % (modules.length);
-            return modules[c].call(this);
-        },
-        member() {
-            var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
-            return {
-                callback: function(res) {
-                    if (res && res.rows && res.rows.length) {
-                        res.list_RemittanceName = res.rows[0].list_RemittanceName;
-                    }
-                    return assign(res, { index });
-                },
-                settings: {
-                    "dataType": 'json',
-                    "url": '@/LoadData/AccountManagement/GetMemberList.ashx',
-                    "data": {
-                        "f_BankAccount": banker,
-                        "txtPhoto": mobile,
-                        "txtIdCard": idcard,
-                        "f_RemittanceName": author,
-                        "f_Account": account,
-                        "txtAlipayAccount": "",
-                        "txtEmail": "",
-                        "txtPickName": "",
-                        "txtChat": "",
-                        "ddlBankInfo": "",
-                        "zwrq": "",
-                        "zwrq2": "",
-                        "selSurplus": "",
-                        "selShow": "",
-                        "selIsDeposit": "",
-                        "selLevel": "",
-                        "selBank": "",
-                        "selMutualStatus": "",
-                        "ddlAliPay": "",
-                        "ddlWeChat": "",
-                        "ddlWarn": 0,
-                        "hidevalue_totals": "",
-                        "pageIndex": index,
-                        "hidevalue_RecordCount": 0,
-                        "type": "getAllUser",
-                        "_": this.time
-                    }
-                }
-            }
-        },
 
 
-    },
 
-    ku711: {
-        author() {
-            return {
-                settings: {},
-                callback: function() {}
-            }
-        },
 
-        mobile() {
-            return {
-                provider: "ku711",
-                settings: {
-                    "method": 'post',
-                    "dataType": 'json',
-                    "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal',
-                    "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 },
-                },
-                callback: function(res) {
-                    var d = res.Data;
-                    return { "prov": d.Province, "city": d.City, "meta": d.Cardtype }
-                }
-            }
-        },
-        idcard() {
-            return {
-                settings: {
-                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
-                    "dataType": 'json',
-                    "method": "post",
-                    "data": { "idcard": this.value }
-                },
-                callback: function(res) { return res; }
-            }
-        },
-        banker() {
-            return {
-                settings: {},
-                callback: function() {}
-            }
-        },
-        locate() {
-
-        },
-
-        member() {
-            var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
-            return {
-                callback: function(res) {
-                    var d = res.Data;
-                    return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
-                },
-                settings: {
-                    "dataType": 'json',
-                    "method": 'post',
-                    "url": '@/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
-                    "data": {
-                        "AccountID": "",
-                        "IDNumber": idcard,
-                        "RigistedIP": "",
-                        "TotalDepositAmount": null,
-                        "AccountNumber": "",
-                        "AccountName": author,
-                        "Email": "",
-                        "PhoneVerified": null,
-                        "IDVerified": null,
-                        "MinDeposit": null,
-                        "MaxDeposit": null,
-                        "StartRegistedTime": "",
-                        "EndRegistedTime": "",
-                        "PageNumber": index - 1,
-                        "RecordCounts": 20,
-                        "OrderField": "",
-                        "Desc": "true",
-                        "TotalDepositBonus": null,
-                        "AccountBookLevel": "",
-                        "AliPayLevel": "",
-                        "WeChatLevel": "",
-                        "CellPhone": mobile,
-                        "IsBlackList": null,
-                        "LevelType": null,
-                        "MemberStatus": null,
-                        "IsFisrstDeposit": null,
-                        "MemberMemoType": null,
-                        "TransferOutStatus": null,
-                        "IsLogIn": null,
-                        "AgencyID": "",
-                        "TestType": null,
-                        "PayeeAccountNo": banker,
-                        "LineType": "",
-                        "AccountingType": null,
-                        "ManageAccountID": "",
-                        "NickName": ""
-                    }
-                }
-            }
-        },
-
-        alerts() {
-            return {
-                settings: {
-                    "method": 'post',
-                    "dataType": 'json',
-                    "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
-                    "data": this.params
-                },
-                callback: function(res) {
-                    return { "list_Accounts": res.Data }
-                }
-            }
-        }
+function $serializeQueryString(_url) {
+    _url = decodeURIComponent(_url);
+    var obj = {};
+    if (_url.includes('?')) {
+        _url.split('?')[1].split('&').map((x) => { return x.split('='); })
+            .forEach(([name, value]) => { obj[name] = value; });
+    } else {
+        _url.split('&').map((x) => { return x.split('='); })
+            .forEach(([name, value]) => { obj[name] = value; });
     }
+    return obj;
+}
+
+
+function $toJson(str) {
+    try {
+        var obj = JSON.parse(str);
+    } catch (ex) {
+        var obj = str;
+    }
+    return obj;
+}
+
+function $fromJson(obj) {
+    try {
+        var str = JSON.stringify(obj);
+    } catch (ex) {
+        var str = obj;
+    }
+    return str;
 }
 
 console.log(apiFunctions);
+//console.log(JSON.stringify(apiFunctions));
+//console.log(evo.decoder(localStorage["gb2260"]));
+var province = [
+    "河北省", "山西省", "吉林省", "辽宁省", "黑龙江省", "陕西省", "甘肃省", "青海省",
+    "山东省", "福建省", "浙江省", "台湾省", "河南省", "湖北省", "湖南省", "江西省",
+    "江苏省", "安徽省", "广东省", "海南省", "四川省", "贵州省", "云南省",
+    "北京市", "上海市", "天津市", "重庆市",
+    "内蒙古自治区", "新疆维吾尔自治区", "宁夏回族自治区", "广西壮族自治区", "西藏自治区",
+    "香港特别行政区", "澳门特别行政区"
+];
 
-console.log(JSON.stringify(apiFunctions));
 
 
 
+Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker", 'post', function(req) {
+    var data = $serializeQueryString(req.body);
+    return Mock.mock(data)
+});
 
-
-
-
-
-
-Mock.mock(/(glimkfbjoipaecfannadijhmifilnooh)/, 'post', function(req) {
+Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard", 'post', function(req) {
     var _idcard = req.body.split('=').pop();
     var GBMAP = new Map(evo.decoder(localStorage["gb2260"]));
     var [$1, $2, $3, $4, $5, $6, $7] = _idcard.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
@@ -630,6 +391,71 @@ Mock.mock(/(glimkfbjoipaecfannadijhmifilnooh)/, 'post', function(req) {
         "meta": [birth, sex, age].join('/')
     })
 });
+
+
+
+
+//console.log(province.join('|'));
+
+//var regexp = new RegExp('(' + province.join('|') + ')');
+//console.log(regexp);
+
+/*
+str = str.split(" ")[0];
+console.log(str);
+console.log(str.split('省'));
+*/
+
+
+/*
+var regexp = new RegExp(/(省|市|区)/, "g");
+var str = "河南省洛阳市 电信";
+var arr = str.replace(regexp, '-')
+console.log(arr);
+var regexp = new RegExp(/.+(省)/, "g");
+var str = "河南省洛阳市 电信";
+var str2 = str.replace(regexp, '-')
+console.log(str2);
+console.log(RegExp.$1);
+var regexp = new RegExp(/(.+省)(.+市)(.+区)/, "g");
+
+
+
+var str = "河南省洛阳市 电信";
+var str2 = str.replace(/(.+省)(.+市)(.+区)/g, '')
+console.log("str2", str2);
+console.log(RegExp.$1);
+console.log(RegExp.$2);
+console.log(RegExp.$3);
+*/
+
+
+/*
+console.log(str.split('省'));
+console.log(str.split('市'));
+*/
+
+//console.log(0x0002);
+
+
+//var arr = str.split(/(省|市|区)/);
+//var arr = str.split(regexp);
+//console.log(arr);
+/*
+var test = regexp.exec(str);
+console.log(test);*/
+
+/*
+var array1;
+while ((array1 = regexp.exec(str)) !== null) {
+    console.log(`Found ${array1[0]}. Next starts at ${regexp.lastIndex}.`);
+}
+
+
+var found = str.match(regexp);
+console.log(found);
+*/
+
 
 /*
 $.ajax({
@@ -675,9 +501,3 @@ apiFunctions.prototype["idcard"]["evo"] = function() {
 }*/
 
 //var apiFunctions = new ApiFunctions()
-
-
-{
-    "wa111": { "author": { "settings": {} }, "mobile": { "settings": { "dataType": "json", "url": "@/LoadData/AccountManagement/GetInfoAPI.ashx", "data": { "type": "getPhone" } } }, "idcard": { "settings": { "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard", "dataType": "json", "method": "post", "data": {} } }, "banker": { "settings": {} } },
-    "ku711": {}
-}

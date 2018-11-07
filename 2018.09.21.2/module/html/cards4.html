@@ -1,7 +1,7 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="parameters in datalist" ng-class="{'negative': sheets.verify||region.verify}" ng-init="extend(parameters); apiFunctions()">
+    <div class="ui card" ng-repeat="me in datalist" ng-class="{'negative': sheets.verify||region.verify}" ng-init="extend(me); apiFunctions()">
         <div class="ui dimmer" ng-class="{'active':active}">
-            <div class="ui text loader">{{title}}
+            <div class="ui text loader">{{me.title}}
                 <br>归属地查询中</div>
         </div>
         <div class="ui top attached content compact">
@@ -10,13 +10,13 @@
                 <i class="icon" ng-class="icon"></i>{{head}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon pointer" ng-click="apiFunctions($event); "></i>
+                <i class="sync alternate icon pointer" ng-click="apiFunctions(me, $event); "></i>
             </div>
         </div>
         <div class="content compact center aligned">
             <div class="header">{{value||"------"}}</div>
         </div>
-        <div class="content center aligned" ng-if="property=='author'">
+        <div class="content center aligned" ng-if="me.property=='author'">
             <div class="header padded">
                 {{sheets.verify[3]}}
             </div>
@@ -24,7 +24,7 @@
                 {{sheets.verify[1]}}-{{sheets.verify[2]}}
             </div>
         </div>
-        <div class="content center aligned" ng-if="property!='author'">
+        <div class="content center aligned" ng-if="me.property!='author'">
             <div class="header padded">
                 {{region.prov}} {{region.city}} {{region.area}} {{region.country}} {{region.status}}
             </div>

@@ -3,9 +3,84 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     'use strict';
 
     class Evo {
+
         constructor() {
             this.version = '7.0';
         }
+
+
+        apiFunctions() {
+
+            //if (this.attr == "mobile" || this.attr == "locate" || this.attr == "idcard") {} else { return }
+
+            //if (this.attr == "banker") {} else { return }
+            if (this.attr == "author") {} else { return }
+
+
+
+            if (!this.value) { return };
+            var { account, host, channel, extensionId } = evo;
+            Object.assign(this.parameters, { command: "apiFunctions", account, host, channel });
+            Object.assign(this, { active: true, region: {}, extensionId });
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(
+                    this.extensionId,
+                    this.parameters,
+                    (result) => {
+                        if (result) {
+                            console.log(result);
+                            //console.log(this);
+                            Object.assign(this, result)
+                            this.active = false;
+                            this.$apply();
+                        }
+                        //try {} catch (ex) {}
+                        //resolve(result);
+                    });
+
+            });
+
+            //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
+            //chrome.runtime.sendMessage(evo.extensionId, { command, property, value, host, channel, account, region }, callback)
+            //apiFunctions:region:host:channel
+            /*
+                        console.log(request);
+                        return new Promise(function(resolve, reject) {
+                            chrome.runtime.sendMessage(evo.extensionId, request, function([result, status, xhr]) {
+                                console.log(result);
+
+                            })
+                        })*/
+
+            //console.log(request);
+            /*
+            var { value, proto, account, channel, host } = request;
+            console.log({ value, proto, account, channel, host });
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, { value, proto, account, channel, host }, function([result, status, xhr]) {
+                    console.log(result);
+                    //resolve({ ...result, status, active: false });
+                    //console.log(request.command, result);
+                    //resolve({ ...result, status, active: false });
+                })
+            })*/
+            return
+            try { var req = assign(...request); } catch (ex) { var req = request; }
+
+            req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
+
+            return new Promise(function(resolve, reject) {
+                chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
+                    //resolve({ ...result, status, active: false });
+                    //console.log(request.command, result);
+                    resolve({ ...result, status, active: false });
+
+                })
+            })
+
+        }
+
+
 
         get baseUrl() {
             return localStorage.chrome_runtime_baseUrl;
@@ -56,7 +131,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return {
                 "wa111": "",
                 "ku711": $('ajax-anti-forgery-token').attr('token')
-            }[this.host];
+            } [this.host];
         }
 
         get formData() {
@@ -72,83 +147,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         connect(message) {
             chrome.runtime.connect(this.extensionId, { name: this.channel })
-        }
-
-
-        apiFunctions() {
-            if (!this.value) { return };
-            var { account, host, channel } = evo;
-            var { command = "apiFunctions", property, value } = this;
-            var parameters = { command, property, value, host, channel, account };
-            this.active = true;
-            if (property == "banker") {
-                console.log(this.region);
-                parameters.region = this.region
-            } else {
-                this.region = {};
-            }
-
-            return new Promise((resolve, reject) => {
-                //if (!params.value) { resolve({ active: false }) }
-                chrome.runtime.sendMessage(evo.extensionId, parameters, (result) => {
-                    if (result) {
-                        console.log(result);
-                        //console.log(this);
-                        Object.assign(this, result)
-                        this.active = false;
-                        this.$apply();
-                    }
-                    try {
-
-
-                    } catch (ex) {
-
-                    }
-
-                    //result.active = false;
-                    //resolve(result);
-                });
-
-            });
-
-            //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
-            //chrome.runtime.sendMessage(evo.extensionId, { command, property, value, host, channel, account, region }, callback)
-            //apiFunctions:region:host:channel
-            /*
-                        console.log(request);
-                        return new Promise(function(resolve, reject) {
-                            chrome.runtime.sendMessage(evo.extensionId, request, function([result, status, xhr]) {
-                                console.log(result);
-
-                            })
-                        })*/
-
-            //console.log(request);
-            /*
-            var { value, proto, account, channel, host } = request;
-            console.log({ value, proto, account, channel, host });
-            return new Promise(function(resolve, reject) {
-                chrome.runtime.sendMessage(evo.extensionId, { value, proto, account, channel, host }, function([result, status, xhr]) {
-                    console.log(result);
-                    //resolve({ ...result, status, active: false });
-                    //console.log(request.command, result);
-                    //resolve({ ...result, status, active: false });
-                })
-            })*/
-            return
-            try { var req = assign(...request); } catch (ex) { var req = request; }
-
-            req.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
-
-            return new Promise(function(resolve, reject) {
-                chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
-                    //resolve({ ...result, status, active: false });
-                    //console.log(request.command, result);
-                    resolve({ ...result, status, active: false });
-
-                })
-            })
-
         }
 
 
@@ -254,7 +252,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                 "26": "wa111",
                 "16": "ku711",
                 "": location.host.split('.')[1]
-            }[location.port];
+            } [location.port];
         }
 
         get apiPath() {
@@ -331,7 +329,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     "bonuslog": "bonus",
                     "memberloginlog": "log"
                 }
-            }[this.host][this.filename];
+            } [this.host][this.filename];
         }
 
         get router() { return [this.host, this.path].join('/'); }

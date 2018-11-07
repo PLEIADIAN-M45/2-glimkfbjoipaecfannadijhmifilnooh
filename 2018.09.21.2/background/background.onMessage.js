@@ -7,66 +7,68 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
 })
 
 function response_message(request, sender, sendResponse) {
+    request.time = Date.now();
 
     var [command, method, key] = array = request.command.split(':');
     // var [commander, property, proxy, channel] = request.command.split(':');
     //console.log(request.command);
     switch (command) {
         case "apiFunctions":
-            //console.log(request);
-            request.time = Date.now();
-            var module = apiFunctions[request.host][request.property].call(request);
-            var sheets = { verify: search[request.property](request.value) || false };
 
-            if (module.settings.url) {
-                module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', window.origins.get(request.channel));
-                //console.log(module);
-                $.ajax(module.settings)
-                    .done((data, status, xhr) => {
-                        var region = module.callback(data);
-                        region.verify = search.region(region) || false;
-                        var result = { region, sheets };
-                        // console.log(result);
-                        sendResponse(result);
-                    })
-                    .fail((xhr, status, error) => {
-                        var region = { verify: true, meta: module.provider, status: status };
-                        var result = { region, sheets };
-                        sendResponse(result);
-                    })
-            } else {
-                console.log(request);
-                if (request.region) {
-                    var region = request.region;
-                    region.verify = search.region(region) || false;
-                    var result = { region, sheets };
-                } else {
-                    var result = { sheets };
-                }
+            function _done(data, status, xhr) {
+                console.log(data);
+                var region = module.callback(data);
+                region.verify = search.region(region) || false;
+                var result = { region, sheets };
+                console.log(result);
                 sendResponse(result);
             }
 
-            if (module) {
-
-
-
+            function _fail(xhr, status, error) {
+                var region = { verify: true, meta: module.provider, status: status };
+                var result = { region, sheets };
+                sendResponse(result);
             }
-            /*
-            if (request.property == "idcard") {
-                //console.log(request);
-                //console.log(evo.decoder(localStorage["gb2260"]));
-                $.ajax(module.settings)
-                    .done((data, status, xhr) => {
-                        console.log(data);
-                    })
 
+            var module = apiFunctions[request.host][request.attr].call(request);
+            //console.log(module);
+            var baseUrl = window.origins.get(request.channel);
+            //console.log(request.channel, baseUrl);
+            var sheets = {
+                verify: search[request.attr](request.value)
+            };
+            
+
+            if (module.settings) {
+                module.settings.timeout = 5000;
+                module.settings.url = module.settings.url.replace('@', baseUrl);
+                console.log(module.settings);
+                $.ajax(module.settings).done(_done).fail(_fail);
             } else {
+                _done(request);
+            }
 
-            }*/
+            /*
+            $.ajax(module.settings)
+                .done((data, status, xhr) => {
+                    console.log(data);
+                    var region = module.callback(data);
+                    region.verify = search.region(region) || false;
+                    var result = { region, sheets };
+                    console.log(result);
+                    sendResponse(result);
+                })
+                .fail((xhr, status, error) => {
+                    console.log(error);
+                    return
+                    var region = { verify: true, meta: module.provider, status: status };
+                    var result = { region, sheets };
+                    sendResponse(result);
+                })*/
 
             return true;
             break;
+
         case "google":
             delete request.banker[0].sites;
             delete request.idcard.sites;

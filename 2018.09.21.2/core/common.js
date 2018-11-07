@@ -168,6 +168,18 @@ async function start() {
 
 }
 
+function HTMLCollection() {
+    var ctrl = { select: {}, span: {}, button: {} }
+    $('select').each((a, b) => {
+        var name = b.name.split("$").pop();
+        ctrl.select[name] = {};
+        $(b).find('option').each((a, b) => { if (b.value) { ctrl.select[name][b.value] = b.label; } });
+    });
+    $('span').each((a, b) => { if (b.id) { ctrl.span[b.id] = b.outerText; } });
+    $('button').each((a, b) => { if (b.id) { ctrl.button[b.id] = b.outerText; } });
+    //if(b.attributes.onclick) { console.log(b.attributes.onclick.value); }
+}
+
 
 async function start2() {
 
