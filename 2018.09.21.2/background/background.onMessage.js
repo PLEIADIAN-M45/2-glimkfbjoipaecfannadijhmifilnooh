@@ -27,21 +27,25 @@ function response_message(request, sender, sendResponse) {
                 sendResponse({ verify, status, meta: status });
             }
 
+
             //console.log(sender.url);
-            var pm = $serializeQueryString(sender.url);
-            console.log(pm);
-
-
+            var params = $serializeQueryString(sender.url);
             var { attr, host, channel, value } = request;
+            Object.assign(request, params);
 
-            var verify = {};
 
-            if (search[attr]) { verify.sheets = search[attr](value) || false };
+            if (search[attr]) {
+                var verify = {};
+                verify.sheets = search[attr](value) || false
+            };
 
             var module = apiFunctions[host][attr].call(request);
             if (module.settings) {
                 module.settings.timeout = 5000;
                 module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
+                if (module.settings.url.includes('ku711')) {
+                    module.settings.data = JSON.stringify(module.settings.data);
+                }
                 //console.log(module.settings);
                 $.ajax(module.settings).done(_done).fail(_fail);
                 return true;

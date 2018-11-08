@@ -13,6 +13,7 @@ define(['@page'], function() {;
                 if (this == window) { return } else {
                     //this.active = !this.active;
                     Object.assign(this, ...arguments);
+                    //this.parameters = arguments[0];
                     if (!this.$$phase) { this.$apply(); }
                 }
             }
@@ -21,6 +22,16 @@ define(['@page'], function() {;
             $scope.components = ['cards'];
             $scope.user = user = await getUser();
             $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
+
+            $scope.userlist.map((x) => {
+                x.sites = [
+                    //{ command: "apiFunctions", host: "wa111", channel: "35", attr: "member", [x.attr]: x.value, index: 1 },
+                    { command: "apiFunctions", host: "ku711", channel: "16", attr: "member", [x.attr]: x.value, index: 1 }
+
+                ]
+
+                return x;
+            })
 
             console.log($scope.user);
 
@@ -31,10 +42,10 @@ define(['@page'], function() {;
             }
 
             $scope.apiFunctions = function(me, e) {
-
                 if (this.active == undefined || e) {
+                    console.log(1);
+                    //return eval(res);
                     this.active = true;
-                    
                     chrome.runtime.sendMessage(
                         this.extensionId,
                         this.parameters,
@@ -49,12 +60,101 @@ define(['@page'], function() {;
                 }
             }
 
+            $scope.apiMemberList = function(s) {
+                this.extend(s);
+                this.active = true;
+                chrome.runtime.sendMessage(
+                    this.extensionId,
+                    this.s,
+                    (result) => {
+                        if (result) {
+                            this.active = false;
+                            this.extend(result);
+                            //console.log(this);
+                        }
+                    });
+            }
+
+
+            $scope.getAlertInfo = function(s) {
+                if (s.host == "ku711" && s.author) {
+                    chrome.runtime.sendMessage(
+                        this.extensionId, {
+                            command: "apiFunctions",
+                            attr: "alerts",
+                            host: "ku711",
+                            channel: "16",
+                            author: s.author,
+                        },
+                        (result) => {
+                            if (result) {
+                                this.extend(result);
+                                this.apiMemberList(s);
+                            }
+                        });
+                } else {
+                    //$scope.apiMemberList(s)
+                }
+            }
+
+            $scope.setPopup = function() {
+                this.popid = "pop_" + this.$id;
+                setTimeout(function(popid) {
+                    var $target = $(popid).parent();
+                    var content = $(popid).html();
+                    $target.popup({
+                        html: content,
+                        hoverable: true,
+                        setFluidWidth: true,
+                        exclusive: true,
+                        on: "hover",
+                        position: "bottom left",
+                        variation: "special"
+                    });
+                }, 500, "#" + this.popid);
+            };
+
+
+
+            $scope.changeColor = function(args) {
+
+                this.extend(args);
+                //console.log(this);
+
+                // this.popup_id = "popup_" + this.$id;
+
+                /*
+                this.extend();               
+                console.log(this.$id);*/
+
+
+                this.list_Accounts = this.list_RemittanceName.filter((x) => { return x.AccountID == this.AccountID; });
+
+                if (this.list_Accounts.length) { this.color = "pink" };
+
+
+
+
+                //console.log(this.channel);
+
+
+                /*
+                if (s.channel == "16" && s.author) { r.list_Accounts = s.list_Accounts[r.AccountID] }
+
+                //console.log(r, s);
+                if (r.list_Accounts && r.list_Accounts.length) { r.color = "pink" };
+                var black = r.f_blacklist || r.IsBlackList;
+                if (black == 17 || black == true) { r.color = "black"; };
+                var sequel = r.f_id || r.MNO;
+                if (sequel == $scope.user.sequel) { r.color = "brown" };*/
+
+            };
+
 
 
             //apiFunctions:host:property:value
             //evo.apiFunctions.call(this);
 
-            $scope.apiMemberList = apiMemberList;
 
             dispatch();
 
@@ -269,18 +369,6 @@ define(['@page'], function() {;
             };
 
 
-
-            $scope.changeColor = function(r, s) {
-                if (s.channel == "16" && s.author) { r.list_Accounts = s.list_Accounts[r.AccountID] }
-
-                //console.log(r, s);
-                if (r.list_Accounts && r.list_Accounts.length) { r.color = "pink" };
-                var black = r.f_blacklist || r.IsBlackList;
-                if (black == 17 || black == true) { r.color = "black"; };
-                var sequel = r.f_id || r.MNO;
-                if (sequel == $scope.user.sequel) { r.color = "brown" };
-
-            };
 
 
 

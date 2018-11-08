@@ -94,10 +94,11 @@ var counter = { locate: 0, mobile: 0, idcard: 0 };
 var apiFunctions = {
     wa111: {
         member() {
-            this.index = 1;
+            var { index } = this;
             //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
             return {
                 callback: function(res) {
+
                     console.log(res);
                     /*if (res && res.rows && res.rows.length) {
                         res.list_RemittanceName = res.rows[0].list_RemittanceName;
@@ -279,7 +280,7 @@ var apiFunctions = {
         },
 
         member() {
-            var { index = 1, banker = "", mobile = "", idcard = "", author = "", time } = this;
+            var { index } = this;
             return {
                 callback: function(res) {
                     var d = res.Data;
@@ -291,11 +292,11 @@ var apiFunctions = {
                     "url": '@/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
                     "data": {
                         "AccountID": "",
-                        "IDNumber": idcard,
+                        "IDNumber": this.idcard,
                         "RigistedIP": "",
                         "TotalDepositAmount": null,
                         "AccountNumber": "",
-                        "AccountName": author,
+                        "AccountName": this.author,
                         "Email": "",
                         "PhoneVerified": null,
                         "IDVerified": null,
@@ -303,7 +304,7 @@ var apiFunctions = {
                         "MaxDeposit": null,
                         "StartRegistedTime": "",
                         "EndRegistedTime": "",
-                        "PageNumber": index - 1,
+                        "PageNumber": this.index - 1,
                         "RecordCounts": 20,
                         "OrderField": "",
                         "Desc": "true",
@@ -311,7 +312,7 @@ var apiFunctions = {
                         "AccountBookLevel": "",
                         "AliPayLevel": "",
                         "WeChatLevel": "",
-                        "CellPhone": mobile,
+                        "CellPhone": this.mobile,
                         "IsBlackList": null,
                         "LevelType": null,
                         "MemberStatus": null,
@@ -321,7 +322,7 @@ var apiFunctions = {
                         "IsLogIn": null,
                         "AgencyID": "",
                         "TestType": null,
-                        "PayeeAccountNo": banker,
+                        "PayeeAccountNo": this.banker,
                         "LineType": "",
                         "AccountingType": null,
                         "ManageAccountID": "",
@@ -331,7 +332,30 @@ var apiFunctions = {
             }
         },
 
+
         alerts() {
+            console.log(this.member);
+            return {
+                settings: {
+                    "method": 'post',
+                    "dataType": 'json',
+                    "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    "data": {
+                        "DisplayArea": "1",
+                        "Account": [{ "AccountID": this.member, "AccountName": this.author }]
+                    }
+                },
+                callback: function(res) {
+                    console.log(res);
+                    return {
+                        //"list_Accounts": res.Data.AlertInfoAccountId,
+                        "list_RemittanceName": res.Data.AlertInfoAccountName
+                    }
+                }
+            }
+        },
+
+        alerts2() {
             return {
                 settings: {
                     "method": 'post',

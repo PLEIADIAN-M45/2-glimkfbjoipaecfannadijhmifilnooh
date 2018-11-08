@@ -41,26 +41,23 @@
             </div>
         </div>
         <div class="extra content flex" ng-if="attr!='locate'">
-            <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; _getAlertInfo(s, me); apiMemberList(s);">
+            <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; getAlertInfo(s);">
                 <div class="ui image label">
-                    <div class="detail center">{{channel}}-<b>{{s.list_RemittanceName.length}}</b></div>
+                    <div class="detail center">{{channel}}-<b>{{list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s, me );" ng-disabled="s.index==1 || s.active"></i>
-                    <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s, me );" ng-disabled="s.index>=s.records || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index=s.index-1; apiMemberList(s);" ng-disabled="index==1||active"></i>
+                    <div class="detail center" ng-show="active"><i class="spinner loading icon"></i></div>
+                    <div class="detail center" ng-hide="active"><b ng-show="records">{{index}}/</b>{{records}}</div>
+                    <i class="angle right icon" ng-click="s.index=s.index+1; apiMemberList(s);" ng-disabled="index>=records||active"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in rows" ng-click="showMemberModify(row, s)" ng-init="
-                _getAlertInfoByID(row, s);
-            changeColor(row, s);
-                popup_id = 'popup_' + $id;" ng-class="[row.color]" id="{{popup_id}}">
-                    <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
-                    <!-- extra content 警示訊息-->
-                    <aside class="hidden">
-                        <table class="ui celled selectable striped collapsing table inverted pink small" ng-init="setPopup(row , this, popup_id)" ng-if="row.list_Accounts.length">
+                <div class="ui image label pointer" ng-repeat="r in rows" ng-click="showMemberModify()" ng-init="changeColor(r);" ng-class="[color]">
+                    <div class="detail">{{f_accounts||AccountID|uppercase}}</div>
+
+                    <aside class="hidden" ng-init="setPopup()" ng-if="list_Accounts.length" id="{{popid}}">
+                        <table class="ui celled selectable striped collapsing table inverted pink small">
                             <thead>
                                 <th>警示帐号</th>
                                 <th>汇款户名</th>
@@ -68,7 +65,7 @@
                                 <th>警示讯息</th>
                             </thead>
                             <tbody>
-                                <tr ng-repeat="w in row.list_Accounts">
+                                <tr ng-repeat="w in list_Accounts">
                                     <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
                                     <td>{{w.f_RemittanceName||w.AccountName}}</td>
                                     <td>{{w.f_RemittanceAccount}}</td>
