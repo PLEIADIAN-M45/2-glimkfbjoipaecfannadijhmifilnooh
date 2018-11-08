@@ -5,9 +5,24 @@ define(['@page'], function() {;
     return function main() {
 
         return new Promise(async function(resolve, reject) {
+
             $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
             $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
             $scope.extensionId = evo.extensionId;
+
+
+            $scope.stylesheet = ['logs', 'cards'];
+            $scope.components = ['cards'];
+            $scope.user = user = await getUser();
+            $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
+            $scope.userlist.map((x) => {
+                x.sites = [
+                    //{ command: "apiFunctions", host: "wa111", channel: "35", attr: "member", [x.attr]: x.value, index: 1 },
+                    { command: "apiFunctions", host: "ku711", channel: "16", attr: "member", [x.attr]: x.value, index: 1 }
+                ];
+                return x;
+
+            });
 
             $scope.extend = function() {
                 if (this == window) { return } else {
@@ -17,23 +32,6 @@ define(['@page'], function() {;
                     if (!this.$$phase) { this.$apply(); }
                 }
             }
-
-            $scope.stylesheet = ['logs', 'cards'];
-            $scope.components = ['cards'];
-            $scope.user = user = await getUser();
-            $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
-
-            $scope.userlist.map((x) => {
-                x.sites = [
-                    //{ command: "apiFunctions", host: "wa111", channel: "35", attr: "member", [x.attr]: x.value, index: 1 },
-                    { command: "apiFunctions", host: "ku711", channel: "16", attr: "member", [x.attr]: x.value, index: 1 }
-
-                ]
-
-                return x;
-            })
-
-            console.log($scope.user);
 
             $scope.init = function(parameters) {
                 /* parameters==me */
@@ -60,9 +58,11 @@ define(['@page'], function() {;
                 }
             }
 
-            $scope.apiMemberList = function(s) {
+
+            $scope.apiMemberList = async function(s) {
                 this.extend(s);
                 this.active = true;
+                this.rows = [];
                 chrome.runtime.sendMessage(
                     this.extensionId,
                     this.s,
@@ -70,31 +70,67 @@ define(['@page'], function() {;
                         if (result) {
                             this.active = false;
                             this.extend(result);
-                            //console.log(this);
                         }
                     });
+
+                //if (s.host == "ku711" && s.author) {}
             }
 
 
-            $scope.getAlertInfo = function(s) {
-                if (s.host == "ku711" && s.author) {
+            $scope.getRemittanceName = function(s) {
+
+            }
+
+
+            $scope.getAlertInfo = function(r) {
+
+                if (this.host == "ku711") {
+                    //console.log(this.author);
+                    if (this.author) {
+
+                    } else {
+                        chrome.runtime.sendMessage(
+                            this.extensionId, {
+                                command: "apiFunctions",
+                                attr: "alerts",
+                                host: "ku711",
+                                channel: "16",
+                                account: $scope.user.account,
+                                author: "",
+                            },
+                            (result) => {
+                                if (result) {
+                                    console.log(2, result);
+                                    //this.active = false;                                
+                                    this.extend(result);
+                                }
+                            });
+                    }
+
+                    /*
                     chrome.runtime.sendMessage(
                         this.extensionId, {
                             command: "apiFunctions",
                             attr: "alerts",
                             host: "ku711",
                             channel: "16",
+                            account: $scope.user.account,
                             author: s.author,
                         },
                         (result) => {
                             if (result) {
+                                console.log(2, result);
+                                //this.active = false;                                
                                 this.extend(result);
-                                this.apiMemberList(s);
                             }
-                        });
-                } else {
-                    //$scope.apiMemberList(s)
+                        });*/
+
                 }
+
+                /* else {
+                    this.list_RemittanceName = [];
+                    //$scope.apiMemberList(s)
+                }*/
             }
 
             $scope.setPopup = function() {
@@ -115,23 +151,21 @@ define(['@page'], function() {;
             };
 
 
-
             $scope.changeColor = function(args) {
+                
+                //console.log($scope.user.sequel);
+
+                console.log(this.list_Accounts);
 
                 this.extend(args);
-                //console.log(this);
 
-                // this.popup_id = "popup_" + this.$id;
-
-                /*
-                this.extend();               
-                console.log(this.$id);*/
-
-
-                this.list_Accounts = this.list_RemittanceName.filter((x) => { return x.AccountID == this.AccountID; });
+                //this.list_Accounts =                    this.list_RemittanceName.filter((x) => { return x.AccountID == this.AccountID; });
 
                 if (this.list_Accounts.length) { this.color = "pink" };
-
+                if (this.f_blacklist == 17) { this.color = "black" };
+                if (this.IsBlackList == true) { this.color = "black" };
+                if (this.f_id == $scope.user.sequel) { this.color = "brown" };
+                if (this.MNO == $scope.user.sequel) { this.color = "brown" };
 
 
 

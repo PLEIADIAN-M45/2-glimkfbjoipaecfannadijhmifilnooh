@@ -79,7 +79,7 @@ function callback_baidu_locate(res) {
     }
 
     if (string) {
-        string = string.replace(/(.+(市))/g, '');
+        string = string.replace(/(.+(市|州))/g, '');
         region.city = RegExp.$1;
     }
 
@@ -334,7 +334,7 @@ var apiFunctions = {
 
 
         alerts() {
-            console.log(this.member);
+            //console.log(this.member);
             return {
                 settings: {
                     "method": 'post',
@@ -342,13 +342,13 @@ var apiFunctions = {
                     "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
                     "data": {
                         "DisplayArea": "1",
-                        "Account": [{ "AccountID": this.member, "AccountName": this.author }]
+                        "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
                 callback: function(res) {
                     console.log(res);
                     return {
-                        //"list_Accounts": res.Data.AlertInfoAccountId,
+                        "list_Accounts": res.Data.AlertInfoAccountId,
                         "list_RemittanceName": res.Data.AlertInfoAccountName
                     }
                 }

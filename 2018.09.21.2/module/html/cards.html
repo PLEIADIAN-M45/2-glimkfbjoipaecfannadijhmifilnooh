@@ -1,6 +1,6 @@
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative': verify.sheets|| verify.region}" ng-init="init(me); apiFunctions(me)">
-        <div class="ui dimmer" ng-class="{'active':active}">
+        <div class="ui dimmer" ng-class="{'active': me.active}">
             <div class="ui text loader">{{title}}
                 <br>归属地查询中</div>
         </div>
@@ -32,16 +32,16 @@
                 {{region.meta||region.provider}}-{{time}}
             </div>
         </div>
-        <div class="extra content" ng-if="me.attr=='locate'" ng-init="getAllIPAddress(me)">
+        <!-- <div class="extra content" ng-if="me.attr=='locate'" ng-init="getAllIPAddress(me)">
             <div class="grid-2">
                 <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="region in me.regions">
                     <span>{{region[0]}}</span>
                     <div class="detail">{{region[1]}}</div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="extra content flex" ng-if="attr!='locate'">
-            <div ng-repeat="s in sites" ng-init="shapeID='shape'+$id; getAlertInfo(s);">
+            <div ng-repeat="s in sites" ng-init="apiMemberList(s); __getAlertInfo(s)">
                 <div class="ui image label">
                     <div class="detail center">{{channel}}-<b>{{list_RemittanceName.length}}</b></div>
                 </div>
@@ -53,10 +53,12 @@
                     <i class="angle right icon" ng-click="s.index=s.index+1; apiMemberList(s);" ng-disabled="index>=records||active"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="r in rows" ng-click="showMemberModify()" ng-init="changeColor(r);" ng-class="[color]">
-                    <div class="detail">{{f_accounts||AccountID|uppercase}}</div>
+                <div class="ui image label pointer" ng-repeat="r in rows" ng-click="showMemberModify()" ng-init="
+                    getAlertInfo(r);
+                _changeColor(r);" ng-class="[color]">
 
-                    <aside class="hidden" ng-init="setPopup()" ng-if="list_Accounts.length" id="{{popid}}">
+                    <div class="detail">{{r.f_accounts||r.AccountID|uppercase}}</div>
+                    <aside class="hidden" ng-init="changeColor(r); _setPopup()" ng-if="list_Accounts.length" id="{{popid}}">
                         <table class="ui celled selectable striped collapsing table inverted pink small">
                             <thead>
                                 <th>警示帐号</th>
@@ -80,4 +82,5 @@
     </div>
 </div>
 <!--
+    shapeID='shape'+$id;
 ng-if="row.list_Accounts.length" -->

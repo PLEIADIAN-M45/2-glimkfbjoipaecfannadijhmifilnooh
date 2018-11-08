@@ -12,14 +12,24 @@ function response_message(request, sender, sendResponse) {
     var [command, method, key] = array = request.command.split(':');
     // var [commander, property, proxy, channel] = request.command.split(':');
     //console.log(request.command);
+
     switch (command) {
         case "apiFunctions":
             function _done(data, status, xhr) {
                 var result = module.callback(data);
+
                 if (result.region) { verify.region = search.region(result.region) || false; }
                 result.verify = verify;
                 result.time = Date.now() - request.time;
                 sendResponse(result);
+
+                /*if (attr == "alerts") {
+                    setTimeout(function() {
+                        console.log(attr);
+                        sendResponse(result);
+                    }, 2000)
+                } else {
+                }*/
             }
 
             function _fail(xhr, status, error) {
