@@ -85,13 +85,9 @@ function _toLocalStorage(res) {
     res.forEach(([name, value]) => { localStorage[name] = value; })
 }
 
-function _toJson(res) {
-    return res.json()
-}
+function _toJson(res) { return res.json() }
 
-function _toText(res) {
-    return res.text()
-}
+function _toText(res) { return res.text() }
 
 
 function flat(array) { return array.flat(); }

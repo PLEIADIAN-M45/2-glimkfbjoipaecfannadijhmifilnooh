@@ -61,7 +61,6 @@ var search = {
 
 
 function callback_baidu_mobile(res) {
-    if (res.status == 0) {} else { return {} }
     var d = res.data[0];
     var region = { city: d.city, prov: d.prov, meta: d.type || "baidu" }
     return { region };
@@ -69,7 +68,6 @@ function callback_baidu_mobile(res) {
 
 
 function callback_baidu_locate(res) {
-    if (res.status == 0) {} else { return {} }
     var arr = res.data[0].location.split(' ');
     var region = { meta: arr[1] };
     var string = arr[0];
@@ -92,6 +90,61 @@ function callback_baidu_locate(res) {
 
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 var apiFunctions = {
+
+    baseUrl: {},
+
+    baidu: {
+        mobile() {
+            return {
+                callback: function(res) {
+                    return eval(res);
+                },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6004,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_mobile",
+                        "_": this.time,
+                    }
+                }
+            }
+        },
+        locate() {
+            return {
+                callback: function(res) {
+                    
+                    return eval(res);
+                },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6006,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_locate",
+                        "_": this.time,
+                    }
+                }
+            }
+        }
+    },
+
     wa111: {
         member() {
             this.index = 1;
@@ -99,6 +152,7 @@ var apiFunctions = {
             return {
                 callback: function(res) {
                     console.log(res);
+
                     /*if (res && res.rows && res.rows.length) {
                         res.list_RemittanceName = res.rows[0].list_RemittanceName;
                     }*/
@@ -139,6 +193,7 @@ var apiFunctions = {
             }
         },
         author() {
+
             return {
                 callback: function(req) {
                     return {}
@@ -206,6 +261,7 @@ var apiFunctions = {
             }
         },
         locate() {
+
             return {
                 callback: function(res) { return eval(res); },
                 settings: {

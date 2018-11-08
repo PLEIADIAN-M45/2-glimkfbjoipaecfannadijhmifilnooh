@@ -11,11 +11,11 @@ function delUser() {
 function putUser(user) {
     //console.log($scope.user);
     var _user = user || $scope.user;
+
     _user.unique = [_user.account, _user.channel].join('-');
     _user.status = _user.status.map($Num);
     _user.permit = _user.permit.map($Num);
-
-
+    
     _user.author.attr = "author";
     _user.locate.attr = "locate";
     _user.mobile.attr = "mobile";

@@ -8,6 +8,7 @@ define(['@page'], function() {;
             $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
             $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
             $scope.extensionId = evo.extensionId;
+
             $scope.extend = function() {
                 if (this == window) { return } else {
                     //this.active = !this.active;
@@ -21,22 +22,31 @@ define(['@page'], function() {;
             $scope.user = user = await getUser();
             $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
 
+            console.log($scope.user);
+
             $scope.init = function(parameters) {
+                /* parameters==me */
                 this.extend(parameters);
                 this.parameters = Object.assign({ command: "apiFunctions", host: evo.host }, parameters);
             }
 
-            $scope.apiFunctions = function(me) {
-                this.active = true;
-                chrome.runtime.sendMessage(
-                    this.extensionId,
-                    this.parameters,
-                    (result) => {
-                        if (result) {
-                            this.active = false;
-                            this.extend(result);
-                        }
-                    });
+            $scope.apiFunctions = function(me, e) {
+
+                if (this.active == undefined || e) {
+                    this.active = true;
+                    
+                    chrome.runtime.sendMessage(
+                        this.extensionId,
+                        this.parameters,
+                        (result) => {
+                            if (result) {
+                                result.active = false;
+                                Object.assign(me, result);
+                                this.extend(result);
+                                putUser();
+                            }
+                        });
+                }
             }
 
 

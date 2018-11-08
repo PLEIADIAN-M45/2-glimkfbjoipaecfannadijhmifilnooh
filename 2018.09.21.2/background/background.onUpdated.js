@@ -10,7 +10,7 @@ function refreshAllWindow() {
             if (tab.url.includes('tp33')) { flag = true; }
             if (tab.url.includes('IGetMemberInfo')) { flag = true; }
             
-            if (flag) { chrome.tabs.reload(tab.id); }
+            //if (flag) { chrome.tabs.reload(tab.id); }
 
         })
 

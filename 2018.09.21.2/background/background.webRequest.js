@@ -104,17 +104,6 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 /**************************************************************************************************************/
 
-
-
-
-
-
-
-
-
-
-
-
 function forTest() {
     chrome.webRequest.onBeforeRequest.addListener(function(details) {
         //console.log(details);
@@ -129,31 +118,24 @@ function forTest() {
         //console.log(details);
         var redirectUrl = details.url.replace('bkku711.kucdn.net', '127.0.0.1:16').replace('https', 'http')
         return { redirectUrl }
-        if (details.initiator == location.origin) {
-
-        };
+        if (details.initiator == location.origin) {        };
     }, { urls: ["*://bkku711.kucdn.net/*"], }, ['blocking']);
 }
 
 
-
-
-
-chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
-    var { url, method, type, requestHeaders, initiator } = details;
-    if (details.initiator == location.origin) {
-        var headers = JSON.parse(localStorage["baidu"])
-        headers.forEach((x) => { requestHeaders.push({ name: x.name, value: x.value }); });
-        return { requestHeaders: details.requestHeaders }
-    } else {
-        console.log(details.requestHeaders);
-        localStorage["baidu"] = JSON.stringify(details.requestHeaders)
-    }
-}, { urls: ["*://sp0.baidu.com/*/api.*"] }, ['requestHeaders', 'blocking']);
-
-
-
-
+function sp0_baidu_com() {
+    chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
+        var { url, method, type, requestHeaders, initiator } = details;
+        if (details.initiator == location.origin) {
+            var headers = JSON.parse(localStorage["baidu"])
+            headers.forEach((x) => { requestHeaders.push({ name: x.name, value: x.value }); });
+            return { requestHeaders: details.requestHeaders }
+        } else {
+            console.log(details.requestHeaders);
+            localStorage["baidu"] = JSON.stringify(details.requestHeaders)
+        }
+    }, { urls: ["*://sp0.baidu.com/*/api.*"] }, ['requestHeaders', 'blocking']);
+}
 
 
 
