@@ -1,35 +1,41 @@
 var MockType = true
 
-if (window.MockType == true) {
+if(window.MockType == true) {
 
-    window.origins = new Map([
+    /*window.origins = new Map([
         ["0", "http://chrome.evo.net"],
         ["26", "http://host26.wa111.net"],
         ["35", "http://host35.wa111.net"],
         ["17", "http://host17.wa111.net"],
         ["16", "https://bk.ku711.net"]
-    ]);
+    ]);*/
 
-    console.log(window.origins);
+    window.baseUrl = {
+        "26": "http://host26.wa111.net",
+        "35": "http://host35.wa111.net",
+        "17": "http://host17.wa111.net",
+        "16": "https://bk.ku711.net"
+    }
 
+    console.log(window.baseUrl);
 
     //console.log(origins);
     var entries = d.log.entries;
 
     Mock.setup({ timeout: '200-1500' })
 
-    Mock.mock(/(wa111\.net|ku711111)/, 'get', function(req) {
+    Mock.mock(/(wa111\.net)/, 'get', function(req) {
 
         var url = new URL(req.url);
         var searchParams = url.searchParams.delete('_');
 
         //console.log(url);
 
-        for (let x of entries) {
+        for(let x of entries) {
             var _url = new URL(x.request.url);
             _url.searchParams.delete('_');
             // console.log(_url.href);
-            if (url.href == _url.href) {
+            if(url.href == _url.href) {
                 return Mock.mock(angular.fromJson(x.response.content.text))
             }
         }
@@ -41,10 +47,10 @@ if (window.MockType == true) {
 
         //console.log(req);
 
-        for (let x of entries) {
-            if (x.request.url == req.url) {
+        for(let x of entries) {
+            if(x.request.url == req.url) {
                 //console.log(x.request.postData.text, req.body);
-                if (req.body == x.request.postData.text) {
+                if(req.body == x.request.postData.text) {
                     //console.log(x.response.content.text);
                     return Mock.mock(angular.fromJson(x.response.content.text))
                 }
@@ -59,10 +65,10 @@ if (window.MockType == true) {
 
         //console.log(req);
 
-        for (let x of entries) {
-            if (x.request.url == req.url) {
+        for(let x of entries) {
+            if(x.request.url == req.url) {
                 //console.log(x.request.postData.text, req.body);
-                if (req.body == x.request.postData.text) {
+                if(req.body == x.request.postData.text) {
                     //console.log(x.response.content.text);
                     return Mock.mock(angular.fromJson(x.response.content.text))
                 }

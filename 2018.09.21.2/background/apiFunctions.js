@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -50,7 +50,7 @@ var search = {
     },
     region: function({ prov, city, area, country }) {
         var value = [prov, city, area, country].join('');
-        if (value) {
+        if(value) {
             return evo.decoder(localStorage.region).find((d) => {
                 return value.includes(trim(d[0]))
             });
@@ -61,32 +61,34 @@ var search = {
 
 
 function callback_baidu_mobile(res) {
-    if (res.status == 0) {} else { return {} }
+    if(res.status == 0) {} else { return {} }
     var d = res.data[0];
     var region = { city: d.city, prov: d.prov, meta: d.type || "baidu" }
+    region.verify = search.region(region) || false;
     return { region };
 }
 
 
 function callback_baidu_locate(res) {
-    if (res.status == 0) {} else { return {} }
+    if(res.status == 0) {} else { return {} }
     var arr = res.data[0].location.split(' ');
     var region = { meta: arr[1] };
     var string = arr[0];
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(省|自治区))/g, '');
         region.prov = RegExp.$1;
     }
 
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(市|州))/g, '');
         region.city = RegExp.$1;
     }
 
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(县|区))/g, '');
         region.area = RegExp.$1;
     }
+    region.verify = search.region(region) || false;
     return { region };
 }
 
@@ -95,14 +97,14 @@ var apiFunctions = {
     wa111: {
         member() {
             var { index } = this;
+            this.idcard = this.idcard || "";
+            this.author = this.author || "";
+            this.mobile = this.mobile || "";
+            this.banker = this.banker || "";
             //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
             return {
                 callback: function(res) {
-
-                    console.log(res);
-                    /*if (res && res.rows && res.rows.length) {
-                        res.list_RemittanceName = res.rows[0].list_RemittanceName;
-                    }*/
+                    if(res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
                     return assign(res, { index });
                 },
                 settings: {
@@ -142,15 +144,14 @@ var apiFunctions = {
         author() {
             return {
                 callback: function(req) {
+                    console.log(req);
                     return {}
                 }
             }
         },
         mobile() {
             return {
-                callback: function(res) {
-                    return eval(res);
-                },
+                callback: function(res) { return eval(res); },
                 settings: {
                     dataType: "text",
                     url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
@@ -189,19 +190,16 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
-                callback: function(region) { return { region }; }
+                callback: function(region) {
+                    region.verify = search.region(region) || false;;
+                    return { region };
+                }
             }
         },
         banker() {
             return {
-                /*settings: {
-                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
-                    "dataType": 'json',
-                    "method": "post",
-                    "data": this.region
-                },*/
-                callback: function(req) {
-                    var region = req.region;
+                callback: function({ region }) {
+                    region.verify = search.region(region) || false;;
                     return { region }
                 }
             }
@@ -281,8 +279,13 @@ var apiFunctions = {
 
         member() {
             var { index } = this;
+            this.idcard = this.idcard || "";
+            this.author = this.author || "";
+            this.mobile = this.mobile || "";
+            this.banker = this.banker || "";
             return {
                 callback: function(res) {
+                    console.log(res);
                     var d = res.Data;
                     return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
                 },
@@ -332,30 +335,30 @@ var apiFunctions = {
             }
         },
 
-
-        alerts() {
+        getMemberAlertInfoBackend() {
             //console.log(this.member);
             return {
                 settings: {
                     "method": 'post',
                     "dataType": 'json',
-                    "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    "url": location.origin + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
                     "data": {
                         "DisplayArea": "1",
                         "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
                 callback: function(res) {
-                    console.log(res);
+                    //console.log(res);
                     return {
-                        "list_Accounts": res.Data.AlertInfoAccountId,
+                        //"list_Accounts": res.Data.AlertInfoAccountId,
                         "list_RemittanceName": res.Data.AlertInfoAccountName
                     }
                 }
             }
         },
 
-        alerts2() {
+        getMemberAlertInfoBackendByMultiplayer() {
             return {
                 settings: {
                     "method": 'post',
@@ -368,16 +371,163 @@ var apiFunctions = {
                 }
             }
         }
+    },
+
+    region: {
+        ku711: {
+            author() {
+                return {
+                    callback: function(req) {
+                        return {}
+                    }
+                }
+            },
+            mobile() {
+                return {
+                    provider: "ku711",
+                    settings: {
+                        "method": 'post',
+                        "dataType": 'json',
+                        "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal',
+                        "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 },
+                    },
+                    callback: function(res) {
+                        var d = res.Data;
+                        var region = { "prov": d.Province, "city": d.City, "meta": d.Cardtype };
+                        return { region }
+                    }
+                }
+            },
+            idcard() {
+                return {
+                    settings: {
+                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
+                        "dataType": 'json',
+                        "method": "post",
+                        "data": { "idcard": this.value }
+                    },
+                    callback: function(region) {
+                        return { region }
+                    }
+                }
+            },
+            banker() {
+                return {
+                    settings: {},
+                    callback: function() {
+
+                    }
+                }
+            },
+            locate() {
+
+            },
+        },
+
+        wa111: {
+            author() {
+                return {
+                    callback: function(req) {
+                        return {}
+                    }
+                }
+            },
+            mobile() {
+                return {
+                    callback: function(res) {
+                        return eval(res);
+                    },
+                    settings: {
+                        dataType: "text",
+                        url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                        data: {
+                            "query": this.value,
+                            "co": "",
+                            "resource_id": 6004,
+                            "t": this.time,
+                            "ie": "utf8",
+                            "oe": "gbk",
+                            "cb": "op_aladdin_callback",
+                            "format": "json",
+                            "tn": "baidu",
+                            "cb": "callback_baidu_mobile",
+                            "_": this.time,
+                        }
+                    }
+                }
+
+                /*
+                return {
+                    settings: { "dataType": 'json', "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx', "data": { 'type': 'getPhone', 'phone': this.value, 'account': this.account, "_": this.time } },
+                    callback: function(res) {
+                        var str = res.msg.replace('<br />', '<br/>').split('<br/>');
+                        var arr = str[0].split('&nbsp;');
+                        var region = { "prov": arr[0], "city": arr[1], "meta": str[1] }
+                        return { region }
+                    }
+                }*/
+            },
+            idcard() {
+                return {
+                    settings: {
+                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
+                        "dataType": 'json',
+                        "method": "post",
+                        "data": { "idcard": this.value }
+                    },
+                    callback: function(region) { return { region }; }
+                }
+            },
+            banker() {
+                return {
+                    /*settings: {
+                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
+                        "dataType": 'json',
+                        "method": "post",
+                        "data": this.region
+                    },*/
+                    callback: function(req) {
+                        var region = req.region;
+                        return { region }
+                    }
+                }
+            },
+            locate() {
+                return {
+                    callback: function(res) { return eval(res); },
+                    settings: {
+                        dataType: "text",
+                        url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                        data: {
+                            "query": this.value,
+                            "co": "",
+                            "resource_id": 6006,
+                            "t": this.time,
+                            "ie": "utf8",
+                            "oe": "gbk",
+                            "cb": "op_aladdin_callback",
+                            "format": "json",
+                            "tn": "baidu",
+                            "cb": "callback_baidu_locate",
+                            "_": this.time,
+                        }
+                    }
+                }
+            }
+        }
     }
 }
-
-
+/*
+for(var x in apiFunctions.wa111) {
+    console.log(apiFunctions.wa111[x]);
+}
+*/
 
 
 function $serializeQueryString(_url) {
     _url = decodeURIComponent(_url);
     var obj = {};
-    if (_url.includes('?')) {
+    if(_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     } else {

@@ -15,18 +15,14 @@ function putUser(user) {
     _user.unique = [_user.account, _user.channel].join('-');
     _user.status = _user.status.map($Num);
     _user.permit = _user.permit.map($Num);
-    
+
     _user.author.attr = "author";
     _user.locate.attr = "locate";
     _user.mobile.attr = "mobile";
     _user.idcard.attr = "idcard";
     _user.banker.map((x) => { return assign(x, { attr: "banker" }) })
 
-
     //_user.banker.attr = "author";
-
-
-
     return evo.sendMessage({
         command: 'evo.store.user.put',
         params: _user
