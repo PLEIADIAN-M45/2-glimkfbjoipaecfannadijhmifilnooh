@@ -6,11 +6,64 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     // port.postMessage("fuck to" + port.name)
 })
 
+//console.log(window.baseUrl);
+
+function ajax(module, request) {
+
+    return new Promise((resolve, reject) => {
+
+        var module = eval(command).call(request);
+        if (module.settings) {
+            module.settings.timeout = 5000;
+            module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
+            if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+            $.ajax(module.settings)
+                .done((data, status, xhr) => {
+                    var result = module.callback(data);
+                    if (result.region) {
+                        result.sheets = {};
+                        result.sheets.verify = search[request.attr](request.value) || false;
+                        result.region.verify = search.region(result.region) || false;
+                        console.log(request.attr, result);
+                    }
+                    resolve(result)
+
+                    //sendResponse(result);
+                })
+                .fail((xhr, status, error) => {
+                    resolve(status)
+
+                    //sendResponse(status);
+                })
+
+        } else {
+            var result = module.callback(request);
+            sendResponse(result);
+        }
+        /*
+        $.ajax(module.settings)
+            .done((data, status, xhr) => {
+                var result = module.callback(data);
+                if (result.region) {
+                    result.sheets = {};
+                    result.sheets.verify = search[request.attr](request.value) || false;
+                    result.region.verify = search.region(result.region) || false;
+                    console.log(request.attr, result);
+                }
+                resolve(result)
+                //sendResponse(result);
+            })
+            .fail((xhr, status, error) => {
+                resolve(status)
+                //sendResponse(status);
+            })*/
+    })
+}
+
+
 function response_message(request, sender, sendResponse) {
     request.time = Date.now();
-
     var [command, method, key] = array = request.command.split(':');
-
     // var [commander, property, proxy, channel] = request.command.split(':');
     //console.log(request.command);
 
@@ -19,27 +72,47 @@ function response_message(request, sender, sendResponse) {
             var command = request.command.replace(":", ".");
             var module = eval(command).call(request);
             if (module.settings) {
-
+                module.settings.timeout = 5000;
+                module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
+                if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
                 $.ajax(module.settings)
                     .done((data, status, xhr) => {
-
                         var result = module.callback(data);
+
                         if (result.region) {
+                            /*
                             result.sheets = {};
                             result.sheets.verify = search[request.attr](request.value) || false;
                             result.region.verify = search.region(result.region) || false;
                             console.log(request.attr, result);
+                            */
+                            /*var verify = {
+                                region: search.region(result.region) || false,
+                                sheets: search[request.attr](request.value) || false
+                            }*/
+                            var result = result.region;
+                            result.alert = search.region(result) || false;
+                            result.alarm = search[request.attr](request.value) || false;
+                            //result.verify = verify;
                         }
-
+                        //resolve(result)
                         sendResponse(result);
                     })
                     .fail((xhr, status, error) => {
+                        //resolve(status)
                         sendResponse(status);
                     })
+
             } else {
                 var result = module.callback(request);
                 sendResponse(result);
             }
+            /*if (request.channel == "16" && request.author) {
+                console.log(request);
+                apiFunctions.ku711.getMemberAlertInfoBackend.call(request);
+            }*/
+
+
 
             //console.log(module);
 

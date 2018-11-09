@@ -48,7 +48,7 @@ var search = {
         })
     },
     region: function({ prov, city, area, country, verify }) {
-        if (verify) { return verify }
+        if (alert == false) { return }
         var value = [prov, city, area, country].join('');
         if (value) {
             return evo.decoder(localStorage.region).find((d) => {
@@ -104,14 +104,12 @@ var apiFunctions = {
     wa111: {
         member() {
             var { index } = this;
+            //this[attr] = this.value;
             //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
             return {
                 callback: function(res) {
-
                     console.log(res);
-                    /*if (res && res.rows && res.rows.length) {
-                        res.list_RemittanceName = res.rows[0].list_RemittanceName;
-                    }*/
+                    if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
                     return assign(res, { index });
                 },
                 settings: {
@@ -289,12 +287,22 @@ var apiFunctions = {
 
         },
 
+
         member() {
-            var { index } = this;
             return {
-                callback: function(res) {
-                    var d = res.Data;
-                    return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
+                callback: (res) => {
+                    var { Data, Pager, TotalItemCount } = res.Data;
+                    if (this.author) {
+                        var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
+                        Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
+                    } else { var list_RemittanceName = [] }
+                    return {
+                        "list_RemittanceName": list_RemittanceName,
+                        "rows": Data,
+                        "records": Pager.PageCount,
+                        "total": TotalItemCount,
+                        "index": this.index
+                    }
                 },
                 settings: {
                     "dataType": 'json',
@@ -343,8 +351,7 @@ var apiFunctions = {
         },
 
 
-        alerts() {
-            //console.log(this.member);
+        getMemberAlertInfoBackend() {
             return {
                 settings: {
                     "method": 'post',
@@ -355,14 +362,36 @@ var apiFunctions = {
                         "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
-                callback: function(res) {
+                callback: (res) => {
                     console.log(res);
+                    sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountName);
                     return {
-                        "list_Accounts": res.Data.AlertInfoAccountId,
+                        //"list_Accounts": res.Data.AlertInfoAccountId,
                         "list_RemittanceName": res.Data.AlertInfoAccountName
                     }
                 }
             }
+            /*
+            return new Promise((resolve, reject) => {
+                console.log(this.account, this.author);
+                $.ajax({
+                    "method": 'post',
+                    "dataType": 'json',
+                    "url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    "data": angular.toJson({
+                        "DisplayArea": "1",
+                        "Account": [{ "AccountID": this.account, "AccountName": this.author }]
+                    })
+                }).then((res) => {
+                    var list_RemittanceName = res.Data.AlertInfoAccountName;
+                    resolve({ list_RemittanceName });
+                })
+            });*/
+
+
+
+            //console.log(this.account, this.author);
+
         },
 
         alerts2() {
@@ -423,7 +452,7 @@ console.log(apiFunctions);
 
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author", 'post', function(req) {
-    return Mock.mock({ region: { verify: false } })
+    return Mock.mock({ region: {}, alert: false })
 });
 
 
