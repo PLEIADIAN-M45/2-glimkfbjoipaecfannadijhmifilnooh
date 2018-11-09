@@ -1,35 +1,38 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative': verify.sheets|| verify.region}" ng-init="init(me); apiFunctions(me)">
-        <div class="ui dimmer" ng-class="{'active': me.active}">
+    <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative':me.sheets.verify||me.region.verify}" ng-init="init(me); apiFunctions(me)">
+        <div class="ui dimmer" ng-class="{'active': me.active }">
             <div class="ui text loader">{{title}}
                 <br>归属地查询中</div>
         </div>
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                {{attr}}
-                <i class="icon" ng-class="icons[attr]"></i>{{heads[attr]}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
+                {{me.attr}}
+                <i class="icon" ng-class="icons[attr]"></i>{{heads[me.attr]}}<b ng-show="sheets.verify">{{sheets.verify}}</b>
             </div>
             <div class="right floated meta">
                 <i class="sync alternate icon pointer" ng-click="apiFunctions(me, $event); "></i>
             </div>
         </div>
         <div class="content compact center aligned">
-            <div class="header">{{value||"------"}}</div>
+            <div class="header">{{me.value||"------"}}</div>
         </div>
-        <div class="content center aligned" ng-if="attr=='author'">
+        <!--  <div class="content center aligned" ng-if="me.attr=='author33'">
+           <div class="header padded">
+               {{me.sheets.verify[3]}}
+           </div>
+           <div class="sub meta">
+               {{me.sheets.verify[1]}}-{{me.sheets.verify[2]}}
+           </div>
+       </div> -->
+        <div class="content center aligned">
+            <div style="padding: 0px;margin:-12px;background: rgba(0,0,0,0.5);color:rgba(255,255,255,0.5);font-size: x-small;">
+                {{me.sheets.verify}}
+            </div>
             <div class="header padded">
-                {{verify.sheets[3]}}
+                {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}} {{me.region.status}}
             </div>
             <div class="sub meta">
-                {{verify.sheets[1]}}-{{verify.sheets[2]}}
-            </div>
-        </div>
-        <div class="content center aligned" ng-if="attr!='author'">
-            <div class="header padded">
-                {{region.prov}} {{region.city}} {{region.area}} {{region.country}} {{region.status}}
-            </div>
-            <div class="sub meta">
-                {{region.meta||region.provider}}-{{time}}
+                {{me.region.meta}} {{me.time}}
             </div>
         </div>
         <!-- <div class="extra content" ng-if="me.attr=='locate'" ng-init="getAllIPAddress(me)">
@@ -54,9 +57,8 @@
                 </div>
                 <!-- account -->
                 <div class="ui image label pointer" ng-repeat="r in rows" ng-click="showMemberModify()" ng-init="
-                    getAlertInfo(r);
+                    __getAlertInfo(r);
                 _changeColor(r);" ng-class="[color]">
-
                     <div class="detail">{{r.f_accounts||r.AccountID|uppercase}}</div>
                     <aside class="hidden" ng-init="changeColor(r); _setPopup()" ng-if="list_Accounts.length" id="{{popid}}">
                         <table class="ui celled selectable striped collapsing table inverted pink small">

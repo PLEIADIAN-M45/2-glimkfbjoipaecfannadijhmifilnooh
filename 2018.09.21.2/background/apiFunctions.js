@@ -19,9 +19,8 @@ var search = {
         return undefined;
     },
     author: function(value) {
-        return evo.decoder(localStorage.author).find((d) => {
-            return trim(d[0]) == value;
-        })
+        var test = evo.decoder(localStorage.author).find((d) => { return trim(d[0]) == value; });
+        return test[3] + ' ' + test[1] + '-' + test[2];
     },
     banker: function(value) {
         return evo.decoder(localStorage.banker).find((d) => {
@@ -48,7 +47,8 @@ var search = {
             return value.includes(trim(d[0]))
         })
     },
-    region: function({ prov, city, area, country }) {
+    region: function({ prov, city, area, country, verify }) {
+        if (verify) { return verify }
         var value = [prov, city, area, country].join('');
         if (value) {
             return evo.decoder(localStorage.region).find((d) => {
@@ -57,6 +57,15 @@ var search = {
         } else { return true; }
     }
 }
+
+/*
+var region = evo.decoder(localStorage.region)
+region.push(['吉林'])
+localStorage.region = evo.encoder(region);
+*/
+
+
+console.log(evo.decoder(localStorage.region));
 
 
 
@@ -141,9 +150,13 @@ var apiFunctions = {
         },
         author() {
             return {
-                callback: function(req) {
-                    return {}
-                }
+                settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this
+                },
+                callback: function(region) { return region; }
             }
         },
         mobile() {
@@ -189,21 +202,18 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
-                callback: function(region) { return { region }; }
+                callback: function(region) { return { region } }
             }
         },
         banker() {
             return {
-                /*settings: {
+                settings: {
                     "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
                     "dataType": 'json',
                     "method": "post",
                     "data": this.region
-                },*/
-                callback: function(req) {
-                    var region = req.region;
-                    return { region }
-                }
+                },
+                callback: function(region) { return { region } }
             }
         },
         locate() {
@@ -412,10 +422,14 @@ console.log(apiFunctions);
 
 
 
+Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author", 'post', function(req) {
+    return Mock.mock({ region: { verify: false } })
+});
+
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker", 'post', function(req) {
     var data = $serializeQueryString(req.body);
-    return Mock.mock(data)
+    return Mock.mock(data);
 });
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard", 'post', function(req) {

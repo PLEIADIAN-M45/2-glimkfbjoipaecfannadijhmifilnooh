@@ -16,24 +16,15 @@ define(['@page'], function() {;
             $scope.user = user = await getUser();
             $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
             $scope.userlist.map((x) => {
-
-                x.command = "apiFunctions:host.attr".replace('host', evo.host).replace('attr', x.attr);
-
                 x.sites = [
                     //{ command: "apiFunctions", host: "wa111", channel: "35", attr: "member", [x.attr]: x.value, index: 1 },
-                    //{ command: "apiFunctions", host: "ku711", channel: "16", attr: "member", [x.attr]: x.value, index: 1 }
+                    { command: "apiFunctions", host: "ku711", channel: "16", attr: "member", [x.attr]: x.value, index: 1 }
                 ];
                 return x;
 
             });
 
-
-            console.log($scope.user);
-
             $scope.extend = function() {
-
-                console.log(this);
-
                 if (this == window) { return } else {
                     //this.active = !this.active;
                     Object.assign(this, ...arguments);
@@ -44,30 +35,31 @@ define(['@page'], function() {;
 
             $scope.init = function(parameters) {
                 /* parameters==me */
-                //this.extend(parameters);
-                //this.parameters = Object.assign({ command: "apiFunctions", host: evo.host }, parameters);
-            }
-
-
-
-            function finish(result) {
-                this.active = false;
-                Object.assign(this, result);
-                $scope.$apply();
-            }
-
-
-            function api() {
-                console.log(this);
-                if (!this.value) { return }
-                this.active = true;
-                chrome.runtime.sendMessage(evo.extensionId, this, finish.bind(this));
+                this.extend(parameters);
+                this.parameters = Object.assign({ command: "apiFunctions", host: evo.host }, parameters);
             }
 
             $scope.apiFunctions = function(me, e) {
-                if (me.attr == "author") { api.call(me); }
-                //if (me.active == undefined || e) { api.call(me); }
-                //putUser()
+                
+                
+                return
+
+                if (this.active == undefined || e) {
+                    console.log(1);
+                    //return eval(res);
+                    this.active = true;
+                    chrome.runtime.sendMessage(
+                        this.extensionId,
+                        this.parameters,
+                        (result) => {
+                            if (result) {
+                                result.active = false;
+                                Object.assign(me, result);
+                                this.extend(result);
+                                putUser();
+                            }
+                        });
+                }
             }
 
 
@@ -98,7 +90,6 @@ define(['@page'], function() {;
 
             $scope.getAlertInfo = function(r) {
 
-                return
                 if (this.host == "ku711") {
                     //console.log(this.author);
                     if (this.author) {

@@ -10,14 +10,49 @@ function response_message(request, sender, sendResponse) {
     request.time = Date.now();
 
     var [command, method, key] = array = request.command.split(':');
+
     // var [commander, property, proxy, channel] = request.command.split(':');
     //console.log(request.command);
 
     switch (command) {
         case "apiFunctions":
+            var command = request.command.replace(":", ".");
+            var module = eval(command).call(request);
+            if (module.settings) {
+
+                $.ajax(module.settings)
+                    .done((data, status, xhr) => {
+
+                        var result = module.callback(data);
+                        if (result.region) {
+                            result.sheets = {};
+                            result.sheets.verify = search[request.attr](request.value) || false;
+                            result.region.verify = search.region(result.region) || false;
+                            console.log(request.attr, result);
+                        }
+
+                        sendResponse(result);
+                    })
+                    .fail((xhr, status, error) => {
+                        sendResponse(status);
+                    })
+            } else {
+                var result = module.callback(request);
+                sendResponse(result);
+            }
+
+            //console.log(module);
+
+            return true
+
+            break;
+
+
+
+
+        case "apiFunctions2":
             function _done(data, status, xhr) {
                 var result = module.callback(data);
-
                 if (result.region) { verify.region = search.region(result.region) || false; }
                 result.verify = verify;
                 result.time = Date.now() - request.time;
