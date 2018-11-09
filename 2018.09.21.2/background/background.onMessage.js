@@ -6,6 +6,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     // port.postMessage("fuck to" + port.name)
 })
 
+<<<<<<< HEAD
 var host = {
     "26": "wa111",
     "35": "wa111",
@@ -13,9 +14,65 @@ var host = {
     "16": "ku711"
 }
 
+=======
+//console.log(window.baseUrl);
+
+function ajax(module, request) {
+
+    return new Promise((resolve, reject) => {
+
+        var module = eval(command).call(request);
+        if (module.settings) {
+            module.settings.timeout = 5000;
+            module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
+            if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+            $.ajax(module.settings)
+                .done((data, status, xhr) => {
+                    var result = module.callback(data);
+                    if (result.region) {
+                        result.sheets = {};
+                        result.sheets.verify = search[request.attr](request.value) || false;
+                        result.region.verify = search.region(result.region) || false;
+                        console.log(request.attr, result);
+                    }
+                    resolve(result)
+
+                    //sendResponse(result);
+                })
+                .fail((xhr, status, error) => {
+                    resolve(status)
+
+                    //sendResponse(status);
+                })
+
+        } else {
+            var result = module.callback(request);
+            sendResponse(result);
+        }
+        /*
+        $.ajax(module.settings)
+            .done((data, status, xhr) => {
+                var result = module.callback(data);
+                if (result.region) {
+                    result.sheets = {};
+                    result.sheets.verify = search[request.attr](request.value) || false;
+                    result.region.verify = search.region(result.region) || false;
+                    console.log(request.attr, result);
+                }
+                resolve(result)
+                //sendResponse(result);
+            })
+            .fail((xhr, status, error) => {
+                resolve(status)
+                //sendResponse(status);
+            })*/
+    })
+}
+
+
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
 function response_message(request, sender, sendResponse) {
     request.time = Date.now();
-
     var [command, method, key] = array = request.command.split(':');
     // var [command, method, key] = array = request.command.split('.');
 
@@ -29,6 +86,7 @@ function response_message(request, sender, sendResponse) {
     //console.log(request);
 
     switch (command) {
+<<<<<<< HEAD
 
         case "apiFunctions.region":
             var command = request.command.replace(':', '.');
@@ -98,6 +156,67 @@ function response_message(request, sender, sendResponse) {
             function _done(data, status, xhr) {
                 var result = module.callback(data);
                 if(result.region) { verify.region = search.region(result.region) || false; }
+=======
+        case "apiFunctions":
+            var command = request.command.replace(":", ".");
+            var module = eval(command).call(request);
+            if (module.settings) {
+                module.settings.timeout = 5000;
+                module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
+                if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+                $.ajax(module.settings)
+                    .done((data, status, xhr) => {
+                        var result = module.callback(data);
+
+                        if (result.region) {
+                            /*
+                            result.sheets = {};
+                            result.sheets.verify = search[request.attr](request.value) || false;
+                            result.region.verify = search.region(result.region) || false;
+                            console.log(request.attr, result);
+                            */
+                            /*var verify = {
+                                region: search.region(result.region) || false,
+                                sheets: search[request.attr](request.value) || false
+                            }*/
+                            var result = result.region;
+                            result.alert = search.region(result) || false;
+                            result.alarm = search[request.attr](request.value) || false;
+                            //result.verify = verify;
+                        }
+                        //resolve(result)
+                        sendResponse(result);
+                    })
+                    .fail((xhr, status, error) => {
+                        //resolve(status)
+                        sendResponse(status);
+                    })
+
+            } else {
+                var result = module.callback(request);
+                sendResponse(result);
+            }
+            /*if (request.channel == "16" && request.author) {
+                console.log(request);
+                apiFunctions.ku711.getMemberAlertInfoBackend.call(request);
+            }*/
+
+
+
+            //console.log(module);
+
+            return true
+
+            break;
+
+
+
+
+        case "apiFunctions2":
+            function _done(data, status, xhr) {
+                var result = module.callback(data);
+                if (result.region) { verify.region = search.region(result.region) || false; }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                 result.verify = verify;
                 result.time = Date.now() - request.time;
                 sendResponse(result);

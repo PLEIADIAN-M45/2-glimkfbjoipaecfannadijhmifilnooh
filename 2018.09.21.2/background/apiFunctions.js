@@ -19,9 +19,8 @@ var search = {
         return undefined;
     },
     author: function(value) {
-        return evo.decoder(localStorage.author).find((d) => {
-            return trim(d[0]) == value;
-        })
+        var test = evo.decoder(localStorage.author).find((d) => { return trim(d[0]) == value; });
+        return test[3] + ' ' + test[1] + '-' + test[2];
     },
     banker: function(value) {
         return evo.decoder(localStorage.banker).find((d) => {
@@ -48,7 +47,8 @@ var search = {
             return value.includes(trim(d[0]))
         })
     },
-    region: function({ prov, city, area, country }) {
+    region: function({ prov, city, area, country, verify }) {
+        if (alert == false) { return }
         var value = [prov, city, area, country].join('');
         if(value) {
             return evo.decoder(localStorage.region).find((d) => {
@@ -57,6 +57,15 @@ var search = {
         } else { return true; }
     }
 }
+
+/*
+var region = evo.decoder(localStorage.region)
+region.push(['吉林'])
+localStorage.region = evo.encoder(region);
+*/
+
+
+console.log(evo.decoder(localStorage.region));
 
 
 
@@ -97,6 +106,7 @@ var apiFunctions = {
     wa111: {
         member() {
             var { index } = this;
+<<<<<<< HEAD
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
@@ -105,6 +115,14 @@ var apiFunctions = {
             return {
                 callback: function(res) {
                     if(res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
+=======
+            //this[attr] = this.value;
+            //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
+            return {
+                callback: function(res) {
+                    console.log(res);
+                    if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                     return assign(res, { index });
                 },
                 settings: {
@@ -143,10 +161,20 @@ var apiFunctions = {
         },
         author() {
             return {
+<<<<<<< HEAD
                 callback: function(req) {
                     console.log(req);
                     return {}
                 }
+=======
+                settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this
+                },
+                callback: function(region) { return region; }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         mobile() {
@@ -190,18 +218,32 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
+<<<<<<< HEAD
                 callback: function(region) {
                     region.verify = search.region(region) || false;;
                     return { region };
                 }
+=======
+                callback: function(region) { return { region } }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         banker() {
             return {
+<<<<<<< HEAD
                 callback: function({ region }) {
                     region.verify = search.region(region) || false;;
                     return { region }
                 }
+=======
+                settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this.region
+                },
+                callback: function(region) { return { region } }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         locate() {
@@ -277,7 +319,9 @@ var apiFunctions = {
 
         },
 
+
         member() {
+<<<<<<< HEAD
             var { index } = this;
             this.idcard = this.idcard || "";
             this.author = this.author || "";
@@ -288,6 +332,22 @@ var apiFunctions = {
                     console.log(res);
                     var d = res.Data;
                     return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
+=======
+            return {
+                callback: (res) => {
+                    var { Data, Pager, TotalItemCount } = res.Data;
+                    if (this.author) {
+                        var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
+                        Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
+                    } else { var list_RemittanceName = [] }
+                    return {
+                        "list_RemittanceName": list_RemittanceName,
+                        "rows": Data,
+                        "records": Pager.PageCount,
+                        "total": TotalItemCount,
+                        "index": this.index
+                    }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                 },
                 settings: {
                     "dataType": 'json',
@@ -335,8 +395,13 @@ var apiFunctions = {
             }
         },
 
+<<<<<<< HEAD
         getMemberAlertInfoBackend() {
             //console.log(this.member);
+=======
+
+        getMemberAlertInfoBackend() {
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             return {
                 settings: {
                     "method": 'post',
@@ -348,14 +413,41 @@ var apiFunctions = {
                         "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
+<<<<<<< HEAD
                 callback: function(res) {
                     //console.log(res);
+=======
+                callback: (res) => {
+                    console.log(res);
+                    sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountName);
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                     return {
                         //"list_Accounts": res.Data.AlertInfoAccountId,
                         "list_RemittanceName": res.Data.AlertInfoAccountName
                     }
                 }
             }
+            /*
+            return new Promise((resolve, reject) => {
+                console.log(this.account, this.author);
+                $.ajax({
+                    "method": 'post',
+                    "dataType": 'json',
+                    "url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    "data": angular.toJson({
+                        "DisplayArea": "1",
+                        "Account": [{ "AccountID": this.account, "AccountName": this.author }]
+                    })
+                }).then((res) => {
+                    var list_RemittanceName = res.Data.AlertInfoAccountName;
+                    resolve({ list_RemittanceName });
+                })
+            });*/
+
+
+
+            //console.log(this.account, this.author);
+
         },
 
         getMemberAlertInfoBackendByMultiplayer() {
@@ -562,10 +654,14 @@ console.log(apiFunctions);
 
 
 
+Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author", 'post', function(req) {
+    return Mock.mock({ region: {}, alert: false })
+});
+
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker", 'post', function(req) {
     var data = $serializeQueryString(req.body);
-    return Mock.mock(data)
+    return Mock.mock(data);
 });
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard", 'post', function(req) {

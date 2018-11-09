@@ -57,7 +57,6 @@ store.version(4).stores({
     notice: '++id',
     region: '++id',
     GB2260: 'code, area',
-
     alerts: 'author'
 });
 

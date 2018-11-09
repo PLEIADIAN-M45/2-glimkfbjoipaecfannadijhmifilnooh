@@ -1,28 +1,42 @@
 define(['@page'], function() {;
     'use strict';
 
+    // setTimeout(resolve, 2000)
+    //return new Promise((resolve, reject) => {});
+
+    function getMemberAlertInfoBackend() {
+        chrome.runtime.sendMessage(
+            evo.extensionId, {
+                command: "apiFunctions:ku711.getMemberAlertInfoBackend",
+                channel: "16",
+                account: $scope.user.account,
+                author: $scope.user.author.value,
+            }, (result) => { sessionStorage[$scope.user.author.value] = angular.toJson(result.list_RemittanceName); });
+    }
 
     return function main() {
-
         return new Promise(async function(resolve, reject) {
-
             $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
             $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
             $scope.extensionId = evo.extensionId;
-
-
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
+<<<<<<< HEAD
             var user = await getUser();
 
             user.author.value = "王杰";
 
             $scope.user = user;
             $scope.sequel = $scope.user.sequel;
+=======
+
+            $scope.user = user = await getUser();
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
 
             $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
 
             $scope.userlist.map((x) => {
+<<<<<<< HEAD
                 //x.command = "apiFunctions.region:host.attr";
                 //x.command = `apiFunctions.region:${evo.host}.${x.attr}`;
                 x.command = `apiFunctions:${evo.host}.${x.attr}`;
@@ -132,9 +146,46 @@ define(['@page'], function() {;
                             }
                         });
                 }
+=======
+                x.level = 1;
+                x.command = "apiFunctions:host.attr".replace('host', evo.host).replace('attr', x.attr);
+                //x.__proto__.assign = function() {                };
+                x.sites = [
+                    { command: "apiFunctions:wa111.member", channel: "26", [x.attr]: x.value, attr: x.attr, value: x.value, index: 1 },
+                    { command: "apiFunctions:wa111.member", channel: "35", [x.attr]: x.value, attr: x.attr, value: x.value, index: 1 },
+                    { command: "apiFunctions:wa111.member", channel: "17", [x.attr]: x.value, attr: x.attr, value: x.value, index: 1 },
+                    { command: "apiFunctions:ku711.member", channel: "16", [x.attr]: x.value, attr: x.attr, value: x.value, index: 1 },
+                ];
+                return x;
+            });
+
+
+            Object.prototype.assign = function() {
+                console.log(this);
+                console.log(arguments);
+                Object.assign(this, ...arguments)
             }
 
+            getMemberAlertInfoBackend();
 
+            $scope.extend = function() {
+                if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
+            }
+            $scope.assign = function() {
+                if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
+            }
+
+            $scope.reset = function() {
+                for (var key of Object.keys(this.result)) { delete this[key]; };
+                api.call(this);
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
+            }
+
+            function finish(result) {
+                this.active = false;
+                //this.result = result;
+
+<<<<<<< HEAD
             $scope.apiMemberList = function(s) {
                 return
                 this.extend(s);
@@ -149,11 +200,33 @@ define(['@page'], function() {;
                             this.extend(result);
                         }
                     });
+=======
+                this.assign(result)
+                //Object.assign(this, result);
+                $scope.$apply();
+            }
+
+            function api() {
+                this.active = true;
+                chrome.runtime.sendMessage(evo.extensionId, this, finish.bind(this));
+            }
+
+
+
+            $scope.apiFunctions = function(e) {
+
+                console.log(this);
+                
+                return
+                if (!this.value) { return }
+                if (this.active == undefined || e) { api.call(this); }
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
 
             $scope.getMemberAlertInfoBackend = function(s) {
                 return
 
+<<<<<<< HEAD
                 if(this.host == "ku711" && this.author) {
                     console.log(this);
                     chrome.runtime.sendMessage(
@@ -171,30 +244,51 @@ define(['@page'], function() {;
                             }
                         });
                 }
+=======
+            $scope.apiMemberList = function(s) {
+                return
+
+                if (this.value.includes('*')) { return }
+                api.call(this);
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
 
 
-            $scope.getAlertInfo = function(r) {
 
+<<<<<<< HEAD
                 if(this.host == "ku711") {
+=======
+            console.log($scope.user);
+
+            console.log($scope.userlist);
+
+
+
+            $scope.getAlertInfo = function(r) {
+                return
+                if (this.host == "ku711") {
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                     //console.log(this.author);
                     if(this.author) {
 
                     } else {
                         chrome.runtime.sendMessage(
-                            this.extensionId, {
-                                command: "apiFunctions",
-                                attr: "alerts",
-                                host: "ku711",
+                            evo.extensionId, {
+                                command: "apiFunctions:ku711.getMemberAlertInfoBackend",
                                 channel: "16",
                                 account: $scope.user.account,
-                                author: "",
+                                author: $scope.user.author.value,
                             },
                             (result) => {
+<<<<<<< HEAD
                                 if(result) {
                                     //console.log(2, result);
                                     //this.active = false;
                                     this.extend(result);
+=======
+                                if (result) {
+                                    console.log(result);
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                                 }
                             });
                     }
@@ -222,6 +316,7 @@ define(['@page'], function() {;
             };
 
 
+<<<<<<< HEAD
             $scope.changeColor = function(args) {
                 this.extend(args);
                 if(this.host == "ku711" && this.author) { this.list_Accounts = this.list_RemittanceName.filter((x) => { return x.AccountID == this.AccountID; }); }
@@ -265,3 +360,48 @@ chrome.runtime.sendMessage(
             this.extend(result);
         }
     });*/
+=======
+            $scope.changeColor = function() {
+                //this.list_Accounts =this.list_RemittanceName.filter((x) => { return x.AccountID == this.AccountID; });
+                if (this.list_Accounts && this.list_Accounts.length) { this.color = "pink" };
+                if (this.f_blacklist == 17) { this.color = "black" };
+                if (this.IsBlackList == true) { this.color = "black" };
+                if (this.f_id == $scope.user.sequel) { this.color = "brown" };
+                if (this.MNO == $scope.user.sequel) { this.color = "brown" };
+            };
+
+
+            $scope.init = function(parameters) {
+                /* parameters==me */
+                //this.extend(parameters);
+                //this.parameters = Object.assign({ command: "apiFunctions", host: evo.host }, parameters);
+            }
+
+
+
+            //apiFunctions:host:property:value
+            //evo.apiFunctions.call(this);
+
+
+            dispatch();
+
+            resolve($scope);
+
+            return;
+
+
+        })
+    }
+});
+
+
+
+//putUser()
+
+
+/*if (me.attr == "author") { api.call(me); }
+if (me.attr == "locate") { api.call(me); }
+if (me.attr == "mobile") { api.call(me); }
+if (me.attr == "idcard") { api.call(me); }
+if (me.attr == "banker") { api.call(me); }*/
+>>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
