@@ -15,97 +15,120 @@ var host = {
 }
 
 
-//console.log(window.baseUrl);
-
-function ajax33(module, request) {
+function __getMemberAlertInfoBackend(arr) {
+    console.log(arr);
 
     return new Promise((resolve, reject) => {
+        $.ajax({
+            "method": 'post',
+            "dataType": 'json',
+            "url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "data": angular.toJson({ "DisplayArea": "1", "Account": arr })
+        }).done(resolve)
 
-        var module = eval(command).call(request);
-        if (module.settings) {
-            module.settings.timeout = 5000;
-            module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-            if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
-            $.ajax(module.settings)
-                .done((data, status, xhr) => {
-                    var result = module.callback(data);
-                    if (result.region) {
-                        result.sheets = {};
-                        result.sheets.verify = search[request.attr](request.value) || false;
-                        result.region.verify = search.region(result.region) || false;
-                        console.log(request.attr, result);
-                    }
-                    resolve(result)
-
-                    //sendResponse(result);
-                })
-                .fail((xhr, status, error) => {
-                    resolve(status)
-
-                    //sendResponse(status);
-                })
-
-        } else {
-            var result = module.callback(request);
-            sendResponse(result);
-        }
-        /*
-        $.ajax(module.settings)
-            .done((data, status, xhr) => {
-                var result = module.callback(data);
-                if (result.region) {
-                    result.sheets = {};
-                    result.sheets.verify = search[request.attr](request.value) || false;
-                    result.region.verify = search.region(result.region) || false;
-                    console.log(request.attr, result);
-                }
-                resolve(result)
-                //sendResponse(result);
-            })
-            .fail((xhr, status, error) => {
-                resolve(status)
-                //sendResponse(status);
-            })*/
     })
 }
 
 
+
+
 function response_message(request, sender, sendResponse) {
-    request.time = Date.now();
-    var [command, method, key] = array = request.command.split(':');
+
     var params = $serializeQueryString(sender.url);
 
-    switch (command) {
+    request.time = Date.now();
+
+    var command = request.command.split('?')[0];
+    var channel = request.command.split('?')[1] || request.channel;
+    //var _module = command.replace(":", ".");
+
+    switch (command.split(':')[0]) {
 
         case "apiFunctions":
-            var command = request.command.replace(":", ".");
-            var module = eval(command).call(request);
+
+            var executive = command.replace(":", ".");
+            var module = eval(executive).call(request);
+
+            //console.log(channel, window.baseUrl[channel]);
+
             if (module.settings) {
                 module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-                if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+                module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
+                if (module.settings.url.includes('ku711')) {
+                    console.log(module.settings.url);
+                    module.settings.data = JSON.stringify(module.settings.data);
+                }
+                //console.log(module.settings);
                 $.ajax(module.settings)
                     .done((data, status, xhr) => {
+
                         var result = module.callback(data);
+
                         if (["author", "banker", "idcard", "mobile", "locate"].includes(request.attr)) {
                             result.alert = search.region(result) || false;
                             result.alarm = search[request.attr](request.value) || false;
-                            console.log(request.attr, result);
+                            //console.log(request.attr, result);
                         }
-                        sendResponse(result);
+
+                        if (executive == "apiFunctions.ku711.member") {
+
+                            async function getMemberAlertInfoBackend(arr) {
+                                var g = await __getMemberAlertInfoBackend(arr);
+                                result.rows.map((x) => {
+                                    x.list_Accounts = g.Data.AlertInfoAccountId.filter((d) => {
+                                        return x.AccountID == d.AccountID
+                                    });
+                                    return x;
+                                });
+                                result.list_RemittanceName = g.Data.AlertInfoAccountName
+                                console.log(result);
+                                sendResponse(result);
+                            }
+
+
+                            var arr = result.rows.map((x) => {
+                                //return { "AccountID": x.AccountID, "AccountName": x.AccountName }
+                                return { "AccountID": x.AccountID, "AccountName": x.AccountName }
+                            });
+                            
+                            getMemberAlertInfoBackend(arr)
+
+                            // console.log(request.attr);
+                            if (request.attr == "author") {} else {
+                               // var arr = result.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": "" } });
+
+                                // getMemberAlertInfoBackend(arr)
+                            }
+
+
+
+
+                            //console.log(arr);
+                        } else {
+
+
+                            sendResponse(result);
+
+                        }
+
+                        //console.log(executive);
+
+
+
                     })
                     .fail((xhr, status, error) => {
                         //resolve(status)
-                        sendResponse(status);
+                        sendResponse({ status });
                     })
 
             } else {
                 //var result = module.callback(request);
-                //sendResponse(result);
+                sendResponse({ abort: true });
             }
             return true
             break;
         case "google":
+
             delete request.banker[0].sites;
             delete request.idcard.sites;
             delete request.locate.sites;

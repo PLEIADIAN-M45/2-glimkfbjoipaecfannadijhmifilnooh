@@ -2,8 +2,6 @@
 <div class="ui custom popup">
     I'm not on the same level as the button, but i can still be found.
 </div>
-
-
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.call(me);">
         <div class="ui dimmer" ng-class="{'active': me.active }">
@@ -35,20 +33,20 @@
         <div class="extra content flex">
             <div ng-repeat="s in me.sites" ng-init="apiMemberList.call(s);">
                 <div class="ui image label">
-                    <div class="detail center">{{s.channel}}-<b>{{s.list_RemittanceName.length}}</b></div>
+                    <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
-                <!-- <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList( s, me );" ng-disabled="s.index==1 || s.active"></i>
+                <div class="ui image label">
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiMemberList.call(s, $event);" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList( s, me );" ng-disabled="s.index>=s.records || s.active"></i>
-                </div> -->
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiMemberList.call(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-init="changeColor.call(row); setPopup(row);" ng-class="[row.color]" id="{{row.popup}}">
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-init="changeColor.call(row,'#'+$id); getMemberAlertInfoBackendByMultiplayer.call(row, s)" ng-class="[row.color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息-->
-                    <!-- <aside class="hidden" ng-init="setPopup(row)">
+                    <aside class="hidden">
                         <table class="ui celled selectable striped collapsing table inverted pink small">
                             <thead>
                                 <th>警示帐号</th>
@@ -65,12 +63,18 @@
                                 </tr>
                             </tbody>
                         </table>
-                    </aside> -->
+                    </aside>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<style type="text/css">
+.spinner.loading.icon {
+    margin: 0 !important;
+
+}
+</style>
 <!-- <div style="padding: 0px;margin:-12px;background: rgba(0,0,0,0.5);color:rgba(255,255,255,0.5);font-size: x-small;" class="hidden">
                 {{me.alarm}}
             </div> -->

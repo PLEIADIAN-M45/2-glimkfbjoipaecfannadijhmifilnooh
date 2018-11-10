@@ -72,9 +72,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
         return { requestHeaders: details.requestHeaders }
     } else {
         if (details.method == "POST") {
-            details.requestHeaders.filter(({ name, value }) => {
-                if (name == "RequestVerificationToken") { localStorage[name] = value; }
-            })
+            details.requestHeaders.filter(({ name, value }) => { if (name == "RequestVerificationToken") { localStorage[name] = value; } })
         }
     }
 }, {
@@ -122,7 +120,7 @@ function forTest() {
         //console.log(details);
         var redirectUrl = details.url.replace('bkku711.kucdn.net', '127.0.0.1:16').replace('https', 'http')
         return { redirectUrl }
-        if (details.initiator == location.origin) {        };
+        if (details.initiator == location.origin) {};
     }, { urls: ["*://bkku711.kucdn.net/*"], }, ['blocking']);
 }
 

@@ -4,11 +4,12 @@ define(['@page'], function() {;
     // setTimeout(resolve, 2000)
     //return new Promise((resolve, reject) => {});
     //$scope.user.account
+    //apiFunctions:ku711.member?16
+
     function getMemberAlertInfoBackend() {
         chrome.runtime.sendMessage(
             evo.extensionId, {
-                command: "apiFunctions:ku711.getMemberAlertInfoBackend",
-                channel: "16",
+                command: "apiFunctions:ku711.getMemberAlertInfoBackend?16",
                 account: "",
                 author: $scope.user.author.value,
             }, (result) => { sessionStorage[$scope.user.author.value] = angular.toJson(result.list_RemittanceName); });
@@ -27,162 +28,83 @@ define(['@page'], function() {;
 
             $scope.user = user;
 
-
-            $scope.sequel = $scope.user.sequel;
-
             $scope.userlist = [user.author, user.locate, user.mobile, user.idcard].concat(user.banker);
             $scope.userlist.map((x) => {
-                //x.command = "apiFunctions.region:host.attr";
-                //x.command = `apiFunctions.region:${evo.host}.${x.attr}`;
-                x.command = `apiFunctions:${evo.host}.${x.attr}`;
+                x.command = `apiFunctions:${evo.host}.${x.attr}?${evo.channel}`;
                 x.channel = evo.channel;
                 x.level = 1;
-
-                // x.sites = []
                 x.sites = [
-                    /*{ command: "apiFunctions:wa111.member", host: "wa111", channel: "26", attr: x.attr, [x.attr]: x.value, value: x.value, index: 1 },
-                    { command: "apiFunctions:wa111.member", host: "wa111", channel: "35", attr: x.attr, [x.attr]: x.value, value: x.value, index: 1 },
-                    { command: "apiFunctions:wa111.member", host: "wa111", channel: "17", attr: x.attr, [x.attr]: x.value, value: x.value, index: 1 },*/
-                    { command: "apiFunctions:ku711.member", host: "ku711", channel: "16", attr: x.attr, [x.attr]: x.value, value: x.value, index: 1 }
-                ];
+                    /*{ command: "apiFunctions:wa111.member", channel: "26", attr: x.attr, value: x.value, index: 1 },
+                    { command: "apiFunctions:wa111.member", channel: "35", attr: x.attr, value: x.value, index: 1 },
+                    { command: "apiFunctions:wa111.member", channel: "17", attr: x.attr, value: x.value, index: 1 },*/
+                    { command: "apiFunctions:ku711.member", channel: "16", attr: x.attr, value: x.value, index: 1 },
 
+                ];
                 return x;
             });
 
-            getMemberAlertInfoBackend();
+           // getMemberAlertInfoBackend();
 
             console.log($scope.user);
             console.log($scope.userlist);
 
-            /*
-            $scope.extend = function() {
-                if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
-            }
-            $scope.assign = function() {
-                if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
-            }
-            $scope.reset = function() {
-                for (var key of Object.keys(this.result)) { delete this[key]; };
-                api.call(this);
-            }
-            */
-
-            /**********************************************/
-            Object.prototype.assign = function() {
-                Object.assign(this, ...arguments);
-                if (!$scope.$$phase) { $scope.$apply(); }
-            }
             /**********************************************/
             function finish(result) {
-                //console.log(this.attr, this.channel, result);
+                Object.assign(this, result);
                 this.active = false;
-                this.assign(result);
-
-                if (this.level == 1) {
-                    console.log('putUser');
-                    putUser();
-                }
+                if (!$scope.$$phase) { $scope.$apply(); }
+                if (this.level == 1) { putUser(); }
             }
 
             function api() {
+                if (this.value == undefined) { return }
                 this.active = true;
+                if (this.level == 1 && this.attr != "banker") {
+                    delete this.region;
+                } else { delete this.rows; }
                 chrome.runtime.sendMessage(evo.extensionId, this, finish.bind(this));
             }
 
             $scope.apiFunctions = function(e) {
-                if (this.value == undefined) { return };
-                if (this.active == undefined || e) {
-                    console.log(1);
-                    api.call(this);
-                };
+                return
+                if (this.active == undefined || e) { api.call(this); };
             }
 
-
-            $scope.apiMemberList = function() {
-                return
-                
-                if (!this.author) { return }
-                if (this.value.includes('*')) { return }
-                api.call(this);
+            $scope.apiMemberList = function(e) {
+                if (this.active == undefined || e) { api.call(this); };
             }
 
+            function setPopup(popupId) { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }
 
-
-            $scope.setPopup = function(r) {
-                //console.log(r.popup);
-                return
-
-                setTimeout(function(r) {
-                    var target = document.getElementById(r.popup);
-                    console.log($(target));
-
-                    $(target).popup({
-                        on: "hover",
-                        popup: "12132243",
-                        position: "top left",
-                        variation: "special"
-                    })
-
-
-                }, 500, r)
-
-
-                /*
-                 */
-                /*
-
-                setTimeout(function() {
-
-                    console.log($(target));
-
-                  
-                })
-                */
-
+            $scope.changeColor = function(popupId) {
+                var _sequel = $scope.user.sequel;
+                if (this.list_Accounts && this.list_Accounts.length) { setTimeout(setPopup, 500, popupId); };
+                if (this.list_Accounts && this.list_Accounts.length) { this.color = "pink"; };
+                if (this.f_blacklist == 17 || this.IsBlackList == true) { this.color = "black" };
+                if (this.f_id == _sequel || this.MNO == _sequel) { this.color = "brown" };
             };
 
 
+            $scope.getMemberAlertInfoBackendByMultiplayer = function(s) {
+                return
+                if (s.attr == "author") { return }
+                if (s.channel != "16") { return }
 
 
-            setTimeout(function() {
-                console.log($('.custom.button'));
+                chrome.runtime.sendMessage(
+                    evo.extensionId, {
+                        command: "apiFunctions:ku711.getMemberAlertInfoBackendByMultiplayer?16",
+                        account: this.AccountID,
+                        author: this.AccountName,
+                    }, (result) => {
+                        Object.assign(this, result);
 
-                $('.custom.button')
-                    .popup({
-                        popup: $('.custom.popup'),
-                        on: 'click'
+                        console.log(result);
                     });
-
-
-
-            }, 2000)
-
-
-
-
-
-            $scope.changeColor = function() {
-
-                //console.log(this);
-
-
-                this.popup = "pop" + (this.MNO || this.f_id) + Date.now();
-
-                //console.log(this.popup);
-
-
-                if (this.list_Accounts && this.list_Accounts.length) {
-                    this.color = "pink";
-                };
-
-                if (this.f_blacklist == 17) { this.color = "black" };
-                if (this.IsBlackList == true) { this.color = "black" };
-
-                if (this.f_id == $scope.sequel) { this.color = "brown" };
-                if (this.MNO == $scope.sequel) { this.color = "brown" };
-            };
+            }
 
             dispatch();
+
             resolve($scope);
         })
     }
@@ -190,7 +112,8 @@ define(['@page'], function() {;
 
 
 /*
-
+  //if (this.locate) { return this.abort = true; }
+                //if (this.value.includes('*')) { this.abort = true; } else {  }
 $scope.getMemberAlertInfoBackend = function(s) {
     return
     if (this.host == "ku711" && this.author) {
@@ -213,3 +136,21 @@ $scope.getMemberAlertInfoBackend = function(s) {
 }
 
 */
+/*
+$scope.extend = function() {
+    if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
+}
+$scope.assign = function() {
+    if (this == window) { return } else { Object.assign(this, ...arguments); if (!this.$$phase) { this.$apply(); } }
+}
+$scope.reset = function() {
+    for (var key of Object.keys(this.result)) { delete this[key]; };
+    api.call(this);
+}
+*/
+
+/**********************************************/
+/*Object.prototype.assign = function() {
+    Object.assign(this, ...arguments);
+    if (!$scope.$$phase) { $scope.$apply(); }
+}*/

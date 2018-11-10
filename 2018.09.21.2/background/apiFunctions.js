@@ -107,15 +107,18 @@ var counter = { locate: 0, mobile: 0, idcard: 0 };
 var apiFunctions = {
     wa111: {
         member() {
-            var { index } = this;
+            if (this.value.includes('*')) { return {} }
+            if (this.attr == "locate") { return {} }
+            this[this.attr] = this.value;
+            /*var { index } = this;
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
-            this.banker = this.banker || "";
+            this.banker = this.banker || "";*/
             return {
-                callback: function(res) {
+                callback: (res) => {
                     if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
-                    return assign(res, { index });
+                    return Object.assign(res, { index: this.index });
                 },
                 settings: {
                     "dataType": 'json',
@@ -288,26 +291,27 @@ var apiFunctions = {
         locate() {
 
         },
-
-
         member() {
-            this.idcard = this.idcard || "";
+            if (this.value.includes('*')) { return {} }
+            if (this.attr == "locate") { return {} }
+            this[this.attr] = this.value;
+            /*this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
-            this.banker = this.banker || "";
-
+            this.banker = this.banker || "";*/
             return {
                 callback: (res) => {
-                    
                     var { Data, Pager, TotalItemCount } = res.Data;
-
-                    if (this.author) {
+                    
+                    /*if (this.author) {
                         var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
                         Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
-                    } else { var list_RemittanceName = [] }
-
+                    } else {
+                        **console.log(this, res);
+                        var list_RemittanceName = []
+                    }*/
                     return {
-                        "list_RemittanceName": list_RemittanceName,
+                        //"list_RemittanceName": list_RemittanceName,
                         "rows": Data,
                         "records": Pager.PageCount,
                         "total": TotalItemCount,
@@ -361,7 +365,7 @@ var apiFunctions = {
         },
 
         getMemberAlertInfoBackend() {
-            console.log(this.account, this.author);
+            // console.log(this.account, this.author);
             return {
                 settings: {
                     "method": 'post',
@@ -375,7 +379,7 @@ var apiFunctions = {
                     }
                 },
                 callback: (res) => {
-                    console.log(res);
+                    // console.log(res);
                     sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountId);
                     return {
                         //"list_Accounts": res.Data.AlertInfoAccountId,
@@ -411,9 +415,13 @@ var apiFunctions = {
                     "method": 'post',
                     "dataType": 'json',
                     "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackendByMultiplayer',
-                    "data": this.params
+                    "data": {
+                        "DisplayArea": "1",
+                        "Account": [{ "AccountID": this.account, "AccountName": this.author }]
+                    }
                 },
                 callback: function(res) {
+                    console.log(res);
                     return { "list_Accounts": res.Data }
                 }
             }
