@@ -102,7 +102,11 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
     var port = details.initiator.replace('http://q51.tp33.net:63', '');
     window.baseUrl[port] = details.initiator;
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
+
+console.log(window.baseUrl);
 /**************************************************************************************************************/
+
+
 
 function forTest() {
     chrome.webRequest.onBeforeRequest.addListener(function(details) {

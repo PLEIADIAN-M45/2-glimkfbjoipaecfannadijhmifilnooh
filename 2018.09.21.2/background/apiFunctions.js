@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -20,7 +20,7 @@ var search = {
     },
     author: function(value) {
         var test = evo.decoder(localStorage.author).find((d) => { return trim(d[0]) == value; });
-        return test[3] + ' ' + test[1] + '-' + test[2];
+        return (test) ? test[3] + ' ' + test[1] + '-' + test[2] : test;
     },
     banker: function(value) {
         return evo.decoder(localStorage.banker).find((d) => {
@@ -47,10 +47,14 @@ var search = {
             return value.includes(trim(d[0]))
         })
     },
-    region: function({ prov, city, area, country, verify }) {
-        if(alert == false) { return }
-        var value = [prov, city, area, country].join('');
-        if(value) {
+    region: function(res) {
+        if (!res.region) { return false }
+        //var { prov, city, area, country } = res.region;
+        var value = Object.values(res.region).join('');
+        //console.log(value);
+        //[prov, city, area, country].join('');
+
+        if (value) {
             return evo.decoder(localStorage.region).find((d) => {
                 return value.includes(trim(d[0]))
             });
@@ -68,34 +72,34 @@ localStorage.region = evo.encoder(region);
 
 
 function callback_baidu_mobile(res) {
-    if(res.status == 0) {} else { return {} }
+    if (res.status == 0) {} else { return {} }
     var d = res.data[0];
     var region = { city: d.city, prov: d.prov, meta: d.type || "baidu" }
-    region.verify = search.region(region) || false;
+    //region.verify = search.region(region) || false;
     return { region };
 }
 
 
 function callback_baidu_locate(res) {
-    if(res.status == 0) {} else { return {} }
+    if (res.status == 0) {} else { return {} }
     var arr = res.data[0].location.split(' ');
     var region = { meta: arr[1] };
     var string = arr[0];
-    if(string) {
+    if (string) {
         string = string.replace(/(.+(省|自治区))/g, '');
         region.prov = RegExp.$1;
     }
 
-    if(string) {
+    if (string) {
         string = string.replace(/(.+(市|州))/g, '');
         region.city = RegExp.$1;
     }
 
-    if(string) {
+    if (string) {
         string = string.replace(/(.+(县|区))/g, '');
         region.area = RegExp.$1;
     }
-    region.verify = search.region(region) || false;
+    //egion.verify = search.region(region) || false;
     return { region };
 }
 
@@ -110,7 +114,7 @@ var apiFunctions = {
             this.banker = this.banker || "";
             return {
                 callback: function(res) {
-                    if(res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
+                    if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
                     return assign(res, { index });
                 },
                 settings: {
@@ -155,7 +159,7 @@ var apiFunctions = {
                     "method": "post",
                     "data": this
                 },
-                callback: function(region) { return region; }
+                callback: function(region) { return {} }
             }
         },
         mobile() {
@@ -287,18 +291,21 @@ var apiFunctions = {
 
 
         member() {
-            var { index } = this;
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
             this.banker = this.banker || "";
+
             return {
                 callback: (res) => {
+                    
                     var { Data, Pager, TotalItemCount } = res.Data;
-                    if(this.author) {
+
+                    if (this.author) {
                         var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
                         Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
                     } else { var list_RemittanceName = [] }
+
                     return {
                         "list_RemittanceName": list_RemittanceName,
                         "rows": Data,
@@ -354,23 +361,27 @@ var apiFunctions = {
         },
 
         getMemberAlertInfoBackend() {
+            console.log(this.account, this.author);
             return {
                 settings: {
                     "method": 'post',
                     "dataType": 'json',
-                    //"url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-                    "url": location.origin + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    "url": '@/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+                    //"url": location.origin + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
                     "data": {
                         "DisplayArea": "1",
+                        //"Account": [{ "AccountID": "", "AccountName": this.author }]
                         "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
                 callback: (res) => {
                     console.log(res);
-                    sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountName);
+                    sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountId);
                     return {
                         //"list_Accounts": res.Data.AlertInfoAccountId,
-                        "list_RemittanceName": res.Data.AlertInfoAccountName
+                        "list_RemittanceName": res.Data.AlertInfoAccountId
+                        //"list_RemittanceName": res.Data.AlertInfoAccountName
+
                     }
                 }
             }
@@ -419,7 +430,7 @@ for(var x in apiFunctions.wa111) {
 function $serializeQueryString(_url) {
     _url = decodeURIComponent(_url);
     var obj = {};
-    if(_url.includes('?')) {
+    if (_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     } else {
@@ -455,7 +466,7 @@ console.log(apiFunctions);
 
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author", 'post', function(req) {
-    return Mock.mock({ region: {}, alert: false })
+    return Mock.mock({})
 });
 
 

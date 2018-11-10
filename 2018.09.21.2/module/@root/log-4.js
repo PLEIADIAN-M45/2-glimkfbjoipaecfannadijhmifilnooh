@@ -144,7 +144,7 @@ define(['@page'], function() {;
             resolve($scope);
 
             dispatch();
-            
+
             return
 
 
@@ -340,7 +340,15 @@ define(['@page'], function() {;
                 var target = document.getElementById(popid);
                 setTimeout(function() {
                     var content = target.querySelector(".ui.table");
-                    $(target).popup({ html: content.outerHTML, hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" })
+                    $(target).popup({
+                        html: content.outerHTML,
+                        hoverable: true,
+                        setFluidWidth: true,
+                        exclusive: true,
+                        on: "hover",
+                        position: "bottom left",
+                        variation: "special"
+                    })
                 }, 500, target);
             };
 

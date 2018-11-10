@@ -17,19 +17,19 @@ var host = {
 
 //console.log(window.baseUrl);
 
-function ajax(module, request) {
+function ajax33(module, request) {
 
     return new Promise((resolve, reject) => {
 
         var module = eval(command).call(request);
-        if(module.settings) {
+        if (module.settings) {
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-            if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+            if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
                     var result = module.callback(data);
-                    if(result.region) {
+                    if (result.region) {
                         result.sheets = {};
                         result.sheets.verify = search[request.attr](request.value) || false;
                         result.region.verify = search.region(result.region) || false;
@@ -76,56 +76,22 @@ function response_message(request, sender, sendResponse) {
     var params = $serializeQueryString(sender.url);
 
     switch (command) {
-        case "apiFunctions33":
-            var verify = {};
-            if(search[attr]) { verify.sheets = search[attr](value) || false };
-            var command = request.command.replace(':', '.');
-            var module = eval(command).call(request);
-            if(module.settings) {
-                module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
-                if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
-                $.ajax(module.settings)
-                    .done((data, status, xhr) => {
-                        var result = module.callback(data);
-                        sendResponse(result);
-                    }).fail((xhr, status, error) => {
-                        console.error(error);
-                    });
-                return true;
-            } else {
-                var result = module.callback(request);
-                sendResponse(result);
-            }
-            return true
-            break;
+
         case "apiFunctions":
             var command = request.command.replace(":", ".");
             var module = eval(command).call(request);
-            if(module.settings) {
+            if (module.settings) {
                 module.settings.timeout = 5000;
                 module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-                if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+                if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
                 $.ajax(module.settings)
                     .done((data, status, xhr) => {
                         var result = module.callback(data);
-                        if(result.region) {
-                            /*
-                            result.sheets = {};
-                            result.sheets.verify = search[request.attr](request.value) || false;
-                            result.region.verify = search.region(result.region) || false;
-                            console.log(request.attr, result);
-                            */
-                            /*var verify = {
-                                region: search.region(result.region) || false,
-                                sheets: search[request.attr](request.value) || false
-                            }*/
-                            var result = result.region;
+                        if (["author", "banker", "idcard", "mobile", "locate"].includes(request.attr)) {
                             result.alert = search.region(result) || false;
                             result.alarm = search[request.attr](request.value) || false;
-                            //result.verify = verify;
+                            console.log(request.attr, result);
                         }
-                        //resolve(result)
                         sendResponse(result);
                     })
                     .fail((xhr, status, error) => {
@@ -134,8 +100,8 @@ function response_message(request, sender, sendResponse) {
                     })
 
             } else {
-                var result = module.callback(request);
-                sendResponse(result);
+                //var result = module.callback(request);
+                //sendResponse(result);
             }
             return true
             break;
@@ -193,7 +159,7 @@ function response_message(request, sender, sendResponse) {
             sendResponse(value);
             break;
         case "localStorage:getItem":
-            if(key) {
+            if (key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -201,7 +167,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for(var key in res) {
+                for (var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -225,8 +191,8 @@ function response_message(request, sender, sendResponse) {
     }
 }
 
-if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 
