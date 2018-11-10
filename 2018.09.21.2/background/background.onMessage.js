@@ -7,25 +7,17 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
 })
 
 
-var host = {
-    "26": "wa111",
-    "35": "wa111",
-    "17": "wa111",
-    "16": "ku711"
-}
-
+var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" }
 
 function __getMemberAlertInfoBackend(arr) {
-    console.log(arr);
-
     return new Promise((resolve, reject) => {
         $.ajax({
             "method": 'post',
             "dataType": 'json',
-            "url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            //"url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "url": '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
             "data": angular.toJson({ "DisplayArea": "1", "Account": arr })
         }).done(resolve)
-
     })
 }
 
@@ -33,100 +25,66 @@ function __getMemberAlertInfoBackend(arr) {
 
 
 function response_message(request, sender, sendResponse) {
-
     var params = $serializeQueryString(sender.url);
-
     request.time = Date.now();
-
     var command = request.command.split('?')[0];
     var channel = request.command.split('?')[1] || request.channel;
-    //var _module = command.replace(":", ".");
-
     switch (command.split(':')[0]) {
 
-        case "apiFunctions":
+        case "crateTab":
 
+            console.log(channel, window.baseUrl[channel]);
+
+            break;
+
+        case "apiFunctions":
             var executive = command.replace(":", ".");
             var module = eval(executive).call(request);
-
-            //console.log(channel, window.baseUrl[channel]);
-
-            if (module.settings) {
+            if(module.settings) {
                 module.settings.timeout = 5000;
                 module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
-                if (module.settings.url.includes('ku711')) {
-                    console.log(module.settings.url);
-                    module.settings.data = JSON.stringify(module.settings.data);
-                }
-                //console.log(module.settings);
+                if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+
                 $.ajax(module.settings)
                     .done((data, status, xhr) => {
-
                         var result = module.callback(data);
-
-                        if (["author", "banker", "idcard", "mobile", "locate"].includes(request.attr)) {
+                        if(["author", "banker", "idcard", "mobile", "locate"].includes(request.attr)) {
                             result.alert = search.region(result) || false;
                             result.alarm = search[request.attr](request.value) || false;
-                            //console.log(request.attr, result);
                         }
-
-                        if (executive == "apiFunctions.ku711.member") {
-
+                        if(executive == "apiFunctions.ku711.member" && result.rows && result.rows.length) {
                             async function getMemberAlertInfoBackend(arr) {
                                 var g = await __getMemberAlertInfoBackend(arr);
+                                g.Data.AlertInfoAccountId = g.Data.AlertInfoAccountName
                                 result.rows.map((x) => {
                                     x.list_Accounts = g.Data.AlertInfoAccountId.filter((d) => {
                                         return x.AccountID == d.AccountID
                                     });
                                     return x;
                                 });
-                                result.list_RemittanceName = g.Data.AlertInfoAccountName
-                                console.log(result);
+                                result.list_RemittanceName = g.Data.AlertInfoAccountName;
+                                result.origin = window.baseUrl[channel];
                                 sendResponse(result);
                             }
-
-
                             var arr = result.rows.map((x) => {
-                                //return { "AccountID": x.AccountID, "AccountName": x.AccountName }
                                 return { "AccountID": x.AccountID, "AccountName": x.AccountName }
                             });
-                            
                             getMemberAlertInfoBackend(arr)
-
-                            // console.log(request.attr);
-                            if (request.attr == "author") {} else {
-                               // var arr = result.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": "" } });
-
-                                // getMemberAlertInfoBackend(arr)
-                            }
-
-
-
-
-                            //console.log(arr);
                         } else {
-
-
+                            result.origin = window.baseUrl[channel];
                             sendResponse(result);
-
                         }
-
-                        //console.log(executive);
-
-
-
                     })
                     .fail((xhr, status, error) => {
-                        //resolve(status)
                         sendResponse({ status });
                     })
-
             } else {
-                //var result = module.callback(request);
                 sendResponse({ abort: true });
             }
-            return true
+            return true;
             break;
+
+
         case "google":
 
             delete request.banker[0].sites;
@@ -182,7 +140,7 @@ function response_message(request, sender, sendResponse) {
             sendResponse(value);
             break;
         case "localStorage:getItem":
-            if (key) {
+            if(key) {
                 var value = window[command][key];
                 var array = JSON.parse(decodeURI(atob(value)))
                 sendResponse(array.slice(1));
@@ -190,7 +148,7 @@ function response_message(request, sender, sendResponse) {
                 sendResponse(window[command])
                 var obj = {}
                 var res = window[command];
-                for (var key in res) {
+                for(var key in res) {
                     try {
                         obj[key] = evo.decoder(obj[key])
                         //JSON.parse(decodeURI(atob(res[key])))
@@ -214,8 +172,8 @@ function response_message(request, sender, sendResponse) {
     }
 }
 
-if (chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
-if (chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
+if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
+if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
 
 

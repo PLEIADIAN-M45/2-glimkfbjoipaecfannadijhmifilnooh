@@ -10,7 +10,7 @@ function $serializeParameters(str) {
     return obj;
 }
 
-function format(t) { if (t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
+function format(t) { if(t) { return moment(t).format('YYYY/MM/DD HH:mm:ss') } else { return t } };
 
 var assign = Object.assign;
 var counter = { locate: 0, mobile: 0, idcard: 0 };
@@ -48,13 +48,13 @@ var search = {
         })
     },
     region: function(res) {
-        if (!res.region) { return false }
+        if(!res.region) { return false }
         //var { prov, city, area, country } = res.region;
         var value = Object.values(res.region).join('');
         //console.log(value);
         //[prov, city, area, country].join('');
 
-        if (value) {
+        if(value) {
             return evo.decoder(localStorage.region).find((d) => {
                 return value.includes(trim(d[0]))
             });
@@ -72,7 +72,7 @@ localStorage.region = evo.encoder(region);
 
 
 function callback_baidu_mobile(res) {
-    if (res.status == 0) {} else { return {} }
+    if(res.status == 0) {} else { return {} }
     var d = res.data[0];
     var region = { city: d.city, prov: d.prov, meta: d.type || "baidu" }
     //region.verify = search.region(region) || false;
@@ -81,21 +81,21 @@ function callback_baidu_mobile(res) {
 
 
 function callback_baidu_locate(res) {
-    if (res.status == 0) {} else { return {} }
+    if(res.status == 0) {} else { return {} }
     var arr = res.data[0].location.split(' ');
     var region = { meta: arr[1] };
     var string = arr[0];
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(省|自治区))/g, '');
         region.prov = RegExp.$1;
     }
 
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(市|州))/g, '');
         region.city = RegExp.$1;
     }
 
-    if (string) {
+    if(string) {
         string = string.replace(/(.+(县|区))/g, '');
         region.area = RegExp.$1;
     }
@@ -107,17 +107,16 @@ var counter = { locate: 0, mobile: 0, idcard: 0 };
 var apiFunctions = {
     wa111: {
         member() {
-            if (this.value.includes('*')) { return {} }
-            if (this.attr == "locate") { return {} }
+            if(this.value.includes('*')) { return {} }
+            if(this.attr == "locate") { return {} }
             this[this.attr] = this.value;
-            /*var { index } = this;
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
-            this.banker = this.banker || "";*/
+            this.banker = this.banker || "";
             return {
                 callback: (res) => {
-                    if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
+                    if(res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
                     return Object.assign(res, { index: this.index });
                 },
                 settings: {
@@ -162,7 +161,7 @@ var apiFunctions = {
                     "method": "post",
                     "data": this
                 },
-                callback: function(region) { return {} }
+                callback: function() { return {} }
             }
         },
         mobile() {
@@ -292,17 +291,16 @@ var apiFunctions = {
 
         },
         member() {
-            if (this.value.includes('*')) { return {} }
-            if (this.attr == "locate") { return {} }
+            if(this.value.includes('*')) { return {} }
+            if(this.attr == "locate") { return {} }
             this[this.attr] = this.value;
-            /*this.idcard = this.idcard || "";
+            this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
-            this.banker = this.banker || "";*/
+            this.banker = this.banker || "";
             return {
                 callback: (res) => {
                     var { Data, Pager, TotalItemCount } = res.Data;
-                    
                     /*if (this.author) {
                         var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
                         Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
@@ -438,7 +436,7 @@ for(var x in apiFunctions.wa111) {
 function $serializeQueryString(_url) {
     _url = decodeURIComponent(_url);
     var obj = {};
-    if (_url.includes('?')) {
+    if(_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     } else {
@@ -467,14 +465,14 @@ function $fromJson(obj) {
     return str;
 }
 
-console.log(apiFunctions);
+//console.log(apiFunctions);
 //console.log(JSON.stringify(apiFunctions));
 //console.log(evo.decoder(localStorage["gb2260"]));
 
 
 
 Mock.mock("http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author", 'post', function(req) {
-    return Mock.mock({})
+    return Mock.mock({ region: {} })
 });
 
 

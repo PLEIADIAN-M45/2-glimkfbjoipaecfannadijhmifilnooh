@@ -79,7 +79,7 @@ body {
 
 .ui.image.label,
 .ui.image.label.visible {
-  display: flex !important;
+  display: flex;
   margin: 2px;
   padding: 0;
   line-height: 28px;

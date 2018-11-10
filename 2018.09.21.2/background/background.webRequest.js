@@ -15,7 +15,7 @@ function searchParamsOf(str) {
 
 
 function parser(requestBody) {
-    if (requestBody) {
+    if(requestBody) {
         var postedString = decodeURIComponent(String.fromCharCode.apply(null,
             new Uint8Array(requestBody.raw[0].bytes)));
         return postedString;
@@ -28,10 +28,10 @@ function http() {
         var { url, method, type, requestBody, initiator } = details;
         var lastPath = lastPathOf(url);
         var searchParams = searchParamsOf(url);
-        if (initiator == location.origin) {} else {
+        if(initiator == location.origin) {} else {
             var dataType = 'json';
             var data = {};
-            if (!xmlhttp[lastPath]) {
+            if(!xmlhttp[lastPath]) {
                 switch (method) {
                     case "GET":
                         var entries = searchParams.entries();
@@ -65,43 +65,38 @@ function http() {
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
     var lastPath = lastPathOf(url);
-    if (initiator == location.origin) {
+    if(initiator == location.origin) {
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
         return { requestHeaders: details.requestHeaders }
     } else {
-        if (details.method == "POST") {
-            details.requestHeaders.filter(({ name, value }) => { if (name == "RequestVerificationToken") { localStorage[name] = value; } })
+        if(details.method == "POST") {
+            details.requestHeaders.filter(({ name, value }) => { if(name == "RequestVerificationToken") { localStorage[name] = value; } })
         }
     }
-}, {
-    urls: ["*://bk.ku711.net/*"],
-    types: ["xmlhttprequest"]
-}, ['requestHeaders', 'blocking']);
-
-
+}, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['requestHeaders', 'blocking']);
 
 /**************************************************************************************************************/
 window.baseUrl = {};
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-    if (details.initiator == location.origin) { return };
+    if(details.initiator == location.origin) { return };
     window.baseUrl["16"] = details.initiator;
 }, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-    if (details.initiator == location.origin) { return };
+    if(details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
     window.baseUrl[port] = details.initiator;
 }, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
-    if (details.initiator == location.origin) { return };
+    if(details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://q51.tp33.net:63', '');
     window.baseUrl[port] = details.initiator;
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
-console.log(window.baseUrl);
+//console.log(window.baseUrl);
 /**************************************************************************************************************/
 
 
@@ -111,7 +106,7 @@ function forTest() {
         //console.log(details);
         var redirectUrl = details.url.replace('bk.ku711.net', '127.0.0.1:16').replace('https', 'http')
         return { redirectUrl }
-        if (details.initiator == location.origin) {
+        if(details.initiator == location.origin) {
 
         };
     }, { urls: ["*://bk.ku711.net/*"], }, ['blocking']);
@@ -120,7 +115,7 @@ function forTest() {
         //console.log(details);
         var redirectUrl = details.url.replace('bkku711.kucdn.net', '127.0.0.1:16').replace('https', 'http')
         return { redirectUrl }
-        if (details.initiator == location.origin) {};
+        if(details.initiator == location.origin) {};
     }, { urls: ["*://bkku711.kucdn.net/*"], }, ['blocking']);
 }
 
@@ -128,7 +123,7 @@ function forTest() {
 function sp0_baidu_com() {
     chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
         var { url, method, type, requestHeaders, initiator } = details;
-        if (details.initiator == location.origin) {
+        if(details.initiator == location.origin) {
             var headers = JSON.parse(localStorage["baidu"])
             headers.forEach((x) => { requestHeaders.push({ name: x.name, value: x.value }); });
             return { requestHeaders: details.requestHeaders }
@@ -177,7 +172,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
         "meta": [birth, sex, age].join('/')
     });
 
-  
+
 
 }, { urls: ["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard?*"], types: ["xmlhttprequest"] }, ['blocking']);
 
