@@ -48,7 +48,7 @@ var search = {
         })
     },
     region: function({ prov, city, area, country, verify }) {
-        if (alert == false) { return }
+        if(alert == false) { return }
         var value = [prov, city, area, country].join('');
         if(value) {
             return evo.decoder(localStorage.region).find((d) => {
@@ -63,9 +63,7 @@ var region = evo.decoder(localStorage.region)
 region.push(['吉林'])
 localStorage.region = evo.encoder(region);
 */
-
-
-console.log(evo.decoder(localStorage.region));
+//console.log(evo.decoder(localStorage.region));
 
 
 
@@ -106,23 +104,13 @@ var apiFunctions = {
     wa111: {
         member() {
             var { index } = this;
-<<<<<<< HEAD
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
             this.banker = this.banker || "";
-            //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
             return {
                 callback: function(res) {
                     if(res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
-=======
-            //this[attr] = this.value;
-            //var { index = 1, banker = "", mobile = "", idcard = "", author = "", account = "", time } = this;
-            return {
-                callback: function(res) {
-                    console.log(res);
-                    if (res && res.rows && res.rows.length) { res.list_RemittanceName = res.rows[0].list_RemittanceName; }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                     return assign(res, { index });
                 },
                 settings: {
@@ -161,12 +149,6 @@ var apiFunctions = {
         },
         author() {
             return {
-<<<<<<< HEAD
-                callback: function(req) {
-                    console.log(req);
-                    return {}
-                }
-=======
                 settings: {
                     "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author",
                     "dataType": 'json',
@@ -174,7 +156,6 @@ var apiFunctions = {
                     "data": this
                 },
                 callback: function(region) { return region; }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         mobile() {
@@ -218,24 +199,11 @@ var apiFunctions = {
                     "method": "post",
                     "data": { "idcard": this.value }
                 },
-<<<<<<< HEAD
-                callback: function(region) {
-                    region.verify = search.region(region) || false;;
-                    return { region };
-                }
-=======
                 callback: function(region) { return { region } }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         banker() {
             return {
-<<<<<<< HEAD
-                callback: function({ region }) {
-                    region.verify = search.region(region) || false;;
-                    return { region }
-                }
-=======
                 settings: {
                     "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
                     "dataType": 'json',
@@ -243,7 +211,6 @@ var apiFunctions = {
                     "data": this.region
                 },
                 callback: function(region) { return { region } }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             }
         },
         locate() {
@@ -269,7 +236,6 @@ var apiFunctions = {
             }
         }
     },
-
     ku711: {
         author() {
             return {
@@ -321,22 +287,15 @@ var apiFunctions = {
 
 
         member() {
-<<<<<<< HEAD
             var { index } = this;
             this.idcard = this.idcard || "";
             this.author = this.author || "";
             this.mobile = this.mobile || "";
             this.banker = this.banker || "";
             return {
-                callback: function(res) {
-                    console.log(res);
-                    var d = res.Data;
-                    return { "rows": d.Data, "records": d.Pager.PageCount, "total": d.TotalItemCount, index }
-=======
-            return {
                 callback: (res) => {
                     var { Data, Pager, TotalItemCount } = res.Data;
-                    if (this.author) {
+                    if(this.author) {
                         var list_RemittanceName = angular.fromJson(sessionStorage[this.author]);
                         Data.forEach((r) => { r.list_Accounts = list_RemittanceName.filter((w) => { return w.AccountID == r.AccountID; }); });
                     } else { var list_RemittanceName = [] }
@@ -347,7 +306,6 @@ var apiFunctions = {
                         "total": TotalItemCount,
                         "index": this.index
                     }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                 },
                 settings: {
                     "dataType": 'json',
@@ -395,13 +353,7 @@ var apiFunctions = {
             }
         },
 
-<<<<<<< HEAD
         getMemberAlertInfoBackend() {
-            //console.log(this.member);
-=======
-
-        getMemberAlertInfoBackend() {
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
             return {
                 settings: {
                     "method": 'post',
@@ -413,14 +365,9 @@ var apiFunctions = {
                         "Account": [{ "AccountID": this.account, "AccountName": this.author }]
                     }
                 },
-<<<<<<< HEAD
-                callback: function(res) {
-                    //console.log(res);
-=======
                 callback: (res) => {
                     console.log(res);
                     sessionStorage[this.author] = angular.toJson(res.Data.AlertInfoAccountName);
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
                     return {
                         //"list_Accounts": res.Data.AlertInfoAccountId,
                         "list_RemittanceName": res.Data.AlertInfoAccountName
@@ -443,9 +390,6 @@ var apiFunctions = {
                     resolve({ list_RemittanceName });
                 })
             });*/
-
-
-
             //console.log(this.account, this.author);
 
         },
@@ -460,150 +404,6 @@ var apiFunctions = {
                 },
                 callback: function(res) {
                     return { "list_Accounts": res.Data }
-                }
-            }
-        }
-    },
-
-    region: {
-        ku711: {
-            author() {
-                return {
-                    callback: function(req) {
-                        return {}
-                    }
-                }
-            },
-            mobile() {
-                return {
-                    provider: "ku711",
-                    settings: {
-                        "method": 'post',
-                        "dataType": 'json',
-                        "url": '@/Member/api/MemberInfoManage/GetVerifyPhoneLocal',
-                        "data": { "Name": this.account, "AccountID": this.account, "CellPhone": this.value, "EnabledVerified": true, "Identitycard": "", "VerifyUsage": 13 },
-                    },
-                    callback: function(res) {
-                        var d = res.Data;
-                        var region = { "prov": d.Province, "city": d.City, "meta": d.Cardtype };
-                        return { region }
-                    }
-                }
-            },
-            idcard() {
-                return {
-                    settings: {
-                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
-                        "dataType": 'json',
-                        "method": "post",
-                        "data": { "idcard": this.value }
-                    },
-                    callback: function(region) {
-                        return { region }
-                    }
-                }
-            },
-            banker() {
-                return {
-                    settings: {},
-                    callback: function() {
-
-                    }
-                }
-            },
-            locate() {
-
-            },
-        },
-
-        wa111: {
-            author() {
-                return {
-                    callback: function(req) {
-                        return {}
-                    }
-                }
-            },
-            mobile() {
-                return {
-                    callback: function(res) {
-                        return eval(res);
-                    },
-                    settings: {
-                        dataType: "text",
-                        url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
-                        data: {
-                            "query": this.value,
-                            "co": "",
-                            "resource_id": 6004,
-                            "t": this.time,
-                            "ie": "utf8",
-                            "oe": "gbk",
-                            "cb": "op_aladdin_callback",
-                            "format": "json",
-                            "tn": "baidu",
-                            "cb": "callback_baidu_mobile",
-                            "_": this.time,
-                        }
-                    }
-                }
-
-                /*
-                return {
-                    settings: { "dataType": 'json', "url": '@/LoadData/AccountManagement/GetInfoAPI.ashx', "data": { 'type': 'getPhone', 'phone': this.value, 'account': this.account, "_": this.time } },
-                    callback: function(res) {
-                        var str = res.msg.replace('<br />', '<br/>').split('<br/>');
-                        var arr = str[0].split('&nbsp;');
-                        var region = { "prov": arr[0], "city": arr[1], "meta": str[1] }
-                        return { region }
-                    }
-                }*/
-            },
-            idcard() {
-                return {
-                    settings: {
-                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/idcard",
-                        "dataType": 'json',
-                        "method": "post",
-                        "data": { "idcard": this.value }
-                    },
-                    callback: function(region) { return { region }; }
-                }
-            },
-            banker() {
-                return {
-                    /*settings: {
-                        "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
-                        "dataType": 'json',
-                        "method": "post",
-                        "data": this.region
-                    },*/
-                    callback: function(req) {
-                        var region = req.region;
-                        return { region }
-                    }
-                }
-            },
-            locate() {
-                return {
-                    callback: function(res) { return eval(res); },
-                    settings: {
-                        dataType: "text",
-                        url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
-                        data: {
-                            "query": this.value,
-                            "co": "",
-                            "resource_id": 6006,
-                            "t": this.time,
-                            "ie": "utf8",
-                            "oe": "gbk",
-                            "cb": "op_aladdin_callback",
-                            "format": "json",
-                            "tn": "baidu",
-                            "cb": "callback_baidu_locate",
-                            "_": this.time,
-                        }
-                    }
                 }
             }
         }

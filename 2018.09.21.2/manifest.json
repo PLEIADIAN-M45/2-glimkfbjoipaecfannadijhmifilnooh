@@ -8,13 +8,11 @@
             "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/mock.js",
-
             "background/background.js", //{1}
             "background/apiFunctions.js", //{5}
             "background/background.webRequest.js", //{2}
             "background/background.onUpdated.js", //{3}
             "background/background.onMessage.js", //{4}
-
             "mock/mock.data.js",
             "mock/mock.conf.js"
         ]

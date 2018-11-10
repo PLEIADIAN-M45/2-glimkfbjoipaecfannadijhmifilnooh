@@ -6,7 +6,7 @@ chrome.runtime.onConnectExternal.addListener(function(port) {
     // port.postMessage("fuck to" + port.name)
 })
 
-<<<<<<< HEAD
+
 var host = {
     "26": "wa111",
     "35": "wa111",
@@ -14,7 +14,7 @@ var host = {
     "16": "ku711"
 }
 
-=======
+
 //console.log(window.baseUrl);
 
 function ajax(module, request) {
@@ -22,14 +22,14 @@ function ajax(module, request) {
     return new Promise((resolve, reject) => {
 
         var module = eval(command).call(request);
-        if (module.settings) {
+        if(module.settings) {
             module.settings.timeout = 5000;
             module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-            if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+            if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
             $.ajax(module.settings)
                 .done((data, status, xhr) => {
                     var result = module.callback(data);
-                    if (result.region) {
+                    if(result.region) {
                         result.sheets = {};
                         result.sheets.verify = search[request.attr](request.value) || false;
                         result.region.verify = search.region(result.region) || false;
@@ -70,64 +70,17 @@ function ajax(module, request) {
 }
 
 
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
 function response_message(request, sender, sendResponse) {
     request.time = Date.now();
     var [command, method, key] = array = request.command.split(':');
-    // var [command, method, key] = array = request.command.split('.');
-
-    // var [commander, property, proxy, channel] = request.command.split(':');
-    //console.log(request.command);
-    //var command = request.command;
-
     var params = $serializeQueryString(sender.url);
 
-    // console.log(command);
-    //console.log(request);
-
     switch (command) {
-<<<<<<< HEAD
-
-        case "apiFunctions.region":
-            var command = request.command.replace(':', '.');
-            var module = eval(command).call(request);
-
-            function _done(data, status, xhr) {
-                var result = module.callback(data);
-                result.time = Date.now() - request.time;
-                if(result.region) {
-                    verify.region = search.region(result.region) || false;
-                }
-                result.verify = verify;
-                sendResponse(result);
-            }
-
-            function _fail(xhr, status, error) { sendResponse({ verify, status, meta: status }); }
-            var { attr, host, channel, value } = request;
+        case "apiFunctions33":
             var verify = {};
             if(search[attr]) { verify.sheets = search[attr](value) || false };
-            if(module.settings) {
-                module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
-                if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
-                $.ajax(module.settings).done(_done).fail(_fail);
-                return true;
-            } else {
-                return _done(request);
-            }
-
-            break;
-
-        case "apiFunctions":
-
-            var verify = {};
-            if(search[attr]) { verify.sheets = search[attr](value) || false };
-
-
             var command = request.command.replace(':', '.');
             var module = eval(command).call(request);
-
-
             if(module.settings) {
                 module.settings.timeout = 5000;
                 module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
@@ -142,33 +95,21 @@ function response_message(request, sender, sendResponse) {
                 return true;
             } else {
                 var result = module.callback(request);
-
                 sendResponse(result);
-                //console.log(result);
-                //return _done(request);
             }
-
-            //console.log(module);
-
-
             return true
-
-            function _done(data, status, xhr) {
-                var result = module.callback(data);
-                if(result.region) { verify.region = search.region(result.region) || false; }
-=======
+            break;
         case "apiFunctions":
             var command = request.command.replace(":", ".");
             var module = eval(command).call(request);
-            if (module.settings) {
+            if(module.settings) {
                 module.settings.timeout = 5000;
                 module.settings.url = module.settings.url.replace('@', window.baseUrl[request.channel]);
-                if (module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
+                if(module.settings.url.includes('ku711')) { module.settings.data = JSON.stringify(module.settings.data); }
                 $.ajax(module.settings)
                     .done((data, status, xhr) => {
                         var result = module.callback(data);
-
-                        if (result.region) {
+                        if(result.region) {
                             /*
                             result.sheets = {};
                             result.sheets.verify = search[request.attr](request.value) || false;
@@ -196,80 +137,8 @@ function response_message(request, sender, sendResponse) {
                 var result = module.callback(request);
                 sendResponse(result);
             }
-            /*if (request.channel == "16" && request.author) {
-                console.log(request);
-                apiFunctions.ku711.getMemberAlertInfoBackend.call(request);
-            }*/
-
-
-
-            //console.log(module);
-
             return true
-
             break;
-
-
-
-
-        case "apiFunctions2":
-            function _done(data, status, xhr) {
-                var result = module.callback(data);
-                if (result.region) { verify.region = search.region(result.region) || false; }
->>>>>>> 3fdc632dd9c4bcabe40c65626a7fb70f428d0af1
-                result.verify = verify;
-                result.time = Date.now() - request.time;
-                sendResponse(result);
-
-                /*if (attr == "alerts") {
-                    setTimeout(function() {
-                        console.log(attr);
-                        sendResponse(result);
-                    }, 2000)
-                } else {
-                }*/
-            }
-
-            function _fail(xhr, status, error) {
-                //var region = { verify: true, meta: module.provider, status: status };
-                sendResponse({ verify, status, meta: status });
-            }
-
-
-            //console.log(sender.url);
-            //console.log(params);
-
-            /*evo.store.user.get([params.member, params.siteNumber]).then((user) => {
-                console.log(user);
-            });*/
-            //.then((x))
-
-            var { attr, host, channel, value } = request;
-            Object.assign(request, params);
-
-
-            if(search[attr]) {
-                var verify = {};
-                verify.sheets = search[attr](value) || false
-            };
-
-            var module = apiFunctions[host][attr].call(request);
-            if(module.settings) {
-                module.settings.timeout = 5000;
-                module.settings.url = module.settings.url.replace('@', window.baseUrl[channel]);
-
-                if(module.settings.url.includes('ku711')) {
-                    module.settings.data = JSON.stringify(module.settings.data);
-                }
-                console.log(module);
-
-                $.ajax(module.settings).done(_done).fail(_fail);
-                return true;
-            } else {
-                return _done(request);
-            }
-            break;
-
         case "google":
             delete request.banker[0].sites;
             delete request.idcard.sites;
@@ -294,8 +163,6 @@ function response_message(request, sender, sendResponse) {
             return true;
             //request.time = Date.now();
             break;
-
-
         case "evo.store.tables":
             var tb = eval(command);
             //console.log(tb);
@@ -311,20 +178,6 @@ function response_message(request, sender, sendResponse) {
             evo.store.user.get(request.params).then(sendResponse)
             return true
         case "evo.store.user.put":
-            if(sender.url.includes("MemberLoginLog")) {
-                //console.log(1, request.params);
-                //ports["EditMemberInfoManage"].postMessage(request.params)
-
-                /*console.log(sender);
-                chrome.tabs.connect(sender.tab.id, {
-                    name: "EditMemberInfoManage"
-                })*/
-
-
-            }
-
-
-
             //console.log(request.params);
             evo.store.user.put(request.params).then(function() { sendResponse(request.params) })
             return true
@@ -334,13 +187,11 @@ function response_message(request, sender, sendResponse) {
             //evo.store.users.get('F61539').then(sendResponse)
             return true
             break;
-
         case "localStorage":
             var value = window[command];
             //console.log(value);
             sendResponse(value);
             break;
-
         case "localStorage:getItem":
             if(key) {
                 var value = window[command][key];
@@ -361,7 +212,6 @@ function response_message(request, sender, sendResponse) {
             }
 
             break;
-
         case "evo:apis:dwwd":
             break;
         case "evo:script:m3w":
@@ -375,22 +225,9 @@ function response_message(request, sender, sendResponse) {
     }
 }
 
-
-/*
-try {
-    eval(command).then(sendResponse)
-} catch (ex) {
-    sendResponse(eval(command))
-}*/
-
-//request.command="script:exec:m3"
-
-
-
 if(chrome.runtime.onMessage) { chrome.runtime.onMessage.addListener(response_message) }
 if(chrome.runtime.onMessageExternal) { chrome.runtime.onMessageExternal.addListener(response_message) }
 
-console.log(window.baseUrl);
 
 
 /*
