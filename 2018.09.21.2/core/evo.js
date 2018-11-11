@@ -13,7 +13,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             //if (this.attr == "banker") {} else { return }
             //if (["author", "banker"].includes(this.attr)) {} else { return }
             //if (["locate"].includes(this.attr)) {} else { return }
-            if (!this.value) { return };
+            if(!this.value) { return };
             var { account, host, channel, extensionId } = evo;
             Object.assign(this.parameters, { command: "apiFunctions", account, host, channel });
             Object.assign(this, { active: true, region: {}, extensionId });
@@ -26,7 +26,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     this.extensionId,
                     this.parameters,
                     (result) => {
-                        if (result) {
+                        if(result) {
                             console.log(result);
                             //console.log(this);
                             Object.assign(this, result)
@@ -90,12 +90,12 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             return localStorage.chrome_runtime_id;
 
-            if (chrome.runtime.id) {
+            if(chrome.runtime.id) {
                 return chrome.runtime.id;
             } else {
 
-                for (var s of document.scripts) {
-                    if (this.baseUrl.search(s.id)) {
+                for(var s of document.scripts) {
+                    if(this.baseUrl.search(s.id)) {
                         return s.id
                     }
                 }
@@ -189,14 +189,15 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return obj;
         }
 
-        /*
+
         get account() {
+
             return this.params.account ||
                 this.params.member ||
                 this.params.accountId ||
                 this.params.accounts;
         }
-        */
+
 
         get operator() { return localStorage['operator']; }
 
@@ -217,7 +218,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         moment(t) {
-            if (Number(t)) {
+            if(Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
             } else {}
 
@@ -229,8 +230,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get siteNumber() {
-            if (this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
-            if (this.domain[1] == "github") { return this.params.siteNumber; } else {
+            if(this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
+            if(this.domain[1] == "github") { return this.params.siteNumber; } else {
                 return localStorage.siteNumber || this.params.siteNumber;
             }
         }
@@ -270,7 +271,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             var paramsString = arguments[0].split('?')[1];
             var searchParams = new URLSearchParams(paramsString);
             var parameters = {};
-            for (var [key, value] of searchParams.entries()) { parameters[key] = value; }
+            for(var [key, value] of searchParams.entries()) { parameters[key] = value; }
             return parameters;
         }
 
@@ -340,7 +341,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get test() {
-            if (location.hostname == "127.0.0.1") {
+            if(location.hostname == "127.0.0.1") {
                 return true
             } else {
                 return false;
@@ -397,9 +398,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     evo.keys = Object.keys;
     evo.entries = Object.entries;
 
-    var { account, member, accountId, accounts } = evo.params;
-    evo.account = account || member || accountId || accounts;
-
+  /*  var { account, member, accountId, accounts } = evo.params;
+  evo.account = account || member || accountId || accounts;*/
 
 
     return evo;

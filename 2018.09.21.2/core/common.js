@@ -14,7 +14,16 @@ function adjUser(user) {
 
 function putUser(user) { var user = user || $scope.user; return evo.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser) }
 
-function getUser() { return evo.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: evo.account, channel: evo.channel } }).then(bindUser); }
+function getUser() {
+    //console.log(evo.account, evo.channel);
+    return evo.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: evo.account, channel: evo.channel } })
+        .then(function(s) {
+            //console.log(s);
+            return s;
+        })
+
+    //.then(bindUser);
+}
 
 function bindUser(user) { test(user); return user; }
 

@@ -25,3 +25,4 @@ evo.store.tables.forEach(function(table, index) {
         get: function() { return evo.store[table.name].get(this.params).then((d) => { return d }) }
     }
 });
+

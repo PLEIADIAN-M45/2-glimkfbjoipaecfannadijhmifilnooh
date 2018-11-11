@@ -1,27 +1,46 @@
-define(["xmlSpider"], function(xmlSpider) {
+define([], function() {
 
     console.log(xmlSpider);
 
+    // console.log(evo.account);
+
+    //getUser().then((user) => { console.log(user); })
+
     var Spreadsheets = {
 
-        authorize_wa111: function(pastData, postData) {
+        authorize_wa111: async function(pastData, postData) {
 
+            console.log(1111111111, 22222222222);
+
+            var user = await getUser()
+
+            console.log(user);
+
+            alert(user)
+
+
+            /*
             getUser(evo).then((user) => {
+
+                alert(user)
 
                 user.status[1] = postData.f_ishow;
                 user.permit[1] = postData.f_depositStatus;
-                user.timing[1] = postData.timespan;
+                user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
                 user.timing[2] = timeDiff(user.timing);
+
                 user.permit = user.permit.map($Num);
                 if(user.status[0] == 3) {
                     user.command = "google:scripts:authorize"
                 } else {
                     user.command = "google:scripts:suspended"
                 }
-                alert('authorize')
+
                 console.log(user);
+
+                return
                 //evo.apiFunctions(user);
-            })
+            })*/
 
 
             /*
@@ -52,11 +71,12 @@ define(["xmlSpider"], function(xmlSpider) {
                 user.timing[2] = timeDiff(user.timing);
                 user.permit = user.permit.map($Num);
                 if(user.status[0] == 3) {
+                    alert('authorize')
                     user.command = "google:scripts:authorize"
                 } else {
+                    alert('suspended')
                     user.command = "google:scripts:suspended"
                 }
-                alert('authorize')
                 console.log(user);
                 //evo.apiFunctions(user);
             })
@@ -72,18 +92,28 @@ define(["xmlSpider"], function(xmlSpider) {
     var $robot = {
 
         /*開通或停權*/
-        StopMember: function() {
+        StopMember: async function() {
             //還原或停權
             if(this.respData == 1) { return };
             var pastData = $scope.user;
             var postData = { f_ishow: 2, f_depositStatus: 0 }
-            Spreadsheets.authorize_wa111(pastData, postData);
+            alert(1)
+
+            var user = await getUser();
+
+            console.log(user);
+
+            console.log(this.respData);
+            alert(2)
+
+
+            //return Spreadsheets.authorize_wa111(pastData, postData);
         },
 
         getmodel: function() {
             var pastData = $scope.user;
             var postData = this.respData;
-            Spreadsheets.authorize_wa111(pastData, postData);
+            return Spreadsheets.authorize_wa111(pastData, postData);
         },
 
 
@@ -148,14 +178,14 @@ define(["xmlSpider"], function(xmlSpider) {
         },
     }
 
-
+    /*
     xmlSpider.loadend = function() {
         var robot = $robot[this.command];
         if(robot) { return robot.call(this); }
         var robot = $robot[this.lastPath];
         if(robot) { return robot.call(this); }
     }
-
+    */
 
     //console.log(chrome.runtime);
     //console.log(location.);
