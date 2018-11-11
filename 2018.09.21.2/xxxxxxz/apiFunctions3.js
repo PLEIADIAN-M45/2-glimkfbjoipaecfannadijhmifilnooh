@@ -68,7 +68,6 @@ var search = {
 
 function apiFunctions(request, sender, sendResponse) {
 
-    
     Object.assign(this, request);
     // console.log(this.method);
     //this.method

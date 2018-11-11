@@ -110,3 +110,29 @@ for (var i = 0; i < arr.length; i++) {
 
 console.log(counts[5], counts[2], counts[9], counts[4]);
 */
+
+function $serializeQueryString233333332(querystring) {
+    if(!querystring) { return }
+    if(!querystring.includes('=')) { return }
+    var result = {};
+    querystring.split('&').forEach(function(pair) {
+        pair = pair.split('=');
+        result[pair[0]] = decodeURIComponent(pair[1] || '');
+    });
+    return result;
+}
+
+
+function jsonqs(str) {
+    if(str.indexOf('?') == -1) { return undefined }
+    try {
+        var result = {};
+        str.split('?')[1].split('&').forEach((pair) => {
+            var [name, value] = pair.split('=');
+            result[name] = value;
+        });
+        return result;
+    } catch (ex) {
+        return undefined;
+    }
+};

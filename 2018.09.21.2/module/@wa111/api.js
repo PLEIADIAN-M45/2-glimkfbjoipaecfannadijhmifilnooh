@@ -42,6 +42,7 @@ define([], function() {
     apiFunction.prototype.getUserStore = function() {
         return new Promise(function(resolve, reject) {
             evo.store.user.get(evo.account).then(function(res) {
+                console.log(res);
                 res.f_RemittanceAccount = res.f_RemittanceAccount.split('|');
                 resolve(res);
             })

@@ -44,26 +44,6 @@ var evo = {
     }
 };
 
-var store = new Dexie('evo');
-store.version(4).stores({
-    user: '[account+channel]',
-    users: 'account',
-    xmlhttp: 'lastPath',
-    author: '++id',
-    banker: '++id',
-    mobile: '++id',
-    locate: '++id',
-    danger: '++id',
-    notice: '++id',
-    region: '++id',
-    GB2260: 'code, area',
-    alerts: 'author'
-});
-
-
-
-
-evo.store = store;
 
 /*
 console.log(evo.store.user);
@@ -83,11 +63,9 @@ function _toLocalStorage(res) {
     console.log(res);
     res.forEach(([name, value]) => { localStorage[name] = value; })
 }
-
 function _toJson(res) { return res.json() }
 
 function _toText(res) { return res.text() }
-
 
 function flat(array) { return array.flat(); }
 
@@ -103,6 +81,19 @@ function download() {
 //download();
 
 
+
+
+
+
+
+
+
+
+
+
+
+//console.log(chrome.identity.getRedirectURL());
+//$.ajax({ url: "https://glimkfbjoipaecfannadijhmifilnooh.chromiumapp.org/views/part.html" })
 
 
 

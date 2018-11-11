@@ -5,14 +5,23 @@
         "scripts": [
             "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
-            "lib/jquery/dexie.js",
             "lib/jquery/moment-with-locales.min.js",
+            "lib/jquery/dexie.js",
+
+            "background/background.js",
+            "background/background.webRequest.js",
+            "background/background.onUpdated.js",
+            "background/background.onMessage.js",
+
+            "apiFunctions/apiFunctions.js",
+            "apiFunctions/apiFunctions.locate.js",
+            "apiFunctions/apiFunctions.idcard.js",
+            "apiFunctions/apiFunctions.mobile.js",
+            "apiFunctions/apiFunctions.google.js",
+            "apiFunctions/apiFunctions.member.js",
+            "apiFunctions/apiFunctions.smsend.js",
+            "apiFunctions/apiFunctions.store.js",
             "lib/mock.js",
-            "background/background.js", //{1}
-            "background/apiFunctions.js", //{5}
-            "background/background.webRequest.js", //{2}
-            "background/background.onUpdated.js", //{3}
-            "background/background.onMessage.js", //{4}
             "mock/mock.data.js",
             "mock/mock.conf.js"
         ]

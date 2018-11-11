@@ -30,7 +30,7 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
             $scope.user.banker = $scope.user.banker.value.map((value, index) => {
                 return {
                     title: $scope.user.banker.title[index],
-                    value: $scope.user.banker.value[index],                    
+                    value: $scope.user.banker.value[index],
                     region: {
                         meta: $scope.user.banker.meta[index],
                         prov: $scope.user.banker.prov[index],
@@ -38,6 +38,7 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
                     }
                 }
             }).filter((a) => { return a.value });
+            console.log($scope.user);
             return $scope.user;
         }).then(bindEvo).then(putUser)
     }
@@ -55,7 +56,7 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
         this.ctrl.deposit.value = 1;
         this.ctrl.btnSaveInfo.click();
     };
-    
+
     $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
     $scope.createTab = function(url, params) { window.open(url, '_blank'); };
 

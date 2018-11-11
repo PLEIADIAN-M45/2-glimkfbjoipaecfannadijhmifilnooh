@@ -38,7 +38,7 @@
                 <!-- account -->
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row,s)" ng-init="changeColor.call(row,'#'+$id);" ng-class="[row.color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
-                    <!-- extra content 警示訊息-->
+                    <!-- extra content 警示訊息 -->
                     <aside class="hidden">
                         <table class="ui celled selectable striped collapsing table inverted pink small">
                             <thead>
@@ -62,6 +62,7 @@
         </div>
     </div>
 </div>
+<p ng-bind-html="myHTML"></p>
 <div class="ui fullscreen modal">
     <table class="ui celled selectable striped collapsing table small">
         <thead>
@@ -90,6 +91,7 @@ tr:hover {
 .ui.celled.table tr th {
     word-break: keep-all;
 }
+
 .ui.table,
 .ui.modal {
     background-color: transparent;

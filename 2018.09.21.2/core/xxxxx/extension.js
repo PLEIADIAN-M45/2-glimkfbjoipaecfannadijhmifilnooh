@@ -1,4 +1,4 @@
-
+/*
 define(['evo'], function(evo) {
     class Extension {
         constructor() {
@@ -40,4 +40,4 @@ define(['evo'], function(evo) {
     const extension = new Extension();
     window.extension = extension;
     return extension;
-})
+})*/

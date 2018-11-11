@@ -56,9 +56,7 @@ requirejs.config({
 
 
 //console.log(localStorage.baseUrl);
-
 //console.clear();
-
 //console.time(location.pathname);
 
 
@@ -67,15 +65,21 @@ requirejs.config({
 
 requirejs(['router', 'utils'], function(router) {
     //console.log(router);
+
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
+
         window.extend({ moment, Dexie, mdc, evo, router });
+
         requirejs(['myApp'], function(myApp) {
+
             requirejs(['Spreadsheets'], function(Spreadsheets) {
+
                 requirejs(['@root'], function(main) {
 
                     if(main) { main().then(_invoke) }
-                        
+
                 });
+
             });
         })
     });

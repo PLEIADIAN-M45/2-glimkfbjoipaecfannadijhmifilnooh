@@ -1,23 +1,19 @@
 define(["xmlSpider"], function(xmlSpider) {
 
-    //console.log(xmlSpider);
+    console.log(xmlSpider);
 
     var Spreadsheets = {
 
-        siribonus: function(postData) {
-            //user.command = "google:scripts:siribonus"
-            console.log(postData);
-            alert('siribonus')
-        },
         authorize_wa111: function(pastData, postData) {
-            
+
             getUser(evo).then((user) => {
+
                 user.status[1] = postData.f_ishow;
                 user.permit[1] = postData.f_depositStatus;
                 user.timing[1] = postData.timespan;
                 user.timing[2] = timeDiff(user.timing);
                 user.permit = user.permit.map($Num);
-                if (user.status[0] == 3) {
+                if(user.status[0] == 3) {
                     user.command = "google:scripts:authorize"
                 } else {
                     user.command = "google:scripts:suspended"
@@ -55,7 +51,7 @@ define(["xmlSpider"], function(xmlSpider) {
                 user.timing[1] = postData.timespan;
                 user.timing[2] = timeDiff(user.timing);
                 user.permit = user.permit.map($Num);
-                if (user.status[0] == 3) {
+                if(user.status[0] == 3) {
                     user.command = "google:scripts:authorize"
                 } else {
                     user.command = "google:scripts:suspended"
@@ -64,7 +60,13 @@ define(["xmlSpider"], function(xmlSpider) {
                 console.log(user);
                 //evo.apiFunctions(user);
             })
-        }
+        },
+
+        siribonus: function(postData) {
+            //user.command = "google:scripts:siribonus"
+            console.log(postData);
+            alert('siribonus')
+        },
     }
 
     var $robot = {
@@ -72,7 +74,7 @@ define(["xmlSpider"], function(xmlSpider) {
         /*開通或停權*/
         StopMember: function() {
             //還原或停權
-            if (this.respData == 1) { return };
+            if(this.respData == 1) { return };
             var pastData = $scope.user;
             var postData = { f_ishow: 2, f_depositStatus: 0 }
             Spreadsheets.authorize_wa111(pastData, postData);
@@ -89,12 +91,12 @@ define(["xmlSpider"], function(xmlSpider) {
         UpdateMemberSNInfoBackend: function() { //控制用户状态開關 //判斷一下是否執行成功 //這個動作用於 轉為停權
             var pastData = $scope.user;
             var postData = this.sendData;
-            if (pastData.MemberStatus == postData.MemberStatus) { return }
+            if(pastData.MemberStatus == postData.MemberStatus) { return }
             Spreadsheets.authorize_ku711(pastData, postData);
         },
 
         UpdateMemberRiskInfoAccountingBackend: function() { //控制存款開關
-            if (this.success) {} else { return };
+            if(this.success) {} else { return };
 
             /*var s = this.sendData;
             $scope.user.status.push(s.MemberStatus);
@@ -107,8 +109,8 @@ define(["xmlSpider"], function(xmlSpider) {
         },
 
         UpdateMemberRisksInfoBackendIsFSuspension: function() { //還原或停權
-            if (this.success) {} else { return };
-            if (this.sendData.IsFSuspension == false) { return };
+            if(this.success) {} else { return };
+            if(this.sendData.IsFSuspension == false) { return };
             var pastData = $scope.user;
             var postData = { MemberStatus: 0, IsDeposit: 0 };
             Spreadsheets.authorize_ku711(pastData, postData);
@@ -116,15 +118,15 @@ define(["xmlSpider"], function(xmlSpider) {
 
         //禮金表
         delDiceWinRecords: function() { /*用於刪除*/
-            if (this.respData == 1) { this.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { this.cacheBonusData = this.sendData; }
         },
         DelDiceWinRecords: function() { /*用於給點*/
-            if (this.respData == 1) { this.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { this.cacheBonusData = this.sendData; }
         },
         DepositBonus: function() {
-            if (this.cacheBonusData) {
+            if(this.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.f_id == this.cacheBonusData.id; });
-                if (postData) {
+                if(postData) {
                     this.cacheBonusData = null;
                     Spreadsheets.bonus(postData);
                 }
@@ -132,13 +134,13 @@ define(["xmlSpider"], function(xmlSpider) {
         },
         //禮金表
         UpdateMemberBonusLog: function() {
-            if (this.success) {} else { return };
+            if(this.success) {} else { return };
             this.cacheBonusData = this.sendData;
         },
         GetMemberBonusLogBackendByCondition: function() {
-            if (this.cacheBonusData) {
+            if(this.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.BonusNumber == this.cacheBonusData.BonusNumber; });
-                if (postData) {
+                if(postData) {
                     this.cacheBonusData = null;
                     Spreadsheets.bonus(postData);
                 }
@@ -149,9 +151,9 @@ define(["xmlSpider"], function(xmlSpider) {
 
     xmlSpider.loadend = function() {
         var robot = $robot[this.command];
-        if (robot) { return robot.call(this); }
+        if(robot) { return robot.call(this); }
         var robot = $robot[this.lastPath];
-        if (robot) { return robot.call(this); }
+        if(robot) { return robot.call(this); }
     }
 
 

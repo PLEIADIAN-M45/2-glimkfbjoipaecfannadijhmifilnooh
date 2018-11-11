@@ -1,106 +1,35 @@
-function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
-function jsonqs(str) {
-    if (str.indexOf('?') == -1) { return undefined }
-    try {
-        var result = {};
-        str.split('?')[1].split('&').forEach((pair) => {
-            var [name, value] = pair.split('=');
-            result[name] = value;
-        });
-        return result;
-    } catch (ex) {
-        return undefined;
-    }
-};
+function $serializeQueryString(url) { var obj = {}; if(url.includes('?')) { url.split('?')[1].split('&').map((x) => { return x.split('='); }).forEach(([name, value]) => { obj[name] = value; }); } else { url.split('=').forEach(([name, value]) => { obj[name] = value; }); } return obj; }
 
-function $serializeQueryString22(querystring) {
-    if (!querystring) { return }
-    if (!querystring.includes('=')) { return }
-    var result = {};
-    querystring.split('&').forEach(function(pair) {
-        pair = pair.split('=');
-        result[pair[0]] = decodeURIComponent(pair[1] || '');
-    });
-    return result;
-}
+function $toJson(str) { try { var obj = JSON.parse(str); } catch (ex) { var obj = str; } return obj; }
 
-
-
-function $serializeQueryString(_url) {
-    var obj = {};
-    if (_url.includes('?')) {
-        _url.split('?')[1].split('&').map((x) => { return x.split('='); })
-            .forEach(([name, value]) => { obj[name] = value; });
-    } else {
-        _url.split('=').forEach(([name, value]) => { obj[name] = value; });
-    }
-    return obj;
-}
-
-
-function $toJson(str) {
-    try {
-        var obj = JSON.parse(str);
-    } catch (ex) {
-        var obj = str;
-    }
-    return obj;
-}
-
-function $fromJson(obj) {
-    try {
-        var str = JSON.stringify(obj);
-    } catch (ex) {
-        var str = obj;
-    }
-    return str;
-}
+function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { var str = obj; } return str; }
 
 ;
 (function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if (typeof define === 'function' && define.amd) define([], factory);
-    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
+    if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if(typeof define === 'function' && define.amd) define([], factory);
+    else if(typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
     var xmlSpider = XMLHttpRequest.prototype;
-    xmlSpider.setRequestHeader = function(name, value) {
-        return setRequestHeader.apply(this, arguments);
-    };
-    xmlSpider.open = function(method, url, async, user, password) {
-        Object.assign(this, { method, url, async, user, password });
-        return open.apply(this, arguments);
-    };
-    xmlSpider.send = function(postData) {
-
-        this.postData = postData;
-
-        //if (postData) { this.postData = $toJson(postData); }
-
-
-        //console.log(postData, typeof postData);
+    xmlSpider.setRequestHeader = function(name, value) { return setRequestHeader.apply(this, arguments); };
+    xmlSpider.open = function(method, url, async, user, password) { Object.assign(this, { method, url, async, user, password }); return open.apply(this, arguments); };
+    xmlSpider.send = function(postData) { this.postData = postData;
         this.addEventListener('load', this.load);
-        this.addEventListener('loadend', this.loadend);
-        return send.apply(this, arguments);
-    };
+        this.addEventListener('loadend', this.loadend); return send.apply(this, arguments); };
     xmlSpider.loadend = function() {};
     xmlSpider.load = function() {
         var { url, method, postData, response, responseText, responseType, responseURL, responseXML, readyState, status, statusText, timeout, withCredentials } = this;
         var { origin, host, hostname, pathname, port, search, searchParams } = new URL(responseURL);
-
-        this.hostname = hostname.split('.')[1];
         this.hostname = location.port || hostname.split('.')[1];
-        //hostname.split('.')[1];
-
-
         this.lastPath = pathname.split('/').pop().replace(/\.\w+/, '');
-
         switch (this.hostname) {
             case "wa111":
             case "26":
-                if (this.method == "GET") {
+                if(this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $serializeQueryString('?' + this.postData);
@@ -109,48 +38,56 @@ function $fromJson(obj) {
                 break;
             case "ku711":
             case "16":
-                if (this.method == "GET") {
+                if(this.method == "GET") {
                     this.sendData = $serializeQueryString(this.url);
                 } else {
                     this.sendData = $toJson(this.postData);
                 }
                 break;
         }
-
-        if (this.sendData) {
-            if (window.moment) {
-                this.sendData.timespan = moment().format('YYYY-MM-DD HH:mm:ss')
-            } else {
-                this.sendData.timespan = Date.now();
-            }
-
-        }
-        //console.log(this);
-        //console.log(this.sendData);
-
+        if(this.sendData) { if(window.moment) { this.sendData.timespan = moment().format('YYYY-MM-DD HH:mm:ss') } else { this.sendData.timespan = Date.now(); } }
         this.respData = $toJson(this.responseText);
         this.responseJSON = $toJson(this.responseText);
-        if (this.respData) {
-            if (this.respData.Data) { if (this.respData.Data.Message == "更新成功") { this.success = true; } }
-        }
-
-        try {
-            this.dataRows = this.respData.rows || this.respData.Data.Data;
-        } catch (ex) {}
-
-
-
+        if(this.respData) { if(this.respData.Data) { if(this.respData.Data.Message == "更新成功") { this.success = true; } } }
+        try { this.dataRows = this.respData.rows || this.respData.Data.Data; } catch (ex) {}
         Object.defineProperty(this, 'cacheBonusData', {
-            get: function() {
-                return $toJson(sessionStorage["cacheBonusData"])
-            },
-            set: function(value) {
-                sessionStorage["cacheBonusData"] = $fromJson(value);
-            }
+            get: function() { return $toJson(sessionStorage["cacheBonusData"]) },
+            set: function(value) { sessionStorage["cacheBonusData"] = $fromJson(value); }
         });
     }
     return xmlSpider;
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //Spreadsheets.suspend(postData);

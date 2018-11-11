@@ -103,6 +103,10 @@ function callback_baidu_locate(res) {
     return { region };
 }
 
+
+
+
+
 var counter = { locate: 0, mobile: 0, idcard: 0 };
 var apiFunctions = {
     wa111: {
@@ -245,12 +249,37 @@ var apiFunctions = {
     ku711: {
         author() {
             return {
-                settings: {},
-                callback: function() {}
+                settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/author",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this
+                },
+                callback: function() { return {} }
             }
         },
 
         mobile() {
+            return {
+                callback: function(res) { return eval(res); },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6004,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_mobile",
+                        "_": this.time,
+                    }
+                }
+            }
             return {
                 provider: "ku711",
                 settings: {
@@ -281,14 +310,36 @@ var apiFunctions = {
         },
         banker() {
             return {
-                settings: {},
-                callback: function() {
-
-                }
+                settings: {
+                    "url": "http://glimkfbjoipaecfannadijhmifilnooh/apiFunctions/banker",
+                    "dataType": 'json',
+                    "method": "post",
+                    "data": this.region
+                },
+                callback: function(region) { return { region } }
             }
         },
         locate() {
-
+            return {
+                callback: function(res) { return eval(res); },
+                settings: {
+                    dataType: "text",
+                    url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                    data: {
+                        "query": this.value,
+                        "co": "",
+                        "resource_id": 6006,
+                        "t": this.time,
+                        "ie": "utf8",
+                        "oe": "gbk",
+                        "cb": "op_aladdin_callback",
+                        "format": "json",
+                        "tn": "baidu",
+                        "cb": "callback_baidu_locate",
+                        "_": this.time,
+                    }
+                }
+            }
         },
         member() {
             if(this.value.includes('*')) { return {} }

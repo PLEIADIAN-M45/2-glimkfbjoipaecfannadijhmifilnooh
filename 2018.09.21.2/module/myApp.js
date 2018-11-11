@@ -1,41 +1,10 @@
-function fnStylesheet() {
-    $scope.stylesheet.forEach(function(sheetName) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = require.toUrl("./css/" + sheetName + ".css");
-        link.onload = function() {
-            //console.log(link.href);
-        }
-        document.body.appendChild(link);
-    });
-}
-
-function fnComponents() {
-    $scope.components.forEach((name) => {
-        var templateUrl = require.toUrl("./html/" + name + ".html");
-        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
-            var template = angular.element(html);
-            $element.append(template);
-            $compile(template)($scope);
-            /********************************/
-            $scope.$apply();
-            /********************************/
-        })
-    })
-}
-
-function _invoke() {
-    fnStylesheet();
-    fnComponents();
-    console.log('_invoke......');
-}
-
 define(['angular', 'angular-sanitize'], function(angular) {
     window.angular = angular;
     'use strict';
     var myApp = angular.module('OBSApp', ['ngSanitize']);
     myApp.config(function($sceDelegateProvider) {
         var baseUrl = localStorage.baseUrl;
+        var baseUrl = evo.baseUrl;
         $sceDelegateProvider.resourceUrlBlacklist(['']);
         $sceDelegateProvider.resourceUrlWhitelist(['self', baseUrl, baseUrl + '**']);
     });
@@ -56,6 +25,35 @@ define(['angular', 'angular-sanitize'], function(angular) {
 
 
 
+function fnStylesheet() {
+    $scope.stylesheet.forEach(function(name) {
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = require.toUrl("./css/" + name + ".css");
+        link.onload = function() {
+            //console.log(link.href);
+        }
+        document.body.appendChild(link);
+    });
+}
+
+function fnComponents() {
+    $scope.components.forEach((name) => {
+        var templateUrl = require.toUrl("./html/" + name + ".html");
+        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+            var template = angular.element(html);
+            $element.append(template);
+            $compile(template)($scope);
+            $scope.$apply();
+        })
+    })
+}
+
+function _invoke() {
+    fnStylesheet();
+    fnComponents();
+    console.log('_invoke......');
+}
 
 
 /*
