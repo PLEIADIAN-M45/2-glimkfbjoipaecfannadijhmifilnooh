@@ -32,18 +32,20 @@ function $Num(str) { return Number(str) }
 
 function $upper(str) { return str.toUpperCase(); }
 
+function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { var str = obj; } return str; }
+
+function $toJson({ responseText }) { try { return JSON.parse(responseText); } catch (ex) { return responseText } }
+
+
 var Spreadsheets = {
+
     authorize_wa111: async function(user, postData) {
         user.status[1] = postData.f_ishow;
         user.permit[1] = postData.f_depositStatus;
         user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
         user.timing[2] = timeDiff(user.timing);
         user.permit = user.permit.map($Num);
-        if(user.status[0] == 3) {
-            user.command = "google:scripts:authorize"
-        } else {
-            user.command = "google:scripts:suspended"
-        }
+        if(user.status[0] == 3) { user.command = "google:scripts:authorize" } else { user.command = "google:scripts:suspended" }
         console.log(user);
         apiFunctions.google(user)
     },
@@ -66,10 +68,10 @@ var Spreadsheets = {
         })
     },
 
-    siribonus: function(postData) {
-        //user.command = "google:scripts:siribonus"
-        console.log(postData);
-        alert('siribonus')
+    siribonus: function(user) {
+        user.command = "google:scripts:siribonus";
+        //apiFunctions.google(user)
+        console.log(user);
     },
 }
 
@@ -124,12 +126,30 @@ var robot = {
 
     //禮金表
     delDiceWinRecords: function() { /*用於刪除*/
-        if(this.respData == 1) { this.cacheBonusData = this.sendData; }
+        //console.log(this);
+        // if(this.respData == 1) { this.cacheBonusData = this.sendData; }
     },
     DelDiceWinRecords: function() { /*用於給點*/
-        if(this.respData == 1) { this.cacheBonusData = this.sendData; }
+        if(this.respData == 1) { window.cacheBonusData = this.sendData; }
     },
-    DepositBonus: function() {
+
+    getDepositBonusList: async function() {
+        if(window.cacheBonusData) {
+            var postData = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
+            window.cacheBonusData = null;
+
+            var account = postData.f_accounts;
+            var channel = this.channel;
+            var user = await evo.store.user.get({ account, channel })
+            Object.assign(user, postData);
+            Spreadsheets.siribonus(user);
+        }
+    },
+
+    /*DepositBonusxx: function() {
+                //this.dataRows.forEach((d) => { sessionStorage[d.f_id] = $fromJson(d); });
+
+        console.log(this);
         if(this.cacheBonusData) {
             var postData = this.dataRows.find((row) => { return row.f_id == this.cacheBonusData.id; });
             if(postData) {
@@ -137,7 +157,7 @@ var robot = {
                 Spreadsheets.bonus(postData);
             }
         }
-    },
+    },*/
     //禮金表
     UpdateMemberBonusLog: function() {
         if(this.success) {} else { return };
@@ -158,8 +178,11 @@ var robot = {
 
 apiFunctions.XMLHttpRequest = async function() {
     var action = this.sendData.action || this.sendData.type;
-    if(robot[action]) { robot[action].call(this); }
-    return Promise.resolve({});
+    if(robot[action]) { robot[action].call(this); return Promise.resolve({}) }
+
+    var action = this.lastPath;
+    if(robot[action]) { robot[action].call(this); return Promise.resolve({}) }
+
 
     /*
     var robot = $robot[this.lastPath];
