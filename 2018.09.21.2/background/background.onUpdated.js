@@ -3,11 +3,13 @@ function refreshAllWindow() {
     chrome.tabs.getAllInWindow((tabs) => {
         tabs.filter((tab) => {
             var flag = false;
+
             if (tab.url.includes('127.0.0.1')) { flag = true; }
-            if (tab.url.includes('wa111')) { flag = true; }
-            if (tab.url.includes('ku711')) { flag = true; }
-            if (tab.url.includes('tp33')) { flag = true; }
             if (tab.url.includes('IGetMemberInfo')) { flag = true; }
+            
+            /*if (tab.url.includes('wa111')) { flag = true; }
+            if (tab.url.includes('ku711')) { flag = true; }
+            if (tab.url.includes('tp33')) { flag = true; }*/
 
             if (flag) { chrome.tabs.reload(tab.id); }
 

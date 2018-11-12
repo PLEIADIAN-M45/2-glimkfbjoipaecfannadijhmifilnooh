@@ -11,8 +11,7 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
             //$scope.user = await setUser();
             $scope.user = await getUser() || await setUser();
             //$scope.sendsms = new SendSms($scope.user);
-            console.log($scope.user);
-
+            //console.log($scope.user);
             resolve($scope);
         })
     }

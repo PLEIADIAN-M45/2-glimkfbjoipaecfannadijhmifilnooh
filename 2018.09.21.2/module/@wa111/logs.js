@@ -2,25 +2,25 @@ function dispatch() { return Promise.resolve() }
 
 function checkSensitiveProvince(el) {
     evo.decoder(localStorage.region).find(([str], index) => {
-        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
+        if (el.outerText.includes(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveProtocol(el) {
     evo.decoder(localStorage.locate).find(([str], index) => {
-        if(el.outerText.startsWith(str)) { return el.classList.add('danger'); }
+        if (el.outerText.startsWith(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveUserName(el) {
     evo.decoder(localStorage.author).find(([str], index) => {
-        if(str.trim() == el.outerText) { el.classList.add('danger'); }
+        if (str.trim() == el.outerText) { el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveMessages(el) {
     evo.decoder(localStorage.danger).find((str, index) => {
-        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
+        if (el.outerText.includes(str)) { return el.classList.add('danger'); }
     });
 }
 
@@ -42,27 +42,32 @@ function addChannelToAccountsId(children) {
     children[2].firstChild.remove();
     createElement([account]).appendTo(children[2]);
     createElement([channel, account]).appendTo(children[2]);
-    if(evo.channel == channel && evo.account == account) {
+
+    //console.log(channel, account, evo.channel, evo.account);
+
+    if (evo.channel == channel && evo.account == account) {
         addHighlightAccountsId(children);
         catchProvinceProtocols(children);
     }
 }
 
-var arrProvince = new Set();
+//var arrProvince = new Set();
 var arrProtocol = new Map();
 
 function catchProvinceProtocols(children) {
     var protocol = children[7].outerText;
     var province = children[9].outerText;
     arrProtocol.set(protocol, province);
-    arrProvince.add(province);
+    //arrProvince.add(province);
 }
 
-$scope.getAllIPAddress = function(me) {
-    
+//$scope.getAllIPAddress = function() {
+function getAllIPAddress() {
+    if (this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {
+        //console.log(children);
         addChannelToAccountsId(children);
         //checkSensitiveUserName(children[4]);
         //checkSensitiveProtocol(children[7]);
@@ -71,8 +76,32 @@ $scope.getAllIPAddress = function(me) {
         //checkSensitiveMessages(children[6]);
         //checkSensitiveMessages(children[11]);
     });
-    
-    //me.regions = Array.from(arrProtocol);
-    //$scope.user.regions = Array.from(arrProvince);
+
+
+
+    this.regions = Array.from(arrProtocol);
+
+    this.rows = this.regions;
+
+    //console.log(this.rows);
+
+    $scope.user.region = this.regions.map(([ip, prov]) => { return prov })
+
+    //console.log($scope.user.regions);
+
     putUser();
 }
+
+$scope.getAllIPAddress = getAllIPAddress;
+
+
+
+
+
+
+
+//this.regions = Array.from(arrProtocol);
+//console.log(Array.from(arrProtocol));
+//console.log(Array.from(arrProvince));
+
+//$scope.user.regions = Array.from(arrProvince);

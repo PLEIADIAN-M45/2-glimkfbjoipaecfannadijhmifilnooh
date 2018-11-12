@@ -1,29 +1,8 @@
-define(['angular', 'angular-sanitize'], function(angular) {
-    window.angular = angular;
-    'use strict';
-    var myApp = angular.module('OBSApp', ['ngSanitize']);
-    myApp.config(function($sceDelegateProvider) {
-        var baseUrl = localStorage.baseUrl;
-        var baseUrl = evo.baseUrl;
-        $sceDelegateProvider.resourceUrlBlacklist(['']);
-        $sceDelegateProvider.resourceUrlWhitelist(['self', baseUrl, baseUrl + '**']);
-    });
-    try { angular.bootstrap(document, ['OBSApp']); } catch (ex) {}
-    // console.log(myApp);
-    /***********************************************************************************/
-    var ng_controller = $("[ng-controller]")[0] || $("body");
-    var $element = angular.element(ng_controller);
-    var $scope = $element.scope();
-    var $injector = $element.injector();
-    var $invoke = $injector.invoke;
-    var $compile = $injector.get('$compile');
-    myApp = $injector.modules['OBSApp'];
-    Object.assign(myApp, { $element, $scope, $injector, $invoke, $compile });
-    window.extend({ myApp, $element, $scope, $injector, $invoke, $compile });
-    return myApp;
-});
-
-
+function _invoke() {
+    fnStylesheet();
+    fnComponents();
+    console.log('_invoke......');
+}
 
 function fnStylesheet() {
     $scope.stylesheet.forEach(function(name) {
@@ -49,11 +28,30 @@ function fnComponents() {
     })
 }
 
-function _invoke() {
-    fnStylesheet();
-    fnComponents();
-    console.log('_invoke......');
-}
+
+define(['angular', 'angular-sanitize'], function(angular) {
+    window.angular = angular;
+    'use strict';
+    var myApp = angular.module('OBSApp', ['ngSanitize']);
+    myApp.baseUrl = require.toUrl('.');
+    myApp.config(function($sceDelegateProvider) {
+        //$sceDelegateProvider.resourceUrlBlacklist(['']);
+        //$sceDelegateProvider.resourceUrlWhitelist(['self', myApp.baseUrl, myApp.baseUrl + '**']);
+    });
+    try { angular.bootstrap(document, ['OBSApp']); } catch (ex) {};
+    /***********************************************************************************/
+    var ng_controller = $("[ng-controller]")[0] || $("body");
+    var $element = angular.element(ng_controller);
+    var $scope = $element.scope();
+    var $injector = $element.injector();
+    var $invoke = $injector.invoke;
+    var $compile = $injector.get('$compile');
+    myApp = $injector.modules['OBSApp'];
+    Object.assign(myApp, { $element, $scope, $injector, $invoke, $compile });
+    window.extend({ myApp, $element, $scope, $injector, $invoke, $compile });
+    return myApp;
+});
+
 
 
 /*

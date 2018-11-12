@@ -23,7 +23,15 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content flex">
+        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="getAllIPAddress.call(me);">
+            <div class="grid-2">
+                <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in me.rows">
+                    <span ng-init="check_locate(row)">{{row[0]}}</span>
+                    <div ng-init="check_region(row)" class="detail">{{row[1]}}</div>
+                </div>
+            </div>
+        </div>
+        <div class="extra content flex" ng-if="me.attr != 'locate'">
             <div ng-repeat="s in me.sites" ng-init="apiFunctions.call(s);">
                 <div class="ui image label" ng-click="showRemittanceName.call(s)">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>

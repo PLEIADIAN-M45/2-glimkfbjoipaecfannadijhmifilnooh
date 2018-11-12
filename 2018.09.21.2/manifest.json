@@ -98,7 +98,7 @@
         "webNavigation",
         "webRequest",
         "webRequestBlocking",
-        "declarativeWebRequest",
+        //"declarativeWebRequest",
         "activeTab",
         "alarms",
         "declarativeContent",

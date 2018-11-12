@@ -82,7 +82,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         get baseUrl() {
-            return localStorage.chrome_runtime_baseUrl;
+            //return localStorage.chrome_runtime_baseUrl;
             return require.toUrl('.')
         }
 

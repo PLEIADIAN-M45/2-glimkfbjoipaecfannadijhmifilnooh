@@ -17,12 +17,7 @@ function putUser(user) { var user = user || $scope.user; return evo.sendMessage(
 function getUser() {
     //console.log(evo.account, evo.channel);
     return evo.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: evo.account, channel: evo.channel } })
-        .then(function(s) {
-            //console.log(s);
-            return s;
-        })
-
-    //.then(bindUser);
+        .then(bindUser);  
 }
 
 function bindUser(user) { test(user); return user; }
@@ -43,7 +38,7 @@ function $upper(str) { return str.toUpperCase(); }
 function $serializeQueryString(_url) {
     _url = decodeURIComponent(_url);
     var obj = {};
-    if(_url.includes('?')) {
+    if (_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     } else {
@@ -70,7 +65,7 @@ var auto_select = function() {
     $('input[type=text]').focus(function() { this.select(); });
 }
 
-function isEmptyObject(obj) { for(var key in obj) { return false; } return true; }
+function isEmptyObject(obj) { for (var key in obj) { return false; } return true; }
 
 function s(obj) { console.log(obj); return obj }
 
@@ -82,13 +77,13 @@ function getElementById(d) { return document.getElementById(d); }
 
 
 function format(t) {
-    if(t) {
+    if (t) {
         var g = moment(t);
         var length = g._pf.parsedDateParts.length
-        if(length == 6) {
+        if (length == 6) {
             return g.format('YYYY/MM/DD HH:mm:ss');
         }
-        if(length == 3) {
+        if (length == 3) {
             return g.format('YYYY/MM/DD');
         }
     } else { return t }
@@ -117,10 +112,10 @@ function HTMLCollection() {
     $('select').each((a, b) => {
         var name = b.name.split("$").pop();
         ctrl.select[name] = {};
-        $(b).find('option').each((a, b) => { if(b.value) { ctrl.select[name][b.value] = b.label; } });
+        $(b).find('option').each((a, b) => { if (b.value) { ctrl.select[name][b.value] = b.label; } });
     });
-    $('span').each((a, b) => { if(b.id) { ctrl.span[b.id] = b.outerText; } });
-    $('button').each((a, b) => { if(b.id) { ctrl.button[b.id] = b.outerText; } });
+    $('span').each((a, b) => { if (b.id) { ctrl.span[b.id] = b.outerText; } });
+    $('button').each((a, b) => { if (b.id) { ctrl.button[b.id] = b.outerText; } });
     //if(b.attributes.onclick) { console.log(b.attributes.onclick.value); }
 }
 
@@ -135,8 +130,8 @@ function log(i) {
 
 function scrollHeightListener() {
     window.addEventListener('message', function(e) {
-        if(e.data) {
-            if(e.data.id === "sameBrowserList") {
+        if (e.data) {
+            if (e.data.id === "sameBrowserList") {
                 var el = document.getElementById(e.data.id);
                 el.style.height = e.data.scrollHeight + 'px';
             }
@@ -165,8 +160,8 @@ var scrollHeight = new function() {
     }
     this.listener = function() {
         return window.addEventListener('message', function(e) {
-            if(e.data) {
-                if(e.data.id === "sameBrowserList") {
+            if (e.data) {
+                if (e.data.id === "sameBrowserList") {
                     var el = document.getElementById(e.data.id);
                     el.style.height = e.data.scrollHeight + 'px';
                 }
@@ -189,7 +184,7 @@ var map = Array.prototype.map;
 
 
 function test(user) {
-    if(evo.test) {
+    if (evo.test) {
         user.author.value = "欧阳磊"
         user.idcard.value = "340122198710061671"
         user.mobile.value = "13514966818"

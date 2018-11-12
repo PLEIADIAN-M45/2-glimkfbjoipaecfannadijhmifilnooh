@@ -38,7 +38,7 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
                     }
                 }
             }).filter((a) => { return a.value });
-            console.log($scope.user);
+            //console.log($scope.user);
             return $scope.user;
         }).then(bindEvo).then(putUser)
     }

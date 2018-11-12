@@ -62,7 +62,7 @@ requirejs.config({
 
 /*
 requirejs(['Mock'], function(Mock) {
-    Mock.mock("http://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx", 'post', function(req) {
+    Mock.mock("http        ://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx", 'post', function(req) {
         console.log(req);
         return Mock.mock(1)
     });
@@ -71,6 +71,7 @@ requirejs(['Mock'], function(Mock) {
 
 
 requirejs(['router', 'utils'], function(router) {
+    
     //console.log(router);
 
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
@@ -78,16 +79,7 @@ requirejs(['router', 'utils'], function(router) {
         window.extend({ moment, Dexie, mdc, evo, router });
 
         requirejs(['myApp'], function(myApp) {
-
-            requirejs(['Spreadsheets'], function(Spreadsheets) {
-
-                requirejs(['@root'], function(main) {
-
-                    if(main) { main().then(_invoke) }
-
-                });
-
-            });
+            requirejs(['@root'], function(main) { if (main) { main().then(_invoke) } });
         })
     });
 });
@@ -98,6 +90,7 @@ requirejs(['router', 'utils'], function(router) {
 
 
 
+//requirejs(['Spreadsheets'], function(Spreadsheets) {            });
 
 
 
