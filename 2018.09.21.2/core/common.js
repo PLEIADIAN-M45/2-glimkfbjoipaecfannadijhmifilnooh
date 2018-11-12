@@ -12,15 +12,21 @@ function adjUser(user) {
     return user;
 }
 
-function putUser(user) { var user = user || $scope.user; return evo.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser) }
+function putUser(user) {
+    var user = user || $scope.user;
+    return evo.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser)
+}
 
 function getUser() {
     //console.log(evo.account, evo.channel);
     return evo.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: evo.account, channel: evo.channel } })
-        .then(bindUser);  
+        .then(bindUser);
 }
 
-function bindUser(user) { test(user); return user; }
+function bindUser(user) {
+    /*test(user);*/
+    return user;
+}
 
 function timeDiff([t1, t2]) {
     t1 = moment(t1);

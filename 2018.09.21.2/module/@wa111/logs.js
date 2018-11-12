@@ -51,18 +51,18 @@ function addChannelToAccountsId(children) {
     }
 }
 
-//var arrProvince = new Set();
+var arrProvince = new Set();
 var arrProtocol = new Map();
 
 function catchProvinceProtocols(children) {
     var protocol = children[7].outerText;
     var province = children[9].outerText;
     arrProtocol.set(protocol, province);
-    //arrProvince.add(province);
+    arrProvince.add(province);
 }
 
-//$scope.getAllIPAddress = function() {
-function getAllIPAddress() {
+$scope.getAllIPAddress = function() {
+
     if (this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
@@ -77,23 +77,11 @@ function getAllIPAddress() {
         //checkSensitiveMessages(children[11]);
     });
 
-
-
-    this.regions = Array.from(arrProtocol);
-
-    this.rows = this.regions;
-
-    //console.log(this.rows);
-
-    $scope.user.region = this.regions.map(([ip, prov]) => { return prov })
-
-    //console.log($scope.user.regions);
-
+    console.log(1, 2);
+    this.rows =  Array.from(arrProtocol);
+    $scope.user.region = Array.from(arrProvince);
     putUser();
 }
-
-$scope.getAllIPAddress = getAllIPAddress;
-
 
 
 

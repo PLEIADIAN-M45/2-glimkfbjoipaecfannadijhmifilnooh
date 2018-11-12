@@ -1,25 +1,3 @@
-apiFunctions.google = function(request) {
-    delete request.banker[0].sites;
-    delete request.idcard.sites;
-    delete request.locate.sites;
-    delete request.mobile.sites;
-    delete request.author.sites;
-    console.log(request);
-    request.region = [];
-    $.ajax({
-        url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-        method: 'get',
-        data: {
-            test: true,
-            audience: angular.fromJson(localStorage.tokenInfo).audience,
-            command: request.command,
-            params: angular.toJson(request)
-        }
-    }).then(function(d) {
-        console.log(d);
-    })
-}
-
 function timeDiff([t1, t2]) {
     t1 = moment(t1);
     t2 = moment(t2);
@@ -36,152 +14,153 @@ function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { va
 
 function $toJson({ responseText }) { try { return JSON.parse(responseText); } catch (ex) { return responseText } }
 
-
 var Spreadsheets = {
-
-    authorize_wa111: async function(user, postData) {
-
-        user.status[1] = postData.f_ishow;
-        user.permit[1] = postData.f_depositStatus;
+    siribonus: function(user) {
+        user.command = "google:scripts:siribonus";
+        apiFunctions.google(user);
+    },
+    authorize: function(user, postData) {
+        user.status[1] = postData[0];
+        user.permit[1] = postData[1];
         user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
         user.timing[2] = timeDiff(user.timing);
         user.permit = user.permit.map($Num);
+        user.status = user.status.map($Num);
+        if (user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
         if (user.status[0] == 3) {
             user.command = "google:scripts:authorize"
         } else {
             user.command = "google:scripts:suspended"
         }
-        console.log(user.command);
-        console.log(user);
-
-        //apiFunctions.google(user)
-    },
-    authorize_ku711: function(pastData, postData) {
-        getUser(evo).then((user) => {
-            user.status[1] = postData.MemberStatus;
-            user.permit[1] = postData.IsDeposit;
-
-            user.timing[1] = postData.timespan;
-            user.timing[2] = timeDiff(user.timing);
-            user.permit = user.permit.map($Num);
-
-            if (user.status[0] == 3) {
-                alert('authorize')
-                user.command = "google:scripts:authorize"
-            } else {
-                alert('suspended')
-                user.command = "google:scripts:suspended"
-            }
-            console.log(user);
-            //evo.apiFunctions(user);
-        })
-    },
-
-    siribonus: function(user) {
-        user.command = "google:scripts:siribonus";
-        //apiFunctions.google(user)
-        console.log(user);
-    },
+        apiFunctions.google(user);
+    }
 }
 
-//window.cacheBonusData = {};
+function getUserId() {
+    var c = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
+    return c.f_accounts;
+}
+
+function getUser() {
+    var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
+    var channel = this.channel;
+    return evo.store.user.get({ account, channel });
+}
+
+function getBonus() {
+    return this.dataRows.find((row) => {
+        if (row.f_id) { return row.f_id == window.cacheBonusData.id; }
+        if (row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
+    });
+}
 
 var robot = {
-    
-    delDiceWinRecords: function() { /*用於刪除*/
-        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
-    },
-    DelDiceWinRecords: function() { /*用於給點*/
-        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
-    },
-    getDepositBonusList: async function() { /*禮金表*/
-        if (window.cacheBonusData) {
-            var postData = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
-            window.cacheBonusData = null;
-            var account = postData.f_accounts;
-            var channel = this.channel;
-            var user = await evo.store.user.get({ account, channel });
-            
-            if (user) {
-                user.bonus = postData;
-                Spreadsheets.siribonus(user);
-            }
-        }
-    },
 
-    StopMember: async function() { /*1還原 或 2停權*/
-        if (this.respData == 1) { return };
-        var account = this.sendData.accounts;
-        var channel = this.channel;
-        var user = await evo.store.user.get({ account, channel });
-        Spreadsheets.authorize_wa111(user, { f_ishow: 2, f_depositStatus: 0 });
-        //user.status[0] = 1;
-    },
-
-    getmodel: async function() { /*開通*/
-        var account = this.sendData.account;
-        var channel = this.channel;
-        var user = await evo.store.user.get({ account, channel });
-        Spreadsheets.authorize_wa111(user, this.respData);
-    },
-
-    /*開通或停權*/
-    UpdateMemberSNInfoBackend: function() { //控制用户状态開關 //判斷一下是否執行成功 //這個動作用於 轉為停權
-        var pastData = $scope.user;
-        var postData = this.sendData;
-        if (pastData.MemberStatus == postData.MemberStatus) { return }
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-    UpdateMemberRiskInfoAccountingBackend: function() { //控制存款開關
-        if (this.success) {} else { return };
-
-        /*var s = this.sendData;
-        $scope.user.status.push(s.MemberStatus);
-        $scope.user.permit.push(s.IsDeposit);
-        console.log($scope.user);*/
-        var pastData = $scope.user;
-        var postData = this.sendData;
-        //if(pastData.IsDeposit == postData.IsDeposit) { return }
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-    UpdateMemberRisksInfoBackendIsFSuspension: function() { //還原或停權
-        if (this.success) {} else { return };
-        if (this.sendData.IsFSuspension == false) { return };
-        var pastData = $scope.user;
-        var postData = { MemberStatus: 0, IsDeposit: 0 };
-        Spreadsheets.authorize_ku711(pastData, postData);
-    },
-
-
-    //禮金表
     UpdateMemberBonusLog: function() {
-        if (this.success) {} else { return };
-        this.cacheBonusData = this.sendData;
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
     },
-    GetMemberBonusLogBackendByCondition: function() {
-        if (this.cacheBonusData) {
-            var postData = this.dataRows.find((row) => { return row.BonusNumber == this.cacheBonusData.BonusNumber; });
-            if (postData) {
-                this.cacheBonusData = null;
-                Spreadsheets.bonus(postData);
-            }
+    delDiceWinRecords: function( /*用於刪除*/ ) {
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+    },
+    DelDiceWinRecords: function( /*用於給點*/ ) {
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+    },
+    /****************************************************************/
+
+    GetMemberBonusLogBackendByCondition: async function() {
+        if (window.cacheBonusData) {
+            this.sendData = getBonus.call(this);
+            var user = await getUser.call(this);
+            user.bonus = this.sendData;
+            Spreadsheets.siribonus(user, "禮金表");
         }
     },
+    getDepositBonusList: async function() {
+        if (window.cacheBonusData) {
+            this.sendData = getBonus.call(this);
+            var user = await getUser.call(this);
+            user.bonus = this.sendData;
+            Spreadsheets.siribonus(user, "禮金表");
+        }
+    },
+    /****************************************************************/
+    getmodel: async function(user) {
+        var { f_ishow, f_depositStatus } = this.respData;
+        var data = [f_ishow, f_depositStatus];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "開通");
+    },
+    UpdateMemberRiskInfoAccountingBackend: async function() {
+        if (this.respData.Data.Message != "更新成功") { return }
+        var { MemberStatus, IsDeposit } = this.sendData;
+        var data = [MemberStatus, IsDeposit];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "開通");
+    },
+    UpdateMemberSNInfoBackend: async function() {
+        //if (this.respData.Data.Message == "更新成功") {}
+        var { MemberStatus, IsDeposit } = this.sendData;
+        var data = [MemberStatus, IsDeposit];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "停權-用戶狀態選停權戶");
+    },
+    /****************************************************************/
+
+    StopMember: async function(user) {
+        if (this.respData == 1) { return };
+        var data = [2, 0];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "停權");
+    },
+    UpdateMemberRisksInfoBackendIsFSuspension: async function() {
+        if (this.sendData.IsFSuspension == false) { return };
+        var data = [0, 0];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "還原或停權");
+    },
+    /************************************************************************************/
+
+
 }
 
 
-
-apiFunctions.XMLHttpRequest = async function() {
+apiFunctions.XMLHttpRequest = function() {
     var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];
-    if (_robot) { _robot.call(this) };
-    Promise.resolve({});
+    if (_robot) { if (this.sendData) { _robot.call(this); } } else {}
+    return Promise.resolve({});
+}
+
+apiFunctions.google = function(request) {
+    try {
+        delete request.banker[0].sites;
+        delete request.idcard.sites;
+        delete request.locate.sites;
+        delete request.mobile.sites;
+        delete request.author.sites;
+    } catch (ex) {}
+    console.log(request.command);
+    console.log(request);
+    //request.region = [];
+    return
+    $.ajax({
+        url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
+        method: 'get',
+        data: {
+            test: true,
+            audience: angular.fromJson(localStorage.tokenInfo).audience,
+            command: request.command,
+            params: angular.toJson(request)
+        }
+    }).then(function(d) { console.log(d); })
 }
 
 
 
+//console.log(user);
+//_robot.call(this)
 
+//async function exec() {}
+//exec.call(this);
 
 
 /*
@@ -227,3 +206,29 @@ xmlSpider.loadend = function() {
      console.log(port);
 
  })*/
+/*
+
+authorize_ku711: function(user, postData) {
+    //console.log(postData);
+    // user.status[1] = postData.f_ishow;
+    // user.permit[1] = postData.f_depositStatus;
+    user.status[1] = postData.MemberStatus;
+    user.permit[1] = postData.IsDeposit;
+    user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
+    user.timing[2] = timeDiff(user.timing);
+    user.permit = user.permit.map($Num);
+
+    if (user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
+    if (user.status[0] == 3) {
+        user.command = "google:scripts:authorize"
+    } else {
+        user.command = "google:scripts:suspended"
+    }
+
+
+    apiFunctions.google(user);
+
+    //console.log(user.command);
+    //postData.timespan;
+},
+*/

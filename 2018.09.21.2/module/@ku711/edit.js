@@ -87,6 +87,7 @@ define(['@ku711/api'], function(apiFunction) {
             //$scope.user.permit = $scope.user.permit.map($Num);
             //console.log($formatTime(evo.now));
 
+            console.log($scope.user);
 
             return $scope.user;
         }).then(putUser);
@@ -152,6 +153,7 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     $scope.openDeposit = function() {
+        console.log(1, 1);
         $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
         $scope.ctrl.DepositChanged();
         $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();

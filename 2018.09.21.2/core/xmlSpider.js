@@ -27,7 +27,7 @@ function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(
 
 function $mimeType({ responseText }) { return $isJson(responseText) ? "json" : "text"; }
 
-function $dataRows({ respData }) { try { return respData.rows || respData.Data; } catch (ex) {} }
+function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} }
 
 function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).toObj(); }
 
@@ -67,14 +67,18 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
         this.dataRows = $dataRows(this);
         this.timespan = Date.now();
         this.time = Date.now() - this.startedDateTime;
+        if (this.respData.Data.Message == "更新成功") { this.respData = 1; }
+        //if (this.lastPath == "DepositBonus") { this.dataRows.forEach((row) => { sessionStorage[row.f_id] = row.f_accounts; }) }
+        //if (this.sendData.pas) { this.sendData.f_accounts = sessionStorage[this.sendData.id]; }
+
 
         this.action = this.sendData.action;
         this.type = this.sendData.type;
-
+        /*
         Object.defineProperty(this, "cacheBonusData", {
             get: function() { return $tryJson(sessionStorage["cacheBonusData"]) },
             set: function(value) { sessionStorage["cacheBonusData"] = $fromJson(value); }
-        });
+        });*/
         chrome.runtime.sendMessage(localStorage["chrome_runtime_id"], this);
     }
     xmlSpider.send = function(postData) {
@@ -85,3 +89,13 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
     };
     return xmlSpider;
 });
+
+
+
+
+/*
+8657600/48
+180366
+75*15
+*/
+//.666667
