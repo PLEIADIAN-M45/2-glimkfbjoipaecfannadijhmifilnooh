@@ -23,6 +23,9 @@ function fnComponents() {
             var template = angular.element(html);
             $element.append(template);
             $compile(template)($scope);
+            //console.log(666666666, 777777777);
+            $scope.template_loaded = 1;
+
             $scope.$apply();
         })
     })
@@ -59,3 +62,5 @@ console.log($injector.modules['OBSApp']);
 console.log($injector);
 console.log($scope.Service.txtCellPhone.$modelValue);*/
 //console.log($scope.StatusEnum);
+
+//console.log($scope.Service.txtBirthDay.$modelValue);

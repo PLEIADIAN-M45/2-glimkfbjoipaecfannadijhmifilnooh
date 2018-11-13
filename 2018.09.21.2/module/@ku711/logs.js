@@ -1,18 +1,80 @@
-define(["xmlSpider"], function(xmlSpider) {
+define([], function() {
 
-    xmlSpider.loadend = function() {
-        //console.log(this.lastPath);
-        if (this.lastPath == "GetMemberMultiLoginLogCookieIDByAccountID") {
+    $scope.createIFrame = function() {
+
+        function addEventListener() {
             //console.log(this);
-            //console.log(this.respData.Data.PageData.Data);
+            window.addEventListener('message', (e) => {
+                console.log(e.data);
+                console.log(this);
+                this.style.height = e.data.scrollHeight;
+            });
         }
+
+        var frameUrl = {
+            "wa111": `${location.origin}/sameBrowserList.aspx?iType=3&accounts=${evo.account}&siteNumber=${evo.channel}`,
+            "ku711": `${location.origin}/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
+        } [evo.host];
+
+        $('<div>').addClass('ui horizontal divider').text('AND').appendTo($element);
+
+        var a = $('<iframe>', { id: 'sameBrowserList', src: frameUrl, frameborder: 0, width: '100%' })
+            .load(function() {
+                console.log(this.contentWindow.document.body.offsetHeight);
+                this.style.height = this.contentWindow.document.body.offsetHeight + 'px';
+            }).appendTo($element);
+
+        /*.load(addEventListener)
+         .appendTo($element);*/
+
+        console.log(a);
+    }
+
+
+    /*
+        var getIFrameHeight = function() {
+            var iFrame = $('iframe')[0]; // this will return the DOM element
+            var strHash = iFrame.contentDocument.location.hash;
+            alert(strHash); // will return something like '#1552'
+        };
+        $('iframe').bind('load', getIFrameHeight);*/
+
+    $scope.dispatch = function() {
+        $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
+        $scope.ctrl.GetQueryLoginLog(evo.params.method);
+    }
+
+    var arrProvince = new Set();
+    var arrProtocol = new Map();
+
+    $scope.getAllIPAddress = function() {
+        //console.log(this);
+        getModule("ctrl.model.ResultList").then((a) => {
+            a.forEach((b) => {
+                if (b.AccountID == evo.account) {
+                    arrProtocol.set(b.IPAddress, b.IPLocation);
+                    arrProvince.add(b.IPLocation);
+                }
+            });
+
+            console.log(arrProtocol);
+            console.log(arrProvince);
+
+            this.rows = Array.from(arrProtocol);
+            $scope.user.region = Array.from(arrProvince);
+
+            console.log($scope.user);
+            //me.regions = Array.from(arrProtocol);
+            return $scope.user;
+        }).then(putUser)
     }
 
 
 })
 
+/*
 var dispatch = function() {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         if ($scope.ctrl.model.QueryInputModel.AccountID != undefined && $scope.ctrl.GetQueryLoginLog) {
             $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
             $scope.ctrl.GetQueryLoginLog(evo.params.method);
@@ -22,6 +84,7 @@ var dispatch = function() {
         }
     })
 }
+*/
 
 var getFrameUrl = function() {
     return location.href.replace('CookieID', 'DeviceNo')
@@ -39,7 +102,7 @@ function getSiteNumberCollection() {
     return collection;
 }
 
-
+/*
 function getModule(objPath) {
     return new Promise(function(resolve, reject) {
         var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;;
@@ -53,7 +116,7 @@ function getModule(objPath) {
         }(object));
     })
 }
-
+*/
 
 
 async function checkSensitiveWords() {
@@ -155,34 +218,21 @@ function getTableCellCollection() {
 }
 
 
-var arrProvince = new Set();
-var arrProtocol = new Map();
-
-$scope.getAllIPAddress = function() {
-    //console.log(this);
-    getModule("ctrl.model.ResultList").then((a) => {
-        a.forEach((b) => {
-            if (b.AccountID == evo.account) {
-                arrProtocol.set(b.IPAddress, b.IPLocation);
-                arrProvince.add(b.IPLocation);
-            }
-        });
-
-        console.log(arrProtocol);
-        console.log(arrProvince);
-
-        this.rows = Array.from(arrProtocol);
-        $scope.user.region = Array.from(arrProvince);
-
-        console.log($scope.user);
-        //me.regions = Array.from(arrProtocol);
-        return $scope.user;
-    }).then(putUser)
+/*
+function createIFrame() {
+    console.log($scope.template_loaded);
+    return new Promise((resolve, reject) => {
+        var frameUrl = {
+            "wa111": `${location.origin}/sameBrowserList.aspx?iType=3&accounts=${evo.account}&siteNumber=${evo.channel}`,
+            "ku711": `${location.origin}/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${evo.account}`
+        } [evo.host];
+        $('<div>').addClass('ui horizontal divider').text('AND').appendTo($element);
+        $('<iframe>', { id: 'sameBrowserList', src: frameUrl, frameborder: 0, width: '100%', }).appendTo($element);
+        resolve('createIFrame');
+    });
 }
 
-
-
-
+*/
 
 
 

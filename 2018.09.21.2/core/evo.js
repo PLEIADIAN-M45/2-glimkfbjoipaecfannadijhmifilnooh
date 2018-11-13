@@ -291,9 +291,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             return document.querySelectorAll('span, select, input')
         }
 
-        get controllerProvider() {
+        /*get controllerProvider() {
             return angular.element(document.querySelector('[ng-controller]'));
-        }
+        }*/
 
         get store() {
             var store = new Dexie('evo');

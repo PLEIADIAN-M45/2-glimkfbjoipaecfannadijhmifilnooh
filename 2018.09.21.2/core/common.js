@@ -1,3 +1,6 @@
+window.extend = function() { return Object.assign(this, ...arguments); }
+
+
 function delUser() { return evo.sendMessage({ command: 'apiFunctions.store.user.delete', params: { account: evo.account, channel: evo.channel } }).then(() => { console.log('user deleted.'); }); }
 
 function adjUser(user) {
@@ -29,6 +32,20 @@ function bindUser(user) {
 }
 
 //console.log(evo);
+
+
+function getModule(objPath) {
+    if (localStorage[objPath]) {
+        var obj = angular.fromJson(localStorage[objPath]);
+        obj._name_ = objPath;
+        return Promise.resolve(obj);
+    } else {
+        return new Promise((resolve, reject) => {
+            var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
+            (function repeater(object) { var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object); if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else { if (typeof alphaVal == "object") { alphaVal._name_ = objPath; if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) }; } else { resolve(alphaVal); } } }(object));
+        })
+    }
+}
 
 
 
@@ -106,13 +123,13 @@ api.prototype.search = {
         })
     },
     region: function(res) {
-        if(!res.region) { return false }
+        if (!res.region) { return false }
         //var { prov, city, area, country } = res.region;
         var value = Object.values(res.region).join('');
         //console.log(value);
         //[prov, city, area, country].join('');
 
-        if(value) {
+        if (value) {
             return evo.decoder(localStorage.region).find((d) => {
                 return value.includes(trim(d[0]))
             });
@@ -149,7 +166,7 @@ function $upper(str) { return str.toUpperCase(); }
 function $serializeQueryString(_url) {
     _url = decodeURIComponent(_url);
     var obj = {};
-    if(_url.includes('?')) {
+    if (_url.includes('?')) {
         _url.split('?')[1].split('&').map((x) => { return x.split('='); })
             .forEach(([name, value]) => { obj[name] = value; });
     } else {
@@ -176,7 +193,7 @@ var auto_select = function() {
     $('input[type=text]').focus(function() { this.select(); });
 }
 
-function isEmptyObject(obj) { for(var key in obj) { return false; } return true; }
+function isEmptyObject(obj) { for (var key in obj) { return false; } return true; }
 
 function s(obj) { console.log(obj); return obj }
 
@@ -188,20 +205,19 @@ function getElementById(d) { return document.getElementById(d); }
 
 
 function format(t) {
-    if(t) {
+    if (t) {
         var g = moment(t);
         var length = g._pf.parsedDateParts.length
-        if(length == 6) {
+        if (length == 6) {
             return g.format('YYYY/MM/DD HH:mm:ss');
         }
-        if(length == 3) {
+        if (length == 3) {
             return g.format('YYYY/MM/DD');
         }
     } else { return t }
 }
 
 
-function trim(value) { return value.toString().trim() }
 
 
 var createTabs = function(url) {
@@ -223,10 +239,10 @@ function HTMLCollection() {
     $('select').each((a, b) => {
         var name = b.name.split("$").pop();
         ctrl.select[name] = {};
-        $(b).find('option').each((a, b) => { if(b.value) { ctrl.select[name][b.value] = b.label; } });
+        $(b).find('option').each((a, b) => { if (b.value) { ctrl.select[name][b.value] = b.label; } });
     });
-    $('span').each((a, b) => { if(b.id) { ctrl.span[b.id] = b.outerText; } });
-    $('button').each((a, b) => { if(b.id) { ctrl.button[b.id] = b.outerText; } });
+    $('span').each((a, b) => { if (b.id) { ctrl.span[b.id] = b.outerText; } });
+    $('button').each((a, b) => { if (b.id) { ctrl.button[b.id] = b.outerText; } });
     //if(b.attributes.onclick) { console.log(b.attributes.onclick.value); }
 }
 
@@ -238,11 +254,11 @@ function log(i) {
 
 
 
-
+/*
 function scrollHeightListener() {
     window.addEventListener('message', function(e) {
-        if(e.data) {
-            if(e.data.id === "sameBrowserList") {
+        if (e.data) {
+            if (e.data.id === "sameBrowserList") {
                 var el = document.getElementById(e.data.id);
                 el.style.height = e.data.scrollHeight + 'px';
             }
@@ -257,22 +273,32 @@ function scrollHeightPoster() {
         id: 'sameBrowserList',
         scrollHeight: scrollHeight
     }, '*');
-}
+}*/
 
 
+/*
+$scope.$watch('ctrl.model.ResultList', function(nv, ov) {   
+})
+*/
+/*
 var scrollHeight = new function() {
+
     this.postMessage = function() {
-        var scrollHeight = document.body.scrollHeight + 50;
+        var scrollHeight = document.body.scrollHeight + 250;
+        console.log(location.href);
         console.log('iframe scrollHeight:', scrollHeight);
         return window.parent.postMessage({
             id: 'sameBrowserList',
             scrollHeight: scrollHeight
         }, '*');
     }
+
     this.listener = function() {
+        
         return window.addEventListener('message', function(e) {
-            if(e.data) {
-                if(e.data.id === "sameBrowserList") {
+            if (e.data) {
+                if (e.data.id === "sameBrowserList") {
+                    console.log(e);
                     var el = document.getElementById(e.data.id);
                     el.style.height = e.data.scrollHeight + 'px';
                 }
@@ -280,7 +306,7 @@ var scrollHeight = new function() {
         }, false);
     }
 }
-
+*/
 function error(ex) { console.log('[error] ', ex); }
 var var1 = null,
     var2 = null;
@@ -295,7 +321,7 @@ var map = Array.prototype.map;
 
 
 function test(user) {
-    if(evo.test && user) {
+    if (evo.test && user) {
         user.author.value = "欧阳磊"
         user.idcard.value = "340122198710061671"
         user.mobile.value = "13514966818"

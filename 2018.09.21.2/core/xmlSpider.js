@@ -1,19 +1,19 @@
 Array.prototype.toObj = function() {
     var obj = {};
-    this.forEach(([name, value]) => { if(name && value) { obj[name.trim()] = value.trim() } });
+    this.forEach(([name, value]) => { if (name && value) { obj[name.trim()] = value.trim() } });
     return obj;
 }
 
 
 function $serialize({ href, url, postData }) {
     var obj = {};
-    if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (href) { if (href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }
 
-function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
 function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { var str = obj; } return str; }
 
@@ -21,7 +21,7 @@ function $tryJson({ responseText }) { try { return JSON.parse(responseText); } c
 
 function $isJson(d) { try { JSON.parse(d); } catch (ex) { return false; } return true; }
 
-function $hostname() { if(location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
+function $hostname() { if (location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
 
 function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(/\.\w+/, ''); }
 
@@ -34,9 +34,9 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
 
 ;
 (function webpackUniversalModuleDefinition(root, factory) {
-    if(typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if(typeof define === 'function' && define.amd) define([], factory);
-    else if(typeof exports === 'object') exports["xmlSpider"] = factory();
+    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if (typeof define === 'function' && define.amd) define([], factory);
+    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -60,7 +60,6 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
     };
     xmlSpider.loadend = function() {};
     xmlSpider.load = function() {
-        console.log(this);
         this.command = "apiFunctions.XMLHttpRequest";
         this.responseHeaders = $getAllResponseHeaders(this);
         this.channel = localStorage.channel;
@@ -72,7 +71,7 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
         this.dataRows = $dataRows(this);
         this.timespan = Date.now();
         this.time = Date.now() - this.startedDateTime;
-        if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+        if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
         this.action = this.sendData.action;
         this.type = this.sendData.type;
         chrome.runtime.sendMessage(localStorage["chrome_runtime_id"], this);
@@ -80,6 +79,5 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
     return xmlSpider;
 });
 
-window.addEventListener('DOMContentLoaded', function(e) {
-    console.log(e);
-});
+
+//window.addEventListener('DOMContentLoaded', function(e) {    console.log(e);});

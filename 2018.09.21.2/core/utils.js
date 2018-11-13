@@ -1,9 +1,10 @@
-window.extend = function() { return Object.assign(this, ...arguments); }
-
 document.addEventListener('copy', function(e) {
     e.clipboardData.setData('text/plain', e.target.attributes["data-content"].value);
     e.preventDefault();
 });
+
+
+function trim(value) { return value.toString().trim() }
 
 
 var $$ = {};
@@ -18,7 +19,7 @@ function $serializeObject(selector) {
                 var value = this.textContent;
                 break;
             case 'select':
-                if(name == "ddlCity") {
+                if (name == "ddlCity") {
                     var value = this.selectedOptions[0].label
                 } else {
                     var value = this.value;
@@ -27,10 +28,10 @@ function $serializeObject(selector) {
             default:
                 var value = this.value;
         }
-        if(obj[name] == undefined) {
+        if (obj[name] == undefined) {
             obj[name] = value;
         } else {
-            if(!obj[name].push) { obj[name] = [obj[name]]; }
+            if (!obj[name].push) { obj[name] = [obj[name]]; }
             obj[name].push(value);
         }
     })
@@ -52,21 +53,31 @@ console.log($.param({ a: 3, b: 4 }));
 
 */
 
-Array.prototype.toObj = function() {
-    var obj = {};
-    this.forEach(([name, value]) => {
-        console.log(name);
-        if(name && value) { obj[name.trim()] = value.trim() }
-    });
-    return obj;
+
+
+
+function toJson(obj) {
+    return JSON.stringify(obj);
 }
-/*
-Array.prototype.toObj = function(key, value) {
+
+
+
+Array.prototype.toObj = function() {
+    try {
+        var obj = {};
+        this.forEach(([name, value]) => { if (name && value) { obj[trim(name)] = trim(value) } });
+        //console.log(obj);
+        return obj;
+    } catch (ex) {}
+}
+
+
+Array.prototype.toObj2 = function(key, value) {
     var object = {};
     this.map((x) => { object[x[key]] = x[value]; });
     return object;
 }
-*/
+
 
 Array.prototype.separate = function() {
     return '(' + this.join('|') + ')';
@@ -122,8 +133,8 @@ console.log(counts[5], counts[2], counts[9], counts[4]);
 */
 
 function $serializeQueryString233333332(querystring) {
-    if(!querystring) { return }
-    if(!querystring.includes('=')) { return }
+    if (!querystring) { return }
+    if (!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
         pair = pair.split('=');
@@ -134,7 +145,7 @@ function $serializeQueryString233333332(querystring) {
 
 
 function jsonqs(str) {
-    if(str.indexOf('?') == -1) { return undefined }
+    if (str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
