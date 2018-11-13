@@ -52,11 +52,21 @@ console.log($.param({ a: 3, b: 4 }));
 
 */
 
+Array.prototype.toObj = function() {
+    var obj = {};
+    this.forEach(([name, value]) => {
+        console.log(name);
+        if(name && value) { obj[name.trim()] = value.trim() }
+    });
+    return obj;
+}
+/*
 Array.prototype.toObj = function(key, value) {
     var object = {};
     this.map((x) => { object[x[key]] = x[value]; });
     return object;
 }
+*/
 
 Array.prototype.separate = function() {
     return '(' + this.join('|') + ')';

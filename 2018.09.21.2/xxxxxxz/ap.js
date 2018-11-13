@@ -30,6 +30,15 @@ function fnComponents() {
 }
 
 
+/*
+
+        //this.params = $serialize(location);
+
+        Object.defineProperty(this, "cacheBonusData", {
+            get: function() { return $tryJson(sessionStorage["cacheBonusData"]) },
+            set: function(value) { sessionStorage["cacheBonusData"] = $fromJson(value); }
+        });*/
+
 myApp.factory('loadModule', function($injector) {
     return function loadModule(moduleName, bundleUrl) {
         return getScript(bundleUrl).then(function() {

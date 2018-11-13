@@ -1,11 +1,22 @@
 define(['@page'], function() {;
     'use strict';
 
+
+    var Forms = function() { this.danger = evo.decoder(localStorage.danger) }
+
+    var f = new Forms();
+
+
+
+
+    console.log(f.danger.search("停權", 2));
+
+
     return function main() {
         return new Promise(async function(resolve, reject) {
             $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
             $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-            
+
             $scope.extensionId = evo.extensionId;
             $scope.stylesheet = ['logs', 'cards'];
             $scope.components = ['cards'];
@@ -16,7 +27,7 @@ define(['@page'], function() {;
                 x.command = `apiFunctions.${x.attr}`;
                 x.channel = evo.channel;
                 x.level = 1;
-                if (x.attr == "locate") {
+                if(x.attr == "locate") {
                     //x.sites = [{ command: "getAllIPAddress", attr: x.attr }, ];
                 } else {
                     x.sites = [
@@ -28,19 +39,27 @@ define(['@page'], function() {;
                 }
             });
 
+
+
+            apiFunctions.localStorage()
+
+            var b = apiFunctions.search.author("陈林")
+            console.log(b);
+
+
             function finish(result) {
                 Object.assign(this, result);
                 this.active = false;
-                if (!$scope.$$phase) { $scope.$apply(); }
-                if (this.level == 1) { putUser(); }
+                if(!$scope.$$phase) { $scope.$apply(); }
+                if(this.level == 1) { putUser(); }
             }
 
             $scope.apiFunctions = function(e) {
-                if (this.channel == undefined) { return }
-                if (this.value == undefined) { return }
-                if (this.active == undefined || e) {
+                if(this.channel == undefined) { return }
+                if(this.value == undefined) { return }
+                if(this.active == undefined || e) {
                     this.active = true;
-                    if (this.level == 1 && this.attr != "banker") { delete this.region; } else { delete this.rows; }
+                    if(this.level == 1 && this.attr != "banker") { delete this.region; } else { delete this.rows; }
                     chrome.runtime.sendMessage(evo.extensionId, this, finish.bind(this));
                 };
             }
@@ -51,10 +70,10 @@ define(['@page'], function() {;
 
             $scope.changeColor = function(popupId) {
                 var _sequel = $scope.user.sequel;
-                if (this.list_Accounts && this.list_Accounts.length) { setTimeout(setPopup, 500, popupId); };
-                if (this.list_Accounts && this.list_Accounts.length) { this.color = "pink"; };
-                if (this.f_blacklist == 17 || this.IsBlackList == true) { this.color = "black" };
-                if (this.f_id == _sequel || this.MNO == _sequel) { this.color = "brown" };
+                if(this.list_Accounts && this.list_Accounts.length) { setTimeout(setPopup, 500, popupId); };
+                if(this.list_Accounts && this.list_Accounts.length) { this.color = "pink"; };
+                if(this.f_blacklist == 17 || this.IsBlackList == true) { this.color = "black" };
+                if(this.f_id == _sequel || this.MNO == _sequel) { this.color = "brown" };
             };
 
             $scope.showRemittanceName = function() {

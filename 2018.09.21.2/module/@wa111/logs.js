@@ -2,26 +2,37 @@ function dispatch() { return Promise.resolve() }
 
 function checkSensitiveProvince(el) {
     evo.decoder(localStorage.region).find(([str], index) => {
-        if (el.outerText.includes(str)) { return el.classList.add('danger'); }
+        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveProtocol(el) {
     evo.decoder(localStorage.locate).find(([str], index) => {
-        if (el.outerText.startsWith(str)) { return el.classList.add('danger'); }
+        if(el.outerText.startsWith(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveUserName(el) {
-    evo.decoder(localStorage.author).find(([str], index) => {
-        if (str.trim() == el.outerText) { el.classList.add('danger'); }
+    evo.decoder(localStorage.author).find(([str]) => {
+        console.log(str);
+        if(str.trim() == el.outerText) { el.classList.add('danger'); }
     });
 }
 
+function addClass() {
+    this.classList.add('danger');
+}
+
 function checkSensitiveMessages(el) {
-    evo.decoder(localStorage.danger).find((str, index) => {
-        if (el.outerText.includes(str)) { return el.classList.add('danger'); }
-    });
+    //console.log(el.outerText);
+    var c = apiFunctions.search.danger(el.outerText).then(addClass.bind(el))
+    //console.log(el.outerText, c);
+    /*
+        evo.decoder(localStorage.danger).find((str) => {
+            console.log(str);
+
+            if(el.outerText.includes(str)) { return el.classList.add('danger'); }
+        });*/
 }
 
 function addHighlightAccountsId(children) {
@@ -45,7 +56,7 @@ function addChannelToAccountsId(children) {
 
     //console.log(channel, account, evo.channel, evo.account);
 
-    if (evo.channel == channel && evo.account == account) {
+    if(evo.channel == channel && evo.account == account) {
         addHighlightAccountsId(children);
         catchProvinceProtocols(children);
     }
@@ -63,7 +74,11 @@ function catchProvinceProtocols(children) {
 
 $scope.getAllIPAddress = function() {
 
-    if (this.attr != "locate") { return };
+    var c = $("ul:not([class]):not([style])");
+
+
+
+    if(this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {
@@ -78,12 +93,10 @@ $scope.getAllIPAddress = function() {
     });
 
     console.log(1, 2);
-    this.rows =  Array.from(arrProtocol);
+    this.rows = Array.from(arrProtocol);
     $scope.user.region = Array.from(arrProvince);
     putUser();
 }
-
-
 
 
 

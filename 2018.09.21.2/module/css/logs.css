@@ -1,8 +1,11 @@
+@import "http://fonts.googleapis.com/earlyaccess/notosanssc.css";
+
 :root {
     --evo-theme-primary: #546e7a;
     --evo-theme-primary-font-color: #fff;
     --evo-theme-primary-font-size: 12px;
     --evo-theme-primary-font-family: Roboto, 'Microsoft YaHei';
+    --evo-theme-sub-font-family: 'Helvetica Neue', Arial, 'Noto Sans SC' , 'cwTeXHei', 'Heiti TC', 'Heiti RC', '微軟正黑體', 'Microsoft JhengHei', '新細明體';
     --evo-theme-danger: #ec407a;
     --evo-theme-danger-font-color: #fff;
 }

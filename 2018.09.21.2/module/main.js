@@ -69,11 +69,8 @@ requirejs(['Mock'], function(Mock) {
 });
 */
 
-
 requirejs(['router', 'utils'], function(router) {
-    
     //console.log(router);
-
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
         window.extend({ moment, Dexie, mdc, evo, router });
         requirejs(['myApp'], function(myApp) {
