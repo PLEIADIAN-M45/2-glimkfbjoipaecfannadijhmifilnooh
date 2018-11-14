@@ -236,6 +236,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get path() { return location.pathname.split('/').pop().replace(/\.(aspx|html)/, ''); }
         get domain() { return location.host.split('.'); }
         get sub() { return location.host.split('.')[0]; }
+        
         get host() {
             return {
                 "6326": "wa111",
