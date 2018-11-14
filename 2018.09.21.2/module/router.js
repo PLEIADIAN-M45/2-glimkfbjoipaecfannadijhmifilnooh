@@ -22,7 +22,7 @@ define([], function() {
             "membermodify": "edit",
             "depositbonus": "bonus",
             "igetmemberinfo": "logs",
-            "samebrowserlist": "log",
+            "samebrowserlist": "logs",
             "deltabank": "cash",
             "deltaonline": "cash",
             "deltawechat": "cash",

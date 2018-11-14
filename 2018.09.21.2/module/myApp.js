@@ -1,4 +1,4 @@
-function _invoke() {
+function invoke() {
     fnStylesheet();
     fnComponents();
     console.log('_invoke......');
@@ -25,7 +25,6 @@ function fnComponents() {
             $compile(template)($scope);
             //console.log(666666666, 777777777);
             $scope.template_loaded = 1;
-
             $scope.$apply();
         })
     })

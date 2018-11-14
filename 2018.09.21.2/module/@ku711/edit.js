@@ -1,8 +1,10 @@
 define(['@ku711/api'], function(apiFunction) {
 
+
+
     function setUser() {
         $scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
-        
+
         return Promise.all([
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
@@ -35,8 +37,8 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     function toObj8(args) {
-        if (args.constructor.name == "Object") { return args } else
-        if (args.constructor.name == "Array") {
+        if(args.constructor.name == "Object") { return args } else
+        if(args.constructor.name == "Array") {
             try {
                 var obj = {};
                 args.forEach(({ BankCodeID, BankCodeName }) => { obj[BankCodeID] = BankCodeName });
@@ -66,10 +68,10 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     function getSystemLog() {
-        return apiFunction.getSystemLog().then((logs) => { return logs.filter(({ Content, OperateTime, Operator }) => { return Content.filter((obj) => { if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) { return evo.assign($scope.user, { timing: [OperateTime] }); } }) }) })
+        return apiFunction.getSystemLog().then((logs) => { return logs.filter(({ Content, OperateTime, Operator }) => { return Content.filter((obj) => { if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) { return evo.assign($scope.user, { timing: [OperateTime] }); } }) }) })
     }
 
-   
+
     function getMemberBankAccsEnum() {
         return ['PayeeAccountNo0', 'PayeeAccountNo1', 'PayeeAccountNo2', 'PayeeAccountNo3', 'PayeeAccountNo4'].map(getElementById);
     }
@@ -81,8 +83,9 @@ define(['@ku711/api'], function(apiFunction) {
         $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
     }
 
-    $scope.openLogPage = function() {
-        window.open(`${evo.origin}/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${evo.account}`, '_blank');
+    $scope.openLogPage = function(_url) {
+        console.log(_url);
+        window.open(_url, '_blank');
     }
 
     return { setUser }

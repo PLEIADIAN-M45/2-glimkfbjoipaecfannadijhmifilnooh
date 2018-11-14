@@ -74,19 +74,8 @@ requirejs(['router', 'utils'], function(router) {
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
         window.extend({ moment, Dexie, mdc, evo, router });
         requirejs(['myApp'], function(myApp) {
-
-
             requirejs(['@root'], function(main) {
-
-                if (main) {
-                    
-                    main();
-
-                    _invoke();
-
-                   // main().then(_invoke);
-                    //_invoke();
-                }
+                if(main) { main().then(invoke); }
             });
         });
     });

@@ -4,7 +4,8 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
     'use strict';
 
     return function main() {
-        return new Promise(async function(resolve, reject) {
+        return new Promise(async (resolve, reject) => {
+            $scope.evo = evo;
             $scope.stylesheet = ['edit'];
             $scope.components = ['edit', 'dialog'];
             //return delUser();
@@ -21,7 +22,7 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
 
 
 
- 
+
 
 
 

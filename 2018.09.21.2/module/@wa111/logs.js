@@ -1,4 +1,4 @@
-function dispatch() { return Promise.resolve() }
+$scope.dispatch = function() { return Promise.resolve() }
 
 function checkSensitiveProvince(el) {
     evo.decoder(localStorage.region).find(([str], index) => {
@@ -71,6 +71,11 @@ function catchProvinceProtocols(children) {
     arrProtocol.set(protocol, province);
     arrProvince.add(province);
 }
+
+
+$scope.postMessage = function() { $(function() { postScrollHeightMessage() }); }
+
+
 
 $scope.getAllIPAddress = function() {
 

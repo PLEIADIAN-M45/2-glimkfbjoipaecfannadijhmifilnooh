@@ -4,13 +4,18 @@ var apiFunctions = {};
 
 apiFunctions.banker = function() { return Promise.resolve(this.region); }
 apiFunctions.author = function() { var region = {}; return Promise.resolve({ region }); }
+apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
 
-
-apiFunctions.localStorage = function() {
-    return Promise.resolve(window.localStorage);
-}
 
 console.log(apiFunctions);
+
+
+
+
+
+
+
+
 
 
 

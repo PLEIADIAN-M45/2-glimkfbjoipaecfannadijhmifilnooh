@@ -1,4 +1,5 @@
 define([], function() {
+    $scope.postMessage = function() { $scope.$watch('ctrl.model.ResultList', (nv) => { if(nv) { postScrollHeightMessage() } }); }
 
     $scope.createIFrame = function() {
 
@@ -51,7 +52,7 @@ define([], function() {
         //console.log(this);
         getModule("ctrl.model.ResultList").then((a) => {
             a.forEach((b) => {
-                if (b.AccountID == evo.account) {
+                if(b.AccountID == evo.account) {
                     arrProtocol.set(b.IPAddress, b.IPLocation);
                     arrProvince.add(b.IPLocation);
                 }
@@ -125,7 +126,7 @@ async function checkSensitiveWords() {
     function addclassList(el) { el.classList.add('danger'); return el; }
 
     function removeClass(el) {
-        if (el.outerText == "正常户") { el.classList.add('normal'); }
+        if(el.outerText == "正常户") { el.classList.add('normal'); }
         $(el).removeClass('w10', 'w20').find('br').remove();
         return el;
     }
@@ -141,14 +142,14 @@ function addSiteNumberToAccountId() {
     var accountIdCollection = getAccountIdCollection();
     var siteNumberCollection = getSiteNumberCollection();
     accountIdCollection.each(function(index, element) {
-        if (element.textContent.trim()) {
+        if(element.textContent.trim()) {
             var accountId = element.textContent.trim();
             var siteNumber = '-' + siteNumberCollection[index];
             var uniqueId = accountId + siteNumber;
-            if (uniqueId == evo.uniqueId) {
+            if(uniqueId == evo.uniqueId) {
                 element.classList.add('self');
             }
-            if (evo.siteNumber != '16') {
+            if(evo.siteNumber != '16') {
                 element.setAttribute('data-content', accountId);
                 element.textContent = null;
                 $('<b>')
@@ -185,10 +186,10 @@ function getHTMLTableCells() {
     var flag = 0;
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
-            if (newValue) {
+            if(newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');
-                    if (flag == 0) {
+                    if(flag == 0) {
                         flag = 1;
                         resolve(HTMLTableCellElements);
                     } else {
@@ -205,7 +206,7 @@ function getHTMLTableCells() {
 function getTableCellCollection() {
     return new Promise(function(resolve, reject) {
         $scope.$watch('ctrl.model.ResultList', function(newValue, oldValue) {
-            if (newValue) {
+            if(newValue) {
                 setTimeout(function() {
                     window.HTMLTableCellElements = $('#tbList').find('td');
                     resolve(HTMLTableCellElements)

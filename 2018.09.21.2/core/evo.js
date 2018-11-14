@@ -9,8 +9,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         apiFunctions() {
-            //if (this.attr == "mobile" || this.attr == "locate" || this.attr == "idcard") {} else { return }
-            //if (this.attr == "banker") {} else { return }
+            //if (this.attr                                                   == "mobile" || this.attr == "locate" || this.attr == "idcard") {} else { return }
+            //if (this.attr                                                   == "banker") {} else { return }
             //if (["author", "banker"].includes(this.attr)) {} else { return }
             //if (["locate"].includes(this.attr)) {} else { return }
             if(!this.value) { return };
@@ -39,9 +39,9 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             });
 
-            //request.command = req.command.replace('host', evo.host).replace('channel', evo.channel)
+            //request.command                                                 = req.command.replace('host', evo.host).replace('channel', evo.channel)
             //chrome.runtime.sendMessage(evo.extensionId, { command, property, value, host, channel, account, region }, callback)
-            //apiFunctions:region:host:channel
+            //apiFunctions                                                    :region:host:channel
             /*
                         console.log(request);
                         return new Promise(function(resolve, reject) {
@@ -53,14 +53,14 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             //console.log(request);
             /*
-            var { value, proto, account, channel, host } = request;
+            var { value, proto, account, channel, host }                      = request;
             console.log({ value, proto, account, channel, host });
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, { value, proto, account, channel, host }, function([result, status, xhr]) {
                     console.log(result);
-                    //resolve({ ...result, status, active: false });
+                    //resolve({ ...result, status, active                     : false });
                     //console.log(request.command, result);
-                    //resolve({ ...result, status, active: false });
+                    //resolve({ ...result, status, active                     : false });
                 })
             })*/
             return
@@ -70,7 +70,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, req, function([result, status, xhr]) {
-                    //resolve({ ...result, status, active: false });
+                    //resolve({ ...result, status, active                     : false });
                     //console.log(request.command, result);
                     resolve({ ...result, status, active: false });
 
@@ -203,7 +203,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         encoder(value) {
-            //var str = JSON.stringify(value);
+            //var str                                                         = JSON.stringify(value);
             //console.log(str);
             return btoa(encodeURI(JSON.stringify(value)))
         }
@@ -219,7 +219,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
         moment(t) {
             if(Number(t)) {
-                return moment(Number(t)).format('YYYY/MM/DD HH:mm:ss');
+                return moment(Number(t)).format('YYYY/MM/DD HH                :mm:ss');
             } else {}
 
         }
@@ -276,10 +276,10 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         console() {
-            //console.log('%c Oh my heavens! ', 'background: #222; color: #bada55');
+            //console.log('%c Oh my heavens! ', 'background                   : #222; color: #bada55');
         }
 
-        get pathname() {
+        get pathname3() {
             return location.pathname.toLowerCase().replace(/(\.html|.aspx)$/i, '');
         }
 
@@ -332,7 +332,68 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             } [this.host][this.filename];
         }
 
-        get router() { return [this.host, this.path].join('/'); }
+        get route() {
+            //console.log(this);
+
+            var wa111 = {
+                cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+            }
+            var ku711 = {
+                cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+                device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+            }
+            for(var x in wa111) { wa111[x] = wa111[x].replace('#1', this.channel).replace('#2', this.account); }
+            for(var x in ku711) { ku711[x] = ku711[x].replace('#1', this.channel).replace('#2', this.account); }
+
+            return { wa111, ku711 } [this.host]
+
+
+            console.log(wa111);
+            console.log(ku711);
+
+            //Object.entries(wa111).forEach(function([name, value]) {
+            // console.log(url);
+            //wa111[key] = url.replace(/(siteNumber=)/, 123);
+            //url = url.replace(/(siteNumber=)/, 123);
+            //return
+            //wa111[x] = wa111[x].replace(/siteNumber(?=)/, 123);
+
+            // })
+
+            /*
+                        Object.values(wa111).map((x) => {
+                            x = x.replace(/(siteNumber=)/, 123);
+                            return x;
+                        })*/
+
+
+
+
+            /*
+
+            var routes = {
+                cookie: {
+                    ku711: `/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${this.account}`,
+                    wa111: `/sameBrowserList.aspx?iType=3&accounts=${this.account}&siteNumber=${this.channel}`
+                }
+                device: {
+                    ku711: `/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${this.account}`,
+                    wa111: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${this.channel}&member=${this.account}`
+                }
+            }*/
+
+
+
+
+
+            //.replace('', '')
+
+
+
+        }
+
+        get router2() { return [this.host, this.path].join('/'); }
 
         get adapter() { return ['adapter', this.path].join('/'); }
 
@@ -398,8 +459,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     evo.keys = Object.keys;
     evo.entries = Object.entries;
 
-  /*  var { account, member, accountId, accounts } = evo.params;
-  evo.account = account || member || accountId || accounts;*/
+    /*  var { account, member, accountId, accounts }                            = evo.params;
+    evo.account                                                                 = account || member || accountId || accounts;*/
 
 
     return evo;
@@ -412,17 +473,17 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 /*
 function Store() {
     return {
-        get: function(arg) {
+        get                                                                   : function(arg) {
             return new Promise(function(resolve, reject) {
                 chrome.runtime.sendMessage(evo.extensionId, {
-                    command: "evo.store.users.get('" + arg + "')"
+                    command                                                   : "evo.store.users.get('" + arg + "')"
                 }, function(result) {
                     console.log(result);
                     resolve(result)
                 })
             })
         },
-        put: function() {
+        put                                                                   : function() {
             return new Promise(function(resolve, reject) {
 
             })
@@ -432,16 +493,16 @@ function Store() {
 }
 
 
-evo.store = {}
+evo.store                                                                     = {}
 chrome.runtime.sendMessage(evo.extensionId, {
-    command: "evo.store.tables"
+    command                                                                   : "evo.store.tables"
 }, function(result) {
     console.log(evo.filename);
     console.log(result);
-    result.forEach((store) => {
+    result.forEach((store)                                                    => {
         console.log(store.name);
-        // evo.store[store.name] = evo.store[store.name] || {}
-        evo.store[store.name] = new Store();
+        // evo.store[store.name]                                              = evo.store[store.name] || {}
+        evo.store[store.name]                                                 = new Store();
     })
 })
 console.log(evo.store);
@@ -451,7 +512,7 @@ console.log(evo.store);
 
 /*
 //navigator.clipboard
-https://github.com/garykac/clipboard/blob/master/clipboard.md has a compatibility table for
+https                                                                         ://github.com/garykac/clipboard/blob/master/clipboard.md has a compatibility table for
  execCommand(cut / copy / paste).
 
 */
