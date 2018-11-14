@@ -52,13 +52,17 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     $scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
     //$scope.url = { IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
 
+        /*
     $scope.openDeposit = function() {
         this.ctrl.deposit.value = 1;
         this.ctrl.btnSaveInfo.click();
-    };
+    };*/
 
+    
+    /*
     $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
     $scope.createTab = function(url, params) { window.open(url, '_blank'); };
+    */
 
     return { setUser }
 });

@@ -5,7 +5,9 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
 
     return function main() {
         return new Promise(async (resolve, reject) => {
-            $scope.evo = evo;
+
+            console.log($scope.events);
+
             $scope.stylesheet = ['edit'];
             $scope.components = ['edit', 'dialog'];
             //return delUser();

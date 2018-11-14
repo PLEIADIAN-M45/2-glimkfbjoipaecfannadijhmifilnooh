@@ -1,22 +1,25 @@
 define(['@page'], function() {;
     'use strict';
 
-    if(evo.params.method == "CookieID" || evo.pathname == "IGetMemberInfo") {
+    if (evo.params.method == "CookieID" || evo.pathname == "IGetMemberInfo") {
         //dispatch().then(createIFrame)
 
-        console.log(evo.route);
+        /*
+        var event = new Event('build');
+        $rootElement.addEventListener('build', function(e) {
+            console.log(e);
+            console.log('++++++++++++');
+        }, false);
+        $rootElement.dispatchEvent(event);
+        console.log($rootElement);
+        */
+
+
 
         return function main() {
             return new Promise(async (resolve, reject) => {
-                $scope.evo = evo;
+                //console.log($scope.address);
                 //$scope.createIFrame(evo.route.device);
-
-                $scope.createIFrame = function(_src) {
-                    $('<div>').addClass('ui horizontal divider').text('AND').appendTo($element);
-                    $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' })
-                        .load(addScrollHeightEventListener).appendTo($element);
-                }
-
                 $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
                 $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
                 $scope.extensionId = evo.extensionId;
@@ -28,7 +31,7 @@ define(['@page'], function() {;
                     x.command = `apiFunctions.${x.attr}`;
                     x.channel = evo.channel;
                     x.level = 1;
-                    if(x.attr == "locate") {
+                    if (x.attr == "locate") {
                         //x.sites = [{ command: "getAllIPAddress", attr: x.attr }, ];
                     } else {
                         x.sites = [
@@ -43,16 +46,16 @@ define(['@page'], function() {;
                 function finish(result) {
                     Object.assign(this, result);
                     this.active = false;
-                    if(!$scope.$$phase) { $scope.$apply(); }
-                    if(this.level == 1) { putUser(); }
+                    if (!$scope.$$phase) { $scope.$apply(); }
+                    if (this.level == 1) { putUser(); }
                 }
 
                 $scope.apiFunctions = function(e) {
-                    if(this.channel == undefined) { return }
-                    if(this.value == undefined) { return }
-                    if(this.active == undefined || e) {
+                    if (this.channel == undefined) { return }
+                    if (this.value == undefined) { return }
+                    if (this.active == undefined || e) {
                         this.active = true;
-                        if(this.level == 1 && this.attr != "banker") { delete this.region; } else { delete this.rows; }
+                        if (this.level == 1 && this.attr != "banker") { delete this.region; } else { delete this.rows; }
                         chrome.runtime.sendMessage(evo.extensionId, this, finish.bind(this));
                     };
                 }
@@ -61,10 +64,10 @@ define(['@page'], function() {;
 
                 $scope.changeColor = function(popupId) {
                     var _sequel = $scope.user.sequel;
-                    if(this.list_Accounts && this.list_Accounts.length) { setTimeout(setPopup, 500, popupId); };
-                    if(this.list_Accounts && this.list_Accounts.length) { this.color = "pink"; };
-                    if(this.f_blacklist == 17 || this.IsBlackList == true) { this.color = "black" };
-                    if(this.f_id == _sequel || this.MNO == _sequel) { this.color = "brown" };
+                    if (this.list_Accounts && this.list_Accounts.length) { setTimeout(setPopup, 500, popupId); };
+                    if (this.list_Accounts && this.list_Accounts.length) { this.color = "pink"; };
+                    if (this.f_blacklist == 17 || this.IsBlackList == true) { this.color = "black" };
+                    if (this.f_id == _sequel || this.MNO == _sequel) { this.color = "brown" };
                 };
 
                 $scope.showRemittanceName = function() {
@@ -72,7 +75,9 @@ define(['@page'], function() {;
                     $('.ui.modal').modal('show');
                 }
 
+
                 $scope.openMemberModify = function(s) {
+                    return
                     var url = { wa111: `${s.origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`, ku711: `${s.origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}` } [s.host];
                     console.log(url);
                     //window.open(url, "_blank")
@@ -86,13 +91,16 @@ define(['@page'], function() {;
 
 
     //var rect = obj.getBoundingClientRect();
-    if(evo.params.method == "DeviceNo" || evo.pathname == "sameBrowserList") {
+    if (evo.params.method == "DeviceNo" || evo.pathname == "sameBrowserList") {
         return function main() {
             return new Promise(async (resolve, reject) => {
                 $scope.components = [];
-                $scope.stylesheet = ['logs'];
-                $scope.dispatch();
-                $scope.postMessage();
+                $scope.stylesheet = ['logs', 'cards'];
+                
+                $scope.events.queryInputModel();
+                $scope.events.postScrollHeightMessage();
+                resolve()
+
             });
         }
     }

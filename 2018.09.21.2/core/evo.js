@@ -13,7 +13,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             //if (this.attr                                                   == "banker") {} else { return }
             //if (["author", "banker"].includes(this.attr)) {} else { return }
             //if (["locate"].includes(this.attr)) {} else { return }
-            if(!this.value) { return };
+            if (!this.value) { return };
             var { account, host, channel, extensionId } = evo;
             Object.assign(this.parameters, { command: "apiFunctions", account, host, channel });
             Object.assign(this, { active: true, region: {}, extensionId });
@@ -26,7 +26,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
                     this.extensionId,
                     this.parameters,
                     (result) => {
-                        if(result) {
+                        if (result) {
                             console.log(result);
                             //console.log(this);
                             Object.assign(this, result)
@@ -87,15 +87,12 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get extensionId() {
-
             return localStorage.chrome_runtime_id;
-
-            if(chrome.runtime.id) {
+            if (chrome.runtime.id) {
                 return chrome.runtime.id;
             } else {
-
-                for(var s of document.scripts) {
-                    if(this.baseUrl.search(s.id)) {
+                for (var s of document.scripts) {
+                    if (this.baseUrl.search(s.id)) {
                         return s.id
                     }
                 }
@@ -191,7 +188,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         get account() {
-
             return this.params.account ||
                 this.params.member ||
                 this.params.accountId ||
@@ -203,8 +199,6 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
         encoder(value) {
-            //var str                                                         = JSON.stringify(value);
-            //console.log(str);
             return btoa(encodeURI(JSON.stringify(value)))
         }
 
@@ -218,7 +212,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         moment(t) {
-            if(Number(t)) {
+            if (Number(t)) {
                 return moment(Number(t)).format('YYYY/MM/DD HH                :mm:ss');
             } else {}
 
@@ -230,8 +224,8 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get siteNumber() {
-            if(this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
-            if(this.domain[1] == "github") { return this.params.siteNumber; } else {
+            if (this.domain[0].includes('cashhost')) { return this.domain[0].replace('cashhost', '') }
+            if (this.domain[1] == "github") { return this.params.siteNumber; } else {
                 return localStorage.siteNumber || this.params.siteNumber;
             }
         }
@@ -271,7 +265,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             var paramsString = arguments[0].split('?')[1];
             var searchParams = new URLSearchParams(paramsString);
             var parameters = {};
-            for(var [key, value] of searchParams.entries()) { parameters[key] = value; }
+            for (var [key, value] of searchParams.entries()) { parameters[key] = value; }
             return parameters;
         }
 
@@ -333,65 +327,20 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get route() {
-            //console.log(this);
-
             var wa111 = {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-            }
+            };
             var ku711 = {
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                 device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
-            }
-            for(var x in wa111) { wa111[x] = wa111[x].replace('#1', this.channel).replace('#2', this.account); }
-            for(var x in ku711) { ku711[x] = ku711[x].replace('#1', this.channel).replace('#2', this.account); }
-
-            return { wa111, ku711 } [this.host]
-
-
-            console.log(wa111);
-            console.log(ku711);
-
-            //Object.entries(wa111).forEach(function([name, value]) {
-            // console.log(url);
-            //wa111[key] = url.replace(/(siteNumber=)/, 123);
-            //url = url.replace(/(siteNumber=)/, 123);
-            //return
-            //wa111[x] = wa111[x].replace(/siteNumber(?=)/, 123);
-
-            // })
-
-            /*
-                        Object.values(wa111).map((x) => {
-                            x = x.replace(/(siteNumber=)/, 123);
-                            return x;
-                        })*/
-
-
-
-
-            /*
-
-            var routes = {
-                cookie: {
-                    ku711: `/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=${this.account}`,
-                    wa111: `/sameBrowserList.aspx?iType=3&accounts=${this.account}&siteNumber=${this.channel}`
-                }
-                device: {
-                    ku711: `/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=${this.account}`,
-                    wa111: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${this.channel}&member=${this.account}`
-                }
-            }*/
-
-
-
-
-
-            //.replace('', '')
-
-
-
+            };
+            for (var x in wa111) { wa111[x] = wa111[x].replace('#1', this.channel).replace('#2', this.account); }
+            for (var x in ku711) { ku711[x] = ku711[x].replace('#1', this.channel).replace('#2', this.account); }
+            return { wa111, ku711 } [this.host];
         }
+
+
 
         get router2() { return [this.host, this.path].join('/'); }
 
@@ -402,7 +351,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         }
 
         get test() {
-            if(location.hostname == "127.0.0.1") {
+            if (location.hostname == "127.0.0.1") {
                 return true
             } else {
                 return false;
@@ -437,7 +386,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         error(ex) {
             console.log(ex);
         }
-
+ 
         copy(e) {
             document.execCommand("copy");
         }
@@ -448,11 +397,29 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             document.execCommand("paste");
         }
 
+        allKeys() {
+            console.log(this);
+            var c = Object.keys(this)
+            console.log(c);
+        }
 
+        getGetters() {
+            console.log(this);
+            return Object.keys(this.constructor.prototype).filter(name => {
+                return typeof Object.getOwnPropertyDescriptor(this.constructor.prototype, name)["get"] === "function"
+            });
+        }
+
+        getSetters() {
+            return Object.keys(this.constructor.prototype).filter(name => {
+                return typeof Object.getOwnPropertyDescriptor(this.constructor.prototype, name)["set"] === "function"
+            });
+        }
     }
 
-    const evo = new Evo();
 
+
+    const evo = new Evo();  
 
     evo.assign = Object.assign;
     evo.values = Object.values;

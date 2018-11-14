@@ -1,3 +1,4 @@
+<b>{{address}}</b>
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.call(me);">
         <div class="ui top attached content compact">
@@ -70,12 +71,6 @@
         </div>
     </div>
 </div>
-
-<b ng-init="createIFrame(evo.route.device)"></b>
-<b ng-init="dispatch()"></b>
-
-<b >1232424</b>
-<p ng-bind-html="myHTML"></p>
 <div class="ui fullscreen modal">
     <table class="ui celled selectable striped collapsing table small">
         <thead>
@@ -94,6 +89,11 @@
         </tbody>
     </table>
 </div>
+<b ng-init="events.queryInputModel()"></b>
+<b ng-init="events.createIFrame(route.device)"></b>
+<p>---------------------------</p>
+
+<p ng-bind-html="myHTML"></p>
 <style type="text/css">
 .detail.Noto-Sans-SC {
     font-family: 'Noto Sans SC' !important;
