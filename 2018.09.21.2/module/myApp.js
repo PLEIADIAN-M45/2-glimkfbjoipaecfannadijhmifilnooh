@@ -31,102 +31,77 @@ function fnComponents() {
 }
 
 
-function loadModules($scope, $rootElement) {
-    $scope.address = location.href;
-    $scope.host = evo.host;
-    $scope.route = evo.route;
+define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, factory) {
 
-    /*
-    switch ($scope.host) {
-        case "wa111":
-            break;
-        case "ku711":
-            break;
-    }
-    */
-
-    var postScrollHeightMessage = function() {
-        switch ($scope.host) {
-            case "wa111":
-                setTimeout(() => {
-                    console.log(document.body.scrollHeight);
-                    window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
-                }, 1000)
-                break;
-            case "ku711":
-                $scope.$watch('ctrl.model.ResultList', function(nv, ov) {
-                    if (nv) {
-                        setTimeout(() => {
-                            console.log(document.body.scrollHeight);
-                            window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
-                        }, 1000)
-                    }
-                })
-                break;
-        }
-    }
-
-
-    var queryInputModel = function() {
-        switch ($scope.host) {
-            case "wa111":
-                break;
-            case "ku711":
-                $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
-                $scope.ctrl.GetQueryLoginLog(evo.params.method);
-                break;
-        }
-    }
-
-    var createIFrame = function(_src) {
-        var addScrollHeightEventListener = function() {
-            window.addEventListener('message', (e) => {
-                console.log(this);
-                console.log(e.data.scrollHeight);
-                this.style.height = e.data.scrollHeight;
-            });
-        }
-        $('<div>').addClass('ui horizontal divider').text('AND').appendTo($rootElement);
-        $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($rootElement);
-    }
-
-    var createTab = function(_url) {
-        console.log(_url);
-        window.open(_url, "_blank");
-    }
-
-    var setPermit = function() {
-        return
-        switch ($scope.host) {
-            case "wa111":
-                $scope.ctrl.deposit.value = 1;
-                $scope.ctrl.btnSaveInfo.click();
-                break;
-            case "ku711":
-                $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
-                $scope.ctrl.DepositChanged();
-                $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
-                break;
-        }
-    }
-
-    //$scope.createTab = createTab;
-
-    $scope.events = {
-        //createTab: createTab.bind($scope),
-        createTab,
-        createIFrame,
-        setPermit,
-        queryInputModel,
-        postScrollHeightMessage
-    }
-
-}
-
-
-define(['angular', 'angular-sanitize'], function(angular) {
     window.angular = angular;
     'use strict';
+
+    var myApp2 = angular.module('myApp2', [])
+        .config(function($locationProvider) {
+            $locationProvider.html5Mode({
+                enabled: true,
+                requireBase: false
+            });
+            //console.log($locationProvider);
+            //$locationProvider.html5Mode(true).hashPrefix('!');
+
+        })
+        .service('myService', function() {
+            console.log("myService");
+        })
+
+        .controller('LocationController', ['$scope', '$location', function($scope, $location) {
+            console.log($location);
+            $scope.name3 = "RYABN"
+
+            /*$scope.$location = {};
+            angular.forEach('protocol host port path search hash'.split(' '), function(method) {
+                $scope.$location[method] = function() {
+                    var result = $location[method]();
+                    return angular.isObject(result) ? angular.toJson(result) : result;
+                };
+            });*/
+        }]).directive('sayhello', function() {
+            return {
+                restrict: 'E',
+                template: '<div>Hello {{ name3 }}</div>',
+                // 也可以使用 templateUrl 指定檔案
+                // templateUrl: 'test.html'
+            };
+        });
+
+
+
+
+    var div = $('<div ng-controller="LocationController"></div>')
+    div.appendTo('body');
+
+
+    angular.bootstrap(div, ['myApp2']);
+
+    console.log(div);
+
+    return
+
+    $('body').append('<sayhello></sayhello>')
+
+
+    $('body').attr("ng-controller", "LocationController")
+    angular.bootstrap(document.body, ['myApp2']);
+
+    try {
+       angular.bootstrap(document.body, ['myApp']);
+   } catch (ex) {};
+    console.log(myApp2);
+    //var c = angular.injector(['ng', 'myApp2']).get('myService');
+    //var c = angular.injector(['ng', 'myApp2']).get('$location');
+
+    console.log(angular);
+
+
+    return
+
+
     var myApp = angular.module('OBSApp', ['ngSanitize']);
     myApp.baseUrl = require.toUrl('.');
     myApp.config(function($sceDelegateProvider) {
@@ -134,6 +109,10 @@ define(['angular', 'angular-sanitize'], function(angular) {
         //$sceDelegateProvider.resourceUrlWhitelist(['self', myApp.baseUrl, myApp.baseUrl + '**']);
     });
     try { angular.bootstrap(document, ['OBSApp']); } catch (ex) {};
+
+
+
+
     /***********************************************************************************/
     var ng_controller = $("[ng-controller]")[0] || $("body");
     var $element = angular.element(ng_controller);
@@ -145,10 +124,35 @@ define(['angular', 'angular-sanitize'], function(angular) {
     myApp = $injector.modules['OBSApp'];
 
 
-    loadModules($scope, $rootElement);
+    var c = angular.injector(['ng', 'myApp2']).get('$location');
+    //var c = angular.injector(['ng', 'myApp2']).get('$rootElement');
+
+
+    console.log(c);
+
+
+    console.log(angular);
+    console.log(angular.injector);
+
+
+    //console.log(ng_controller);
+    //console.log($element);
+
+
+
+    /*
+    console.log(myApp);
+    console.log($injector);
+    */
+
+
+    //loadModules.call($scope)
+
+    //loadModules($scope, $rootElement);
 
 
     Object.assign(myApp, { $element, $rootElement, $scope, $injector, $invoke, $compile });
+
     window.extend({ myApp, $element, $rootElement, $scope, $injector, $invoke, $compile });
 
 

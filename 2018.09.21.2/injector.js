@@ -13,18 +13,35 @@ function injectScript(attrs) {
     (document.head || document.documentElement).appendChild(script);
 }
 
-
-
 injectScript({ "src": getURL("/core/xmlSpider.js") });
+
 
 document.onreadystatechange = function() {
     switch (document.readyState) {
         case "loading":
+            //mytest();
             break;
         case "interactive":
-            injectScript({ "src": getURL('/lib/require/require.js'), "data-main": getURL('/module/main.js') })
+            //mytest();
+            mytest();
+            //injectScript({ "src": getURL('/lib/require/require.js'), "data-main": getURL('/module/main.js') })
             break;
         case "complete":
+            //mytest();
+
             break;
     }
+}
+
+
+console.log(12);
+
+
+//mytest();
+
+function mytest() {
+
+ 
+    injectScript({ "src": getURL('test.js') })
+    //setTimeout(function() { console.log(window.angular); }, 2000)
 }

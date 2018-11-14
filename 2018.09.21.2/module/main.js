@@ -29,14 +29,18 @@ requirejs.config({
         'Mock': '../lib/mock',
 
         'evo': '../core/evo',
+
+
         'path': '../core/path',
         'common': '../core/common',
         'utils': '../core/utils',
         'SendSms': '../core/SendSms',
-        'Spreadsheets': '../core/Spreadsheets',
 
+
+
+        //'Spreadsheets'   : '../core/Spreadsheets',
         'xmlSpider': '../core/xmlSpider',
-
+        'webSpider': '../core/webSpider',
         'serializeObject': '../core/serializeObject'
     },
     shim: {
@@ -56,10 +60,48 @@ requirejs.config({
 
 
 
+
+requirejs(['router', 'utils'], function(router) {
+
+    //console.log(router);
+
+    requirejs(['moment', 'dexie', 'material', 'semantic', 'common'], function(moment, Dexie, mdc, semantic, evo) {
+
+        window.extend({ moment, Dexie, mdc, evo, router });
+
+        requirejs(['myApp', 'factory'], function(myApp, factory) {
+
+            //requirejs(['@root'], function(main) { if (main) { main().then(invoke); } });
+
+        });
+
+    });
+});
+
+
+
+
+/*
+requirejs(['router', 'utils'], function(router) {
+    //console.log(router);
+    
+    requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
+        
+        window.extend({ moment, Dexie, mdc, evo, router });
+
+        requirejs(['myApp'], function(myApp) {
+            requirejs(['@root'], function(main) { if (main) { main().then(invoke); } });
+        });
+
+    });
+});
+*/
+
+
+
 //console.log(localStorage.baseUrl);
 //console.clear();
 //console.time(location.pathname);
-
 /*
 requirejs(['Mock'], function(Mock) {
     Mock.mock("http        ://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx", 'post', function(req) {
@@ -68,22 +110,6 @@ requirejs(['Mock'], function(Mock) {
     });
 });
 */
-
-requirejs(['router', 'utils'], function(router) {
-    //console.log(router);
-    requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
-        window.extend({ moment, Dexie, mdc, evo, router });
-        requirejs(['myApp'], function(myApp) {
-            requirejs(['@root'], function(main) {
-                if(main) { main().then(invoke); }
-            });
-        });
-    });
-});
-
-
-
-
 
 
 
