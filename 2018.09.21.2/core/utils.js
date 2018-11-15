@@ -75,11 +75,12 @@ Array.prototype.toModel = function() {
             var name = elem.name || elem.id;
             switch (elem.localName) {
                 case "select":
-                    obj[pop(name)] = Array.from(elem.children).map((x) => {
+                    /*obj[pop(name)] = Array.from(elem.children).map((x) => {
                         return [x.value, x.label];
-                    }).toObj();
-                    obj[pop(name)]._value = elem.value;
-                    obj[pop(name)]._text = elem.selectedOptions[0].label.trim();
+                    }).toObj();*/
+                    obj[pop(name)] = {};
+                    obj[pop(name)].value = elem.value;
+                    obj[pop(name)].text = elem.selectedOptions[0].label.trim();
                     break;
                 case "input":
                     obj[pop(name)] = elem.value;
@@ -270,17 +271,19 @@ window.__proto__.assign = _assign;
 window.localStorage.__proto__.assign = _assign;
 
 
-
 function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector, $invoke, $compile }) {
-    this.window = window;
     this.assign = _assign;
+    this.window = window;
     this.assign(localStorage);
-    this.connect = function(message) { chrome.runtime.connect(this.extensionId, { name: this.channel }) }
     this.host = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
     this.params = _params(location);
     this.account = this.params.account || this.params.member || this.params.accountId || this.params.accounts;
     this.channel = localStorage.channel || this.params.siteNumber;
     this.route = _route.call(this);
+    this.pathname = location.pathname;
+
+
+    this.connect = function(message) { chrome.runtime.connect(this.extensionId, { name: this.channel }) }
     this.sendMessage = function(message) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(this.extensionId, message, function(res) {
@@ -288,9 +291,14 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
                 try { resolve(res) } catch (ex) { reject(ex) }
             })
         })
-    }
+    };
 
-    this.pathname = location.pathname
+
+    var store = new Dexie('evo');
+    store.version(4).stores({ user: 'f_accounts' });
+
+
+    this.store = store;
 
 
     //console.log(this);

@@ -4,6 +4,7 @@ define(['@ku711/api'], function(apiFunction) {
 
 
     function setUser() {
+        
         $scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
 
         return Promise.all([

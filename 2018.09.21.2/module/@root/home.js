@@ -1,13 +1,21 @@
 define(["@page"], function(constant) {
-
     localStorage.assign(constant);
-
-    console.log($scope);
-
-    //console.log(constant);
-    //console.log($scope, constant);
-    // $scope.assign(constant);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

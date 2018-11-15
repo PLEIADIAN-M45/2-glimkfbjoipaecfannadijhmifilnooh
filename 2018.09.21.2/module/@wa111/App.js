@@ -1,9 +1,9 @@
 define(["angular", "angular-sanitize"], function(angular, sanitize) {
-
     var myApp = angular.module("OBSApp", ["ngSanitize"])
         .controller("projectCtrl", function($scope) {
+
             var elements = ["span", "input", "select"].map((x) => { return Array.from(document.querySelectorAll(x)) }).flat();
-            $scope.ctrls = elements.toCtrls();
+            //$scope.ctrls = elements.toCtrls();
             $scope.elems = elements.toCtrls();
             $scope.model = elements.toModel();
         });
@@ -16,7 +16,7 @@ define(["angular", "angular-sanitize"], function(angular, sanitize) {
 
 
 
-
+ 
 
 
 //if (window.aspnetForm) {};

@@ -67,10 +67,12 @@ requirejs(['router', 'utils'], function(router) {
 
         requirejs(['App'], function(App) {
             //console.log(App);
-            
+
             requirejs(['@root'], function(main) {
+
+
                 //console.log(main);
-                //if (main) { main().then(invoke); }
+                if (main) { main().then(invoke); }
             });
 
         });

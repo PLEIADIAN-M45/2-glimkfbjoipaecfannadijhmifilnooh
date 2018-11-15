@@ -9,15 +9,10 @@ define(["#App"], function(myApp) {
     var $injector = $projElement.injector();
     var $invoke = $injector.invoke;
     var $compile = $injector.get('$compile');
-    //console.log($scope);
+
     var object = { $scope, $rootScope, $projElement, $rootElement, $injector, $invoke, $compile };
-
     window.assign(object);
-
     myApp.assign(object);
-
-    //console.log(window.$scope);
-
     return myApp;
 });
 

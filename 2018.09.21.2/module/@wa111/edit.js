@@ -14,6 +14,59 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
     function bindEvo() { var { channel, host, origin, operator } = evo; return Object.assign($scope.user, { channel, host, origin, operator }); }
 
     function setUser() {
+
+        console.log($scope);
+        console.log($scope.model);
+
+        $scope.user = {
+            account: $scope.model.f_account,
+            birthday: $scope.model.birthday,
+            timing: [],
+            status: [$scope.model.ishow.value],
+            permit: [$scope.model.isOpenDeposit.value],
+            author: { title: $scope.model.txtRemittaceName, value: $scope.model.txtRemittaceName, },
+            locate: { title: $scope.model.lblIp, value: $scope.model.lblIp },
+            mobile: { title: $scope.model.txtPhoto, value: null },
+            idcard: { title: $scope.model.txtIdCard, value: null },
+            banker: [
+                { title: $scope.model.txtRemittanceAccount111, region: { meta: $scope.model.BankCode111.text, city: $scope.model.ddlCityArea.text, prov: $scope.model.ddlCity.text } },
+                { title: $scope.model.txtRemittanceAccount111_2, region: { meta: $scope.model.BankCode111_2.text, city: $scope.model.ddlCityArea2.text, prov: $scope.model.ddlCity2.text } },
+                { title: $scope.model.txtRemittanceAccount111_3, region: { meta: $scope.model.BankCode111_3.text, city: $scope.model.ddlCityArea3.text, prov: $scope.model.ddlCity3.text } },
+                { title: $scope.model.txtRemittanceAccount111_4, region: { meta: $scope.model.BankCode111_4.text, city: $scope.model.ddlCityArea4.text, prov: $scope.model.ddlCity4.text } },
+                { title: $scope.model.txtRemittanceAccount111_5, region: { meta: $scope.model.BankCode111_5.text, city: $scope.model.ddlCityArea5.text, prov: $scope.model.ddlCity5.text } }
+            ]
+        };
+
+
+        apiFunction.getPhoneDate().then((x) => {
+            $scope.user.mobile.value = x.f_photo;
+            $scope.user.idcard.value = x.f_idCard;
+            $scope.user.browser = x.f_browser;
+            $scope.user.osInfo = x.f_osInfo;
+        })
+
+
+        apiFunction.getSystemLog().then(timerFilter1)
+            .then((x) => {
+                $scope.user.timing[0] = x.f_time;
+            });
+
+
+        apiFunction.getUserStore().then((x) => {
+            $scope.user.sequel = x.f_id;
+            $scope.user.attach = x.f_joindate;
+            $scope.user.agency = x.f_alagent;
+            $scope.user.black = x.f_blacklist;
+            $scope.user.peril = x.f_peril;
+            $scope.user.nickName = x.f_nickName;
+            $scope.user.banker.map((d, i) => {
+                d.value = x.f_RemittanceAccount[i];
+            });
+        });
+
+
+        return $scope.user
+
         return Promise.all([
             $serializeObject('#lblIp'),
             $serializeObject('input'),
@@ -42,23 +95,29 @@ define(['@wa111/edit.map', '@wa111/api'], function(map, apiFunction) {
             return $scope.user;
         }).then(bindEvo).then(putUser)
     }
+
     $scope.updateUser = function updateUser(obj) {
         Object.entries(obj).forEach(([prop, value]) => {
             if (USERMAP.hasOwnProperty(prop) && value.toString()) { eval(USERMAP[prop] + "=value") }
         });
         $scope.$apply();
     }
-    $scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
-    $scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
+
+
+
+
+
+    //$scope.ctrl = { deposit: ctl00_ContentPlaceHolder1_isOpenDeposit, btnSaveInfo: btnSaveInfo };
+    //$scope.url = { IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
     //$scope.url = { IGetMemberInfo: `${location.origin}/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}` };
 
-        /*
+    /*
     $scope.openDeposit = function() {
         this.ctrl.deposit.value = 1;
         this.ctrl.btnSaveInfo.click();
     };*/
 
-    
+
     /*
     $scope.openLogPage = function() { window.open(this.url.IGetMemberInfo, '_blank'); };
     $scope.createTab = function(url, params) { window.open(url, '_blank'); };

@@ -4,3 +4,8 @@
         console.log(path);       
     }
 });*/
+
+
+define([], function() {
+
+})
