@@ -236,7 +236,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         get path() { return location.pathname.split('/').pop().replace(/\.(aspx|html)/, ''); }
         get domain() { return location.host.split('.'); }
         get sub() { return location.host.split('.')[0]; }
-        
+
         get host() {
             return {
                 "6326": "wa111",
@@ -387,7 +387,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         error(ex) {
             console.log(ex);
         }
- 
+
         copy(e) {
             document.execCommand("copy");
         }
@@ -420,7 +420,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
 
 
 
-    const evo = new Evo();  
+    const evo = new Evo();
 
     evo.assign = Object.assign;
     evo.values = Object.values;
@@ -430,6 +430,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
     /*  var { account, member, accountId, accounts }                            = evo.params;
     evo.account                                                                 = account || member || accountId || accounts;*/
 
+    console.log(12);
 
     return evo;
 })

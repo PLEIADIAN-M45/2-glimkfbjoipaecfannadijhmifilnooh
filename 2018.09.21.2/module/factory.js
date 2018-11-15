@@ -3,15 +3,26 @@
 })
 */
 
-function loadModules($scope, $rootElement) {
 
+
+function loadModules($scope, $rootElement) {
 
     console.log(123, 324);
     console.log(this);
 
     //$scope.host=
 
-    console.log($location);
+    /*console.log($location);
+    $scope.extensionId
+    $scope.sendMessage(message) {
+        message.command = message.command.replace('host', evo.host).replace('channel', evo.channel)
+        return new Promise(function(resolve, reject) {
+            chrome.runtime.sendMessage(evo.extensionId, message, function(res) {
+                //console.log(res);
+                try { resolve(res) } catch (ex) { reject(ex) }
+            })
+        })
+    }*/
 
 
 
@@ -39,7 +50,7 @@ function loadModules($scope, $rootElement) {
                 break;
             case "ku711":
                 $scope.$watch('ctrl.model.ResultList', function(nv, ov) {
-                    if (nv) {
+                    if(nv) {
                         setTimeout(() => {
                             console.log(document.body.scrollHeight);
                             window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');

@@ -29,8 +29,6 @@ requirejs.config({
         'Mock': '../lib/mock',
 
         'evo': '../core/evo',
-
-
         'path': '../core/path',
         'common': '../core/common',
         'utils': '../core/utils',
@@ -65,13 +63,13 @@ requirejs(['router', 'utils'], function(router) {
 
     //console.log(router);
 
-    requirejs(['moment', 'dexie', 'material', 'semantic', 'common'], function(moment, Dexie, mdc, semantic, evo) {
+    requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
 
         window.extend({ moment, Dexie, mdc, evo, router });
 
         requirejs(['myApp', 'factory'], function(myApp, factory) {
 
-            //requirejs(['@root'], function(main) { if (main) { main().then(invoke); } });
+            requirejs(['@root'], function(main) { if(main) { main().then(invoke); } });
 
         });
 
@@ -84,9 +82,9 @@ requirejs(['router', 'utils'], function(router) {
 /*
 requirejs(['router', 'utils'], function(router) {
     //console.log(router);
-    
+
     requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
-        
+
         window.extend({ moment, Dexie, mdc, evo, router });
 
         requirejs(['myApp'], function(myApp) {
