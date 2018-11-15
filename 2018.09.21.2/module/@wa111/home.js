@@ -1,7 +1,8 @@
 define([], function() {
     return {
-        siteName: lbltitle.outerText.split('-')[0],
-        operator: document.querySelector('.user-info').outerText.split('\n')[1],
-        channel: window.siteNumber
+        host: "wa111",
+        siteName: $scope.model.spTitle2,
+        operator: $scope.model.hdfsite_tab.split('_')[0],
+        channel: $scope.window.siteNumber
     }
-})
+});

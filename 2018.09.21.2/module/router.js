@@ -49,8 +49,12 @@ define([], function() {
             '*': {
                 '@root': ['@root', name].join('/'),
                 '@page': ['@' + host, name].join('/'),
-                //'@api': ['@' + host, 'api'].join('/'),
-                //'@map': ['@' + host, 'edit.map'].join('/')
+                "@App": "@root/App",
+                "App": "@root/App",
+                "#App": "@" + host + "/App",
+
+
+
 
             }
         }
@@ -63,17 +67,24 @@ define([], function() {
 
 
 
-//var extend = [host, name].join('/');
-//var root = ['@root', name].join('/');
+
+
+
+
+//['@root/App', 'App'].join('/'),
+//'@api'           : ['@' + host, 'api'].join('/'),
+//'@map'           : ['@' + host, 'edit.map'].join('/')
+//var extend                       = [host, name].join('/');
+//var root                         = ['@root', name].join('/');
 
 /*requirejs.config({
-    map                        : {
-        '*'                    : {
-            'root.App'         : ['module', 'root', 'app'].join('/'),
-            'host.App'         : ['module', host, 'app'].join('/'),
-            'root'             : ['module', 'root', route].join('/'),
-            'host'             : ['module', host, route].join('/'),
-            'host.Api'         : ['module', host, 'api'].join('/'),
+    map                            : {
+        '*'                        : {
+            'root.App'             : ['module', 'root', 'app'].join('/'),
+            'host.App'             : ['module', host, 'app'].join('/'),
+            'root'                 : ['module', 'root', route].join('/'),
+            'host'                 : ['module', host, route].join('/'),
+            'host.Api'             : ['module', host, 'api'].join('/'),
         }
     }
 })*/

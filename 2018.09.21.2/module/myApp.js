@@ -9,27 +9,29 @@ function fnStylesheet() {
         var link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = require.toUrl("./css/" + name + ".css");
-        link.onload = function() {
-            //console.log(link.href);
-        }
+        link.onload = function() { /*console.log(link.href);*/ }
         document.body.appendChild(link);
     });
 }
 
 function fnComponents() {
+    if (!$scope.components) { return };
     $scope.components.forEach((name) => {
         var templateUrl = require.toUrl("./html/" + name + ".html");
         fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+
             var template = angular.element(html);
             $element.append(template);
             $compile(template)($scope);
-            //console.log(666666666, 777777777);
+            //$compile(template.contents())($scope);
+            //console.log(template.contents());
             $scope.template_loaded = 1;
             $scope.$apply();
         })
     })
 }
-
+ 
+//define([""],function(){})
 
 define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, factory) {
 
@@ -43,6 +45,8 @@ define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, f
         //$sceDelegateProvider.resourceUrlWhitelist(['self', myApp.baseUrl, myApp.baseUrl + '**']);
     });
     try { angular.bootstrap(document, ['OBSApp']); } catch (ex) {};
+
+
     /***********************************************************************************/
     var ng_controller = $("[ng-controller]")[0] || $("body");
     var $element = angular.element(ng_controller);
@@ -54,7 +58,12 @@ define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, f
 
     //myApp = $injector.modules['OBSApp'];
 
-    var myApp = angular.module('OBSApp')
+    var myApp = angular.module('OBSApp');
+
+
+    var bootstrapApp = angular.element(window.document.querySelector('[ng-app]')).scope();
+    console.log($scope);
+    console.log(bootstrapApp);
 
     //loadModules.call($scope)
 
@@ -63,7 +72,6 @@ define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, f
     console.log(myApp);
 
     Object.assign(myApp, { $element, $rootElement, $scope, $injector, $invoke, $compile });
-
     window.extend({ myApp, $element, $rootElement, $scope, $injector, $invoke, $compile });
 
 

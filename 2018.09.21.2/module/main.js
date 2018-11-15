@@ -34,8 +34,6 @@ requirejs.config({
         'utils': '../core/utils',
         'SendSms': '../core/SendSms',
 
-
-
         //'Spreadsheets'   : '../core/Spreadsheets',
         'xmlSpider': '../core/xmlSpider',
         'webSpider': '../core/webSpider',
@@ -63,13 +61,17 @@ requirejs(['router', 'utils'], function(router) {
 
     //console.log(router);
 
-    requirejs(['moment', 'dexie', 'material', 'semantic', 'evo', 'common'], function(moment, Dexie, mdc, semantic, evo) {
+    requirejs(['moment', 'dexie', 'material', 'semantic'], function(moment, Dexie, mdc, semantic) {
 
-        window.extend({ moment, Dexie, mdc, evo, router });
+        window.assign({ moment, Dexie, mdc, router });
 
-        requirejs(['myApp', 'factory'], function(myApp, factory) {
-
-            requirejs(['@root'], function(main) { if(main) { main().then(invoke); } });
+        requirejs(['App'], function(App) {
+            //console.log(App);
+            
+            requirejs(['@root'], function(main) {
+                //console.log(main);
+                //if (main) { main().then(invoke); }
+            });
 
         });
 
@@ -77,7 +79,7 @@ requirejs(['router', 'utils'], function(router) {
 });
 
 
-
+//factory
 
 /*
 requirejs(['router', 'utils'], function(router) {
