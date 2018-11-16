@@ -1,6 +1,9 @@
 define(["#App"], function(myApp) {
-
     myApp.assign = _assign;
+    //myApp.assign(localStorage);
+    myApp.components = components[router.name];
+    myApp.stylesheet = stylesheet[router.name];
+
 
     var $rootElement = angular.element(document.querySelector("[ng-app]"));
     var $projElement = angular.element(document.querySelector("[ng-controller]"));
@@ -12,6 +15,8 @@ define(["#App"], function(myApp) {
 
     var object = { $scope, $rootScope, $projElement, $rootElement, $injector, $invoke, $compile };
     window.assign(object);
+    window.myApp = myApp;
+
     myApp.assign(object);
     return myApp;
 });
@@ -21,7 +26,7 @@ define(["#App"], function(myApp) {
 
 
 /*
-    //angular.element(document.getElementById("View")) || 
+    //angular.element(document.getElementById("View")) ||
 
    //myApp.assign(object);
    //console.log(myApp);

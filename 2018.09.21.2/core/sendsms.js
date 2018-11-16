@@ -1,4 +1,4 @@
-define(['common'], function() {
+define([], function() {
 
     function Dialog({ status, message, mobile }) {
         $scope.mdcDialog = {

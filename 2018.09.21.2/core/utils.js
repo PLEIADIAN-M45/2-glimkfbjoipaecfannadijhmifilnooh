@@ -19,7 +19,7 @@ function $serializeObject(selector) {
                 var value = this.textContent;
                 break;
             case 'select':
-                if (name == "ddlCity") {
+                if(name == "ddlCity") {
                     var value = this.selectedOptions[0].label
                 } else {
                     var value = this.value;
@@ -28,10 +28,10 @@ function $serializeObject(selector) {
             default:
                 var value = this.value;
         }
-        if (obj[name] == undefined) {
+        if(obj[name] == undefined) {
             obj[name] = value;
         } else {
-            if (!obj[name].push) { obj[name] = [obj[name]]; }
+            if(!obj[name].push) { obj[name] = [obj[name]]; }
             obj[name].push(value);
         }
     })
@@ -59,8 +59,8 @@ console.log($.param({ a: 3, b: 4 }));
 function toJson(obj) { return JSON.stringify(obj); }
 
 function pop(name) {
-    if (name.startsWith("ctl00")) {
-        if (name.includes("$")) {
+    if(name.startsWith("ctl00")) {
+        if(name.includes("$")) {
             return name.split("$").pop().trim();
         } else {
             return name.split("_").pop().trim();
@@ -71,7 +71,7 @@ function pop(name) {
 Array.prototype.toModel = function() {
     var obj = {};
     this.forEach((elem) => {
-        if (elem.name || elem.id) {
+        if(elem.name || elem.id) {
             var name = elem.name || elem.id;
             switch (elem.localName) {
                 case "select":
@@ -98,7 +98,7 @@ Array.prototype.toModel = function() {
 Array.prototype.toCtrls = function() {
     var obj = {};
     this.forEach((elem) => {
-        if (elem.name || elem.id) {
+        if(elem.name || elem.id) {
             var name = elem.name || elem.id;
             obj[pop(name)] = elem;
         }
@@ -110,7 +110,7 @@ Array.prototype.toObj = function() {
     try {
         var obj = {};
         this.forEach(([name, value]) => {
-            if (name && value) { obj[trim(name)] = trim(value) }
+            if(name && value) { obj[trim(name)] = trim(value) }
         });
         //console.log(obj);
         return obj;
@@ -179,8 +179,8 @@ console.log(counts[5], counts[2], counts[9], counts[4]);
 */
 
 function $serializeQueryString233333332(querystring) {
-    if (!querystring) { return }
-    if (!querystring.includes('=')) { return }
+    if(!querystring) { return }
+    if(!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
         pair = pair.split('=');
@@ -191,7 +191,7 @@ function $serializeQueryString233333332(querystring) {
 
 
 function jsonqs(str) {
-    if (str.indexOf('?') == -1) { return undefined }
+    if(str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
@@ -207,16 +207,29 @@ function jsonqs(str) {
 
 function _serialize({ href, url, postData }) {
     var obj = {};
-    if (href) { if (href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }
 
 
 function _route() {
-    var obj = { wa111: { cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2", device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1", }, ku711: { cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2", device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2" } } [this.host];
-    for (var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
+    var obj = {
+        wa1113: {
+            cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+            device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+        },
+        wa111: {
+            cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+            device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+        },
+        ku711: {
+            cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+            device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+        }
+    } [this.host];
+    for(var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
     return obj;
 }
 
@@ -224,52 +237,154 @@ function _params() {
     var url = new URL(location.href);
     return Array.from(url.searchParams.entries()).toObj();
 }
-//this.baseUrl = require.toUrl('.');
-//this.extensionId = localStorage.chrome_runtime_id;
-function invoke() {
-    fnStylesheet();
-    fnComponents();
-    console.log('_invoke......');
+
+var postScrollHeightMessage = function() {
+    switch ($scope.host) {
+        case "wa111":
+            setTimeout(() => {
+                console.log(document.body.scrollHeight);
+                window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
+            }, 1000)
+            break;
+        case "ku711":
+            $scope.$watch('ctrl.model.ResultList', function(nv, ov) {
+                if(nv) {
+                    setTimeout(() => {
+                        console.log(document.body.scrollHeight);
+                        window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
+                    }, 1000)
+                }
+            })
+            break;
+    }
 }
 
-function fnStylesheet() {
-    $scope.stylesheet.forEach(function(name) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = require.toUrl("./css/" + name + ".css");
-        link.onload = function() { /*console.log(link.href);*/ }
-        document.body.appendChild(link);
-    });
+
+var queryInputModel = function() {
+    switch ($scope.host) {
+        case "wa111":
+            break;
+        case "ku711":
+            $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
+            $scope.ctrl.GetQueryLoginLog(evo.params.method);
+            break;
+    }
 }
 
-function fnComponents() {
-    if (!$scope.components) { return };
-    $scope.components.forEach((name) => {
-        var templateUrl = require.toUrl("./html/" + name + ".html");
-        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
+var createIFrame = function(_src) {
+    var addScrollHeightEventListener = function() {
+        window.addEventListener('message', (e) => {
+            console.log(this);
+            console.log(e.data.scrollHeight);
+            this.style.height = e.data.scrollHeight;
+        });
+    }
+    $('<div>').addClass('ui horizontal divider').text('AND').appendTo($rootElement);
+    $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($rootElement);
+}
 
-            var template = angular.element(html);
-            $projElement.append(template);
-            $compile(template)($scope);
-            //$compile(template.contents())($scope);
-            //console.log(template.contents());
-            $scope.template_loaded = 1;
-            $scope.$apply();
-        })
+var createTab = function(_url) {
+    console.log(_url);
+    window.open(_url, "_blank");
+}
+
+
+
+
+var setPermit = function() {
+    return
+    switch ($scope.host) {
+        case "wa111":
+            $scope.ctrl.deposit.value = 1;
+            $scope.ctrl.btnSaveInfo.click();
+            break;
+        case "ku711":
+            $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+            $scope.ctrl.DepositChanged();
+            $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
+            break;
+    }
+}
+
+//$scope.createTab = createTab;
+
+var components = {
+    "edit": ['edit', 'dialog'],
+    "logs": ['cards']
+}
+var stylesheet = {
+    "edit": ['edit'],
+    "logs": ['logs', 'cards']
+}
+
+for(var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
+for(var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
+
+
+function toText(resp) { return resp.text() }
+
+function injectAsCss(path) { $("<link>", { rel: "stylesheet", type: "text/css", href: path }).appendTo('body'); }
+
+function injectAsHTML(path) {
+
+    fetch(path).then(toText).then((html) => {
+
+        var template = angular.element(html);
+        $projElement.append(template);
+        $compile(template)($scope);
+
+        //$scope.template_loaded = 1;
+        //console.log($scope);
+
+        $scope.$apply();
     })
 }
 
+function invoke() {
+    myApp.components.forEach(injectAsHTML)
+    myApp.stylesheet.forEach(injectAsCss)
+    console.log('_invoke......');
+}
+
+
+
 function _assign() {
     Object.assign(this, ...arguments);
-    if (this.$root && !this.$$phase) { this.$apply(); }
-    if (this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
-    if (this == window) {};
+    if(this.$root && !this.$$phase) { this.$apply(); }
+    if(this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
+    if(this == window) {};
 }
 
 
 window.__proto__.assign = _assign;
 window.localStorage.__proto__.assign = _assign;
 
+function $Num(str) { return Number(str) }
+
+function adjUser(user) {
+    user.unique = [user.account, user.channel].join('-');
+    user.status = user.status.map($Num);
+    user.permit = user.permit.map($Num);
+    user.author.attr = "author";
+    user.locate.attr = "locate";
+    user.mobile.attr = "mobile";
+    user.idcard.attr = "idcard";
+    user.banker.map((x) => { return Object.assign(x, { attr: "banker" }) });
+    return user;
+}
+
+
+function putUser(user) {
+    //var user = user || $scope.user;
+    var user = $scope.user;
+    return $scope.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser)
+}
+
+
+function bindUser(user) {
+    //test(user);
+    return user;
+}
 
 function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector, $invoke, $compile }) {
     this.assign = _assign;
@@ -280,15 +395,41 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
     this.account = this.params.account || this.params.member || this.params.accountId || this.params.accounts;
     this.channel = localStorage.channel || this.params.siteNumber;
     this.route = _route.call(this);
-    this.pathname = location.pathname;
+    this.origin = location.origin;
 
+    this.pathname = location.pathname.split("?")[0].split("/").pop().replace(/(.aspx|.html)/i, '');
 
     this.connect = function(message) { chrome.runtime.connect(this.extensionId, { name: this.channel }) }
+
     this.sendMessage = function(message) {
+        //this.active = true;
+        //if(!this.channel){ }
         return new Promise((resolve, reject) => {
-            chrome.runtime.sendMessage(this.extensionId, message, function(res) {
-                //console.log(res);
-                try { resolve(res) } catch (ex) { reject(ex) }
+            chrome.runtime.sendMessage(this.extensionId, message, (res) => {
+                try {
+                    // Object.assign(message, res)
+                    //this.active = false;
+                    //this.$apply();
+                    resolve(res)
+
+                } catch (ex) { reject(ex) }
+            })
+        })
+    };
+
+    this.apiFunctions = function(req, e) {
+        req.active = true;
+        req.rows = [];
+        //console.log(req.rows);
+        //if(!this.channel){ }
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(this.extensionId, req, (res) => {
+                try {
+                    req.active = false;
+                    Object.assign(req, res);
+                    this.$apply();
+                    resolve(res)
+                } catch (ex) { reject(ex) }
             })
         })
     };
@@ -296,10 +437,50 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
 
     var store = new Dexie('evo');
     store.version(4).stores({ user: 'f_accounts' });
-
-
     this.store = store;
 
+    this.events = {};
+    this.events.createTab = function(_url) {
+        console.log(_url);
+        window.open(_url, "_blank");
+    }
+
+    this.events.setPermit = function() {
+        switch (this.host) {
+            case "wa111":
+                this.ctrl.isOpenDeposit.value = 1;
+                this.ctrl.btnSaveInfo.click();
+                break;
+            case "ku711":
+                this.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+                this.ctrl.DepositChanged();
+                this.ctrl.UpdateMemberRiskInfoAccountingBackend();
+                break;
+        }
+    }.bind(this);
+
+
+    this.getUser = function() {
+        //console.log(evo.account, evo.channel);
+        return this.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: this.account, channel: this.channel } })
+            .then(bindUser);
+    }
+
+
+    function delUser() { return evo.sendMessage({ command: 'apiFunctions.store.user.delete', params: { account: evo.account, channel: evo.channel } }).then(() => { console.log('user deleted.'); }); }
+
+
+    /*
+    this.events = {
+        createTab,
+        createIFrame,
+        setPermit,
+        queryInputModel,
+        postScrollHeightMessage
+    }*/
+
+
+    return
 
     //console.log(this);
 
@@ -335,84 +516,20 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
     }
     */
 
-    var postScrollHeightMessage = function() {
-        switch ($scope.host) {
-            case "wa111":
-                setTimeout(() => {
-                    console.log(document.body.scrollHeight);
-                    window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
-                }, 1000)
-                break;
-            case "ku711":
-                $scope.$watch('ctrl.model.ResultList', function(nv, ov) {
-                    if (nv) {
-                        setTimeout(() => {
-                            console.log(document.body.scrollHeight);
-                            window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
-                        }, 1000)
-                    }
-                })
-                break;
-        }
-    }
 
-
-    var queryInputModel = function() {
-        switch ($scope.host) {
-            case "wa111":
-                break;
-            case "ku711":
-                $scope.ctrl.model.QueryInputModel.AccountID = evo.params.accounts;
-                $scope.ctrl.GetQueryLoginLog(evo.params.method);
-                break;
-        }
-    }
-
-    var createIFrame = function(_src) {
-        var addScrollHeightEventListener = function() {
-            window.addEventListener('message', (e) => {
-                console.log(this);
-                console.log(e.data.scrollHeight);
-                this.style.height = e.data.scrollHeight;
-            });
-        }
-        $('<div>').addClass('ui horizontal divider').text('AND').appendTo($rootElement);
-        $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($rootElement);
-    }
-
-    var createTab = function(_url) {
-        console.log(_url);
-        window.open(_url, "_blank");
-    }
-
-
-
-
-    var setPermit = function() {
-        return
-        switch ($scope.host) {
-            case "wa111":
-                $scope.ctrl.deposit.value = 1;
-                $scope.ctrl.btnSaveInfo.click();
-                break;
-            case "ku711":
-                $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
-                $scope.ctrl.DepositChanged();
-                $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
-                break;
-        }
-    }
-
-    //$scope.createTab = createTab;
-
-    $scope.events = {
-        //createTab: createTab.bind($scope),
-        createTab,
-        createIFrame,
-        setPermit,
-        queryInputModel,
-        postScrollHeightMessage
-    }
 
 }
 //if (this.$scope) { if (!this.$scope.$$phase) { this.$scope.$apply(); } }
+
+
+
+
+
+
+
+
+
+//this.baseUrl = require.toUrl('.');
+//this.extensionId = localStorage.chrome_runtime_id;
+//$compile(template.contents())($scope);
+//console.log(template.contents());

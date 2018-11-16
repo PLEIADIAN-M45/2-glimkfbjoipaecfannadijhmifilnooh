@@ -19,6 +19,54 @@ define(["@page"], function(constant) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+for(var x in components) {
+    components[x] = components[x].map((name) => {
+        var path = `${localStorage.baseUrl}/html/${name}.html`
+        getAsyncHTMLpath(path).then((html) => { localStorage[name] = html; })
+    })
+}*/
+
+/*
+for(var x in stylesheet) {
+    stylesheet[x] = stylesheet[x].map((name) => {
+        return `${localStorage.baseUrl}/css/${name}.css`;
+    })
+}
+*/
+
+
+
+
+
+
+
+
+
+
 /*
 define(["@page"], function(module) {
 

@@ -1,13 +1,19 @@
 apiFunctions.member = function() {
-    if (this.value == "") { return Promise.resolve({}) }
-    if (this.value.includes('*')) { return Promise.resolve({}) }
-    if (this.attr == "locate") { return Promise.resolve({}) }
+    if(this.value == "") { return Promise.resolve({}) }
+    if(this.value.includes('*')) { return Promise.resolve({}) }
+    if(this.attr == "locate") { return Promise.resolve({}) }
+
+    if(!this.url) { return Promise.reject({}) }
+    if(!this.attr == "locate") { return Promise.resolve({}) }
+
+
     this[this.attr] = this.value;
     this.idcard = this.idcard || "";
     this.author = this.author || "";
     this.mobile = this.mobile || "";
     this.banker = this.banker || "";
-    if (this.host == "ku711") {
+
+    if(this.host == "ku711") {
         return $.ajax({
             "dataType": 'json',
             "method": 'post',
@@ -15,7 +21,7 @@ apiFunctions.member = function() {
             "data": JSON.stringify({ "AccountID": "", "IDNumber": this.idcard, "RigistedIP": "", "TotalDepositAmount": null, "AccountNumber": "", "AccountName": this.author, "Email": "", "PhoneVerified": null, "IDVerified": null, "MinDeposit": null, "MaxDeposit": null, "StartRegistedTime": "", "EndRegistedTime": "", "PageNumber": this.index - 1, "RecordCounts": 20, "OrderField": "", "Desc": "true", "TotalDepositBonus": null, "AccountBookLevel": "", "AliPayLevel": "", "WeChatLevel": "", "CellPhone": this.mobile, "IsBlackList": null, "LevelType": null, "MemberStatus": null, "IsFisrstDeposit": null, "MemberMemoType": null, "TransferOutStatus": null, "IsLogIn": null, "AgencyID": "", "TestType": null, "PayeeAccountNo": this.banker, "LineType": "", "AccountingType": null, "ManageAccountID": "", "NickName": "" })
         }).then(({ Data }) => {
             var res = { origin: this.url, "rows": Data.Data, "records": Data.Pager.PageCount, "total": Data.TotalItemCount, "index": this.index };
-            if (res.rows && res.rows.length) {
+            if(res.rows && res.rows.length) {
                 return apiFunctions.getMemberAlertInfoBackend(res.rows).then((d) => {
                     res.list_RemittanceName = d.Data.AlertInfoAccountName;
                     res.rows.map((x) => { x.list_Accounts = d.Data.AlertInfoAccountId.filter((d) => { return x.AccountID == d.AccountID }); return x; })
@@ -25,7 +31,7 @@ apiFunctions.member = function() {
         })
     }
 
-    if (this.host == "wa111") {
+    if(this.host == "wa111") {
         return $.ajax({
             "dataType": 'json',
             "url": this.url + '/LoadData/AccountManagement/GetMemberList.ashx',

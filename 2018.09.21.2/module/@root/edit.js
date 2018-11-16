@@ -1,25 +1,22 @@
-define(['@page', 'SendSms'], function({ setUser }, SendSms) {
+define(['@page'], function({}) {
 
     ;
     'use strict';
 
-    return function main() {
 
+    $scope.run = function() {
         return new Promise(async (resolve, reject) => {
-            //console.log($scope.events);
-            //console.log(evo);
-
-            $scope.stylesheet = ['edit'];
-            $scope.components = ['edit', 'dialog'];
-            //return delUser();
-            $scope.user = await setUser();
+            $scope.user = await $scope.setUser();
             //$scope.user = await getUser() || await setUser();
             //$scope.sendsms = new SendSms($scope.user);
             console.log($scope.user);
+            resolve($scope);
 
-            //resolve($scope);
         })
     }
+
+
+
 
 })
 
@@ -35,6 +32,18 @@ define(['@page', 'SendSms'], function({ setUser }, SendSms) {
 
 
 function forTest() {
+    return function main() {
+        return new Promise(async (resolve, reject) => {
+            /* $scope.stylesheet = ['edit'];
+             $scope.components = ['edit', 'dialog'];*/
+            //return delUser();
+            $scope.user = await $scope.setUser();
+            //$scope.user = await getUser() || await setUser();
+            //$scope.sendsms = new SendSms($scope.user);
+            console.log($scope.user);
+            resolve($scope);
+        })
+    }
     //ctl00_ContentPlaceHolder1_txtRemittaceName.value = "王杰"
     $scope.url = {
         //IGetMemberInfo: `http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=${evo.channel}&member=${evo.account}`

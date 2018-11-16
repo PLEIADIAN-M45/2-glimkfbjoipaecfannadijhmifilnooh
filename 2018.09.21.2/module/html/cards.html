@@ -1,12 +1,12 @@
 <b>{{address}}</b>
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in userlist" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.call(me);">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions(me);">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.attr]" title="{{heads[me.attr]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.call(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -24,7 +24,7 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="getAllIPAddress.call(me);">
+        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="____getAllIPAddress.call(me);">
             <div class="grid-2">
                 <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in me.rows">
                     <span ng-init="check_locate(row)">{{row[0]}}</span>
@@ -33,19 +33,19 @@
             </div>
         </div>
         <div class="extra content flex" ng-if="me.attr != 'locate'">
-            <div ng-repeat="s in me.sites" ng-init="apiFunctions.call(s);">
+            <div ng-repeat="s in me.sites" ng-init="apiFunctions(s);">
                 <div class="ui image label" ng-click="showRemittanceName.call(s)">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.call(s, $event);" ng-disabled="s.index==1 || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions(s, $event);" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.call(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row,s)" ng-init="changeColor.call(row,'#'+$id);" ng-class="[row.color]" id="{{$id}}">
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor.call(row,'#'+$id);" ng-class="[row.color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息 -->
                     <aside class="hidden">
@@ -90,10 +90,11 @@
     </table>
 </div>
 
-<b ng-init="events.queryInputModel()"></b>
-<b ng-init="events.createIFrame(route.device)"></b>
+<!-- <b ng-init="events.queryInputModel()"></b>
+<b ng-init="events.createIFrame(route.device)"></b> -->
+<!-- <p ng-bind-html="myHTML"></p> -->
 
-<p ng-bind-html="myHTML"></p>
+
 <style type="text/css">
 .detail.Noto-Sans-SC {
     font-family: 'Noto Sans SC' !important;

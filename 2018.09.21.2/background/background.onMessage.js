@@ -6,6 +6,8 @@ function response_message(request, sender, sendResponse) {
     if (request.command != "apiFunctions.XMLHttpRequest") {
         request.time = Date.now();
         request.url = window.baseUrl[request.channel];
+       // console.log(request);
+       // console.log(request.url);
     }
     try {
         var promise = eval(request.command).call(request).then(sendResponse);

@@ -1,12 +1,13 @@
 define([], function() {
 
     var apiFunction = function() {
-        this.exec = function(mod) {
-            mod.assign = _assign;
-            mod.assign({ dataType: "json" })
-            return new Promise((resolve, reject) => {
-                //console.log(mod);
 
+        this.exec = function(mod) {
+
+            mod.assign = _assign;
+            mod.assign({ dataType: "json" });
+
+            return new Promise((resolve, reject) => {
                 $.ajax(mod).then((d) => {
                     var res = d.rows || d;
                     try { if (res.length == 1) { resolve(...res) } else { resolve(res) } } catch (ex) {}
@@ -57,7 +58,6 @@ define([], function() {
 
     apiFunction.prototype.getAlertInfo = function() {
         return new Promise(function(resolve, reject) {
-
             chrome.runtime.sendMessage(evo.extensionId, {
                 command: "apiFunctions",
                 property: "alerts",

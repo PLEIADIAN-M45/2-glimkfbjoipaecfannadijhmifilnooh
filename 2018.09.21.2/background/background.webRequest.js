@@ -134,11 +134,18 @@ function sp0_baidu_com() {
     }, { urls: ["*://sp0.baidu.com/*/api.*"] }, ['requestHeaders', 'blocking']);
 }
 
+//chrome.webRequest.onCompleted.addListener(function callback, )
 
+/*
+chrome.webRequest.onCompleted.addListener(function(details) {
+    console.log(details);
+    chrome.tabs.get(details.tabId, function(d) {
+        console.log(d);
+    })
 
-
-
-
+}, { urls: ["http://127.0.0.1:26/IGetMemberInfo.*"] });
+*/
+//http://127.0.0.1:26/IGetMemberInfo.aspx?siteNumber=26&member=JIABO1006
 /*
 https://stackoverflow.com/questions/18310484/modify-http-responses-from-a-chrome-extension
 
