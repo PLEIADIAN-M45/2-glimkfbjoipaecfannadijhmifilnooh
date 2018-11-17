@@ -2,20 +2,20 @@ $scope.dispatch = function() { return Promise.resolve() }
 
 function checkSensitiveProvince(el) {
     evo.decoder(localStorage.region).find(([str], index) => {
-        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
+        if (el.outerText.includes(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveProtocol(el) {
     evo.decoder(localStorage.locate).find(([str], index) => {
-        if(el.outerText.startsWith(str)) { return el.classList.add('danger'); }
+        if (el.outerText.startsWith(str)) { return el.classList.add('danger'); }
     });
 }
 
 function checkSensitiveUserName(el) {
     evo.decoder(localStorage.author).find(([str]) => {
         console.log(str);
-        if(str.trim() == el.outerText) { el.classList.add('danger'); }
+        if (str.trim() == el.outerText) { el.classList.add('danger'); }
     });
 }
 
@@ -56,7 +56,7 @@ function addChannelToAccountsId(children) {
 
     //console.log(channel, account, evo.channel, evo.account);
 
-    if(evo.channel == channel && evo.account == account) {
+    if (evo.channel == channel && evo.account == account) {
         addHighlightAccountsId(children);
         catchProvinceProtocols(children);
     }
@@ -75,15 +75,39 @@ function catchProvinceProtocols(children) {
 
 $scope.postMessage = function() { $(function() { postScrollHeightMessage() }); }
 
+HTMLLIElement.prototype.text = function() { return this.outerText.split("-")[0].trim(); }
+
+var cells = Array.from($("ul:not([class]):not([style])"));
+//console.log(cells);
+var public = cells.map((ul) => {
+    //console.log(ul);
+    try {
+        return {
+            channel: ul.children[0].text(),
+            AccountID: ul.children[2].text(),
+            AccountName: ul.children[4].text(),
+            IPAddress: ul.children[7].text(),
+            IPLocation: ul.children[9].text()
+        }
+    } catch (ex) {
+
+    }
+
+})
+
+
+$scope.getProtocolSet = function(me) {
+    me.rows = public.filter((d) => { return d.channel == this.user.channel && d.AccountID == this.user.account });
+}
+
 
 
 $scope.getAllIPAddress = function() {
 
+    return
     var c = $("ul:not([class]):not([style])");
 
-
-
-    if(this.attr != "locate") { return };
+    if (this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {

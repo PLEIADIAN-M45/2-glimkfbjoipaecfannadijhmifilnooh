@@ -10,7 +10,7 @@ apiFunctions.idcard = function() {
         "area": GBMAP.get(Number($3)),
         "meta": [birth, sex, age].join('/')
     }
-    // console.log(this);
+    //console.log(this);
     //this.region = region
     //return Promise.resolve(this);
     return Promise.resolve({ region });

@@ -19,7 +19,7 @@ function $serializeObject(selector) {
                 var value = this.textContent;
                 break;
             case 'select':
-                if(name == "ddlCity") {
+                if (name == "ddlCity") {
                     var value = this.selectedOptions[0].label
                 } else {
                     var value = this.value;
@@ -28,10 +28,10 @@ function $serializeObject(selector) {
             default:
                 var value = this.value;
         }
-        if(obj[name] == undefined) {
+        if (obj[name] == undefined) {
             obj[name] = value;
         } else {
-            if(!obj[name].push) { obj[name] = [obj[name]]; }
+            if (!obj[name].push) { obj[name] = [obj[name]]; }
             obj[name].push(value);
         }
     })
@@ -59,8 +59,8 @@ console.log($.param({ a: 3, b: 4 }));
 function toJson(obj) { return JSON.stringify(obj); }
 
 function pop(name) {
-    if(name.startsWith("ctl00")) {
-        if(name.includes("$")) {
+    if (name.startsWith("ctl00")) {
+        if (name.includes("$")) {
             return name.split("$").pop().trim();
         } else {
             return name.split("_").pop().trim();
@@ -71,7 +71,7 @@ function pop(name) {
 Array.prototype.toModel = function() {
     var obj = {};
     this.forEach((elem) => {
-        if(elem.name || elem.id) {
+        if (elem.name || elem.id) {
             var name = elem.name || elem.id;
             switch (elem.localName) {
                 case "select":
@@ -98,7 +98,7 @@ Array.prototype.toModel = function() {
 Array.prototype.toCtrls = function() {
     var obj = {};
     this.forEach((elem) => {
-        if(elem.name || elem.id) {
+        if (elem.name || elem.id) {
             var name = elem.name || elem.id;
             obj[pop(name)] = elem;
         }
@@ -110,7 +110,7 @@ Array.prototype.toObj = function() {
     try {
         var obj = {};
         this.forEach(([name, value]) => {
-            if(name && value) { obj[trim(name)] = trim(value) }
+            if (name && value) { obj[trim(name)] = trim(value) }
         });
         //console.log(obj);
         return obj;
@@ -179,8 +179,8 @@ console.log(counts[5], counts[2], counts[9], counts[4]);
 */
 
 function $serializeQueryString233333332(querystring) {
-    if(!querystring) { return }
-    if(!querystring.includes('=')) { return }
+    if (!querystring) { return }
+    if (!querystring.includes('=')) { return }
     var result = {};
     querystring.split('&').forEach(function(pair) {
         pair = pair.split('=');
@@ -191,7 +191,7 @@ function $serializeQueryString233333332(querystring) {
 
 
 function jsonqs(str) {
-    if(str.indexOf('?') == -1) { return undefined }
+    if (str.indexOf('?') == -1) { return undefined }
     try {
         var result = {};
         str.split('?')[1].split('&').forEach((pair) => {
@@ -207,20 +207,20 @@ function jsonqs(str) {
 
 function _serialize({ href, url, postData }) {
     var obj = {};
-    if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (href) { if (href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }
 
 
 function _route() {
     var obj = {
-        wa1113: {
+        wa111: {
             cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
             device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
         },
-        wa111: {
+        wa1113: {
             cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
             device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
         },
@@ -229,7 +229,7 @@ function _route() {
             device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
         }
     } [this.host];
-    for(var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
+    for (var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
     return obj;
 }
 
@@ -248,7 +248,7 @@ var postScrollHeightMessage = function() {
             break;
         case "ku711":
             $scope.$watch('ctrl.model.ResultList', function(nv, ov) {
-                if(nv) {
+                if (nv) {
                     setTimeout(() => {
                         console.log(document.body.scrollHeight);
                         window.parent.postMessage({ scrollHeight: document.body.scrollHeight + 'px' }, '*');
@@ -317,8 +317,8 @@ var stylesheet = {
     "logs": ['logs', 'cards']
 }
 
-for(var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
-for(var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
+for (var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
+for (var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
 
 
 function toText(resp) { return resp.text() }
@@ -350,9 +350,9 @@ function invoke() {
 
 function _assign() {
     Object.assign(this, ...arguments);
-    if(this.$root && !this.$$phase) { this.$apply(); }
-    if(this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
-    if(this == window) {};
+    if (this.$root && !this.$$phase) { this.$apply(); }
+    if (this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
+    if (this == window) {};
 }
 
 
@@ -377,11 +377,33 @@ function adjUser(user) {
 function putUser(user) {
     //var user = user || $scope.user;
     var user = $scope.user;
-    return $scope.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser)
+
+    var o = Object.assign({ command: 'apiFunctions.store.user.put' }, adjUser(user))
+    //console.log(o);
+
+    return $scope.sendMessage(o).then(bindUser)
+
+    //return $scope.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser)
 }
 
 
+/*
+function getUser() {
+    //console.log(evo.account, evo.channel);
+    //this.account
+    var unique = [this.account, this.channel].join('-');
+
+    return this.sendMessage({ command: 'apiFunctions.store.user.get', unique }).then(bindUser);
+
+
+
+    return this.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: this.account, channel: this.channel } })
+        .then(bindUser);
+}*/
+
+
 function bindUser(user) {
+    //console.log(user);
     //test(user);
     return user;
 }
@@ -417,13 +439,17 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
         })
     };
 
+
     this.apiFunctions = function(req, e) {
         req.active = true;
-        req.rows = [];
-        //console.log(req.rows);
-        //if(!this.channel){ }
+        if (req.level == 1) {
+
+        } else {
+            req.rows = [];
+        }
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(this.extensionId, req, (res) => {
+                console.log(res);
                 try {
                     req.active = false;
                     Object.assign(req, res);
@@ -462,6 +488,13 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
 
     this.getUser = function() {
         //console.log(evo.account, evo.channel);
+        //this.account
+        var unique = [this.account, this.channel].join('-');
+
+        return this.sendMessage({ command: 'apiFunctions.store.user.get', unique }).then(bindUser);
+
+
+
         return this.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: this.account, channel: this.channel } })
             .then(bindUser);
     }

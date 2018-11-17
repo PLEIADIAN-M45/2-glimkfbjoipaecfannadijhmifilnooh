@@ -52,6 +52,10 @@ define(['angular', 'angular-sanitize', 'factory'], function(angular, sanitize, f
     var $element = angular.element(ng_controller);
     var $rootElement = $element[0];
     var $scope = $element.scope();
+
+    console.log($scope);
+
+
     var $injector = $element.injector();
     var $invoke = $injector.invoke;
     var $compile = $injector.get('$compile');

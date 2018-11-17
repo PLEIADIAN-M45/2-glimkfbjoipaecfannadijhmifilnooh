@@ -78,7 +78,7 @@ function download() {
     ]).then(flat).then(save);
 }
 
-//download();
+download();
 
 
 

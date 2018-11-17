@@ -1,12 +1,11 @@
-<b>{{address}}</b>
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions(me);">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.region(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.attr]" title="{{heads[me.attr]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.region(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -24,17 +23,17 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="____getAllIPAddress.call(me);">
+        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="getProtocolSet(me);">
             <div class="grid-2">
-                <div class="ui image label protocol center" ng-class="{'pink': row.match,'green': !row.match }" ng-repeat="row in me.rows">
-                    <span ng-init="check_locate(row)">{{row[0]}}</span>
-                    <div ng-init="check_region(row)" class="detail">{{row[1]}}</div>
+                <div class="ui image label protocol center" ng-repeat="row in me.rows">
+                    <span>{{row.IPAddress}}</span>
+                    <div class="detail">{{row.IPLocation}}</div>
                 </div>
             </div>
         </div>
         <div class="extra content flex" ng-if="me.attr != 'locate'">
             <div ng-repeat="s in me.sites" ng-init="apiFunctions(s);">
-                <div class="ui image label" ng-click="showRemittanceName.call(s)">
+                <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
@@ -45,11 +44,11 @@
                     <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
                 <!-- account -->
-                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor.call(row,'#'+$id);" ng-class="[row.color]" id="{{$id}}">
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <!-- extra content 警示訊息 -->
-                    <aside class="hidden">
-                        <table class="ui celled selectable striped collapsing table inverted pink small">
+                    <aside class="hidden" ng-init="setPopup(row)">
+                        <table class="ui celled selectable striped collapsing table inverted pink small" name="{{popupId}}">
                             <thead>
                                 <th>警示帐号</th>
                                 <th>汇款户名</th>
@@ -71,6 +70,7 @@
         </div>
     </div>
 </div>
+
 <div class="ui fullscreen modal">
     <table class="ui celled selectable striped collapsing table small">
         <thead>
@@ -89,12 +89,9 @@
         </tbody>
     </table>
 </div>
-
 <!-- <b ng-init="events.queryInputModel()"></b>
 <b ng-init="events.createIFrame(route.device)"></b> -->
 <!-- <p ng-bind-html="myHTML"></p> -->
-
-
 <style type="text/css">
 .detail.Noto-Sans-SC {
     font-family: 'Noto Sans SC' !important;

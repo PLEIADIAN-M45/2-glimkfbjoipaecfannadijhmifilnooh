@@ -10,9 +10,11 @@ function response_message(request, sender, sendResponse) {
        // console.log(request.url);
     }
     try {
+        //console.log(request.command);
         var promise = eval(request.command).call(request).then(sendResponse);
+        //console.log(promise);
     } catch (ex) {
-        console.log(request);
+        console.error(request);
     }
     return true;
 }

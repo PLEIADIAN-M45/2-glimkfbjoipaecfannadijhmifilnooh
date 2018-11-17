@@ -1,6 +1,11 @@
 var store = new Dexie('evo');
-store.version(4).stores({
-    user: '[account+channel]',
+store.version(5).stores({
+    //user: '[account+channel]',
+
+    //user: 'sequel',
+    user: 'unique',
+
+
     users: 'account',
     xmlhttp: 'lastPath',
     author: '++id',
@@ -20,9 +25,21 @@ evo.store = store;
 apiFunctions.store = {}
 
 evo.store.tables.forEach(function(table, index) {
+
+    apiFunctions.store[table.name] = {
+        put: function() {
+            //console.log(this);
+            return evo.store[table.name].put(this).then(() => { return this })
+        },
+        get: function() {
+            //console.log(this);
+            return evo.store[table.name].get(this.unique).then((d) => { return d })
+        }
+    }
+
+    /*
     apiFunctions.store[table.name] = {
         put: function() { return evo.store[table.name].put(this.params).then(() => { return this.params }) },
         get: function() { return evo.store[table.name].get(this.params).then((d) => { return d }) }
-    }
+    }*/
 });
-

@@ -7,8 +7,10 @@ define(["#App"], function(myApp) {
 
     var $rootElement = angular.element(document.querySelector("[ng-app]"));
     var $projElement = angular.element(document.querySelector("[ng-controller]"));
-    var $rootScope = $rootElement.scope();
+    //var $rootScope = $rootElement.scope();
     var $scope = $projElement.scope();
+    var $rootScope = $rootElement.scope() || $projElement.scope();
+
     var $injector = $projElement.injector();
     var $invoke = $injector.invoke;
     var $compile = $injector.get('$compile');
