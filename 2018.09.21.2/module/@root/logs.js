@@ -5,10 +5,16 @@ define(['@page'], function() {
     //if(this.params.method == "CookieID" || this.pathname == "IGetMemberInfo") {}
     $scope.run = function() {
 
+        console.log(this.baseUrl);
+
+        //chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module
+
         return new Promise(async (resolve, reject) => {
             //var extensionId = this.extensionId
 
             this.apiFunctions = {};
+            this.author = "RYAN CHANG";
+
 
             this.apiFunctions.region = function(params, e) {
                 params.command = "apiFunctions.region";

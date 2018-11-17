@@ -1,0 +1,6 @@
+<div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
+    <div class="ui image label protocol center" ng-repeat="row in me.rows">
+        <span>{{row.IPAddress}}</span>
+        <div class="detail">{{row.IPLocation}}</div>
+    </div>
+</div>

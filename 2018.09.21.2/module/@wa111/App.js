@@ -1,5 +1,15 @@
 define(["angular", "angular-sanitize"], function(angular, sanitize) {
+
+    console.log(require.toUrl("."));
+
     var myApp = angular.module("OBSApp", ["ngSanitize"])
+        .config(function($sceDelegateProvider) {
+            myApp.baseUrl = require.toUrl(".");
+
+
+            $sceDelegateProvider.resourceUrlBlacklist([""]);
+            $sceDelegateProvider.resourceUrlWhitelist(["self", myApp.baseUrl, myApp.baseUrl + "**"]);
+        })
         .controller("projectCtrl", function($scope) {
             var elements = ["span", "input", "select", "button"].map((x) => { return Array.from(document.querySelectorAll(x)) }).flat();
             $scope.ctrl = elements.toCtrls();

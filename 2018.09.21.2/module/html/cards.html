@@ -1,3 +1,4 @@
+<div ng-include="'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/views/part.html'"></div>
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.region(me)">
         <div class="ui top attached content compact">
@@ -23,12 +24,13 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
-            <div class="ui image label protocol center" ng-repeat="row in me.rows">
-                <span>{{row.IPAddress}}</span>
-                <div class="detail">{{row.IPLocation}}</div>
-            </div>
-        </div>
+        <div ng-include="'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/views/locate.html'"></div>
+       <!--  <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
+           <div class="ui image label protocol center" ng-repeat="row in me.rows">
+               <span>{{row.IPAddress}}</span>
+               <div class="detail">{{row.IPLocation}}</div>
+           </div>
+       </div> -->
         <div class="extra content grid grid-4" ng-if="me.attr!='locate'">
             <div ng-repeat="s in me.sites" ng-init="apiFunctions.member(s)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">

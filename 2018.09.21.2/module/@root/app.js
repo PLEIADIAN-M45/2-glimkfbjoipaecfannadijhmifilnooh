@@ -4,7 +4,6 @@ define(["#App"], function(myApp) {
     myApp.components = components[router.name];
     myApp.stylesheet = stylesheet[router.name];
 
-
     var $rootElement = angular.element(document.querySelector("[ng-app]"));
     var $projElement = angular.element(document.querySelector("[ng-controller]"));
     //var $rootScope = $rootElement.scope();
