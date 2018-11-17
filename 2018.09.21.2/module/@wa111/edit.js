@@ -9,7 +9,7 @@ define(['@wa111/api'], function(apiFunction) {
 
     function _getSystemLog(rows) {
         rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-            if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return $scope.user.timing[0] = f_time; }
+            if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return $scope.user.timing[0] = f_time; }
         });
     }
 
@@ -26,7 +26,30 @@ define(['@wa111/api'], function(apiFunction) {
 
     $scope.setUser = function() {
         var m = $scope.model;
-        $scope.user = { host: $scope.host, origin: $scope.origin, operator: $scope.operator, channel: $scope.channel, account: m.f_account, birthday: m.birthday, timing: [], equpmt: {}, status: [m.ishow.value], permit: [m.isOpenDeposit.value], author: { title: m.txtRemittaceName, value: m.txtRemittaceName, }, locate: { title: m.lblIp, value: m.lblIp }, mobile: { title: m.txtPhoto, value: null }, idcard: { title: m.txtIdCard, value: null }, banker: [{ title: m.txtRemittanceAccount111, region: { meta: m.BankCode111.text, city: m.ddlCityArea.text, prov: m.ddlCity.text } }, { title: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2.text, city: m.ddlCityArea2.text, prov: m.ddlCity2.text } }, { title: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3.text, city: m.ddlCityArea3.text, prov: m.ddlCity3.text } }, { title: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } }, { title: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }] };
+        $scope.user = {
+            host: $scope.host,
+            origin: $scope.origin,
+            operator: $scope.operator,
+            channel: $scope.channel,
+            account: m.f_account,
+            birthday: m.birthday,
+            timing: [],
+            equpmt: {},
+            status: [m.ishow.value],
+            permit: [m.isOpenDeposit.value],
+            author: { title: m.txtRemittaceName, value: m.txtRemittaceName, },
+            locate: { title: m.lblIp, value: m.lblIp },
+            mobile: { title: m.txtPhoto, value: null },
+            idcard: { title: m.txtIdCard, value: null },
+            banker: [{
+                title: m.txtRemittanceAccount111,
+                region: {
+                    meta: m.BankCode111.text,
+                    city: m.ddlCityArea.text,
+                    prov: m.ddlCity.text
+                }
+            }, { title: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2.text, city: m.ddlCityArea2.text, prov: m.ddlCity2.text } }, { title: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3.text, city: m.ddlCityArea3.text, prov: m.ddlCity3.text } }, { title: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } }, { title: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }]
+        };
         return Promise.all([
             apiFunction.getPhoneDate().then(_getPhoneDate),
             apiFunction.getSystemLog().then(_getSystemLog),

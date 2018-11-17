@@ -1,5 +1,3 @@
-$scope.dispatch = function() { return Promise.resolve() }
-
 function checkSensitiveProvince(el) {
     evo.decoder(localStorage.region).find(([str], index) => {
         if (el.outerText.includes(str)) { return el.classList.add('danger'); }
@@ -73,14 +71,17 @@ function catchProvinceProtocols(children) {
 }
 
 
-$scope.postMessage = function() { $(function() { postScrollHeightMessage() }); }
+
+
+/********************************************************************/
 
 HTMLLIElement.prototype.text = function() { return this.outerText.split("-")[0].trim(); }
+
+
 
 var cells = Array.from($("ul:not([class]):not([style])"));
 //console.log(cells);
 var public = cells.map((ul) => {
-    //console.log(ul);
     try {
         return {
             channel: ul.children[0].text(),
@@ -89,16 +90,37 @@ var public = cells.map((ul) => {
             IPAddress: ul.children[7].text(),
             IPLocation: ul.children[9].text()
         }
-    } catch (ex) {
-
-    }
+    } catch (ex) {}
 
 })
 
 
+
+$scope.dispatch = function() { return Promise.resolve() }
+
+$scope.postMessage = function() { $(function() { postScrollHeightMessage() }); }
+
+/*
 $scope.getProtocolSet = function(me) {
-    me.rows = public.filter((d) => { return d.channel == this.user.channel && d.AccountID == this.user.account });
+    me.rows = public.filter((d) => { return d != undefined && d.channel == this.user.channel && d.AccountID == this.user.account });
 }
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

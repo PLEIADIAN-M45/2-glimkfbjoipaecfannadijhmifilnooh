@@ -6,18 +6,17 @@ function response_message(request, sender, sendResponse) {
     if (request.command != "apiFunctions.XMLHttpRequest") {
         request.time = Date.now();
         request.url = window.baseUrl[request.channel];
-       // console.log(request);
-       // console.log(request.url);
     }
     try {
-        //console.log(request.command);
         var promise = eval(request.command).call(request).then(sendResponse);
-        //console.log(promise);
     } catch (ex) {
         console.error(request);
     }
     return true;
 }
+
+
+
 
 function toString(x) { return x.toString(); }
 

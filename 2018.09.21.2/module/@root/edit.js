@@ -7,9 +7,9 @@ define(['@page'], function({}) {
     $scope.run = function() {
         return new Promise(async (resolve, reject) => {
 
-            $scope.user = await this.getUser() || await setUser();
+           // $scope.user = await this.getUser() || await setUser();
 
-            //$scope.user = await $scope.setUser();
+            $scope.user = await $scope.setUser();
             //$scope.user = await getUser() || await setUser();
             //$scope.sendsms = new SendSms($scope.user);
             console.log($scope.user);

@@ -377,30 +377,11 @@ function adjUser(user) {
 function putUser(user) {
     //var user = user || $scope.user;
     var user = $scope.user;
-
     var o = Object.assign({ command: 'apiFunctions.store.user.put' }, adjUser(user))
     //console.log(o);
-
-    return $scope.sendMessage(o).then(bindUser)
-
+    return $scope.sendMessage(o).then(bindUser);
     //return $scope.sendMessage({ command: 'apiFunctions.store.user.put', params: adjUser(user) }).then(bindUser)
 }
-
-
-/*
-function getUser() {
-    //console.log(evo.account, evo.channel);
-    //this.account
-    var unique = [this.account, this.channel].join('-');
-
-    return this.sendMessage({ command: 'apiFunctions.store.user.get', unique }).then(bindUser);
-
-
-
-    return this.sendMessage({ command: 'apiFunctions.store.user.get', params: { account: this.account, channel: this.channel } })
-        .then(bindUser);
-}*/
-
 
 function bindUser(user) {
     //console.log(user);
@@ -440,6 +421,7 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
     };
 
 
+    /*
     this.apiFunctions = function(req, e) {
         req.active = true;
         if (req.level == 1) {
@@ -458,7 +440,7 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
                 } catch (ex) { reject(ex) }
             })
         })
-    };
+    };*/
 
 
     var store = new Dexie('evo');
@@ -484,6 +466,9 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
                 break;
         }
     }.bind(this);
+
+
+    this.putUser = putUser;
 
 
     this.getUser = function() {

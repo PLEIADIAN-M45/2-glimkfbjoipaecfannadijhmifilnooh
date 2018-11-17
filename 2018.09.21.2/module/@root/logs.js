@@ -6,79 +6,39 @@ define(['@page'], function() {
     $scope.run = function() {
 
         return new Promise(async (resolve, reject) => {
-
-
-            var extensionId = this.extensionId
-
-            /*
-            var apiFunctions = {
-
-                region: function(req, e) {
-                    //console.log(this.extensionId);
-                    console.log(req);
-                    console.log(this);
-
-
-                    return
-                    //req.level = 1;
-                    req.region = {};
-                    req.active = true;
-                    req.channel = this.channel;
-                    req.command = "apiFunctions." + req.attr;
-
-                    chrome.runtime.sendMessage(extensionId, req, (res) => {
-                        req.active = false;
-                        Object.assign(req, res);
-                        this.$apply();
-                    })
-                },
-            }
-            */
-
-
-            //apiFunctions.region.bind(this);
+            //var extensionId = this.extensionId
 
             this.apiFunctions = {};
 
-            //console.log(this.account);
-
-            this.apiFunctions.region = function(req, e) {
-                var params = Object.assign({
-                    //command: "apiFunctions." + req.attr,
-                    command: "apiFunctions.region",
-                    active: true,
-
-                    /*account: this.account,
-                    channel: this.channel,
-                    unique: this.user.unique,   
-                    sequel: this.user.sequel,
-                    */
-                    //region: {}
-                }, req);
-
-
-                /*req.region = {};
-                req.active = true;
-                req.channel = this.channel;
-                req.command = "apiFunctions." + req.attr;
-                */
-
+            this.apiFunctions.region = function(params, e) {
+                params.command = "apiFunctions.region";
+                params.active = true;
+                params.region = (params.attr == "banker") ? params.region : {};
                 chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                    console.log(res);
-                    req.active = false;
-                    Object.assign(req, res);
+                    params.active = false;
+                    Object.assign(params, res);
                     this.$apply();
-                })
-
-            }.bind(this)
-
-
+                    this.putUser();
+                });
+            }.bind(this);
 
 
+            this.apiFunctions.getProtocolSet = function(params) {
+                params.rows = public.filter((d) => { return d != undefined && d.channel == this.user.channel && d.AccountID == this.user.account });
+                this.user.region = params.rows.map((x) => { return x.IPLocation });
+            }.bind(this);
 
 
-
-            //this.apiFunctions.region.bind(this);
+            this.apiFunctions.member = function(params) {
+                params.command = "apiFunctions.member"
+                params.active = true;
+                params.rows = [];
+                chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+                    params.active = false;
+                    Object.assign(params, res);
+                    this.$apply();
+                });
+            }.bind(this);
 
 
 
@@ -86,78 +46,19 @@ define(['@page'], function() {
             this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
             this.user = await this.getUser();
 
-            var user = {
-
-            }
-
-
-            Object.defineProperties(user, {
-                banker: {
-                    value: 34535435,
-                    writable: false
-                },
-                property2: {}
-            });
-
-
-
-            user.banker.value = 666666
-
-
-            console.log(user);
-
-
-            //var banker = this.user.banker[0];
-
-            /*
-            Object.defineProperty(this.user.banker[0], 'region', {
-                value: this.user.banker[0].region,
-                writable: false
+            this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard, ].concat(this.user.banker).map((x) => {
+                var params = { attr: x.attr, value: x.value, index: 1 };
+                x.sites = [
+                    { channel: "26", host: "wa111", ...params },
+                    { channel: "35", host: "wa111", ...params },
+                    { channel: "17", host: "wa111", ...params },
+                    { channel: "16", host: "ku711", ...params }
+                ];
+                return x;
             });
 
 
             console.log(this.user);
-            */
-
-            //this.user.banker.forEach((x) => {})
-
-            this.list = [
-                    /*this.user.author,
-                    this.user.locate,
-                    this.user.mobile,
-                    this.user.idcard,*/
-                ].concat(this.user.banker)
-
-                .map((x) => {
-                    return x;
-                    x.level = 1;
-                    x.command = "apiFunctions." + x.attr;
-                    x.channel = this.channel;
-                    return x;
-                }).map((x) => {
-                    return x;
-
-                    if (x.attr == "locate") {
-                        /*x.sites = [
-                            { command: "apiFunctions.getProtocolSet", channel: "26", host: "wa111", attr: x.attr, value: x.value, index: 1 }
-                        ]*/
-                    } else {
-                        x.sites = [
-                            { command: "apiFunctions.member", channel: "26", host: "wa111", attr: x.attr, value: x.value, index: 1 },
-                            { command: "apiFunctions.member", channel: "35", host: "wa111", attr: x.attr, value: x.value, index: 1 },
-                            { command: "apiFunctions.member", channel: "17", host: "wa111", attr: x.attr, value: x.value, index: 1 },
-                            { command: "apiFunctions.member", channel: "16", host: "ku711", attr: x.attr, value: x.value, index: 1 },
-                        ]
-                    }
-                    return x;
-                });
-
-
-
-
-
-
-            //console.log(this.list);
 
             this.changeColor = function(r) {
                 r.$id = "#" + this.$id;
@@ -176,20 +77,16 @@ define(['@page'], function() {
                 };
             }
 
-
             this.showSemanticModal = function(s) {
                 $rootScope.list_RemittanceName = s.list_RemittanceName;
                 $('.ui.modal').modal('show');
             }
-
 
             this.openMemberModify = function(r, s) {
                 var url = { wa111: `${s.origin}/Aspx/MemberModify.aspx?account=${r.f_accounts}`, ku711: `${s.origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${r.AccountID}` } [s.host];
                 console.log(url);
                 //window.open(url, "_blank")*/
             }
-
-
 
             resolve(this)
 

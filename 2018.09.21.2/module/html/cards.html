@@ -23,25 +23,23 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content" ng-if="me.attr == 'locate'" ng-init="getProtocolSet(me);">
-            <div class="grid-2">
-                <div class="ui image label protocol center" ng-repeat="row in me.rows">
-                    <span>{{row.IPAddress}}</span>
-                    <div class="detail">{{row.IPLocation}}</div>
-                </div>
+        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
+            <div class="ui image label protocol center" ng-repeat="row in me.rows">
+                <span>{{row.IPAddress}}</span>
+                <div class="detail">{{row.IPLocation}}</div>
             </div>
         </div>
-        <div class="extra content flex" ng-if="me.attr != 'locate'">
-            <div ng-repeat="s in me.sites" ng-init="apiFunctions(s);">
+        <div class="extra content grid grid-4" ng-if="me.attr!='locate'">
+            <div ng-repeat="s in me.sites" ng-init="apiFunctions.member(s)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <!-- pagination -->
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions(s, $event);" ng-disabled="s.index==1 || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member(s, $event);" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
                 <!-- account -->
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
@@ -70,7 +68,6 @@
         </div>
     </div>
 </div>
-
 <div class="ui fullscreen modal">
     <table class="ui celled selectable striped collapsing table small">
         <thead>
