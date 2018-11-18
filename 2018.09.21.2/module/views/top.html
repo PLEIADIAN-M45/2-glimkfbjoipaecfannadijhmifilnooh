@@ -1,0 +1,11 @@
+<div class="ui top attached content compact">
+    <div class="left floated meta">
+        <i class="icon icon-text" ng-class="icons[me.attr]" title="{{heads[me.attr]}}"></i>
+    </div>
+    <div class="right floated meta">
+        <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.region(me, $event);"></i>
+    </div>
+</div>
+<div class="content compact center aligned">
+    <div class="header">{{me.value||"------"}}</div>
+</div>

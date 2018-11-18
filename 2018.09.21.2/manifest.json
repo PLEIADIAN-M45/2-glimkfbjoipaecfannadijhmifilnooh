@@ -23,10 +23,10 @@
             "apiFunctions/apiFunctions.member.js",
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
-            "apiFunctions/apiFunctions.sheets.js"
-            /*"lib/mock.js",
+            "apiFunctions/apiFunctions.sheets.js",
+            "lib/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":

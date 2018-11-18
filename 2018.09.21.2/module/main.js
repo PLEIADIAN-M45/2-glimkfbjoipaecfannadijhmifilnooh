@@ -59,28 +59,29 @@ requirejs.config({
 
 requirejs(['router', 'utils'], function(router) {
 
-    // console.log(putUser);
-    // return
-
     requirejs(['moment', 'dexie', 'material', 'semantic'], function(moment, Dexie, mdc, semantic) {
 
         window.assign({ moment, Dexie, mdc, router });
-
 
         requirejs(['App'], function(App) {
             //console.log(App);
 
             requirejs(['@root'], function() {
 
+                //console.log(router);
+
                 if($scope.run) { $scope.run().then(invoke) }
-                // console.log($scope);
-                //if (main) { main.call($scope).then(invoke); }
             });
 
         });
 
     });
 });
+
+
+
+
+
 
 
 //factory

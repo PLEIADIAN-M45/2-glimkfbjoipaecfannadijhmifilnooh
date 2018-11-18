@@ -5,8 +5,6 @@ define(["angular", "angular-sanitize"], function(angular, sanitize) {
     var myApp = angular.module("OBSApp", ["ngSanitize"])
         .config(function($sceDelegateProvider) {
             myApp.baseUrl = require.toUrl(".");
-
-
             $sceDelegateProvider.resourceUrlBlacklist([""]);
             $sceDelegateProvider.resourceUrlWhitelist(["self", myApp.baseUrl, myApp.baseUrl + "**"]);
         })

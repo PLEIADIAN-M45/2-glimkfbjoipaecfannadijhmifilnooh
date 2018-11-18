@@ -8,7 +8,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
             this.version = '7.0';
         }
 
-        apiFunctions() {          
+        apiFunctions() {
             if (!this.value) { return };
             var { account, host, channel, extensionId } = evo;
             Object.assign(this.parameters, { command: "apiFunctions", account, host, channel });
@@ -386,6 +386,7 @@ define(['require', 'moment', 'dexie'], function(require, moment, Dexie) {
         copy(e) {
             document.execCommand("copy");
         }
+
         cut(e) {
             document.execCommand("cut");
         }

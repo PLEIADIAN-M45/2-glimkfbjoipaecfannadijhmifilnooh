@@ -2,111 +2,140 @@ define(['@page'], function() {
 
     ;
     'use strict';
-    //if(this.params.method == "CookieID" || this.pathname == "IGetMemberInfo") {}
-    $scope.run = function() {
 
-        console.log(this.baseUrl);
+    /*  console.log($scope.params);
+      console.log($scope.router);*/
 
-        //chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module
-
-        return new Promise(async (resolve, reject) => {
-            //var extensionId = this.extensionId
-
-            this.apiFunctions = {};
-            this.author = "RYAN CHANG";
-
-
-            this.apiFunctions.region = function(params, e) {
-                params.command = "apiFunctions.region";
-                params.active = true;
-                params.region = (params.attr == "banker") ? params.region : {};
-                chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                    params.active = false;
-                    Object.assign(params, res);
-                    this.$apply();
-                    this.putUser();
-                });
-            }.bind(this);
-
-
-            this.apiFunctions.getProtocolSet = function(params) {
-                params.rows = public.filter((d) => { return d != undefined && d.channel == this.user.channel && d.AccountID == this.user.account });
-                this.user.region = params.rows.map((x) => { return x.IPLocation });
-            }.bind(this);
-
-
-            this.apiFunctions.member = function(params) {
-                params.command = "apiFunctions.member"
-                params.active = true;
-                params.rows = [];
-                chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                    params.active = false;
-                    Object.assign(params, res);
-                    this.$apply();
-                });
-            }.bind(this);
-
-
-
-            this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
-            this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-            this.user = await this.getUser();
-
-            this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard, ].concat(this.user.banker).map((x) => {
-                var params = { attr: x.attr, value: x.value, index: 1 };
-                x.sites = [
-                    { channel: "26", host: "wa111", ...params },
-                    { channel: "35", host: "wa111", ...params },
-                    { channel: "17", host: "wa111", ...params },
-                    { channel: "16", host: "ku711", ...params }
-                ];
-                return x;
-            });
-
-
-            console.log(this.user);
-
-            this.changeColor = function(r) {
-                r.$id = "#" + this.$id;
-                r.sequel = this.user.sequel;
-                if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-                if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-                if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
-            };
-
-
-            this.setPopup = function(r) {
-                if (r.list_Accounts && r.list_Accounts.length) {
-                    setTimeout((popupId) => {
-                        $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" });
-                    }, 500, r.$id);
-                };
-            }
-
-            this.showSemanticModal = function(s) {
-                $rootScope.list_RemittanceName = s.list_RemittanceName;
-                $('.ui.modal').modal('show');
-            }
-
-            this.openMemberModify = function(r, s) {
-                var url = { wa111: `${s.origin}/Aspx/MemberModify.aspx?account=${r.f_accounts}`, ku711: `${s.origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${r.AccountID}` } [s.host];
-                console.log(url);
-                //window.open(url, "_blank")*/
-            }
-
-            resolve(this)
-
-            return
-
-        });
+    if($scope.params.method == "DeviceNo" || $scope.pathname == "sameBrowserList") {
+        $scope.run = function() {
+            return new Promise(async (resolve, reject) => {
+                postScrollHeightMessage();
+            })
+        }
 
     }
+
+    if($scope.params.method == "CookieID" || $scope.pathname == "IGetMemberInfo") {
+        $scope.run = function() {
+            return Promise.resolve()
+            return new Promise(async (resolve, reject) => {
+                this.apiFunctions = {};
+                this.apiFunctions.region = function(params, e) {
+                    params.command = "apiFunctions.region";
+                    params.active = true;
+                    params.region = (params.attr == "banker") ? params.region : {};
+                    chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+                        params.active = false;
+                        Object.assign(params, res);
+                        this.$apply();
+                        this.putUser();
+                    });
+                }.bind(this);
+
+                this.apiFunctions.member = function(params) {
+                    params.command = "apiFunctions.member"
+                    params.active = true;
+                    params.rows = [];
+                    chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+                        params.active = false;
+                        Object.assign(params, res);
+                        this.$apply();
+                    });
+                }.bind(this);
+
+                this.apiFunctions.getProtocolSet = function(params) {
+                    params.rows = public.filter((d) => { return d != undefined && d.channel == this.user.channel && d.AccountID == this.user.account });
+                    this.user.region = params.rows.map((x) => { return x.IPLocation });
+                }.bind(this);
+
+                this.changeColor = function(r) {
+                    r.$id = "#" + this.$id;
+                    r.sequel = this.user.sequel;
+                    if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+                    if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+                    if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+                };
+
+                this.setPopup = function(r) {
+                    if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+                }
+
+                this.showSemanticModal = function(s) {
+                    $rootScope.list_RemittanceName = s.list_RemittanceName;
+                    $('.ui.modal').modal('show');
+                }
+
+                this.openMemberModify = function(r, s) {
+                    var url = { wa111: `${s.origin}/Aspx/MemberModify.aspx?account=${r.f_accounts}`, ku711: `${s.origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${r.AccountID}` } [s.host];
+                    console.log(url);
+                    //window.open(url, "_blank")*/
+                }
+
+                this.queryInputModel = function() {
+                    switch (this.host) {
+                        case "wa111":
+                            break;
+                        case "ku711":
+                            $scope.ctrl.model.QueryInputModel.AccountID = this.params.accounts;
+                            $scope.ctrl.GetQueryLoginLog(this.params.method);
+                            break;
+                    }
+                }
+
+                this.createIFrame = function(_src) {
+                    //console.log($projElement);
+                    $('<div>').addClass('ui horizontal divider').text('AND').appendTo($projElement);
+                    $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($projElement);
+                }
+
+
+
+                // console.log(this.route.cookie);
+                this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
+                this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+                this.user = await this.getUser()
+                /********************************************/
+                this.user.author.value = "王杰";
+                /********************************************/
+                this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard, ].concat(this.user.banker).map((x) => {
+                    var params = { attr: x.attr, value: x.value, index: 1 };
+                    return Object.assign(x, [
+                        { channel: "26", host: "wa111", ...params },
+                        { channel: "35", host: "wa111", ...params },
+                        { channel: "17", host: "wa111", ...params },
+                        { channel: "16", host: "ku711", ...params }
+                    ]);
+                });
+
+                resolve(this);
+            });
+        }
+    }
+
 
 
 });
 
+/*
+this.views = {
+    channel: [this.baseUrl, 'views', 'channel.html'].join("/"),
+    account: [this.baseUrl, 'views', 'account.html'].join("/"),
+    pagination: [this.baseUrl, 'views', 'pagination.html'].join("/"),
+    part: [this.baseUrl, 'views', 'part.html'].join("/"),
+    cards: {
+        result: [this.baseUrl, 'views', 'result.html'].join("/"),
+        top: [this.baseUrl, 'views', 'top.html'].join("/"),
+        pagination: [this.baseUrl, 'views', 'pagination.html'].join("/"),
+        popup: [this.baseUrl, 'views', 'popup.html'].join("/"),
+        warning: [this.baseUrl, 'views', 'warning.html'].join("/"),
+        protocol: [this.baseUrl, 'views', 'protocol.html'].join("/"),
+        sites: [this.baseUrl, 'views', 'sites.html'].join("/")
+    }
+}*/
 
-
+//console.log(this.views);
+//console.log(this.baseUrl);
+//chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module
 /*
             this.userlist = [
                 { attr: "author" },

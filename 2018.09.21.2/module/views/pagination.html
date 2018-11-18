@@ -1,0 +1,6 @@
+<div class="ui image label">
+    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member(s, $event);" ng-disabled="s.index==1 || s.active"></i>
+    <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
+    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+</div>
