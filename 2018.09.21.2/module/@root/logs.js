@@ -6,7 +6,7 @@ define(['@page'], function() {
     /*  console.log($scope.params);
       console.log($scope.router);*/
 
-    if ($scope.params.method == "DeviceNo" || $scope.pathname == "sameBrowserList") {
+    if($scope.params.method == "DeviceNo" || $scope.pathname == "sameBrowserList") {
         $scope.run = function() {
             return new Promise(async (resolve, reject) => {
                 postScrollHeightMessage();
@@ -14,14 +14,17 @@ define(['@page'], function() {
         }
     }
 
-    if ($scope.params.method == "CookieID" || $scope.pathname == "IGetMemberInfo") {
+    if($scope.params.method == "CookieID" || $scope.pathname == "IGetMemberInfo") {
 
         $scope.run = function() {
+
             //return Promise.resolve()
             return new Promise(async (resolve, reject) => {
+
+
                 this.apiFunctions = {};
                 this.apiFunctions.region = function(params, e) {
-
+                    return
                     params.command = "apiFunctions.region";
                     params.active = true;
                     params.region = (params.attr == "banker") ? params.region : {};
@@ -49,10 +52,17 @@ define(['@page'], function() {
 
 
                 this.apiFunctions.getProtocolSet = function(params) {
-                    params.rows = this.cells.toArray().filter((el) => {
-                        //console.log(el.IPLocation, el.IPAddress);
-                        return el.unique = this.unique;
-                    })
+
+                    //params.rows = cells.owners
+
+                   // console.log(cells.owners);
+
+
+
+                    /* params.rows = this.cells.toArray().filter((el) => {
+                         //console.log(el.IPLocation, el.IPAddress);
+                         return el.unique = this.unique;
+                     })*/
 
                     this.user.region = params.rows.map((x) => { return x.IPLocation });
 
@@ -62,13 +72,13 @@ define(['@page'], function() {
                 this.changeColor = function(r) {
                     r.$id = "#" + this.$id;
                     r.sequel = this.user.sequel;
-                    if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-                    if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-                    if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+                    if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+                    if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+                    if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
                 };
 
                 this.setPopup = function(r) {
-                    if (r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+                    if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
                 }
 
                 this.showSemanticModal = function(s) {

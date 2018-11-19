@@ -1,69 +1,195 @@
-function checkSensitiveUserWarn() {}
-
-function checkSensitiveMessages() { if (search.danger.compare(this.text)) { this.classList.add('danger') } }
-
-function checkSensitiveUserName() { if (search.author.compare(this.text)) { this.classList.add('danger') } }
-
-function checkSensitiveProvince() {
-    if (search.region.compare(this.text)) {
-        this.parentNode.highlight = true;
-        this.classList.add('danger')
-    }
+function checkSensitiveUserWarn() {
+    //if(search.danger.compare(this.remarks)) { this.children[11].type = 'danger' }
 }
+
+
+search.author.push(["王杰"])
 
 function customElement(a, b) { return $('<b>').text(a).attr('data-content', b).addClass('pointer').popup({ on: 'click' }).click(copy); }
 
-function addChannelToAccountsId() { $(this.children[2]).empty().append([customElement(this.account, this.account), customElement(this.channel, this.unique)]); }
+function addChannelToAccountsId(i, c) { $(this.children[2]).empty().append([customElement(this.account, this.account), customElement(this.channel, this.unique)]); }
 
-function addHighlightAccountsId() {
-    if (this.unique == $scope.unique) {
-        this.isSelf = true;
-        this.classList.add("isSelf");
-    }
+function addHighlightAccountsId() { if(this.unique == $scope.unique) { this.type = "self"; } }
+
+function checkSensitiveMessages() {
+    if(search.danger.compare(this.peril)) { this.children[5].type = 'danger' }
+    if(search.danger.compare(this.black)) { this.children[6].type = 'danger' }
+    if(search.danger.compare(this.remarks)) { this.children[11].type = 'danger' }
+}
+
+function checkSensitiveUserName() { if(search.author.compare(this.author)) { this.children[4].type = 'danger' } }
+
+function checkSensitiveProvince() { if(search.region.compare(this.address)) { this.children[9].type = 'danger' } }
+
+
+String.prototype.exec = function(regex) {
+    //console.log(this.toString());
+    var str = this.toString();
+    var r = str.match(regex);
+    return (r) ? r[0] : r;
 }
 
 
+function parseToRegion(str) { return { prov: str.exec(regex.prov), city: str.exec(regex.city) } }
 
-var cells = $("ul:not([class]):not([style])").filter((i, ul) => { return ul.children.length > 10 && ul.firstElementChild.outerText; }).each((i, ul) => { $(ul.children).each((i, el) => { el.text = el.outerText.split("-").shift().trim(); }); })
+$("li").each((i, el) => { el.text = el.outerText.split("-").shift().trim(); el.removeAttribute('style') });
 
+
+var cells = $("ul:not([class]):not([style])").filter((i, ul) => { return ul.children.length > 10 && ul.firstElementChild.outerText; })
+
+//.toArray();
+//.each((i, ul) => { $(ul.children).each((i, el) => { el.text = el.outerText.split("-").shift().trim(); }); })
+//cells.owners = cells.filter((i, x) => { return x.children[2].text == $scope.account && x.children[0].text.startsWith($scope.channel) })
+
+var header = $(".TrHead>li").map((i, x) => { return x.outerText; })
+var dh = ["分站名", "代理", "登入帳號", "加入日期", "匯款戶名", "當前模式", "黑名单", "IP", "最後登入日期", "IP地址", "手机归属地", "一機多登備註", "總輸贏查詢"];
+var dd = ["channel", "agency", "account", "joindate", "author", "peril", "black", "protocol", "lastdate", "address", "mobile.locate", "remarks", "result"];
+var dt = cells.map((i, x) => {
+    var obj = {};
+    [...x.children].map((c, i) => { try { obj[dd[i]] = c.outerText.trim(); } catch (e) {} });
+    obj.province = parseToRegion(obj.address).prov;
+    obj.city = parseToRegion(obj.address).city;
+    // obj.region = parseToRegion(obj.address)
+    obj.channel = obj.channel.split("-").shift()
+    obj.unique = [obj.account, obj.channel].join("-");
+    //x.danger = true
+    Object.assign(x, obj);
+    //x.children[2].type = "danger"
+    return obj;
+});
+
+
+cells.each(addChannelToAccountsId);
+cells.each(addHighlightAccountsId);
+cells.each(checkSensitiveUserName);
+cells.each(checkSensitiveProvince);
+cells.each(checkSensitiveMessages);
+
+
+//$('li:nth-child(11)').hide()
+
+//cells.children('li:nth-child(5)').each(checkSensitiveUserName);
+
+
+
+
+
+//cells.children('li:nth-child(2)').each(addChannelToAccountsId);
+
+
+
+//console.log(cells.children('li:nth-child(2)'));
+
+
+//console.log(cells);
+
+
+/*
+cells.forEach(addChannelToAccountsId.bind(cells));
+cells.forEach((x) => {
+    console.log(x.children[2]);
+});
+*/
+
+//console.log($("ul").eq(3).attr("danger"));
+
+
+
+console.log(dt);
+
+$scope.cells = cells;
+$scope.dt = dt;
+$scope.dd = dd;
+
+
+
+/*
 cells.each(function() {
+});
+
+
+    return
+
+    console.log(this.children[0].text);
     this.channel = this.children[0].text;
     this.account = this.children[2].text;
     this.author = this.children[4].text;
     //this.protocol = this.children[7].text;
     //this.province = this.children[9].text;
-    this.region = this.children[9].text;
-
+    //console.log(this.region);
+    //this.children[9].text;
     this.IPAddress = this.children[7].text;
     this.IPLocation = this.children[9].text;
-    this.unique = this.account + "-" + this.channel;
-    
-    /*addHighlightAccountsId.call(this);
-    addChannelToAccountsId.call(this);
-    checkSensitiveUserName.call(this.children[4]);
-    checkSensitiveMessages.call(this.children[5]);
-    checkSensitiveMessages.call(this.children[6]);
-    checkSensitiveMessages.call(this.children[11]);
-    */
+    this.unique = this.account + "-" + this.channel;*/
+
+/*addHighlightAccountsId.call(this);
+addChannelToAccountsId.call(this);
+checkSensitiveUserName.call(this.children[4]);
+checkSensitiveMessages.call(this.children[5]);
+checkSensitiveMessages.call(this.children[6]);
+checkSensitiveMessages.call(this.children[11]);
+*/
+/*var region = {
+    prov: str.match(regex.prov),
+    city: str.match(regex.city)
+}*/
+
+/*
+    this.region = this.children[9];
+    this.region.prov = this.region.text.exec(regex.prov)
+    this.region.city = this.region.text.exec(regex.city)
+*/
+
+//parseToRegion(this.children[9].text)
+//search.region.compare.call(this.children[9])
+//search.region.compare.call(this.region)
+//console.log(this.region);
+
+
+//checkSensitiveProvince.call(this.children[9]);
+//checkSensitiveProvince.call(this);
 
 
 
-    search.region.compare(this.region)
-    
-    //search.region.compare.call(this)
+
+//console.log(cells.children("li:nth-child(8)"));
+
+//cells.protocol = cells.children("li:nth-child(8)")
+
+//var ces = document.querySelectorAll("ul:not([class]):not([style])")
+/*
+.filter((x) => {
+    return x.firstElementChild.outerText;
+})
+*/
+
+/*
+console.log(cells);
+console.log(cells.owners);
+*/
+
+/*
+var ce = {};
+ce.protocol = cells.owners.children('li:nth-child(8)');
+ce.province = cells.children('li:nth-child(10)');
+*/
+//document.querySelectorAll("li:nth-child(8)")
+//document.querySelectorAll("li:nth-child(10)")
+
+//console.log(ce);
 
 
-    //checkSensitiveProvince.call(this.children[9]);
-    //checkSensitiveProvince.call(this);
+//var cv = ce.province.map(parseToRegion)
 
-});
+//console.log(cv);
+//console.log(ce.province);
+
 
 //cells.IPLocation = $("ul>li:nth-child(8)")
 
 
-$scope.cells = cells;
 
-
+/*
 var public = cells.map((ul) => {
     try {
         return {
@@ -77,7 +203,7 @@ var public = cells.map((ul) => {
 
     }
 })
-
+*/
 
 //var owners = cells.filter(function() { return this.unique = $scope.unique })
 
@@ -243,7 +369,7 @@ function initElement() {
         province : c[9],
     }
 
-    this.channel = 
+    this.channel =
 
 
 
@@ -473,7 +599,7 @@ $scope.getAllIPAddress = function() {
     return
     var c = $("ul:not([class]):not([style])");
 
-    if (this.attr != "locate") { return };
+    if(this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {
