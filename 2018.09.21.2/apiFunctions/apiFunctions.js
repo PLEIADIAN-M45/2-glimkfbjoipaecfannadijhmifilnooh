@@ -7,16 +7,13 @@ apiFunctions.localStorage = function() { return Promise.resolve(window.localStor
 
 //console.log(apiFunctions);
 
- 
+
 
 
 apiFunctions.region = function() {
     console.log(this);
     // evo.store[table.name].get(this.params)
     //evo.store.user.get(this.unique).then((s) => { console.log(s); })
-
-
-
     return apiFunctions[this.attr].call(this)
 
     /*attr

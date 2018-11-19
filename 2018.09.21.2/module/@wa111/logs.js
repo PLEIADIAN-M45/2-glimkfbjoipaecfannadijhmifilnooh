@@ -1,24 +1,167 @@
-function addClass() {
-    this.classList.add('danger');
+/********************************************************************/
+
+var _search = function() {
+    this.author = decoder(localStorage.author)
+    this.locate = decoder(localStorage.locate)
+    this.mobile = decoder(localStorage.mobile)
+    this.banker = decoder(localStorage.banker)
+    this.danger = decoder(localStorage.danger)
 }
 
-function checkSensitiveMessages(el) {
-    //console.log(el.outerText);
-    var c = apiFunctions.search.danger(el.outerText).then(addClass.bind(el))
-    //console.log(el.outerText, c);
+
+var search = new _search();
+search.author.compare = function(value) { return this.find((x) => { return x[0] == value }) }
+search.danger.compare = function(value) { return this.find((x) => { return value.includes(x[0]) }) }
+
+
+
+HTMLLIElement.prototype.text = function() {
+    try { return this.outerText.split("-").shift().trim(); } catch (e) {}
+}
+
+HTMLLIElement.prototype.compare = function(attr) {
+    var value = this.textContent.trim();
+    if(search[attr].compare(value)) { this.classList.add('danger'); }
+}
+
+
+function addChannelToAccountsId() {
+    [$('<b>').text(this.account).attr('data-content', this.account), $('<b>').text(this.channel).attr('data-content', this.unique)]
+    .forEach((el) => { el.addClass('pointer').popup({ on: 'click' }).click(copy).appendTo(this.children[2]) })
+}
+
+function checkSensitiveMessages() {
+    this.children.forEach((el) => { el.compare("danger") });
+}
+
+function checkSensitiveUserName(el) { el.compare("author") }
+
+function addHighlightAccountsId2() {
+
+    if(this.isSelf) {
+        this.children[2].removeAttribute("style");
+        this.children[2].classList.add("isSelf");
+    }
+    this.children[2].firstChild.remove();
+}
+
+
+function addHighlightAccountsId(ul) {
+    console.log(this);
+}
+
+var cells = $("ul:not([class]):not([style])").toArray().filter((el) => { return el.children.length > 10 && el.firstElementChild.outerText; });
+
+
+//cells.forEach(addHighlightAccountsId)
+
+Array.prototype.each = function(fn) {
+    this.forEach((el) => { fn.call(el) })
+}
+POBLACION
+
+KNIGHTSBRIDGE RESIDENCES
+function initElement() {
+    //this.account = this.children[2];
+    var c = this.children;
+    this.nodes   = {
+        channel  : c[0],
+        account  : c[2],
+        protocol : c[7],
+        province : c[9],
+    }
+
+
+    //this.account.text = this.account.text()
+
+
+    /*this.channel = this.children[0].text();
+    this.account = this.children[2].text();
+    this.protocol = this.children[7].text();
+    this.province = this.children[9].text();
+    this.unique = [this.account, this.channel].join("-");
+    this.isSelf = this.unique == $scope.unique;*/
+    console.log(this);
+}
+
+cells.each(initElement)
+
+//cells.each(addHighlightAccountsId)
+
+
+
+
+
+
+
+
+
+//cells.forEach = Array.forEach
+
+
+//cells.forEach(init)
+
+/*
+cells.forEach((ul) => {
+   // console.log(ul);
+    //var c = Array.from(ul.children);
+    //console.log(this);
     /*
-        evo.decoder(localStorage.danger).find((str) => {
-            console.log(str);
+    addHighlightAccountsId.call(ul);
+    addChannelToAccountsId.call(ul);
+    checkSensitiveMessages.call(ul);
+    */
 
-            if(el.outerText.includes(str)) { return el.classList.add('danger'); }
-        });*/
+/*
+addChannelToAccountsId(c);
+checkSensitiveMessages(c);
+checkSensitiveUserName(c[4]);
+*/
+//});
+
+
+//cells.forEach = Array.prototype.forEach.bind
+
+
+
+
+//console.log($("ul:not([class]):not([style])"));
+
+
+
+var public = cells.map((ul) => {
+    try {
+        return { channel: ul.children[0].text(), AccountID: ul.children[2].text(), AccountName: ul.children[4].text(), IPAddress: ul.children[7].text(), IPLocation: ul.children[9].text() }
+    } catch (ex) {
+
+    }
+})
+
+
+
+/*
+function checkSensitiveProvince(el) {
+    evo.decoder(localStorage.region).find(([str], index) => {
+        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
+    });
 }
 
-function addHighlightAccountsId(children) {
-    var account = children[2].outerText;
-    var channel = children[0].outerText.split('-').shift();
-    children[2].style.backgroundColor = "#01579b";
-    children[2].style.color = "white";
+function checkSensitiveProtocol(el) {
+    evo.decoder(localStorage.locate).find(([str], index) => {
+        if(el.outerText.startsWith(str)) { return el.classList.add('danger'); }
+    });
+}*/
+
+/*
+HTMLLIElement.prototype.appendChilds = function(arr) {
+    arr.forEach((el, index) => { this.appendChild(el[0]) });
+}*/
+
+//this.appendChild(el[0])
+//this.children[2].appendChilds();
+
+/*function addClass() {
+    this.classList.add('danger');
 }
 
 function addChannelToAccountsId2(children) {
@@ -45,52 +188,8 @@ function catchProvinceProtocols(children) {
     arrProtocol.set(protocol, province);
     arrProvince.add(province);
 }
+*/
 
-
-
-
-/********************************************************************/
-
-HTMLLIElement.prototype.text = function() {
-    try { return this.outerText.split("-").shift().trim(); } catch (e) {}
-}
-
-
-
-
-var cells = Array.from($("ul:not([class]):not([style])")).filter((el) => { return el.children.length > 10 && el.firstElementChild.outerText; });
-
-var public = cells.map((ul) => { try { return { channel: ul.children[0].text(), AccountID: ul.children[2].text(), AccountName: ul.children[4].text(), IPAddress: ul.children[7].text(), IPLocation: ul.children[9].text() } } catch (ex) {} })
-
-
-function checkSensitiveProvince(el) {
-    evo.decoder(localStorage.region).find(([str], index) => {
-        if(el.outerText.includes(str)) { return el.classList.add('danger'); }
-    });
-}
-
-function checkSensitiveProtocol(el) {
-    evo.decoder(localStorage.locate).find(([str], index) => {
-        if(el.outerText.startsWith(str)) { return el.classList.add('danger'); }
-    });
-}
-
-function checkSensitiveUserName(el) {
-    evo.decoder(localStorage.author).find(([str]) => {
-        console.log(str);
-        if(str.trim() == el.outerText) { el.classList.add('danger'); }
-    });
-}
-
-function createElement(value) { return $('<b>').text(value[0]).addClass('pointer').popup({ on: 'click' }).click(copy).attr('data-content', value.reverse().join('-')) }
-
-function addChannelToAccountsId(c, ul) {
-    var channel = c[0].text();
-    var account = c[2].text();
-    createElement([account]).appendTo(c[2]);
-    createElement([channel, account]).appendTo(c[2]);
-    c[2].firstChild.remove();
-}
 
 /*
   var unique = [account, channel].join("-");
@@ -102,12 +201,16 @@ function addChannelToAccountsId(c, ul) {
   return
   */
 
+//arr.find(callback(element[, index[, array]])[, thisArg])
 
 
-cells.forEach((ul, i) => {
-    //console.log(el.children.length);
-    addChannelToAccountsId(ul.children, ul);
-});
+
+
+
+//search.author.find()
+
+
+
 
 
 
@@ -121,6 +224,19 @@ cells.forEach((ul, i) => {
 
 
 
+/*
+var value = this.outerText.trim();
+var c = search[a].compare();
+console.log(c);
+this.classList.add('danger')
+*/
+/*
+var c = search[a].find(function(x) {
+    console.log(this);
+    return x[0] == this
+}, this.outerText);
+console.log(c);*/
+//try { return this.outerText.split("-").shift().trim(); } catch (e) {}
 
 
 

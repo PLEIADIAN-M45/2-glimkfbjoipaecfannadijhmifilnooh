@@ -71,6 +71,7 @@ function $serializeQueryString2(querystring) {
     JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}')
 }
 
+function toText(resp) { return resp.text() }
 
 function toJson(obj) { return JSON.stringify(obj); }
 
@@ -124,7 +125,6 @@ var createTab = function(_url) {
 }
 
 var setPermit = function() {
-    return
     switch ($scope.host) {
         case "wa111":
             $scope.ctrl.deposit.value = 1;
@@ -147,12 +147,9 @@ var stylesheet = {
     "edit": ['edit'],
     "logs": ['logs', 'cards']
 }
-
 for(var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
 for(var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
 
-
-function toText(resp) { return resp.text() }
 
 function injectAsCss(path) { $("<link>", { rel: "stylesheet", type: "text/css", href: path }).appendTo('body'); }
 
@@ -248,17 +245,20 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
     this.channel = localStorage.channel || this.params.siteNumber;
     this.unique = [this.account, this.channel].join("-");
     this.route = _route.call(this);
-
     this.origin = location.origin;
     this.pathname = location.pathname.split("?")[0].split("/").pop().replace(/(.aspx|.html)/i, '');
-
     this.connect = function(message) { chrome.runtime.connect(this.extensionId, { name: this.channel }) }
-
     this.sendMessage = function(message) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(this.extensionId, message, (res) => { try { resolve(res) } catch (ex) { reject(ex) } })
         })
     };
+
+
+    chrome.runtime.sendMessage(this.extensionId, {
+        command: "apiFunctions.localStorage"
+    }, (res) => { localStorage.assign(res) })
+
 
     var store = new Dexie('evo');
     store.version(4).stores({ user: 'f_accounts' });
@@ -285,7 +285,6 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
 
     this.putUser = putUser;
     this.getUser = getUser;
-
 }
 
 

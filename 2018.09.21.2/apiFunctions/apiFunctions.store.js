@@ -27,6 +27,7 @@ apiFunctions.store = {}
 evo.store.tables.forEach(function(table, index) {
 
     apiFunctions.store[table.name] = {
+
         put: function() {
             //console.log(this);
             return evo.store[table.name].put(this).then(() => { return this })
