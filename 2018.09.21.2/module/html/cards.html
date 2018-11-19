@@ -1,3 +1,4 @@
+<b>dqwweew</b>
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.region(me)">
         <div class="ui top attached content compact">
@@ -24,7 +25,7 @@
             </div>
         </div>
         <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
-            <div class="ui image label protocol center" ng-repeat="row in me.rows">
+            <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.highlight}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>
@@ -74,7 +75,7 @@
             <th>警示讯息</th>
         </thead>
         <tbody>
-            <tr ng-repeat="w in list_RemittanceName">
+            <tr ng-repeat="w in list_RemittanceName|orderBy:'notice'" ng-init="checkSensitiveUserWarn.call(w)" ng-class="{'danger':w.notice}">
                 <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
                 <td>{{w.f_RemittanceName||w.AccountName}}</td>
                 <td>{{w.f_RemittanceAccount}}</td>
@@ -83,12 +84,9 @@
         </tbody>
     </table>
 </div>
-
 <!--
 <aside ng-init="queryInputModel()"></aside>
 <aside ng-init="createIFrame(route.device)"></aside> -->
-
-
 <!-- <iframe src="{{route.device}}"></iframe> -->
 <!--
 <aside ng-include="views.cards.warning"></aside>
@@ -100,6 +98,11 @@
 /*aside {
     display: inherit;
 }*/
+
+tr.danger>td {
+    background-color: rgba(224, 57, 151, 0.5) !important;
+}
+
 
 .detail.Noto-Sans-SC {
     font-family: 'Noto Sans SC' !important;

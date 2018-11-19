@@ -1,90 +1,120 @@
-/********************************************************************/
+function checkSensitiveUserWarn() {}
 
-var _search = function() {
-    this.author = decoder(localStorage.author)
-    this.locate = decoder(localStorage.locate)
-    this.mobile = decoder(localStorage.mobile)
-    this.banker = decoder(localStorage.banker)
-    this.danger = decoder(localStorage.danger)
+function checkSensitiveMessages() { if (search.danger.compare(this.text)) { this.classList.add('danger') } }
+
+function checkSensitiveUserName() { if (search.author.compare(this.text)) { this.classList.add('danger') } }
+
+function checkSensitiveProvince() {
+    if (search.region.compare(this.text)) {
+        this.parentNode.highlight = true;
+        this.classList.add('danger')
+    }
+}
+
+function customElement(a, b) { return $('<b>').text(a).attr('data-content', b).addClass('pointer').popup({ on: 'click' }).click(copy); }
+
+function addChannelToAccountsId() { $(this.children[2]).empty().append([customElement(this.account, this.account), customElement(this.channel, this.unique)]); }
+
+function addHighlightAccountsId() {
+    if (this.unique == $scope.unique) {
+        this.isSelf = true;
+        this.classList.add("isSelf");
+    }
 }
 
 
-var search = new _search();
-search.author.compare = function(value) { return this.find((x) => { return x[0] == value }) }
-search.danger.compare = function(value) { return this.find((x) => { return value.includes(x[0]) }) }
+
+var cells = $("ul:not([class]):not([style])").filter((i, ul) => { return ul.children.length > 10 && ul.firstElementChild.outerText; }).each((i, ul) => { $(ul.children).each((i, el) => { el.text = el.outerText.split("-").shift().trim(); }); })
+
+cells.each(function() {
+    this.channel = this.children[0].text;
+    this.account = this.children[2].text;
+    this.author = this.children[4].text;
+    //this.protocol = this.children[7].text;
+    //this.province = this.children[9].text;
+    this.region = this.children[9].text;
+
+    this.IPAddress = this.children[7].text;
+    this.IPLocation = this.children[9].text;
+    this.unique = this.account + "-" + this.channel;
+    
+    /*addHighlightAccountsId.call(this);
+    addChannelToAccountsId.call(this);
+    checkSensitiveUserName.call(this.children[4]);
+    checkSensitiveMessages.call(this.children[5]);
+    checkSensitiveMessages.call(this.children[6]);
+    checkSensitiveMessages.call(this.children[11]);
+    */
 
 
 
+    search.region.compare(this.region)
+    
+    //search.region.compare.call(this)
+
+
+    //checkSensitiveProvince.call(this.children[9]);
+    //checkSensitiveProvince.call(this);
+
+});
+
+//cells.IPLocation = $("ul>li:nth-child(8)")
+
+
+$scope.cells = cells;
+
+
+var public = cells.map((ul) => {
+    try {
+        return {
+            channel: ul.children[0].text(),
+            AccountID: ul.children[2].text(),
+            AccountName: ul.children[4].text(),
+            IPAddress: ul.children[7].text(),
+            IPLocation: ul.children[9].text()
+        }
+    } catch (ex) {
+
+    }
+})
+
+
+//var owners = cells.filter(function() { return this.unique = $scope.unique })
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 HTMLLIElement.prototype.text = function() {
     try { return this.outerText.split("-").shift().trim(); } catch (e) {}
 }
 
 HTMLLIElement.prototype.compare = function(attr) {
     var value = this.textContent.trim();
-    if(search[attr].compare(value)) { this.classList.add('danger'); }
+    if (search[attr].compare(value)) { this.classList.add('danger'); }
 }
+*/
 
 
-function addChannelToAccountsId() {
-    [$('<b>').text(this.account).attr('data-content', this.account), $('<b>').text(this.channel).attr('data-content', this.unique)]
-    .forEach((el) => { el.addClass('pointer').popup({ on: 'click' }).click(copy).appendTo(this.children[2]) })
-}
-
-function checkSensitiveMessages() {
-    this.children.forEach((el) => { el.compare("danger") });
-}
-
-function checkSensitiveUserName(el) { el.compare("author") }
-
-function addHighlightAccountsId2() {
-
-    if(this.isSelf) {
-        this.children[2].removeAttribute("style");
-        this.children[2].classList.add("isSelf");
-    }
-    this.children[2].firstChild.remove();
-}
+//console.log(cells);
 
 
-function addHighlightAccountsId(ul) {
-    console.log(this);
-}
-
-var cells = $("ul:not([class]):not([style])").toArray().filter((el) => { return el.children.length > 10 && el.firstElementChild.outerText; });
+//console.log(owners);
 
 
-//cells.forEach(addHighlightAccountsId)
-
-Array.prototype.each = function(fn) {
-    this.forEach((el) => { fn.call(el) })
-}
-POBLACION
-
-KNIGHTSBRIDGE RESIDENCES
-function initElement() {
-    //this.account = this.children[2];
-    var c = this.children;
-    this.nodes   = {
-        channel  : c[0],
-        account  : c[2],
-        protocol : c[7],
-        province : c[9],
-    }
+//addHighlightAccountsId.call(cells)
 
 
-    //this.account.text = this.account.text()
 
-
-    /*this.channel = this.children[0].text();
-    this.account = this.children[2].text();
-    this.protocol = this.children[7].text();
-    this.province = this.children[9].text();
-    this.unique = [this.account, this.channel].join("-");
-    this.isSelf = this.unique == $scope.unique;*/
-    console.log(this);
-}
-
-cells.each(initElement)
+//cells.unique = $scope.unique;
 
 //cells.each(addHighlightAccountsId)
 
@@ -94,6 +124,201 @@ cells.each(initElement)
 
 
 
+/*
+cells.go = function(fn) {
+    //console.log(this);
+    return this.map((i, el) => {
+        fn.call(el.children)
+        return el.children
+        //console.log(el.children);
+    })
+}
+
+
+cells.go(addHighlightAccountsId)
+*/
+//console.log(var1, var2);
+
+
+//cells
+
+//console.log(cells);
+//var children = cells.children().toArray();
+//console.log(children);
+
+
+//.toArray().filter((el) => { return el.children.length > 10 && el.firstElementChild.outerText; });
+//console.log(cells);
+//console.log(cells);
+
+/*
+cells.each(function() {
+    console.log(this);
+})
+*/
+
+
+//cells
+
+
+//8DB6E236-E84D-4746-A93E-61AB8E2039D4
+
+
+
+
+//var cells2 = $("ul:not([class]):not([style])").toArray()
+//cells2.forEach(function() { console.log(this); })
+
+
+
+
+/*
+cells.forEach((ul) => {
+
+    ul.children.namedItem("fuck")
+    var children = ul.children;
+    //console.log(children[2]);
+    console.log(children);
+    // var item = children.namedItem("fuck");
+
+
+
+    //var item = collection[str];
+
+    //addHighlightAccountsId.call(ul.children);
+
+
+
+
+    //console.log(this);
+    //console.log(this);
+    // console.log(ul);
+    //var c = Array.from(ul.children);
+    //console.log(this);
+    /*
+    addHighlightAccountsId.call(ul);
+    addChannelToAccountsId.call(ul);
+    checkSensitiveMessages.call(ul);
+    */
+
+/*
+addChannelToAccountsId(c);
+checkSensitiveMessages(c);
+checkSensitiveUserName(c[4]);
+*/
+//});
+
+//addHighlightAccountsId.call(cells)
+
+
+
+/*
+cells.forEach((ul) => {
+    //console.log(this);
+    //return ul.children
+}, ...cells)
+
+cells.forEach(addHighlightAccountsId, ...cells)
+*/
+//console.log(c);
+
+//Array.forEach.bind(cells)
+
+//cells.forEach
+
+
+//c(addHighlightAccountsId)
+
+
+//cells.forEach(addHighlightAccountsId)
+/*
+function initElement() {
+    //this.account = this.children[2];
+    var c = this.children;
+
+    this.nodes   = {
+        channel  : c[0],
+        account  : c[2],
+        protocol : c[7],
+        province : c[9],
+    }
+
+    this.channel = 
+
+
+
+    this.account.text = this.account.text()
+    this.channel = this.children[0].text();
+    this.account = this.children[2].text();
+    this.protocol = this.children[7].text();
+    this.province = this.children[9].text();
+    this.unique = [this.account, this.channel].join("-");
+    this.isSelf = this.unique == $scope.unique;
+    console.log(this);
+}
+*/
+
+//cells.each(initElement);
+//cells.each(addHighlightAccountsId);
+
+/*
+Array.prototype.each = function(fn) {
+    this.forEach((el) => {
+        fn.call(el)
+    })
+}
+*/
+
+
+//cells.each(addHighlightAccountsId)
+
+
+
+
+/*
+addChannelToAccountsId()
+
+function Words(sentence) {
+    this.sentence = sentence;
+    this.count = {};
+    this.countWords();
+}
+
+Words.prototype = {
+    countWords: function() {
+        var words = this.sentence.split(/\W+/);
+        words.forEach(this.addToCount);
+    },
+    addToCount: function(word) {
+        word = word.toLowerCase();
+        if (word == '') return;
+        if (word in this.count)
+            this.count[word] += 1;
+        else
+            this.count[word] = 1;
+    }
+}
+
+words.forEach(this.addToCount.bind(this));
+words.forEach(this.addToCount, this);
+*/
+
+/*
+var module = {
+    x: 42,
+    getX: function() {
+        return this.x;
+    }
+}
+
+var unboundGetX = module.getX;
+console.log(unboundGetX()); // The function gets invoked at the global scope
+// expected output: undefined
+
+var boundGetX = unboundGetX.bind(module);
+console.log(boundGetX());
+// expected output: 42
+*/
 
 
 //cells.forEach = Array.forEach
@@ -129,13 +354,6 @@ checkSensitiveUserName(c[4]);
 
 
 
-var public = cells.map((ul) => {
-    try {
-        return { channel: ul.children[0].text(), AccountID: ul.children[2].text(), AccountName: ul.children[4].text(), IPAddress: ul.children[7].text(), IPLocation: ul.children[9].text() }
-    } catch (ex) {
-
-    }
-})
 
 
 
@@ -255,7 +473,7 @@ $scope.getAllIPAddress = function() {
     return
     var c = $("ul:not([class]):not([style])");
 
-    if(this.attr != "locate") { return };
+    if (this.attr != "locate") { return };
     [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => {
         return (children.length > 5 && firstElementChild.outerText)
     }).forEach(({ children }) => {

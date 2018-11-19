@@ -6,30 +6,34 @@ define(['@page'], function() {
     /*  console.log($scope.params);
       console.log($scope.router);*/
 
-    if($scope.params.method == "DeviceNo" || $scope.pathname == "sameBrowserList") {
+    if ($scope.params.method == "DeviceNo" || $scope.pathname == "sameBrowserList") {
         $scope.run = function() {
             return new Promise(async (resolve, reject) => {
                 postScrollHeightMessage();
             })
         }
-
     }
 
-    if($scope.params.method == "CookieID" || $scope.pathname == "IGetMemberInfo") {
+    if ($scope.params.method == "CookieID" || $scope.pathname == "IGetMemberInfo") {
+
         $scope.run = function() {
-            return Promise.resolve()
+            //return Promise.resolve()
             return new Promise(async (resolve, reject) => {
                 this.apiFunctions = {};
                 this.apiFunctions.region = function(params, e) {
+
                     params.command = "apiFunctions.region";
                     params.active = true;
                     params.region = (params.attr == "banker") ? params.region : {};
+                    //console.log(params);
+                    //if (params.attr !== "mobile") { return }
                     chrome.runtime.sendMessage(this.extensionId, params, (res) => {
                         params.active = false;
                         Object.assign(params, res);
                         this.$apply();
                         this.putUser();
                     });
+
                 }.bind(this);
 
                 this.apiFunctions.member = function(params) {
@@ -43,21 +47,28 @@ define(['@page'], function() {
                     });
                 }.bind(this);
 
+
                 this.apiFunctions.getProtocolSet = function(params) {
-                    params.rows = public.filter((d) => { return d != undefined && d.channel == this.user.channel && d.AccountID == this.user.account });
+                    params.rows = this.cells.toArray().filter((el) => {
+                        //console.log(el.IPLocation, el.IPAddress);
+                        return el.unique = this.unique;
+                    })
+
                     this.user.region = params.rows.map((x) => { return x.IPLocation });
+
                 }.bind(this);
+
 
                 this.changeColor = function(r) {
                     r.$id = "#" + this.$id;
                     r.sequel = this.user.sequel;
-                    if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-                    if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-                    if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+                    if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+                    if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+                    if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
                 };
 
                 this.setPopup = function(r) {
-                    if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+                    if (r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
                 }
 
                 this.showSemanticModal = function(s) {
@@ -68,7 +79,7 @@ define(['@page'], function() {
                 this.openMemberModify = function(r, s) {
                     var url = { wa111: `${s.origin}/Aspx/MemberModify.aspx?account=${r.f_accounts}`, ku711: `${s.origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${r.AccountID}` } [s.host];
                     console.log(url);
-                    //window.open(url, "_blank")*/
+                    window.open(url, "_blank");
                 }
 
                 this.queryInputModel = function() {
@@ -83,29 +94,36 @@ define(['@page'], function() {
                 }
 
                 this.createIFrame = function(_src) {
-                    //console.log($projElement);
                     $('<div>').addClass('ui horizontal divider').text('AND').appendTo($projElement);
                     $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($projElement);
                 }
 
+                this.checkSensitiveUserWarn = function() {
+                    this.notice = search.notice.compare(this.f_remarks || this.Memo);
+                }
 
-
-                // console.log(this.route.cookie);
                 this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
                 this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
                 this.user = await this.getUser()
                 /********************************************/
-                this.user.author.value = "王杰";
+                //this.user.author.value = "王杰";
                 /********************************************/
-                this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard, ].concat(this.user.banker).map((x) => {
-                    var params = { attr: x.attr, value: x.value, index: 1 };
-                    return Object.assign(x, [
-                        { channel: "26", host: "wa111", ...params },
-                        { channel: "35", host: "wa111", ...params },
-                        { channel: "17", host: "wa111", ...params },
-                        { channel: "16", host: "ku711", ...params }
-                    ]);
-                });
+                this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard, ]
+                    .concat(this.user.banker).map((x) => {
+                        var params = { attr: x.attr, value: x.value, index: 1 };
+                        x.sites = [
+                            { channel: "26", host: "wa111", ...params },
+                            { channel: "35", host: "wa111", ...params },
+                            { channel: "17", host: "wa111", ...params },
+                            { channel: "16", host: "ku711", ...params }
+                        ];
+                        return x;
+                    });
+
+
+                console.log(this.list);
+                console.log(this.user);
+
 
                 resolve(this);
             });

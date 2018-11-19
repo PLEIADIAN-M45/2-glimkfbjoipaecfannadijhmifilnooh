@@ -10,11 +10,25 @@ apiFunctions.localStorage = function() { return Promise.resolve(window.localStor
 
 
 
-apiFunctions.region = function() {
-    console.log(this);
+apiFunctions.region = async function() {
+    //console.log(this);
     // evo.store[table.name].get(this.params)
     //evo.store.user.get(this.unique).then((s) => { console.log(s); })
-    return apiFunctions[this.attr].call(this)
+    var r = await apiFunctions[this.attr].call(this);
+
+    //r.region
+
+    search.region.compare(r.region);
+
+
+    //search.region.compare.call(r)
+
+
+    console.log(r);
+    return Promise.resolve(r);
+
+
+    return r
 
     /*attr
     channel
@@ -22,14 +36,11 @@ apiFunctions.region = function() {
 }
 
 
-
-
-
-
-
-
-
-
+/*
+https://www.citypopulation.de/China_c.html
+各省的行政区划
+对于以下省市地、县、市、区人口（人口普查 2000、2010，(*) 同 常住人口2016）：
+*/
 
 
 

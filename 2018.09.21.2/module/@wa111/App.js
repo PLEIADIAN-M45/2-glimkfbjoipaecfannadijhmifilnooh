@@ -1,6 +1,6 @@
 define(["angular", "angular-sanitize"], function(angular, sanitize) {
 
-    console.log(require.toUrl("."));
+    //console.log(require.toUrl("."));
 
     var myApp = angular.module("OBSApp", ["ngSanitize"])
         .config(function($sceDelegateProvider) {

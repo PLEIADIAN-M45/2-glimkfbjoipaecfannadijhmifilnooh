@@ -197,11 +197,11 @@ td.tooltipstered:after {
 }
 
 
-
+/*
 li.isSelf {
     background-color: #01579b !important;
     color: #fff !important;
-}
+}*/
 
 
 
@@ -215,6 +215,13 @@ li>b:nth-child(2)::before {
 
 .pointer {
     cursor: pointer;
+}
+
+
+
+ul.isSelf>li:nth-child(3) {
+    background-color: #01579b !important;
+    color: #fff !important;
 }
 
 

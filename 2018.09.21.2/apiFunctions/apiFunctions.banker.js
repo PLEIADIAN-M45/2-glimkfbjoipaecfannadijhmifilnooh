@@ -1,7 +1,6 @@
 apiFunctions.banker = function() {
     var region = this.region;
     return Promise.resolve({ region });
-
 }
 
 

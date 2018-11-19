@@ -78,18 +78,10 @@ function download() {
     ]).then(flat).then(save);
 }
 
-download();
 
 
 
-
-
-
-
-
-
-
-
+//download();
 
 
 //console.log(chrome.identity.getRedirectURL());
