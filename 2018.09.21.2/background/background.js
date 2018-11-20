@@ -14,7 +14,7 @@ function s(array) { console.log(array); }
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 
-/*
+
 var evo = {
     local: {},
     search: {},
@@ -43,9 +43,8 @@ var evo = {
 
     }
 };
-*/
 
-console.log(evo);
+
 
 /*
 console.log(evo.store.user);

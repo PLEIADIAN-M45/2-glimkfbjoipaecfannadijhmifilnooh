@@ -7,12 +7,8 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
-
             //"core/utils.js",
-
-            "core/Evo.js",
-
-
+            //"core/Evo.js",
             "background/background.js",
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
