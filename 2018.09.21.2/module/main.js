@@ -18,7 +18,7 @@ var app                    = 'chrome-extension://glimkfbjoipaecfannadijhmifilnoo
 //console.log(_pathname_);
 
 
-requirejs.config({    
+requirejs.config({
     baseUrl: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/',
     paths: {
         'App': 'module/App',
@@ -53,7 +53,7 @@ requirejs.config({
         'semantic': './lib/semantic/semantic',
         'Mock': './lib/mock',
 
-        'evo': '/core/Evo',
+        'evo': './core/Evo',
         'path': '/core/path',
         'common': '/core/common',
         'utils': '/core/utils',
@@ -61,8 +61,8 @@ requirejs.config({
         //'app'            : '@wa111/App',
         //'Spreadsheets'   : '/core/Spreadsheets',
 
-        'xmlSpider': '/core/xmlSpider',
-        'webSpider': '/core/webSpider',
+        'xmlSpider': './core/xmlSpider',
+        'webSpider': './core/webSpider',
         'serializeObject': '/core/serializeObject'
     },
     shim: {
@@ -83,14 +83,32 @@ requirejs.config({
 
 
 
-
-requirejs(['App'], function(App) {
-    //console.log(App);
-    //console.log(App.components);
-
-    App.exec()
+requirejs(["module/wa111/home"], function(f) {
+    //console.log(f);
+    //f.call(App)
+    //f.call(App, App)
 })
 
+
+
+/*
+
+requirejs(['App'], function(App) {
+
+
+    requirejs([App.module], function(f) {
+        //console.log(f);
+        //f.call(App)
+        f.call(App, App)
+    })
+
+
+
+    //console.log(App.components);
+
+    //App.exec()
+})
+*/
 
 
 

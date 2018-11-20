@@ -10,11 +10,7 @@ define([
     }
     var responseType = new ResponseType();
 
-
-
-
-
-
+    //510322198610197228
     class App extends React {
 
         constructor() {
@@ -72,19 +68,15 @@ define([
 
 
         get module() {
-            return {
-                home: function() {},
-                list: function() {},
-            }
+            return ['module', this.host, this.route].join("/")
+
         }
 
 
 
-        exec() {          
+        exec() {
             this.injectStylesheet();
             this.injectComponents();
-
-
         }
 
 
@@ -106,9 +98,13 @@ define([
 })
 
 
+/*
+return {
+    home: function() {},
+    list: function() {},
+}
 
-
-
+*/
 
 
 function createCtrlElement(controllerId) {

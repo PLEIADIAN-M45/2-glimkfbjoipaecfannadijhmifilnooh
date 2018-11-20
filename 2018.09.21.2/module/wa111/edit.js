@@ -1,3 +1,16 @@
+define([], function() {
+
+    return function() {
+
+        console.log(this);
+
+        console.log(23443);
+
+
+    }
+});
+
+/*
 define(['@wa111/api'], function(apiFunction) {
 
     function _getPhoneDate(x) {
@@ -60,6 +73,7 @@ define(['@wa111/api'], function(apiFunction) {
     return {}
 });
 
+*/
 
 
 
