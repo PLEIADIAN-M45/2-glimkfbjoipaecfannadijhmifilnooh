@@ -1,7 +1,9 @@
+
+/*
 define(["@page"], function(constant) {
     localStorage.assign(constant);
 });
-
+*/
 
 
 

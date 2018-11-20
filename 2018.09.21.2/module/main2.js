@@ -1,69 +1,55 @@
-var host = location.host.split(".")[1];
-
+var host = location.host.split(".")[1]
 //console.log(localStorage.baseUrl);
 
-/*
-var baseUrl                = localStorage.baseUrl + host;
-//console.log(baseUrl);
-console.log(var1, var2);
 
-var b                      = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module'
-
-var app                    = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host;
-*/
-//var baseUrl              = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh'
+var baseUrl = localStorage.baseUrl + '/@' + host;
+console.log(baseUrl);
 
 
-//var _pathname_ = location.pathname.split('?')[0].split('.')[0].split('/').pop()
-//console.log(_pathname_);
-
-
-requirejs.config({    
-    baseUrl: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/',
+requirejs.config({
+    baseUrl: baseUrl,
     paths: {
-        'App': 'module/App',
-        //'App2': ['module', host, 'App'].join('/'),
-        //'App'            : 'module/ku711/App',
-        //'-App'           : 'wa111/App',
 
-        'angular': './lib/angular/angular',
-        'angular-animate': './lib/angular/angular-animate',
-        'angular-aria': './lib/angular/angular-aria',
-        'angular-cookies': './lib/angular/angular-cookies',
-        'angular-messages': './lib/angular/angular-messages',
-        'angular-mocks': './lib/angular/angular-mocks',
-        'angular-resource': './lib/angular/angular-resource',
-        'angular-route': './lib/angular/angular-route.min',
-        'angular-sanitize': './lib/angular/angular-sanitize.min',
-        'angular-scenario': './lib/angular/angular-scenario',
-        'angular-touch': './lib/angular/angular-touch',
-        "angularAMD": "./lib/angular/angularAMD",
-        "ngload": "./lib/angular/ngload",
-        'domReady': './lib/require/domReady',
-        'require': './lib/require/require',
-        'jquery': './lib/jquery/jquery-3.2.1.min',
-        'js-url': './lib/jquery/url.min',
-        'moment': './lib/jquery/moment-with-locales.min',
-        'Dexie': './lib/jquery/dexie',
-        'crypto': './lib/crypto/rollups/',
-        'aes': './lib/crypto/rollups/aes',
-        'md5': './lib/crypto/rollups/md5',
-        'hmac-md5': './lib/crypto/rollups/hmac-md5',
-        'material': './lib/material/0.36.0/material-components-web',
-        'semantic': './lib/semantic/semantic',
-        'Mock': './lib/mock',
 
-        'evo': '/core/Evo',
-        'path': '/core/path',
-        'common': '/core/common',
-        'utils': '/core/utils',
-        'SendSms': '/core/SendSms',
-        //'app'            : '@wa111/App',
-        //'Spreadsheets'   : '/core/Spreadsheets',
+        'angular': '../lib/angular/angular',
+        'angular-animate': '../lib/angular/angular-animate',
+        'angular-aria': '../lib/angular/angular-aria',
+        'angular-cookies': '../lib/angular/angular-cookies',
+        'angular-messages': '../lib/angular/angular-messages',
+        'angular-mocks': '../lib/angular/angular-mocks',
+        'angular-resource': '../lib/angular/angular-resource',
+        'angular-route': '../lib/angular/angular-route.min',
+        'angular-sanitize': '../lib/angular/angular-sanitize.min',
+        'angular-scenario': '../lib/angular/angular-scenario',
+        'angular-touch': '../lib/angular/angular-touch',
+        "angularAMD": "../lib/angular/angularAMD",
+        "ngload": "../lib/angular/ngload",
+        'domReady': '../lib/require/domReady',
+        'require': '../lib/require/require',
+        'jquery': '../lib/jquery/jquery-3.2.1.min',
+        'js-url': '../lib/jquery/url.min',
+        'moment': '../lib/jquery/moment-with-locales.min',
+        'Dexie': '../lib/jquery/dexie',
+        'crypto': '../lib/crypto/rollups/',
+        'aes': '../lib/crypto/rollups/aes',
+        'md5': '../lib/crypto/rollups/md5',
+        'hmac-md5': '../lib/crypto/rollups/hmac-md5',
+        'material': '../lib/material/0.36.0/material-components-web',
+        'semantic': '../lib/semantic/semantic',
+        'Mock': '../lib/mock',
 
-        'xmlSpider': '/core/xmlSpider',
-        'webSpider': '/core/webSpider',
-        'serializeObject': '/core/serializeObject'
+        'evo': '../core/Evo',
+        'path': '../core/path',
+        'common': '../core/common',
+        'utils': '../core/utils',
+        'SendSms': '../core/SendSms',
+
+        //'app': '@wa111/App',
+
+        //'Spreadsheets'   : '../core/Spreadsheets',
+        'xmlSpider': '../core/xmlSpider',
+        'webSpider': '../core/webSpider',
+        'serializeObject': '../core/serializeObject'
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -82,30 +68,11 @@ requirejs.config({
 
 
 
-
-
 requirejs(['App'], function(App) {
-    //console.log(App);
-    //console.log(App.components);
+    
 
-    App.exec()
+    console.log(App);
 })
-
-
-
-
-
-
-
-
-
-try {
-
-    //requirejs([_pathname_], function() {})
-
-} catch (ex) {
-
-}
 
 //requirejs(['router', 'evo', 'utils'], function(router, evo) {
 

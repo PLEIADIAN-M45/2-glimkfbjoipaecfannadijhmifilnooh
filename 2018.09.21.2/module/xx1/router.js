@@ -53,9 +53,6 @@ define([], function() {
                 "App": "@root/App",
                 "#App": "@" + host + "/App",
 
-
-
-
             }
         }
     })

@@ -15,6 +15,90 @@
 
 
 
+class Evo {
+    constructor() {
+        this.version = '2.0';
+    }
+    encoder(value) { try { return btoa(encodeURI(JSON.stringify(value))) } catch (ex) { return value } }
+    decoder(value) { try { return JSON.parse(decodeURI(atob(value))) } catch (ex) { return decodeURI(value) } }
+    cut(e) { document.execCommand("cut"); }
+    copy(e) { document.execCommand("copy"); }
+    paste(e) { document.execCommand("paste"); }
+    trim(value) { return value.toString().trim() }
+}
+
+
+
+Array.prototype.toModel = function() {
+    var obj = {};
+    this.forEach((elem) => {
+        if (elem.name || elem.id) {
+            var name = elem.name || elem.id;
+            switch (elem.localName) {
+                case "select":
+                    /*obj[pop(name)] = Array.from(elem.children).map((x) => {return [x.value, x.label];}).toObj();*/
+                    obj[pop(name)] = {};
+                    obj[pop(name)].value = elem.value;
+                    obj[pop(name)].text = elem.selectedOptions[0].label.trim();
+                    break;
+                case "input":
+                    obj[pop(name)] = elem.value;
+                    break;
+                case "span":
+                    obj[pop(name)] = elem.outerText.trim();
+                    break;
+            }
+        }
+    });
+    return obj;
+}
+
+Array.prototype.toCtrls = function() {
+    var obj = {};
+    this.forEach((elem) => {
+        if (elem.name || elem.id) {
+            var name = elem.name || elem.id;
+            obj[pop(name)] = elem;
+        }
+    })
+    return obj;
+}
+
+Array.prototype.toObj = function() {
+    try {
+        var obj = {};
+        this.forEach(([name, value]) => { if (name && value) { obj[trim(name)] = trim(value) } });
+        return obj;
+    } catch (ex) {}
+}
+
+Array.prototype.toPath = function() { return this.join('/'); }
+Array.prototype.counts = function(elem) { return this.filter((a) => { return a == elem }).length; }
+Array.prototype.has = function(elem) { return (this.find((a) => { return a == elem })) ? true : false; }
+Array.prototype.separate = function() { return '(' + this.join('|') + ')'; }
+Array.prototype.hyphen = function() { return this.join('-'); }
+Array.prototype.serialize = function() {
+    var obj = {};
+    this.map(([longname, value], index) => {
+        var name = longname.replace('ctl00$ContentPlaceHolder1$', '');
+        Object.defineProperty(obj, name, { value, writable: true });
+    });
+    return obj;
+}
+
+
+Array.prototype.lookup = function() {
+    console.log(this);
+};
+
+
+var regex = {
+    prov: /(北京|天津|重庆|上海|河北|山西|辽宁|吉林|江西|江苏|浙江|安徽|福建|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|黑龙江|西藏自治区|内蒙古自治区|广西壮族自治区|宁夏回族自治区|新疆维吾尔自治区)/g,
+    city: /(石家庄|唐山|秦皇岛|邯郸|邢台|保定|张家口|承德|沧州|廊坊|衡水|太原|大同|阳泉|长治|晋城|朔州|晋中|运城|忻州|临汾|吕梁|呼和浩特|包头|乌海|赤峰|通辽|鄂尔多斯|呼伦贝尔|巴彦淖尔|乌兰察布|兴安盟|锡林郭勒盟|阿拉善盟|沈阳|大连|鞍山|抚顺|本溪|丹东|锦州|营口|阜新|辽阳|盘锦|铁岭|朝阳|葫芦岛|长春|吉林|四平|辽源|通化|白山|松原|白城|延边朝鲜族自治州|哈尔滨|齐齐哈尔|鸡西|鹤岗|双鸭山|大庆|伊春|佳木斯|七台河|牡丹江|黑河|绥化|大兴安岭地区|南京|无锡|徐州|常州|苏州|南通|连云港|淮安|盐城|扬州|镇江|泰州|宿迁|杭州|宁波|温州|嘉兴|湖州|绍兴|金华|衢州|舟山|台州|丽水|合肥|芜湖|蚌埠|淮南|马鞍山|淮北|铜陵|安庆|黄山|滁州|阜阳|宿州|六安|亳州|池州|宣城|福州|厦门|莆田|三明|泉州|漳州|南平|龙岩|宁德|南昌|景德镇|萍乡|九江|新余|鹰潭|赣州|吉安|宜春|抚州|上饶|济南|青岛|淄博|枣庄|东营|烟台|潍坊|济宁|泰安|威海|日照|莱芜|临沂|德州|聊城|滨州|菏泽|郑州|开封|洛阳|平顶山|安阳|鹤壁|新乡|焦作|濮阳|许昌|漯河|三门峡|南阳|商丘|信阳|周口|驻马店|济源|武汉|黄石|十堰|宜昌|襄阳|鄂州|荆门|孝感|荆州|黄冈|咸宁|随州|恩施土家族苗族自治州|直辖县级行政区划|长沙|株洲|湘潭|衡阳|邵阳|岳阳|常德|张家界|益阳|郴州|永州|怀化|娄底|湘西土家族苗族自治州|广州|韶关|深圳|珠海|汕头|佛山|江门|湛江|茂名|肇庆|惠州|梅州|汕尾|河源|阳江|清远|东莞|中山|潮州|揭阳|云浮|南宁|柳州|桂林|梧州|北海|防城港|钦州|贵港|玉林|百色|贺州|河池|来宾|崇左|海口|三亚|三沙|儋州|成都|自贡|攀枝花|泸州|德阳|绵阳|广元|遂宁|内江|乐山|南充|眉山|宜宾|广安|达州|雅安|巴中|资阳|阿坝藏族羌族自治州|甘孜藏族自治州|凉山彝族自治州|贵阳|六盘水|遵义|安顺|毕节|铜仁|黔西南布依族苗族自治州|黔东南苗族侗族自治州|黔南布依族苗族自治州|昆明|曲靖|玉溪|保山|昭通|丽江|普洱|临沧|楚雄彝族自治州|红河哈尼族彝族自治州|文山壮族苗族自治州|西双版纳傣族自治州|大理白族自治州|德宏傣族景颇族自治州|怒江傈僳族自治州|迪庆藏族自治州|拉萨|昌都|山南|日喀则|那曲地区|阿里地区|林芝|西安|铜川|宝鸡|咸阳|渭南|延安|汉中|榆林|安康|商洛|兰州|嘉峪关|金昌|白银|天水|武威|张掖|平凉|酒泉|庆阳|定西|陇南|临夏回族自治州|甘南藏族自治州|西宁|海东|海北藏族自治州|黄南藏族自治州|海南藏族自治州|果洛藏族自治州|玉树藏族自治州|海西蒙古族藏族自治州|银川|石嘴山|吴忠|固原|中卫|乌鲁木齐|克拉玛依|吐鲁番地区|哈密地区|昌吉回族自治州|博尔塔拉蒙古自治州|巴音郭楞蒙古自治州|阿克苏地区|克孜勒苏柯尔克孜自治州|喀什地区|和田地区|伊犁哈萨克自治州|塔城地区|阿勒泰地区)/g
+}
+
+
+
 function encoder(value) { try { return btoa(encodeURI(JSON.stringify(value))) } catch (ex) { return value } }
 
 function decoder(value) { try { return JSON.parse(decodeURI(atob(value))) } catch (ex) { return decodeURI(value) } }
@@ -34,10 +118,6 @@ document.addEventListener('copy', function(e) {
 });
 
 
-
-
-var $$ = {};
-
 function $serializeObject(selector) {
     var obj = {};
     $(selector).map(function() {
@@ -48,7 +128,7 @@ function $serializeObject(selector) {
                 var value = this.textContent;
                 break;
             case 'select':
-                if(name == "ddlCity") {
+                if (name == "ddlCity") {
                     var value = this.selectedOptions[0].label
                 } else {
                     var value = this.value;
@@ -57,10 +137,10 @@ function $serializeObject(selector) {
             default:
                 var value = this.value;
         }
-        if(obj[name] == undefined) {
+        if (obj[name] == undefined) {
             obj[name] = value;
         } else {
-            if(!obj[name].push) { obj[name] = [obj[name]]; }
+            if (!obj[name].push) { obj[name] = [obj[name]]; }
             obj[name].push(value);
         }
     })
@@ -77,8 +157,8 @@ function toText(resp) { return resp.text() }
 function toJson(obj) { return JSON.stringify(obj); }
 
 function pop(name) {
-    if(name.startsWith("ctl00")) {
-        if(name.includes("$")) {
+    if (name.startsWith("ctl00")) {
+        if (name.includes("$")) {
             return name.split("$").pop().trim();
         } else {
             return name.split("_").pop().trim();
@@ -89,9 +169,9 @@ function pop(name) {
 
 function _serialize({ href, url, postData }) {
     var obj = {};
-    if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (href) { if (href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }
 
@@ -111,7 +191,7 @@ function _route() {
             device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
         }
     } [this.host];
-    for(var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
+    for (var x in obj) { obj[x] = obj[x].replace('#1', this.channel).replace('#2', this.account); }
     return obj;
 }
 
@@ -148,8 +228,8 @@ var stylesheet = {
     "edit": ['edit'],
     "logs": ['logs', 'cards']
 }
-for(var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
-for(var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
+for (var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
+for (var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
 
 
 function injectAsCss(path) { $("<link>", { rel: "stylesheet", type: "text/css", href: path }).appendTo('body'); }
@@ -186,7 +266,7 @@ function postScrollHeightMessage() {
             _postMessage();
             break;
         case "ku711":
-            $scope.$watch('ctrl.model.ResultList', (nv, ov) => { if(nv) { _postMessage() } });
+            $scope.$watch('ctrl.model.ResultList', (nv, ov) => { if (nv) { _postMessage() } });
             break;
     }
 }
@@ -195,9 +275,9 @@ function postScrollHeightMessage() {
 
 function _assign() {
     Object.assign(this, ...arguments);
-    if(this.$root && !this.$$phase) { this.$apply(); }
-    if(this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
-    if(this == window) {};
+    if (this.$root && !this.$$phase) { this.$apply(); }
+    if (this.name == "OBSApp") { loadModules.call(this.$scope, ...arguments); return this };
+    if (this == window) {};
 }
 
 
@@ -249,17 +329,12 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
     this.origin = location.origin;
     this.pathname = location.pathname.split("?")[0].split("/").pop().replace(/(.aspx|.html)/i, '');
     this.connect = function(message) { chrome.runtime.connect(this.extensionId, { name: this.channel }) }
+
     this.sendMessage = function(message) {
         return new Promise((resolve, reject) => {
             chrome.runtime.sendMessage(this.extensionId, message, (res) => { try { resolve(res) } catch (ex) { reject(ex) } })
         })
     };
-
-
-    chrome.runtime.sendMessage(this.extensionId, {
-        command: "apiFunctions.localStorage"
-    }, (res) => { localStorage.assign(res) })
-
 
     var store = new Dexie('evo');
     store.version(4).stores({ user: 'f_accounts' });
@@ -290,75 +365,20 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
 
 
 
+function localStorageInit() {
+    return new Promise((resolve, reject) => {
 
-
-Array.prototype.toModel = function() {
-    var obj = {};
-    this.forEach((elem) => {
-        if(elem.name || elem.id) {
-            var name = elem.name || elem.id;
-            switch (elem.localName) {
-                case "select":
-                    /*obj[pop(name)] = Array.from(elem.children).map((x) => {return [x.value, x.label];}).toObj();*/
-                    obj[pop(name)] = {};
-                    obj[pop(name)].value = elem.value;
-                    obj[pop(name)].text = elem.selectedOptions[0].label.trim();
-                    break;
-                case "input":
-                    obj[pop(name)] = elem.value;
-                    break;
-                case "span":
-                    obj[pop(name)] = elem.outerText.trim();
-                    break;
-            }
-        }
-    });
-    return obj;
-}
-
-Array.prototype.toCtrls = function() {
-    var obj = {};
-    this.forEach((elem) => {
-        if(elem.name || elem.id) {
-            var name = elem.name || elem.id;
-            obj[pop(name)] = elem;
-        }
     })
-    return obj;
 }
 
-Array.prototype.toObj = function() {
-    try {
-        var obj = {};
-        this.forEach(([name, value]) => { if(name && value) { obj[trim(name)] = trim(value) } });
-        return obj;
-    } catch (ex) {}
-}
+/*
+chrome.runtime.sendMessage(this.extensionId, {
+    command: "apiFunctions.localStorage"
+}, (res) => { localStorage.assign(res) })
 
-Array.prototype.toPath = function() { return this.join('/'); }
-Array.prototype.counts = function(elem) { return this.filter((a) => { return a == elem }).length; }
-Array.prototype.has = function(elem) { return (this.find((a) => { return a == elem })) ? true : false; }
-Array.prototype.separate = function() { return '(' + this.join('|') + ')'; }
-Array.prototype.hyphen = function() { return this.join('-'); }
-Array.prototype.serialize = function() {
-    var obj = {};
-    this.map(([longname, value], index) => {
-        var name = longname.replace('ctl00$ContentPlaceHolder1$', '');
-        Object.defineProperty(obj, name, { value, writable: true });
-    });
-    return obj;
-}
+*/
 
 
-
-
-
-//var str = "湖北咸宁";
-
-var regex = {
-    prov: /(北京|天津|重庆|上海|河北|山西|辽宁|吉林|江西|江苏|浙江|安徽|福建|山东|河南|湖北|湖南|广东|海南|四川|贵州|云南|陕西|甘肃|青海|黑龙江|西藏自治区|内蒙古自治区|广西壮族自治区|宁夏回族自治区|新疆维吾尔自治区)/g,
-    city: /(石家庄|唐山|秦皇岛|邯郸|邢台|保定|张家口|承德|沧州|廊坊|衡水|太原|大同|阳泉|长治|晋城|朔州|晋中|运城|忻州|临汾|吕梁|呼和浩特|包头|乌海|赤峰|通辽|鄂尔多斯|呼伦贝尔|巴彦淖尔|乌兰察布|兴安盟|锡林郭勒盟|阿拉善盟|沈阳|大连|鞍山|抚顺|本溪|丹东|锦州|营口|阜新|辽阳|盘锦|铁岭|朝阳|葫芦岛|长春|吉林|四平|辽源|通化|白山|松原|白城|延边朝鲜族自治州|哈尔滨|齐齐哈尔|鸡西|鹤岗|双鸭山|大庆|伊春|佳木斯|七台河|牡丹江|黑河|绥化|大兴安岭地区|南京|无锡|徐州|常州|苏州|南通|连云港|淮安|盐城|扬州|镇江|泰州|宿迁|杭州|宁波|温州|嘉兴|湖州|绍兴|金华|衢州|舟山|台州|丽水|合肥|芜湖|蚌埠|淮南|马鞍山|淮北|铜陵|安庆|黄山|滁州|阜阳|宿州|六安|亳州|池州|宣城|福州|厦门|莆田|三明|泉州|漳州|南平|龙岩|宁德|南昌|景德镇|萍乡|九江|新余|鹰潭|赣州|吉安|宜春|抚州|上饶|济南|青岛|淄博|枣庄|东营|烟台|潍坊|济宁|泰安|威海|日照|莱芜|临沂|德州|聊城|滨州|菏泽|郑州|开封|洛阳|平顶山|安阳|鹤壁|新乡|焦作|濮阳|许昌|漯河|三门峡|南阳|商丘|信阳|周口|驻马店|济源|武汉|黄石|十堰|宜昌|襄阳|鄂州|荆门|孝感|荆州|黄冈|咸宁|随州|恩施土家族苗族自治州|直辖县级行政区划|长沙|株洲|湘潭|衡阳|邵阳|岳阳|常德|张家界|益阳|郴州|永州|怀化|娄底|湘西土家族苗族自治州|广州|韶关|深圳|珠海|汕头|佛山|江门|湛江|茂名|肇庆|惠州|梅州|汕尾|河源|阳江|清远|东莞|中山|潮州|揭阳|云浮|南宁|柳州|桂林|梧州|北海|防城港|钦州|贵港|玉林|百色|贺州|河池|来宾|崇左|海口|三亚|三沙|儋州|成都|自贡|攀枝花|泸州|德阳|绵阳|广元|遂宁|内江|乐山|南充|眉山|宜宾|广安|达州|雅安|巴中|资阳|阿坝藏族羌族自治州|甘孜藏族自治州|凉山彝族自治州|贵阳|六盘水|遵义|安顺|毕节|铜仁|黔西南布依族苗族自治州|黔东南苗族侗族自治州|黔南布依族苗族自治州|昆明|曲靖|玉溪|保山|昭通|丽江|普洱|临沧|楚雄彝族自治州|红河哈尼族彝族自治州|文山壮族苗族自治州|西双版纳傣族自治州|大理白族自治州|德宏傣族景颇族自治州|怒江傈僳族自治州|迪庆藏族自治州|拉萨|昌都|山南|日喀则|那曲地区|阿里地区|林芝|西安|铜川|宝鸡|咸阳|渭南|延安|汉中|榆林|安康|商洛|兰州|嘉峪关|金昌|白银|天水|武威|张掖|平凉|酒泉|庆阳|定西|陇南|临夏回族自治州|甘南藏族自治州|西宁|海东|海北藏族自治州|黄南藏族自治州|海南藏族自治州|果洛藏族自治州|玉树藏族自治州|海西蒙古族藏族自治州|银川|石嘴山|吴忠|固原|中卫|乌鲁木齐|克拉玛依|吐鲁番地区|哈密地区|昌吉回族自治州|博尔塔拉蒙古自治州|巴音郭楞蒙古自治州|阿克苏地区|克孜勒苏柯尔克孜自治州|喀什地区|和田地区|伊犁哈萨克自治州|塔城地区|阿勒泰地区)/g
-}
 /*
 var region = {
     prov: str.match(regex.prov),
@@ -366,11 +386,16 @@ var region = {
 }
 */
 
-
+/*
 var { author, locate, mobile, banker, region, danger, notice } = localStorage;
 var search = { author, locate, mobile, banker, region, danger, notice };
-for(var key in search) { search[key] = decoder(search[key]) }
-
+for (var key in search) { search[key] = decoder(search[key]) }
+var Sensitive = function() {};
+[author, locate, mobile, banker, region, danger, notice].map((x) => {
+    console.log(decoder(x));
+    return decoder(x)
+})
+*/
 
 
 /*
@@ -381,20 +406,7 @@ search.notice.push(["黑名单"])
 */
 
 
-Array.prototype.lookup = function() {
-    console.log(this);
 
-};
-
-
-
-
-var Sensitive = function() {}
-
-;[author, locate, mobile, banker, region, danger, notice].map((x) => {
-    console.log(decoder(x));
-    return decoder(x)
-})
 
 //Object.assign(Sensitive.prototype, { author, locate, mobile, banker, region, danger, notice })
 
@@ -412,14 +424,13 @@ var Sensitive = function() {}
 //sensitive.lookup
 
 
-
+/*
 
 search.notice.compare = function(value) { return this.find((x) => { return value.includes(x[0]) }) }
 search.author.compare = function(value) { return this.find((x) => { return x[0] == value }) }
 search.danger.compare = function(value) { return this.find((x) => { return value.includes(x[0]) }) }
 search.region.compare = function(value) {
     return this.find((x) => { return value.includes(x[0]) })
-
     //console.log(this.prov);
     //console.log(this.city);
     /*var value = this.prov;
@@ -430,14 +441,14 @@ search.region.compare = function(value) {
         return
     });*/
 
-    /*var value = Object.values(obj.region).toString();
-    this.forEach((x) => {
-        if(value.includes(x[0])) {
-            obj.region.danger = true
-        }
-    })*/
-    //console.log(obj.region);
-}
+/*var value = Object.values(obj.region).toString();
+this.forEach((x) => {
+    if(value.includes(x[0])) {
+        obj.region.danger = true
+    }
+})*/
+//console.log(obj.region);
+//}
 
 
 
@@ -919,8 +930,8 @@ function getCountries() {
     var ctry = {}
 
     document.querySelectorAll("tr").forEach((x, i) => {
-        if(x.children && x.children.length == 6) {
-            if(i == 6 || i == 53) { return }
+        if (x.children && x.children.length == 6) {
+            if (i == 6 || i == 53) { return }
 
             var eng = x.children[0].outerText.trim()
             var big = x.children[1].outerText.trim()

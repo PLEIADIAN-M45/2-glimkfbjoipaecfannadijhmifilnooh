@@ -14,7 +14,7 @@ function s(array) { console.log(array); }
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 
-
+/*
 var evo = {
     local: {},
     search: {},
@@ -43,7 +43,9 @@ var evo = {
 
     }
 };
+*/
 
+console.log(evo);
 
 /*
 console.log(evo.store.user);
@@ -79,10 +81,12 @@ function download() {
 }
 
 
-
-
 //download();
 
+
+/*
+44D035F4-DC07-45FF-89F4-4A4C039A2322
+*/
 
 //console.log(chrome.identity.getRedirectURL());
 //$.ajax({ url: "https://glimkfbjoipaecfannadijhmifilnooh.chromiumapp.org/views/part.html" })

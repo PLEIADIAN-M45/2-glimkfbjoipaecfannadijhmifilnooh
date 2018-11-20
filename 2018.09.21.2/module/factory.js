@@ -1,52 +1,23 @@
-/*define([], function() {
-    console.log(this);
-})
-*/
-
-
-function invoke() {
-    fnStylesheet();
-    fnComponents();
-    console.log('_invoke......');
-}
-
-function fnStylesheet() {
-    $scope.stylesheet.forEach(function(name) {
-        var link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = require.toUrl("./css/" + name + ".css");
-        link.onload = function() { /*console.log(link.href);*/ }
-        document.body.appendChild(link);
-    });
-}
-
-function fnComponents() {
-    if (!$scope.components) { return };
-    $scope.components.forEach((name) => {
-        var templateUrl = require.toUrl("./html/" + name + ".html");
-        fetch(templateUrl).then((resp) => { return resp.text() }).then((html) => {
-
-            var template = angular.element(html);
-            $projElement.append(template);
-            $compile(template)($scope);
-            //$compile(template.contents())($scope);
-            //console.log(template.contents());
-            $scope.template_loaded = 1;
-            $scope.$apply();
-        })
-    })
-}
-
-
-function connect(message) {
-    chrome.runtime.connect(this.extensionId, { name: this.channel })
-}
-
-
-
 define([], function() {
+    function injectStylesheet() {
+        if (!this.stylesheet) { return false };
+        this.stylesheet.map((str) => { return require.toUrl('./module/css/@.css').replace('@', str); }).map((src) => {
+            $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+        });
+    }
 
+    function injectComponents() {
+        if (!this.components) { return false };
+        this.components.map((str) => { return require.toUrl('./module/html/@.html').replace('@', str); }).map((src) => {
+            fetch(src).then(responseType.text).then((html) => {
+                var template = angular.element(html);
+                this.$projElement.append(template);
+                this.$compile(template)(this.$scope);
+                this.$scope.$apply();
+            });
+        });
+    }
 
+    function toText(res) { return res.text() }
 
 })
-
