@@ -3,7 +3,13 @@ function checkSensitiveUserWarn() {
 }
 
 
-search.author.push(["王杰"])
+NodeList.prototype.each = function(callback) {
+    return this.forEach(function(elem, i) {
+        return callback(elem, i)
+
+        return callback.call(elem, i)
+    });
+}
 
 function customElement(a, b) { return $('<b>').text(a).attr('data-content', b).addClass('pointer').popup({ on: 'click' }).click(copy); }
 
@@ -17,7 +23,10 @@ function checkSensitiveMessages() {
     if(search.danger.compare(this.remarks)) { this.children[11].type = 'danger' }
 }
 
-function checkSensitiveUserName() { if(search.author.compare(this.author)) { this.children[4].type = 'danger' } }
+function checkSensitiveUserName(a) {
+    //console.log(a);
+    if(search.author.compare(this.author)) { this.children[4].type = 'danger' }
+}
 
 function checkSensitiveProvince() { if(search.region.compare(this.address)) { this.children[9].type = 'danger' } }
 
@@ -32,15 +41,17 @@ String.prototype.exec = function(regex) {
 
 function parseToRegion(str) { return { prov: str.exec(regex.prov), city: str.exec(regex.city) } }
 
-$("li").each((i, el) => { el.text = el.outerText.split("-").shift().trim(); el.removeAttribute('style') });
+$("li").each((i, el) => {
+    el.text = el.outerText.split("-").shift().trim();
+    el.removeAttribute('style')
+});
 
 
-var cells = $("ul:not([class]):not([style])").filter((i, ul) => { return ul.children.length > 10 && ul.firstElementChild.outerText; })
 
 //.toArray();
 //.each((i, ul) => { $(ul.children).each((i, el) => { el.text = el.outerText.split("-").shift().trim(); }); })
 //cells.owners = cells.filter((i, x) => { return x.children[2].text == $scope.account && x.children[0].text.startsWith($scope.channel) })
-
+var cells = $("ul:not([class]):not([style])").filter((i, ul) => { return ul.children.length > 10 && ul.firstElementChild.outerText; })
 var header = $(".TrHead>li").map((i, x) => { return x.outerText; })
 var dh = ["分站名", "代理", "登入帳號", "加入日期", "匯款戶名", "當前模式", "黑名单", "IP", "最後登入日期", "IP地址", "手机归属地", "一機多登備註", "總輸贏查詢"];
 var dd = ["channel", "agency", "account", "joindate", "author", "peril", "black", "protocol", "lastdate", "address", "mobile.locate", "remarks", "result"];
@@ -58,16 +69,59 @@ var dt = cells.map((i, x) => {
     return obj;
 });
 
-
+/*
 cells.each(addChannelToAccountsId);
 cells.each(addHighlightAccountsId);
 cells.each(checkSensitiveUserName);
 cells.each(checkSensitiveProvince);
 cells.each(checkSensitiveMessages);
+*/
+
+console.log($(".TrHead").children());
+
+var cell = {}
+
+$(".TrHead").children().each(function(i, el) {
+    var selector = `li:nth-child(${i+1})`;
+    //console.log(selector);
+    cell[dd[i]] = document.querySelectorAll(selector)
+    //cell[dd[i]] = cell[dd[i]] || []
+    //cell[dd[i]].push($("ul>li").eq(i))
+});
+
+//console.log(cell);
+
+console.log(cell.author);
+
+search.author.push(["王杰"])
+
+function checkSensitiveUserName2(a) {
+    //console.log(this.text);
+    if(search.author.compare(this.text)) { this.type = 'danger' }
+}
+
+//cell.author.each(checkSensitiveUserName2)
+
+
+cell.author.each(sensitive.author.lookup)
+
+
+var Sensitive = function() {
+
+}
+
+//Sensitive.prototype.
+
+//(function(callback) {});
+
+
+
+//cell.author.forEach(function(element, index) {    console.log(element);});
+
+//console.log(dd[i]);
 
 
 //$('li:nth-child(11)').hide()
-
 //cells.children('li:nth-child(5)').each(checkSensitiveUserName);
 
 

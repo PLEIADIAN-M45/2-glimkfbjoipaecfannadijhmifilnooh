@@ -371,10 +371,48 @@ var { author, locate, mobile, banker, region, danger, notice } = localStorage;
 var search = { author, locate, mobile, banker, region, danger, notice };
 for(var key in search) { search[key] = decoder(search[key]) }
 
+
+
+/*
 search.region.push(["江苏"])
 search.region.push(["云南"])
 search.region.push(["广东"])
 search.notice.push(["黑名单"])
+*/
+
+
+Array.prototype.lookup = function() {
+    console.log(this);
+
+};
+
+
+
+
+var Sensitive = function() {}
+
+;[author, locate, mobile, banker, region, danger, notice].map((x) => {
+    console.log(decoder(x));
+    return decoder(x)
+})
+
+//Object.assign(Sensitive.prototype, { author, locate, mobile, banker, region, danger, notice })
+
+//var sensitive = new Sensitive();
+
+
+//{ author, locate, mobile, banker, region, danger, notice };
+
+
+
+//for(var key in sensitive) { sensitive[key] = decoder(sensitive[key]).map((x) => { return x[0] }) }
+
+//console.log(sensitive);
+
+//sensitive.lookup
+
+
+
 
 search.notice.compare = function(value) { return this.find((x) => { return value.includes(x[0]) }) }
 search.author.compare = function(value) { return this.find((x) => { return x[0] == value }) }
