@@ -1,15 +1,17 @@
 define([], function() {
-    Array.prototype.toObj = function() {
+
+    Array.prototype.serialize = function() {
         try {
             var obj = {};
-            this.forEach(([name, value]) => { if(name && value) { obj[name] = value } });
+            this.forEach(([name, value]) => { if (name && value) { obj[name] = value } });
             return obj;
         } catch (ex) {}
     }
 
+
     function _sname(elem) {
-        if(elem.name) { return elem.name.split("$").pop(); }
-        if(elem.id) { return elem.id.split("_").pop(); }
+        if (elem.name) { return elem.name.split("$").pop(); }
+        if (elem.id) { return elem.id.split("_").pop(); }
     }
 
     function _model(elem) {
@@ -17,7 +19,11 @@ define([], function() {
             case 'input':
                 return elem.value;
             case 'select':
-                return elem.selectedOptions[0].label;
+                return {
+                    value: elem.value,
+                    text: elem.selectedOptions[0].label
+                }
+                //return elem.selectedOptions[0].label;
             case 'button':
                 return elem.title;
             case 'span':
@@ -32,13 +38,13 @@ define([], function() {
 
     [
         function injectStylesheet() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('./module/css/@.css').replace('@', str); }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
         },
         function injectComponents() {
-            if(!this.components) { return false };
+            if (!this.components) { return false };
             this.components.map((str) => { return require.toUrl('./module/html/@.html').replace('@', str); }).map((src) => {
                 fetch(src).then(responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -50,16 +56,13 @@ define([], function() {
         },
         function toText(res) { return res.text() },
         function assign() { Object.assign(this, ...arguments) },
-        function parseToModel(arr) { return arr.map((elem) => { return [elem.sname, elem.model]; }).toObj(); },
-        function parseToCtrl(arr) { return arr.map((elem) => { return [elem.sname, elem]; }).toObj(); },
+        function parseToModel(arr) { return arr.map((elem) => { return [elem.sname, elem.model]; }).serialize(); },
+        function parseToCtrl(arr) { return arr.map((elem) => { return [elem.sname, elem]; }).serialize(); },
         function trim(value) { return value.toString().trim() }
-    ].forEach((x) => {
-        factory[x.name] = x;
-    });
+    ].forEach((x) => { factory[x.name] = x; });
 
 
 
-    localStorage.assign = factory.assign;
 
 
     var elems = ["span", "input", "select", "button"].map((el) => {
@@ -68,9 +71,15 @@ define([], function() {
         elem.sname = _sname(elem);
         elem.model = _model(elem);
         return !elem.id.startsWith('_');
-    })
+    });
+
     factory.ctrl = factory.parseToCtrl(elems);
     factory.model = factory.parseToModel(elems);
+
+
+    window.localStorage.__proto__.assign = factory.assign;
+
+    //console.log(localStorage.__proto__);
 
 
 
@@ -100,7 +109,7 @@ function xxx() {
     Array.prototype.toModel = function() {
         var obj = {};
         this.forEach((elem) => {
-            if(elem.name || elem.id) {
+            if (elem.name || elem.id) {
                 var name = elem.name || elem.id;
                 switch (elem.localName) {
                     case "select":
@@ -124,7 +133,7 @@ function xxx() {
     Array.prototype.toCtrls = function() {
         var obj = {};
         this.forEach((elem) => {
-            if(elem.name || elem.id) {
+            if (elem.name || elem.id) {
                 var name = elem.name || elem.id;
                 obj[pop(name)] = elem;
             }

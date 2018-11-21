@@ -338,6 +338,7 @@ function loadModules({ $scope, $rootScope, $projElement, $rootElement, $injector
 
     var store = new Dexie('evo');
     store.version(4).stores({ user: 'f_accounts' });
+    
     this.store = store;
     this.events = {};
     this.events.createTab = function(_url) {

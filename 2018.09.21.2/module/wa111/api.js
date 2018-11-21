@@ -1,10 +1,10 @@
-define([], function() {
+define(['factory'], function(factory) {
 
     var apiFunction = function() {
 
         this.exec = function(mod) {
 
-            mod.assign = _assign;
+            mod.assign = factory.assign;
             mod.assign({ dataType: "json" });
 
             return new Promise((resolve, reject) => {
@@ -16,7 +16,7 @@ define([], function() {
         }
     }
 
-    apiFunction.prototype.getModel = function() {
+    apiFunction.prototype.getModel = function($scope) {
         return this.exec({
             url: "/LoadData/AccountManagement/MemberModify.ashx",
             method: "POST",
@@ -24,7 +24,7 @@ define([], function() {
         });
     }
 
-    apiFunction.prototype.getAllUser = function() {
+    apiFunction.prototype.getAllUser = function($scope) {
         return this.exec({
             url: "/LoadData/AccountManagement/GetMemberList.ashx",
             data: "ddlWarn=0&f_Account=" + $scope.account + "&f_RemittanceName=&f_BankAccount=&txtAlipayAccount=&txtEmail=&txtPhoto=&txtIdCard=&txtPickName=&txtChat=&ddlBankInfo=&zwrq=&zwrq2=&selSurplus=&selShow=&selAccountType=&selIsDeposit=&selLevel=&selBank=&selMutualStatus=&ddlAliPay=&ddlWeChat=&hidevalue_totals=&pageIndex=&hidevalue_RecordCount=&type=getAllUser"
@@ -32,7 +32,7 @@ define([], function() {
     }
 
 
-    apiFunction.prototype.getSystemLog = function() {
+    apiFunction.prototype.getSystemLog = function($scope) {
         return this.exec({
             url: "/LoadData/AccountManagement/GetSystemLog.ashx",
             method: "POST",
@@ -40,23 +40,40 @@ define([], function() {
         });
     }
 
-    apiFunction.prototype.getPhoneDate = function() {
+    apiFunction.prototype.getPhoneDate = function($scope) {
         return this.exec({
             url: "/LoadData/AccountManagement/GetMemberList.ashx",
             data: "type=getPhoneDate&account=" + $scope.account
         });
     }
 
-    apiFunction.prototype.getUserStore = function() {
+    apiFunction.prototype.getUserStore = function($scope) {
         return new Promise((resolve, reject) => {
-            $scope.store.user.get($scope.account).then((res) => {
+            $scope.$dexie.user.get($scope.account).then((res) => {
                 res.f_RemittanceAccount = res.f_RemittanceAccount.split('|');
                 resolve(res);
             })
         })
     }
 
+    apiFunction.prototype.putUser = function($scope) {
+
+        /*
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(this.extensionId, {
+                command: 'apiFunctions.store.user.put',
+                $scope.user,
+            }, (res) => {
+                console.log(res);
+                try { resolve(res) } catch (ex) { reject(ex) }
+            })
+        })
+        */
+    }
+
+
     apiFunction.prototype.getAlertInfo = function() {
+
         return new Promise(function(resolve, reject) {
             chrome.runtime.sendMessage(evo.extensionId, {
                 command: "apiFunctions",

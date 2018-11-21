@@ -1,15 +1,18 @@
-var host = location.host.split(".")[1];
 var port = location.port;
-var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
+if (port) {
+    var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
+} else {
+    var host = location.host.split(".")[1];
+}
 var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
 
 requirejs.config({
     baseUrl: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host,
-    //map: { 'some/newmodule': { 'foo': 'foo1.2' }, 'some/oldmodule': { 'foo': 'foo1.0' } },
+    //map                      : { 'some/newmodule': { 'foo': 'foo1.2' }, 'some/oldmodule': { 'foo': 'foo1.0' } },
     paths: {
         'AEP': '../App',
         'factory': '../factory',
-        //'App': [host, 'App'].join("/"),
+        //'App'                : [host, 'App'].join("/"),
         'angular': '../../lib/angular/angular',
         'angular-animate': '../../lib/angular/angular-animate',
         'angular-aria': '../../lib/angular/angular-aria',
@@ -38,11 +41,9 @@ requirejs.config({
         'Mock': '../../lib/mock',
 
         'SendSms': '../../core/SendSms',
-
-
         'xmlSpider': '../../core/xmlSpider',
         'webSpider': '../../core/webSpider',
-        'serializeObject': '../../core/serializeObject'
+        //'serializeObject'      : '../../core/serializeObject'
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -61,8 +62,6 @@ requirejs.config({
 
 //console.log(path);
 //console.log(host);
-
-
 var module = {
     "wa111": {
         "login": "login",
@@ -91,13 +90,22 @@ var module = {
 
 
 
-if(module) {
+if (module) {
 
     requirejs(['AEP'], function(AEP) {
+
         //console.log(AEP);
+
         requirejs([module], function(module) {
 
-            module.call(AEP.$scope, AEP);
+
+            //module.call(AEP);
+            //module.apply(AEP, AEP);
+
+
+            module.call(AEP, AEP);
+
+
 
         })
     })
@@ -109,9 +117,9 @@ if(module) {
 
 
 /*
-var module = Object.entries(route).filter(([x, c]) => {
+var module                     = Object.entries(route).filter(([x, c]) => {
     console.log(x);
-    return x[0] == path
+    return x[0]                == path
 })
 */
 
@@ -132,12 +140,12 @@ requirejs(['AEP'], function(AEP) {
 //console.log(f);
 //f.call(App)
 //f.call(App, App)
-//'evo': './core/Evo',
-//'path': '/core/path',
-//'common': '/core/common',
-//'utils': '/core/utils',
-//'app'            : '@wa111/App',
-//'Spreadsheets'   : '/core/Spreadsheets',
+//'evo'                        : './core/Evo',
+//'path'                       : '/core/path',
+//'common'                     : '/core/common',
+//'utils'                      : '/core/utils',
+//'app'                        : '@wa111/App',
+//'Spreadsheets'               : '/core/Spreadsheets',
 
 
 //component
@@ -188,22 +196,22 @@ requirejs(['evo'], function(evo) {
 //console.log(localStorage.baseUrl);
 
 /*
-var baseUrl                = localStorage.baseUrl + host;
+var baseUrl                    = localStorage.baseUrl + host;
 //console.log(baseUrl);
 console.log(var1, var2);
 
-var b                      = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module'
+var b                          = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module'
 
-var app                    = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host;
+var app                        = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host;
 */
-//var baseUrl              = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh'
+//var baseUrl                  = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh'
 
 
-//var _pathname_ = location.pathname.split('?')[0].split('.')[0].split('/').pop()
+//var _pathname_               = location.pathname.split('?')[0].split('.')[0].split('/').pop()
 //console.log(_pathname_);
-//'App2': ['module', host, 'App'].join('/'),
-//'App'            : 'module/ku711/App',
-//'-App'           : 'wa111/App',
+//'App2'                       : ['module', host, 'App'].join('/'),
+//'App'                        : 'module/ku711/App',
+//'-App'                       : 'wa111/App',
 
 
 
@@ -263,7 +271,7 @@ requirejs(['router', 'utils'], function(router) {
 //console.time(location.pathname);
 /*
 requirejs(['Mock'], function(Mock) {
-    Mock.mock("http        ://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx", 'post', function(req) {
+    Mock.mock("http            ://127.0.0.1:26/LoadData/AccountManagement/MemberModify.ashx", 'post', function(req) {
         console.log(req);
         return Mock.mock(1)
     });
@@ -297,17 +305,17 @@ requirejs(['load'], function() {
 
 /*
 ,
-    map                    : {
-        '*'                : {
-            'foo'          : 'ctrl/' + location.pathname.split('.')[0].split('/').pop()
+    map                        : {
+        '*'                    : {
+            'foo'              : 'ctrl/' + location.pathname.split('.')[0].split('/').pop()
         },
-        'some/oldmodule'   : {
-            'foo'          : 'foo1.0'
+        'some/oldmodule'       : {
+            'foo'              : 'foo1.0'
         },
-        'some/newmodule'   : {
-            'foo'          : 'foo1.2'
+        'some/newmodule'       : {
+            'foo'              : 'foo1.2'
         },
-        'some/oldmodule'   : {
-            'foo'          : 'foo1.0'
+        'some/oldmodule'       : {
+            'foo'              : 'foo1.0'
         }
     }*/

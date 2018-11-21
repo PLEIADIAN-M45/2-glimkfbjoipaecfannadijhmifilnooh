@@ -23,21 +23,43 @@ define([
             this.$injector = this.$projElement.injector();
             this.$invoke = this.$injector.invoke;
             this.$compile = this.$injector.get('$compile');
-            //console.log(this.$scope.ctrl);
-            //console.log(this.$scope.model);
 
+
+            this.$scope.channel = this.channel;
+            this.$scope.account = this.account;
+            this.$scope.host = this.host;
+            this.$scope.origin = this.origin;
+            this.$scope.$dexie = this.$dexie;
+
+
+            //console.log(this.params);
+            console.log(this.route);
         }
+
+        get extensionId() { return localStorage.extensionId }
+        get unique() { return this.account + '-' + this.channel }
+        get operator() { return localStorage.operator }
+        get channel() { return localStorage.channel }
+        get account() { return this.params.account }
+
+        get url() { return new URL(location.href) }
+        get searchParams() { return new URLSearchParams(location.search) }
+        get params() { return Array.from(this.searchParams).serialize(); }
+        get origin() { return location.origin }
 
         get baseUrl() { return require.toUrl('.') }
         get port() { return location.port; }
-        get host() { return (this.port) ? { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : location.host.split(".")[1]; }
+        get host() { return (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : location.host.split(".")[1]; }
         get path() { return location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
+        get route() { return window.module }
+        get $dexie() {
+            var store = new Dexie('evo');
+            store.version(1).stores({ user: 'f_accounts' });
+            return store;
+        }
+
         //get module() { return [this.host, this.route].join("/") }
         //get module() { return [this.route].join("/") }
-
-        get route() {
-            return window.module
-        }
 
         get stylesheet() {
             return {
@@ -54,14 +76,14 @@ define([
         }
 
         injectStylesheet() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('./module/css/@.css').replace('@', str); }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
         }
 
         injectComponents() {
-            if(!this.components) { return false };
+            if (!this.components) { return false };
             this.components.map((str) => { return require.toUrl('./module/html/@.html').replace('@', str); }).map((src) => {
                 fetch(src).then(responseType.text).then((html) => {
                     var template = angular.element(html);

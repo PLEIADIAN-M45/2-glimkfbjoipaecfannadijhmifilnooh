@@ -1,4 +1,4 @@
-Array.prototype.toObj = function() {
+Array.prototype.serialize = function() {
     var obj = {};
     this.forEach(([name, value]) => { if (name && value) { obj[name.trim()] = value.trim() } });
     return obj;
@@ -29,7 +29,7 @@ function $mimeType({ responseText }) { return $isJson(responseText) ? "json" : "
 
 function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} }
 
-function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).toObj(); }
+function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); }
 
 
 ;
@@ -39,6 +39,7 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
     else if (typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
 })(this, function() {
+    return {}
     var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
     var xmlSpider = XMLHttpRequest.prototype;
     xmlSpider.open = function(method, url, async, user, password) {
