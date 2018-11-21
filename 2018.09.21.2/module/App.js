@@ -1,8 +1,10 @@
 define([
-    'angular', 'angular-sanitize',
-    'moment', 'Dexie', 'material', 'semantic', 'module/factory', 'module/' + host + '/App'
-], function(angular, sanitize, moment, Dexie, mdc, semantic, factory, React) {
 
+    'moment', 'Dexie', 'material', 'semantic',
+    'factory',
+    'App'
+
+], function(moment, Dexie, mdc, semantic, factory, React) {
 
     class ResponseType {
         json(res) { return res.json() }
@@ -10,7 +12,6 @@ define([
     }
     var responseType = new ResponseType();
 
-    //510322198610197228
     class App extends React {
 
         constructor() {
@@ -22,15 +23,21 @@ define([
             this.$injector = this.$projElement.injector();
             this.$invoke = this.$injector.invoke;
             this.$compile = this.$injector.get('$compile');
-            //console.log(this.route);
-            //console.log(this.route);
-            //this.exec();
+            //console.log(this.$scope.ctrl);
+            //console.log(this.$scope.model);
 
         }
 
         get baseUrl() { return require.toUrl('.') }
-        get host() { return location.host.split(".")[1]; }
+        get port() { return location.port; }
+        get host() { return (this.port) ? { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : location.host.split(".")[1]; }
         get path() { return location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
+        //get module() { return [this.host, this.route].join("/") }
+        //get module() { return [this.route].join("/") }
+
+        get route() {
+            return window.module
+        }
 
         get stylesheet() {
             return {
@@ -47,14 +54,14 @@ define([
         }
 
         injectStylesheet() {
-            if (!this.stylesheet) { return false };
+            if(!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('./module/css/@.css').replace('@', str); }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
         }
 
         injectComponents() {
-            if (!this.components) { return false };
+            if(!this.components) { return false };
             this.components.map((str) => { return require.toUrl('./module/html/@.html').replace('@', str); }).map((src) => {
                 fetch(src).then(responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -65,38 +72,25 @@ define([
             });
         }
 
-
-
-        get module() {
-            return ['module', this.host, this.route].join("/")
-
-        }
-
-
-
         exec() {
             this.injectStylesheet();
             this.injectComponents();
         }
 
-
-
-
-
     }
-
-
-
-
-
-
-
-
-
-
     return new App()
 })
 
+
+
+
+
+
+
+
+
+
+//510322198610197228
 
 /*
 return {

@@ -2,9 +2,7 @@ define([], function() {
 
     return function() {
 
-        console.log(this);
 
-        console.log(23443);
 
 
     }

@@ -1,69 +1,48 @@
 var host = location.host.split(".")[1];
-
-//console.log(localStorage.baseUrl);
-
-/*
-var baseUrl                = localStorage.baseUrl + host;
-//console.log(baseUrl);
-console.log(var1, var2);
-
-var b                      = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module'
-
-var app                    = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host;
-*/
-//var baseUrl              = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh'
-
-
-//var _pathname_ = location.pathname.split('?')[0].split('.')[0].split('/').pop()
-//console.log(_pathname_);
-
+var port = location.port;
+var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
+var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
 
 requirejs.config({
-    baseUrl: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/',
+    baseUrl: 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host,
+    //map: { 'some/newmodule': { 'foo': 'foo1.2' }, 'some/oldmodule': { 'foo': 'foo1.0' } },
     paths: {
-        'App': 'module/App',
-        //'App2': ['module', host, 'App'].join('/'),
-        //'App'            : 'module/ku711/App',
-        //'-App'           : 'wa111/App',
+        'AEP': '../App',
+        'factory': '../factory',
+        //'App': [host, 'App'].join("/"),
+        'angular': '../../lib/angular/angular',
+        'angular-animate': '../../lib/angular/angular-animate',
+        'angular-aria': '../../lib/angular/angular-aria',
+        'angular-cookies': '../../lib/angular/angular-cookies',
+        'angular-messages': '../../lib/angular/angular-messages',
+        'angular-mocks': '../../lib/angular/angular-mocks',
+        'angular-resource': '../../lib/angular/angular-resource',
+        'angular-route': '../../lib/angular/angular-route.min',
+        'angular-sanitize': '../../lib/angular/angular-sanitize.min',
+        'angular-scenario': '../../lib/angular/angular-scenario',
+        'angular-touch': '../../lib/angular/angular-touch',
+        "angularAMD": "../../lib/angular/angularAMD",
+        "ngload": "../../lib/angular/ngload",
+        'domReady': '../../lib/require/domReady',
+        'require': '../../lib/require/require',
+        'jquery': '../../lib/jquery/jquery-3.2.1.min',
+        'js-url': '../../lib/jquery/url.min',
+        'moment': '../../lib/jquery/moment-with-locales.min',
+        'Dexie': '../../lib/jquery/dexie',
+        'crypto': '../../lib/crypto/rollups/',
+        'aes': '../../lib/crypto/rollups/aes',
+        'md5': '../../lib/crypto/rollups/md5',
+        'hmac-md5': '../../lib/crypto/rollups/hmac-md5',
+        'material': '../../lib/material/0.36.0/material-components-web',
+        'semantic': '../../lib/semantic/semantic',
+        'Mock': '../../lib/mock',
 
-        'angular': './lib/angular/angular',
-        'angular-animate': './lib/angular/angular-animate',
-        'angular-aria': './lib/angular/angular-aria',
-        'angular-cookies': './lib/angular/angular-cookies',
-        'angular-messages': './lib/angular/angular-messages',
-        'angular-mocks': './lib/angular/angular-mocks',
-        'angular-resource': './lib/angular/angular-resource',
-        'angular-route': './lib/angular/angular-route.min',
-        'angular-sanitize': './lib/angular/angular-sanitize.min',
-        'angular-scenario': './lib/angular/angular-scenario',
-        'angular-touch': './lib/angular/angular-touch',
-        "angularAMD": "./lib/angular/angularAMD",
-        "ngload": "./lib/angular/ngload",
-        'domReady': './lib/require/domReady',
-        'require': './lib/require/require',
-        'jquery': './lib/jquery/jquery-3.2.1.min',
-        'js-url': './lib/jquery/url.min',
-        'moment': './lib/jquery/moment-with-locales.min',
-        'Dexie': './lib/jquery/dexie',
-        'crypto': './lib/crypto/rollups/',
-        'aes': './lib/crypto/rollups/aes',
-        'md5': './lib/crypto/rollups/md5',
-        'hmac-md5': './lib/crypto/rollups/hmac-md5',
-        'material': './lib/material/0.36.0/material-components-web',
-        'semantic': './lib/semantic/semantic',
-        'Mock': './lib/mock',
+        'SendSms': '../../core/SendSms',
 
-        'evo': './core/Evo',
-        'path': '/core/path',
-        'common': '/core/common',
-        'utils': '/core/utils',
-        'SendSms': '/core/SendSms',
-        //'app'            : '@wa111/App',
-        //'Spreadsheets'   : '/core/Spreadsheets',
 
-        'xmlSpider': './core/xmlSpider',
-        'webSpider': './core/webSpider',
-        'serializeObject': '/core/serializeObject'
+        'xmlSpider': '../../core/xmlSpider',
+        'webSpider': '../../core/webSpider',
+        'serializeObject': '../../core/serializeObject'
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -80,35 +59,104 @@ requirejs.config({
     }
 });
 
+//console.log(path);
+//console.log(host);
+
+
+var module = {
+    "wa111": {
+        "login": "login",
+        "index": "home",
+        "memberlist": "list",
+        "membermodify": "edit",
+        "depositbonus": "bonus",
+        "igetmemberinfo": "logs",
+        "samebrowserlist": "logs",
+        "deltabank": "cash",
+        "deltaonline": "cash",
+        "deltawechat": "cash",
+        "deltaalipay": "cash",
+        "withdrawalsbank": "cash",
+        "astropaywithdrawals": "cash"
+    },
+    "ku711": {
+        "signin": "login",
+        "member": "home",
+        "memberinfomanage": "list",
+        "editmemberinfomanage": "edit",
+        "bonuslog": "bonus",
+        "memberloginlog": "log"
+    }
+} [host][path];
 
 
 
-requirejs(["module/wa111/home"], function(f) {
-    //console.log(f);
-    //f.call(App)
-    //f.call(App, App)
-})
+if(module) {
+
+    requirejs(['AEP'], function(AEP) {
+        //console.log(AEP);
+        requirejs([module], function(module) {
+
+            module.call(AEP.$scope, AEP);
+
+        })
+    })
+}
+
+
+//console.log(module);
 
 
 
 /*
-
-requirejs(['App'], function(App) {
-
-
-    requirejs([App.module], function(f) {
-        //console.log(f);
-        //f.call(App)
-        f.call(App, App)
-    })
-
-
-
-    //console.log(App.components);
-
-    //App.exec()
+var module = Object.entries(route).filter(([x, c]) => {
+    console.log(x);
+    return x[0] == path
 })
 */
+
+
+
+/*
+requirejs(['AEP'], function(AEP) {
+    requirejs([AEP.module], function(module) {
+        module.call(AEP, AEP);
+    })
+})
+*/
+
+
+
+//requirejs(['some/newmodule'], function() {})
+//requirejs(["module/wa111/home"], function(f) {})
+//console.log(f);
+//f.call(App)
+//f.call(App, App)
+//'evo': './core/Evo',
+//'path': '/core/path',
+//'common': '/core/common',
+//'utils': '/core/utils',
+//'app'            : '@wa111/App',
+//'Spreadsheets'   : '/core/Spreadsheets',
+
+
+//component
+
+
+
+
+
+//requirejs([App.module], function(f) {
+//console.log(f);
+//f.call(App)
+//f.call(App, App)
+//})
+
+
+
+//console.log(App.components);
+//App.exec()
+
 
 
 
@@ -136,6 +184,26 @@ requirejs(['evo'], function(evo) {
 
 
 
+
+//console.log(localStorage.baseUrl);
+
+/*
+var baseUrl                = localStorage.baseUrl + host;
+//console.log(baseUrl);
+console.log(var1, var2);
+
+var b                      = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module'
+
+var app                    = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module/' + host;
+*/
+//var baseUrl              = 'chrome-extension://glimkfbjoipaecfannadijhmifilnooh'
+
+
+//var _pathname_ = location.pathname.split('?')[0].split('.')[0].split('/').pop()
+//console.log(_pathname_);
+//'App2': ['module', host, 'App'].join('/'),
+//'App'            : 'module/ku711/App',
+//'-App'           : 'wa111/App',
 
 
 
