@@ -1,20 +1,21 @@
 define([], function () {
 
-    return function ({ $scope, apiFunction }) {
+    return function ({ $scope, apiFunction, putUser }) {
 
         //console.log(apiFunction);
 
-        function _setUser() {
+        function setUser() {
             // console.log(this);
             var m = $scope.model;
 
             $scope.user = {
-                unique: this.unique,
-                host: this.host,
-                origin: this.origin,
-                operator: this.operator,
-                channel: this.channel,
-                account: this.account,
+                unique: $scope.unique,
+                host: $scope.host,
+                origin: $scope.origin,
+                operator: $scope.operator,
+                channel: $scope.channel,
+                account: $scope.account,
+
                 birthday: m.birthday,
                 timing: [],
                 equpmt: {},
@@ -33,35 +34,36 @@ define([], function () {
                 ]
             };
 
-
             return Promise.all([
                 apiFunction.getPhoneDate($scope),
                 apiFunction.getSystemLog($scope),
                 apiFunction.getUserStore($scope)
-            ])
+            ]).then(putUser.bind($scope))
 
-           
+
         }
 
 
+        setUser()
 
 
+        // console.log(putUser);
 
+
+        /*
         function _putUser() {
             return this.sendMessage({
                 command: 'apiFunctions.store.user.put',
                 params: $scope.user
             })
         }
-
-
-
         var putUser = _putUser.bind(this);
         var setUser = _setUser.bind(this);
 
 
 
         setUser().then(putUser);
+        */
 
 
 

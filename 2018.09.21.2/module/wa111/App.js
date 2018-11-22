@@ -5,19 +5,18 @@ define([
     "apiFunction"
 ], function (angular, sanitize, factory, apiFunction) {
 
+
     class wa111 {
+
         constructor() {
             var rootElement = document.createElement('div');
             rootElement.setAttribute('id', 'View');
             rootElement.setAttribute('ng-controller', 'ViewCtrl');
             angular.element(document.body).append(rootElement);
-            angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function ($scope) {
-                $scope.ctrl = factory.ctrl;
-                $scope.model = factory.model;
-            })
+            angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', factory)
             angular.bootstrap(document, ["OBSApp"]);
 
-            this.apiFunction = new apiFunction(this)
+            //this.apiFunction = new apiFunction(this)
         }
     }
     return wa111
@@ -27,8 +26,12 @@ define([
 
 
 
-
-
+/*
+function ($scope) {
+    $scope.ctrl = factory.ctrl;
+    $scope.model = factory.model;
+}
+*/
 
 
 

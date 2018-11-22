@@ -1,5 +1,5 @@
 var port                       = location.port;
-if(port) {
+if (port) {
     var host                   = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
 } else {
     var host                   = location.host.split(".")[1];
@@ -13,7 +13,7 @@ requirejs.config({
         'AEP'                  : '../App',
         'Evo'                  : '../App',
 
-        'xmlSpider'            : '../xmlSpider',        
+        'xmlSpider'            : '../xmlSpider',
         'factory'              : '../factory',
 
         'angular'              : '../../lib/angular/angular',
@@ -90,11 +90,11 @@ var module                     = {
 
 
 
-if(module) {
-    requirejs(['AEP'], function(AEP) {
-        requirejs([module], function(submodule) {
-            if(submodule) { submodule.call(AEP, AEP); }
-        })
+if (module) {
+    
+    requirejs(['AEP'], function (AEP) {
+
+        //requirejs([module], function (submodule) { if (submodule) { submodule.call(AEP, AEP); } })
     })
 }
 
