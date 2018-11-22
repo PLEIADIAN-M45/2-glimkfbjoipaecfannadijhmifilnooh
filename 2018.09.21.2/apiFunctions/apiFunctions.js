@@ -15,15 +15,8 @@ apiFunctions.region = async function() {
     // evo.store[table.name].get(this.params)
     //evo.store.user.get(this.unique).then((s) => { console.log(s); })
     var r = await apiFunctions[this.attr].call(this);
-
-    //r.region
-
     search.region.compare(r.region);
-
-
     //search.region.compare.call(r)
-
-
     console.log(r);
     return Promise.resolve(r);
 

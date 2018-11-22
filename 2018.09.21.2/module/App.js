@@ -54,7 +54,7 @@ define([
         get route() { return window.module }
         get $dexie() {
             var store = new Dexie('evo');
-            store.version(1).stores({ user: 'f_accounts' });
+            store.version(4).stores({ user: 'f_accounts' });
             return store;
         }
 

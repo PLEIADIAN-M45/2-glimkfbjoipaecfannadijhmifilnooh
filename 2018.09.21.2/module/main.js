@@ -1,5 +1,5 @@
 var port = location.port;
-if (port) {
+if(port) {
     var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
 } else {
     var host = location.host.split(".")[1];
@@ -43,7 +43,7 @@ requirejs.config({
         'SendSms': '../../core/SendSms',
         'xmlSpider': '../../core/xmlSpider',
         'webSpider': '../../core/webSpider',
-        //'serializeObject'      : '../../core/serializeObject'
+        //'serializeObject'    : '../../core/serializeObject'
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -90,26 +90,20 @@ var module = {
 
 
 
-if (module) {
-
+if(module) {
     requirejs(['AEP'], function(AEP) {
-
-        //console.log(AEP);
-
-        requirejs([module], function(module) {
-
-
-            //module.call(AEP);
-            //module.apply(AEP, AEP);
-
-
-            module.call(AEP, AEP);
-
-
-
+        requirejs([module], function(submodule) {
+            if(submodule) { submodule.call(AEP, AEP); }
         })
     })
 }
+
+
+
+
+
+
+
 
 
 //console.log(module);

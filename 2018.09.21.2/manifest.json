@@ -7,8 +7,10 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
-            //"core/utils.js",
-            //"core/Evo.js",
+
+
+            "lib/mock.js",
+
             "background/background.js",
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
@@ -24,10 +26,9 @@
             "apiFunctions/apiFunctions.member.js",
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
-            "apiFunctions/apiFunctions.sheets.js"
-            /*"lib/mock.js",
+            "apiFunctions/apiFunctions.sheets.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":
@@ -60,7 +61,9 @@
         ],
         "run_at": "document_start"
     }],
-    "content_security_policy": "sandbox allow-popups allow-pointer-lock Access-Control-Allow-Headers allow-presentation allow-orientation-lock allow-same-origin allow-top-navigation allow-forms allow-scripts; script-src 'unsafe-eval' 'self' chrome-extension://glimkfbjoipaecfannadijhmifilnooh/ https://bk.ku711.net/ http://host26.wa111.net/ https://opendata.baidu.com/ https://fonts.googleapis.com https://docs.google.com/ https://apis.google.com/ https://www.gstatic.com/ https://json.geoiplookup.io/ https://api.map.baidu.com/ https://www.fesugar.com/ https://cx.shouji.360.cn/; object-src 'self';",
+    //"content_security_policy": "sandbox allow-popups allow-pointer-lock allow-presentation allow-orientation-lock allow-same-origin allow-top-navigation allow-forms    allow-scripts; script-src 'unsafe-eval' 'self' chrome-extension://glimkfbjoipaecfannadijhmifilnooh/ https://bk.ku711.net/ https://opendata.baidu.com/ https://fonts.googleapis.com https://docs.google.com/ https://apis.google.com/ https://www.gstatic.com/ https://json.geoiplookup.io/ https://api.map.baidu.com/ https://www.fesugar.com/ https://cx.shouji.360.cn/; object-src 'self';",
+    //"content_security_policy": "chrome-extension:",
+    "content_security_policy": "script-src 'unsafe-eval' 'self' chrome-extension://glimkfbjoipaecfannadijhmifilnooh/; object-src 'self' blob: filesystem: chrome-extension:",
     "default_locale": "en",
     "description": "现正开发版",
     //"description": "this application visible only to specific users for testing",
@@ -98,10 +101,6 @@
     "optional_permissions": ["tabs", "http://www.google.com/"],
 
     "permissions": [
-        "webNavigation",
-        "webRequest",
-        "webRequestBlocking",
-        "http://host26.wa111.net/*",
         //"declarativeWebRequest",
         "activeTab",
         "alarms",
@@ -124,11 +123,14 @@
         "storage",
         "tabs",
         "system",
+        "webNavigation",
+        "webRequest",
+        "webRequestBlocking",
         "<all_urls>",
+        "*://*/*",
         "https://*/*",
         "http://*/*",
-        "*://*/*",
-        "chrome-extension://*"
+        "http://host26.wa111.net/*"
     ],
     "update_url": "https://clients2.google.com/service/update2/crx",
     "version": "2018.09.21.2222",
