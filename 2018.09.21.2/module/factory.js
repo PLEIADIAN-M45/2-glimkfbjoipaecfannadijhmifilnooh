@@ -1,9 +1,13 @@
-define([], function() {
+define([], function () {
 
-    Array.prototype.serialize = function() {
+    Array.prototype.serialize = function () {
         try {
             var obj = {};
-            this.forEach(([name, value]) => { if (name && value) { obj[name] = value } });
+            this.forEach(([name, value]) => {
+                if (name && value) {
+                    obj[name] = value
+                }
+            });
             return obj;
         } catch (ex) {}
     }
@@ -11,23 +15,26 @@ define([], function() {
 
     function _sname(elem) {
         if (elem.name) { return elem.name.split("$").pop(); }
-        if (elem.id) { return elem.id.split("_").pop(); }
+        if (elem.id) {
+            return elem.id.replace('ctl00_ContentPlaceHolder1_', '')
+            //elem.id.split("_").pop();
+        }
     }
 
     function _model(elem) {
         switch (elem.localName) {
-            case 'input':
-                return elem.value;
-            case 'select':
-                return {
-                    value: elem.value,
-                    text: elem.selectedOptions[0].label
-                }
-                //return elem.selectedOptions[0].label;
-            case 'button':
-                return elem.title;
-            case 'span':
-                return elem.outerText;
+        case 'input':
+            return elem.value;
+        case 'select':
+            return {
+                value: elem.value,
+                text: elem.selectedOptions[0].label
+            }
+            //return elem.selectedOptions[0].label;
+        case 'button':
+            return elem.title;
+        case 'span':
+            return elem.outerText;
         }
     }
 
@@ -106,31 +113,31 @@ $scope.model = elements.toModel();*/
 
 function xxx() {
 
-    Array.prototype.toModel = function() {
+    Array.prototype.toModel = function () {
         var obj = {};
         this.forEach((elem) => {
             if (elem.name || elem.id) {
                 var name = elem.name || elem.id;
                 switch (elem.localName) {
-                    case "select":
-                        /*obj[pop(name)] = Array.from(elem.children).map((x) => {return [x.value, x.label];}).toObj();*/
-                        obj[pop(name)] = {};
-                        obj[pop(name)].value = elem.value;
-                        obj[pop(name)].text = elem.selectedOptions[0].label.trim();
-                        break;
-                    case "input":
-                        obj[pop(name)] = elem.value;
-                        break;
-                    case "span":
-                        obj[pop(name)] = elem.outerText.trim();
-                        break;
+                case "select":
+                    /*obj[pop(name)] = Array.from(elem.children).map((x) => {return [x.value, x.label];}).toObj();*/
+                    obj[pop(name)] = {};
+                    obj[pop(name)].value = elem.value;
+                    obj[pop(name)].text = elem.selectedOptions[0].label.trim();
+                    break;
+                case "input":
+                    obj[pop(name)] = elem.value;
+                    break;
+                case "span":
+                    obj[pop(name)] = elem.outerText.trim();
+                    break;
                 }
             }
         });
         return obj;
     }
 
-    Array.prototype.toCtrls = function() {
+    Array.prototype.toCtrls = function () {
         var obj = {};
         this.forEach((elem) => {
             if (elem.name || elem.id) {

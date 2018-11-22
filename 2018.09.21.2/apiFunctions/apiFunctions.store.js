@@ -21,12 +21,13 @@ evo.store = store;
 //console.log(evo.store);
 apiFunctions.store = {};
 
+
 evo.store.tables.forEach(function(table, index) {
     apiFunctions.store[table.name] = {
         put: function() {
             console.log(this);
             console.log(table.name);
-            return evo.store[table.name].put(this).then(() => { return this })
+            return evo.store[table.name].put(this.params).then(() => { return this })
         },
         get: function() {
             //console.log(this);

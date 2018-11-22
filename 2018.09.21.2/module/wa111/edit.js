@@ -1,85 +1,20 @@
-define(['api'], function(apiFunction) {
+define([], function () {
 
-    return function({ $scope }) {
+    return function ({ $scope, apiFunction }) {
 
-        function bindUser(user) {
-            console.log(user);
-            $scope.user = user;
-            $scope.$apply();
-        }
+        //console.log(apiFunction);
 
-        function getUser() {
-
-            chrome.runtime.sendMessage(this.extensionId, { command: 'apiFunctions.store.user.get', unique: this.unique }, bindUser)
-        }
-
-
-        function putUser() {
-            $scope.user.command = "apiFunctions.store.user.put";
-            chrome.runtime.sendMessage(this.extensionId, $scope.user, function(d) {
-                console.log(d);
-            })
-        }
-
-
-
-        function _getPhoneDate(x) {
-            $scope.user.mobile.value = x.f_photo;
-            $scope.user.idcard.value = x.f_idCard;
-            $scope.user.equpmt.browser = x.f_browser;
-            $scope.user.equpmt.osInfo = x.f_osInfo;
-        }
-
-        function _getSystemLog(rows) {
-            rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return $scope.user.timing[0] = f_time; }
-            });
-        }
-
-        function _getUserStore(x) {
-            $scope.user.sequel = x.f_id;
-            $scope.user.attach = x.f_joindate;
-            $scope.user.agency = x.f_alagent;
-            $scope.user.black = x.f_blacklist;
-            $scope.user.peril = x.f_peril;
-            $scope.user.nickName = x.f_nickName;
-            $scope.user.banker.map((d, i) => { d.value = x.f_RemittanceAccount[i]; });
-            $scope.user.banker = $scope.user.banker.filter((a) => { return a.value });
-        }
-
-
-
-
-
-        function $Num(str) { return Number(str) }
-
-        function adjUser(user) {
-            user.unique = [user.account, user.channel].join('-');
-            user.status = user.status.map($Num);
-            user.permit = user.permit.map($Num);
-            user.author.attr = "author";
-            user.locate.attr = "locate";
-            user.mobile.attr = "mobile";
-            user.idcard.attr = "idcard";
-            user.banker.map((x) => { return Object.assign(x, { attr: "banker" }) });
-            return user;
-        }
-
-
-
-        var m = $scope.model;
-
-        function setUser() {
-
+        function _setUser() {
+            // console.log(this);
             var m = $scope.model;
-            //console.log(m);
+
             $scope.user = {
                 unique: this.unique,
                 host: this.host,
                 origin: this.origin,
                 operator: this.operator,
                 channel: this.channel,
-                account: m.account,
+                account: this.account,
                 birthday: m.birthday,
                 timing: [],
                 equpmt: {},
@@ -98,18 +33,109 @@ define(['api'], function(apiFunction) {
                 ]
             };
 
+
             return Promise.all([
-                apiFunction.getPhoneDate($scope).then(_getPhoneDate),
-                apiFunction.getSystemLog($scope).then(_getSystemLog),
-                apiFunction.getUserStore($scope).then(_getUserStore)
-            ]).then(putUser.bind(this));
+                apiFunction.getPhoneDate($scope),
+                apiFunction.getSystemLog($scope),
+                apiFunction.getUserStore($scope)
+            ])
+
+           
         }
 
-        setUser.call(this)
-        //getUser.call(this)
+
+
+
+
+        function _putUser() {
+            return this.sendMessage({
+                command: 'apiFunctions.store.user.put',
+                params: $scope.user
+            })
+        }
+
+
+
+        var putUser = _putUser.bind(this);
+        var setUser = _setUser.bind(this);
+
+
+
+        setUser().then(putUser);
+
+
+
+        // setUser.call(this).then(putUser)
+        //getUser.call(this);
 
     }
+
+
 });
+
+
+/*
+        function _getPhoneDate(x) {
+            $scope.user.mobile.value = x.f_photo;
+            $scope.user.idcard.value = x.f_idCard;
+            $scope.user.equpmt.browser = x.f_browser;
+            $scope.user.equpmt.osInfo = x.f_osInfo;
+        }
+
+        function _getSystemLog(rows) {
+            rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
+                if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return $scope.user.timing[0] = f_time; }
+            });
+        }
+
+        function _getUserStore(x) {
+            $scope.user.sequel = x.f_id;
+            $scope.user.attach = x.f_joindate;
+            $scope.user.agency = x.f_alagent;
+            $scope.user.black = x.f_blacklist;
+            $scope.user.peril = x.f_peril;
+            $scope.user.nickName = x.f_nickName;
+            $scope.user.banker.map((d, i) => { d.value = x.f_RemittanceAccount[i]; });
+            $scope.user.banker = $scope.user.banker.filter((a) => { return a.value });
+        }
+
+
+        function $Num(str) { return Number(str) }
+
+        function adjUser(user) {
+            user.unique = [user.account, user.channel].join('-');
+            user.status = user.status.map($Num);
+            user.permit = user.permit.map($Num);
+            user.author.attr = "author";
+            user.locate.attr = "locate";
+            user.mobile.attr = "mobile";
+            user.idcard.attr = "idcard";
+            user.banker.map((x) => { return Object.assign(x, { attr: "banker" }) });
+            return user;
+        }
+
+        function bindUser(user) {
+            console.log(user);
+            $scope.user = user;
+            $scope.$apply();
+        }
+ */
+
+/*
+
+    function getUser() {
+
+        chrome.runtime.sendMessage(this.extensionId, { command: 'apiFunctions.store.user.get', unique: this.unique }, bindUser)
+    }
+
+
+    function putUser() {
+        $scope.user.command = "apiFunctions.store.user.put";
+        chrome.runtime.sendMessage(this.extensionId, $scope.user, function (d) {
+            console.log(d);
+        })
+    }
+    */
 
 
 

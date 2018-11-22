@@ -1,7 +1,8 @@
-define(["xmlSpider"], function(xmlSpider) {
-    return function({ $scope, $dexie }) {
-        xmlSpider.loadend = function() {
-            if (this.type == "getAllUser") { this.dataRows.forEach((row) => { $dexie.user.put(row); }); }
+define(["xmlSpider"], function (xmlSpider) {
+    return function ({ $scope, dexie }) {
+        function putUser(row) { dexie.user.put(row); };
+        xmlSpider.loadend = function () {
+            if (this.type == "getAllUser") { this.dataRows.map(putUser) }
         }
     }
 });

@@ -2,9 +2,9 @@ define([
 
     'moment', 'Dexie', 'material', 'semantic',
     'factory',
-    'App'
+    'App',
 
-], function(moment, Dexie, mdc, semantic, factory, React) {
+], function (moment, Dexie, mdc, semantic, factory, React) {
 
     class ResponseType {
         json(res) { return res.json() }
@@ -24,13 +24,12 @@ define([
             this.$invoke = this.$injector.invoke;
             this.$compile = this.$injector.get('$compile');
 
-
             this.$scope.channel = this.channel;
             this.$scope.account = this.account;
             this.$scope.host = this.host;
             this.$scope.origin = this.origin;
-            this.$scope.$dexie = this.$dexie;
-
+            this.$scope.dexie = this.dexie;
+            this.$scope.unique = this.unique;
 
             //console.log(this.params);
             console.log(this.route);
@@ -46,15 +45,14 @@ define([
         get searchParams() { return new URLSearchParams(location.search) }
         get params() { return Array.from(this.searchParams).serialize(); }
         get origin() { return location.origin }
-
         get baseUrl() { return require.toUrl('.') }
         get port() { return location.port; }
         get host() { return (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : location.host.split(".")[1]; }
         get path() { return location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
         get route() { return window.module }
-        get $dexie() {
+        get dexie() {
             var store = new Dexie('evo');
-            store.version(4).stores({ user: 'f_accounts' });
+            store.version(1).stores({ user: 'f_accounts' });
             return store;
         }
 
@@ -94,13 +92,35 @@ define([
             });
         }
 
+
+        sendMessage(cmd) {
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(this.extensionId, cmd, resolve)
+            })
+        }
+
+
+        putUser() {
+            console.log(this);
+            return this.sendMessage({
+                command: 'apiFunctions.store.user.put',
+                params: this.$scope.user
+            })
+        }
+
+
         exec() {
             this.injectStylesheet();
             this.injectComponents();
         }
 
     }
-    return new App()
+
+    // var Evo = new App();
+    //window.Evo = new App();
+
+
+    return window.Evo = new App();
 })
 
 
@@ -144,7 +164,7 @@ var stylesheet = {
 }
 for (var x in components) { components[x] = components[x].map((name) => { return `${localStorage.baseUrl}/html/${name}.html`; }) }
 for (var x in stylesheet) { stylesheet[x] = stylesheet[x].map((name) => { return `${localStorage.baseUrl}/css/${name}.css`; }) }
-        */
+    */
 
 
 

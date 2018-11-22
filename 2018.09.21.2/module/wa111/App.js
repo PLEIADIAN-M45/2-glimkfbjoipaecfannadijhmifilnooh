@@ -1,23 +1,42 @@
 define([
     "angular",
     "angular-sanitize",
-    "factory"
-], function(angular, sanitize, factory) {
-    //console.log(factory);
-    return class wa111 {
+    "factory",
+    "apiFunction"
+], function (angular, sanitize, factory, apiFunction) {
+
+    class wa111 {
         constructor() {
             var rootElement = document.createElement('div');
             rootElement.setAttribute('id', 'View');
             rootElement.setAttribute('ng-controller', 'ViewCtrl');
             angular.element(document.body).append(rootElement);
-            angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function($scope) {
+            angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function ($scope) {
                 $scope.ctrl = factory.ctrl;
                 $scope.model = factory.model;
             })
             angular.bootstrap(document, ["OBSApp"]);
+
+            this.apiFunction = new apiFunction(this)
         }
     }
+    return wa111
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

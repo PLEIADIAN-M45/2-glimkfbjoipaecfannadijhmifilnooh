@@ -15,7 +15,7 @@ function injectScript(attrs) {
 }
 
 
-injectScript({ "src": getURL("/core/xmlSpider.js") });
+injectScript({ "src": getURL("/module/xmlSpider.js") });
 document.onreadystatechange = function() {
     switch (document.readyState) {
         case "loading":
