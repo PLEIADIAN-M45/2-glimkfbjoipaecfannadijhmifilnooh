@@ -9,8 +9,12 @@ define([
             rootElement.setAttribute('id', 'View');
             rootElement.setAttribute('ng-controller', 'ViewCtrl');
             angular.element(document.body).append(rootElement);
-            angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function() {});
-            angular.bootstrap(document, ["OBSApp"]);
+            
+            this.OBSApp = angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function() {});
+            this.OBS = angular.bootstrap(document, ["OBSApp"]);
+            
+            //document.createAttribute('ng-app', 'OBSApp');
+            //document.attributes.setNamedItem('ng-app', 'OBSApp')
         }
     }
 });

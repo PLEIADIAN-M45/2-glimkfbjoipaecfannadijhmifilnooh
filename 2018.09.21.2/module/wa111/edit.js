@@ -1,7 +1,7 @@
 define([], function() {
     return async function({ apiFunction, getUser, putUser }) {
         this.setUser = function() {
-            
+
             this.user = {
                 unique: this.unique,
                 host: this.host,
@@ -20,6 +20,7 @@ define([], function() {
         };
         // console.time('label');
         this.user = await getUser();
+        this.invoke()
         //console.log(this);
         console.log(this.user);
         //console.timeEnd('label');

@@ -41,18 +41,21 @@ define(['Dexie', 'apiFunction'], function(Dexie, apiFunction) {
 
     function injectStylesheet() {
         if (!this.stylesheet) { return false };
-        this.stylesheet.map((str) => { return require.toUrl('./module/css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
+        this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
     };
 
     function injectComponents() {
         if (!this.components) { return false };
-        this.components.map((str) => { return require.toUrl('./module/html/@.html').replace('@', str); }).map((src) => {
+        
+        this.components.map((str) => { return require.toUrl('../html/@.html').replace('@', str); }).map((src) => {
+            console.log(this);
+            /*
             fetch(src).then(responseType.text).then((html) => {
                 var template = angular.element(html);
                 this.$projElement.append(template);
                 this.$compile(template)(this.$scope);
                 this.$scope.$apply();
-            });
+            });*/
         });
     };
 
@@ -75,7 +78,12 @@ define(['Dexie', 'apiFunction'], function(Dexie, apiFunction) {
 
     function trim(value) { return value.toString().trim() };
 
-    function invoke() {};
+    function invoke() {
+        this.injectStylesheet();
+        this.injectComponents();
+        //console.log(this.stylesheet);
+        //console.log(this.components);
+    };
     var elems = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id }).filter((elem) => {
         elem.sname = _sname(elem);
         elem.model = _model(elem);
@@ -105,7 +113,27 @@ define(['Dexie', 'apiFunction'], function(Dexie, apiFunction) {
     window.localStorage.__proto__.assign = assign;
 
     function Factory() {
-        Object.entries({ ctrl, model, elems, baseUrl, extensionId, channel, account, unique, operator, url, searchParams, path, origin, port, host, route, dexie, }).map(([key, value]) => { this[key] = value; });
+        Object.entries({
+            ctrl,
+            model,
+            elems,
+            baseUrl,
+            extensionId,
+            channel,
+            account,
+            unique,
+            operator,
+            url,
+            searchParams,
+            path,
+            origin,
+            port,
+            host,
+            route,
+            dexie,
+            stylesheet,
+            components,
+        }).map(([key, value]) => { this[key] = value; });
         [invoke, injectStylesheet, injectComponents, toText, assign, trim, putUser, getUser, sendMessage,
         apply
         ].map((Func) => { this[Func.name] = Func.bind(this); });
