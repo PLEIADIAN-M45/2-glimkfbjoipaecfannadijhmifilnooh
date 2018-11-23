@@ -91,8 +91,10 @@ var module                     = {
 
 
 if (module) {
-    
+
     requirejs(['AEP'], function (AEP) {
+
+        console.log(AEP);
 
         //requirejs([module], function (submodule) { if (submodule) { submodule.call(AEP, AEP); } })
     })
