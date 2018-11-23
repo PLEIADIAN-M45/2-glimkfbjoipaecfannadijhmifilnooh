@@ -1,9 +1,8 @@
-Array.prototype.serialize = function () {
+Array.prototype.serialize = function() {
     var obj = {};
     this.forEach(([name, value]) => { if (name && value) { obj[name.trim()] = value.trim() } });
     return obj;
 }
-
 
 function $serialize({ href, url, postData }) {
     var obj = {};
@@ -27,40 +26,38 @@ function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(
 
 function $mimeType({ responseText }) { return $isJson(responseText) ? "json" : "text"; }
 
-function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} }
+function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} };
 
-function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); }
+function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); };
 
-
-;
 (function webpackUniversalModuleDefinition(root, factory) {
     if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
     else if (typeof define === 'function' && define.amd) define([], factory);
     else if (typeof exports === 'object') exports["xmlSpider"] = factory();
     else root["xmlSpider"] = factory();
-})(this, function () {
+})(this, function() {
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
-        xmlSpider.open = function (method, url, async, user, password) {
+        xmlSpider.open = function(method, url, async, user, password) {
             this.startedDateTime = Date.now();
             this.url = url.replace('..', location.origin);
             this.method = method;
             this.requestHeaders = {};
             return open.apply(this, arguments);
         };
-        xmlSpider.setRequestHeader = function (name, value) {
+        xmlSpider.setRequestHeader = function(name, value) {
             this.requestHeaders[name] = value;
             return setRequestHeader.apply(this, arguments);
         };
-        xmlSpider.send = function (postData) {
+        xmlSpider.send = function(postData) {
             this.postData = postData;
             this.addEventListener('load', this.load);
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
-        xmlSpider.loadend = function () {};
-        xmlSpider.load = function () {
+        xmlSpider.loadend = function() {};
+        xmlSpider.load = function() {
             //console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
             this.responseHeaders = $getAllResponseHeaders(this);
@@ -82,20 +79,13 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
     } catch (ex) {
         console.error('xmlSpider');
     }
-
 });
+/*
+
+Synchronous XMLHttpRequest on the main thread is deprecated because of its detrimental effects to the end user's experience.
+
+For more help, check https://xhr.spec.whatwg.org/.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
+*/
 //window.addEventListener('DOMContentLoaded', function(e) {    console.log(e);});
