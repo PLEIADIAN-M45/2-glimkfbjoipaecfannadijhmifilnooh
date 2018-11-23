@@ -22,11 +22,8 @@ define([
             this.$injector = this.$projElement.injector();
             this.$invoke = this.$injector.invoke;
             this.$compile = this.$injector.get('$compile');
-
             console.log(this.$scope);
         }
-
-
         invoke() {
 
         }
