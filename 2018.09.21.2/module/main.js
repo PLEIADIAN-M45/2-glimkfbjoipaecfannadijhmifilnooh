@@ -13,6 +13,7 @@ requirejs.config({
         'Evo': '../App',
         'xmlSpider': '../xmlSpider',
         'factory': '../factory',
+        'SendSms': '../../core/SendSms',
         'angular': '../../lib/angular/angular',
         'angular-animate': '../../lib/angular/angular-animate',
         'angular-aria': '../../lib/angular/angular-aria',
@@ -39,7 +40,6 @@ requirejs.config({
         'material': '../../lib/material/0.36.0/material-components-web',
         'semantic': '../../lib/semantic/semantic',
         'Mock': '../../lib/mock',
-        'SendSms': '../../core/SendSms',
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -57,7 +57,7 @@ requirejs.config({
 });
 //console.log(path);
 //console.log(host);
-var module = {
+var route = {
     "wa111": {
         "login": "login",
         "index": "home",
@@ -82,13 +82,26 @@ var module = {
         "memberloginlog": "log"
     }
 } [host][path];
-if (module) {
-    requirejs(['AEP'], function(AEP) {
-        requirejs([module], function(submodule) {
-            if (submodule) { submodule.call(AEP.$scope, AEP.$scope); }
+
+
+console.log(route);
+
+if (route) {
+
+    requirejs(['AEP'], function($scope) {
+
+        requirejs([route], function(submodule) {
+
+            //console.log($scope);
+
+            if (submodule) { submodule.call($scope, $scope); }
+
         })
     })
 }
+
+
+
 //console.log(module);
 /*
 var module                     = Object.entries(route).filter(([x, c]) => {

@@ -6,7 +6,6 @@ function checkSensitiveUserWarn() {
 NodeList.prototype.each = function(callback) {
     return this.forEach(function(elem, i) {
         return callback(elem, i)
-
         return callback.call(elem, i)
     });
 }

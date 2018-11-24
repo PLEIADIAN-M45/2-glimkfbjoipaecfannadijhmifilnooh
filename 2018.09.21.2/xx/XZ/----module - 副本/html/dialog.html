@@ -1,0 +1,58 @@
+<aside id="my-mdc-dialog" class="mdc-dialog" role="alertdialog" aria-labelledby="my-mdc-dialog-label" aria-describedby="my-mdc-dialog-description">
+    <div class="mdc-dialog__surface">
+        <header class="mdc-dialog__header">
+            <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title" ng-class="mdcDialog.status">
+                <i class="material-icons">{{mdcDialog.icon}}</i> {{mdcDialog.title}}
+            </h2>
+        </header>
+        <section id="my-mdc-dialog-description" class="mdc-dialog__body">
+            <p ng-bind-html="mdcDialog.content" class="small"></p>
+            <p ng-bind-html="mdcDialog.description"></p>
+            <p ng-repeat="c in mdcDialog.blacklist" class="small">
+                <label style="width: 25px;"><b>({{$index+1}})</b></label>
+                <label style="width: 200px;"><b>{{c.value}}</b></label>
+                <label style="width: 100px;"><b>{{c.match}}</b></label>
+            </p>
+        </section>
+        <footer class="mdc-dialog__footer">
+            <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--cancel">Decline</button>
+            <button type="button" class="mdc-button mdc-dialog__footer__button mdc-dialog__footer__button--accept">Accept</button>
+        </footer>
+    </div>
+    <div class="mdc-dialog__backdrop"></div>
+</aside>
+<style type="text/css">
+.success {
+    color: #4caf50;
+}
+
+.login {
+    color: #f50057;
+}
+
+.small {
+    font-size: 16px!important;
+    font-weight: bold;
+}
+
+p>a {
+    font-size: 16px!important;
+    cursor: pointer;
+}
+
+.mdc-dialog__header__title {
+    font-size: 24px;
+    font-family: Roboto, Microsoft JhengHei!important;
+    /* color: #f50057; */
+    display: flex;
+}
+
+.mdc-dialog__body>p {
+    font-size: 16px;
+    padding-left: 45px;
+}
+
+.material-icons {
+    font-size: 32px;
+}
+</style>
