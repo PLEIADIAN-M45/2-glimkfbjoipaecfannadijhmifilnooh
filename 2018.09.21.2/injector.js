@@ -22,6 +22,7 @@ document.onreadystatechange = function() {
             break;
         case "interactive":
             injectScript({ "src": getURL('/lib/require/require.js'), "data-main": getURL('/module/main.js') })
+            //injectScript({ "src": getURL('project/scripts/require.js'), "data-main": getURL('project/scripts/main.js') })
             break;
         case "complete":
             break;

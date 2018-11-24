@@ -1,10 +1,10 @@
-define([], function () {
-    return function ({ $scope }) {
+define([], function() {
+    return function() {
         localStorage.assign({
             host: "wa111",
             channel: window.siteNumber,
-            siteName: $scope.model.spTitle2,
-            operator: $scope.model.hdfsite_tab.split('_')[0]
+            siteName: this.model.spTitle2,
+            operator: this.model.hdfsite_tab.split('_')[0]
         })
-    }
+    };
 });
