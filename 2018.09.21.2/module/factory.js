@@ -1,134 +1,111 @@
 define(['angular', 'Dexie', 'apiFunction'], function(angular, Dexie, apiFunction) {
-    //console.log(apiFunction);
+
+
     Array.prototype.serialize = function() {
         try {
             var obj = {};
-            this.forEach(([name, value]) => { if (name && value) { obj[name] = value } });
+            this.forEach(([name, value]) => { if (name) { obj[name] = value } });
             return obj;
         } catch (ex) {}
     };
-    Array.prototype.parseToModel = function() { return this.map((elem) => { return [elem.sname, elem.model]; }).serialize(); };
-    Array.prototype.parseToCtrl = function() { return this.map((elem) => { return [elem.sname, elem]; }).serialize(); };
-
-    class responseType { json(res) { return res.json() } text(res) { return res.text() } };
-
-    function _sname(elem) { if (elem.name) { return elem.name.split("$").pop(); } if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', '') } };
-
-    function _model(elem) {
-        switch (elem.localName) {
+    Array.prototype.parseToModel = function() { return this.map((elem) => { return [elem.sname(), elem.model()]; }).serialize(); };
+    Array.prototype.parseToCtrl = function() { return this.map((elem) => { return [elem.sname(), $(elem)]; }).serialize(); };
+    HTMLElement.prototype.sname = function() { return (this.name) ? this.name.split("$").pop() : this.id.replace('ctl00_ContentPlaceHolder1_', ''); }
+    HTMLElement.prototype.model = function() {
+        switch (this.localName) {
             case 'input':
-                return trim(elem.value);
+                return trim(this.value);
             case 'select':
-                return { value: trim(elem.value), text: trim(elem.selectedOptions[0].label) }
+                return { value: trim(this.value), text: trim(this.selectedOptions[0].label) }
             case 'button':
-                return trim(elem.title);
+                return trim(this.title);
             case 'span':
-                return trim(elem.outerText);
+                return trim(this.outerText);
         }
-    };
-
-
-
-    function createControllerElement() {
-        //console.log(this.controllerId);
-        var div = document.createElement('div');
-        //div.id = this.controllerId;
-        div.setAttribute('id', this.controllerId);
-        div.setAttribute('ng-controller', 'projectCtrl')
-        document.body.appendChild(div);
     }
 
-    //angular.extend
-
-    var url = new URL(location.href);
-    var searchParams = new URLSearchParams(location.search);
-    var params = Array.from(searchParams).serialize();
-    var baseUrl = require.toUrl('.');
-    var extensionId = localStorage.extensionId;
-    var channel = localStorage.channel;
-    var account = params.account;
-    var unique = [account, channel].join("-");
-    var operator = localStorage.operator;
-    var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-    var origin = location.origin;
-    var port = location.port;
-    var host = (port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port] : location.host.split(".")[1];
-    var route = window.module;
-    var stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [route];
-    var components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [route];
-    var dexie = new Dexie('evo');
-    dexie.version(1).stores({ user: 'f_accounts' });
-    xmlSpider.dexie = dexie;
 
 
     class factory {
         constructor() {
+            this.init();
+            this.module = window.route;
+            this.forms = document.forms;
+            this.form = this.forms[0];
+            this.referrer = document.referrer;
+            this.extend(localStorage);
+            this.extend(location);
+            console.log(this.elems);
+            
+            //this.apiFunction = new apiFunction(this);
+            this.channel = localStorage.channel || this.params.SiteCode;
+            this.host = (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : this.host.split(".")[1]
 
-            //console.log(this);
-            //this.apply(localStorage)
-            //this.apply(location)
-
-            this.host = "wddwdw"
-            this.__proto__.host = "33ddddddddd"
-
-            //this.host = (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : this.hostname.split(".")[1];
-
-            //console.log(this.prototype);
-
-            /*
-            this.extensionId = localStorage.extensionId;
-            this.extId = localStorage.extensionId;
-            this.baseUrl = require.toUrl('.');
-            this.origin = location.origin;
-            this.port = location.port;
-            this.search = location.search;
-            this.href = location.href;
-            this.route = window.route;
-            */
-
-            //this.operator = localStorage.operator;
-            //this.url = new URL(this.href);
-            //this.searchParams = new URLSearchParams(location.search);
-            //this.params = Array.from(this.searchParams).serialize();
-            //this.channel = localStorage.channel || this.params.SiteCode;
-            //this.account = this.params.account;
         }
 
-        //get url() { return new URL(this.href) }
-        //get searchParams() { return new URLSearchParams(this.search) }
-        //get params() { return Array.from(this.searchParams).serialize() }
+        init() {
+            window.localStorage.__proto__.assign = this.assign;
+        }
 
-        get channel() { return localStorage.channel || this.params.SiteCode }
+        get apiFunction() { return new apiFunction(this); }
+        get isExit() { return this.referrer.includes('Exit') || this.referrer.includes('SignOut') }
+        get params() { return Array.from(this.searchParams).serialize() }
+        get route() { return window.route }
+        //get operator() { return localStorage.operator; }
+        //get channel() { return localStorage.channel || this.params.SiteCode }
+        //get host() { return (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : this.host.split(".")[1] }
+        get path() { return this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
+        get searchParams() { return new URLSearchParams(this.search); }
+        get responseType() { return { json(res) { return res.json() }, text(res) { return res.text() } }; }
+        get xmlSpider() {
+            xmlSpider.dexie = dexie;
+            return xmlSpider;
+        }
         get account() { return this.params.account; }
-        get operator() { return localStorage.operator; }
         get dexie() {
             var dexie = new Dexie('evo');
             dexie.version(1).stores({ user: 'f_accounts' });
             return dexie;
         }
-
-        get components() {
-            return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.route];
-        }
-
-        get stylesheet() {
-            return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.route];
-        }
-
+        get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.route]; }
+        get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.route]; }
         get unique() { return [this.account, this.channel].join("-") }
-        get $path() { return this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
-        get $host() {
-            return (this.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [this.port] : location.host.split(".")[1];
+        get elems() { return ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id }); }
+        get model() { return this.elems.map((elem) => { return [elem.sname(), elem.model()]; }).serialize(); }
+        get _ctrl() { return this.elems.map((elem) => { return [elem.sname(), $(elem)]; }).serialize(); }
+        trim(value) { return value.toString().trim() };
+        sendMessage(message) { return new Promise((resolve, reject) => { chrome.runtime.sendMessage(this.extensionId, message, function(res) { try { resolve(res) } catch (ex) { reject(ex) } }) }) }
+        invoke() {
+            this.injectStylesheet();
+            this.injectComponents();
+        };
+        extend(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+        assign() { Object.assign(this, ...arguments) };
+        apply(res) { if (!this.$$phase) { this.$apply(); }; return res; }
+        createControllerElement() {
+            var div = document.createElement('div');
+            div.setAttribute('id', this.controllerId);
+            div.setAttribute('ng-controller', 'projectCtrl')
+            document.body.appendChild(div);
         }
+        injectStylesheet() {
+            if (!this.stylesheet) { return false };
+            this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
+        };
 
-
-        apply(args) {
-            //Object.assign(this.__proto__, ...arguments)
-            Object.entries(args).map(([a, b]) => { this[a] = b; })
-
-            //Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
-        }
-
+        injectComponents() {
+            if (!this.components) { return false };
+            this.components.map((str) => { return require.toUrl('../html/@.html').replace('@', str); }).map((src) => {
+                console.log(this);
+                /*
+                fetch(src).then(responseType.text).then((html) => {
+                    var template = angular.element(html);
+                    this.$projElement.append(template);
+                    this.$compile(template)(this.$scope);
+                    this.$scope.$apply();
+                });*/
+            });
+        };
 
         static hello() {
             console.log(12, 34);
@@ -136,22 +113,36 @@ define(['angular', 'Dexie', 'apiFunction'], function(angular, Dexie, apiFunction
     }
 
     return new factory();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     return factory;
 
+    class responseType {
+        json(res) {
+            return res.json()
+        }
+        text(res) {
+            return res.text()
+        }
+    };
 
+    /*
     function parseToModel($) {
         return this.map((elem) => { return [elem.sname, elem.model]; }).serialize();
-    };
+    };*/
 
-    function parseToCtrl($) {
-        return this.map((elem) => {
-            if ($) {
-                return [elem.sname, $(elem)];
-            } else {
-                return [elem.sname, elem];
-            }
-        }).serialize();
-    };
 
     function injectStylesheet() {
         if (!this.stylesheet) { return false };
@@ -230,7 +221,6 @@ define(['angular', 'Dexie', 'apiFunction'], function(angular, Dexie, apiFunction
 
     function Factory() {
 
-
         Object.entries({
             ctrl,
             model,
@@ -263,9 +253,38 @@ define(['angular', 'Dexie', 'apiFunction'], function(angular, Dexie, apiFunction
 function s(a) {
     console.log(a);
 }
+
+
 /*class user { constructor() { this.account = account;
           this.channel = channel;
           this.unique = unique;
           this.operator = operator;
           this.origin = origin;
           this.host = host; } get() {} set() {} }*/
+
+
+
+//angular.extend
+/*
+var url = new URL(location.href);
+var searchParams = new URLSearchParams(location.search);
+var params = Array.from(searchParams).serialize();
+var baseUrl = require.toUrl('.');
+var extensionId = localStorage.extensionId;
+var channel = localStorage.channel;
+var account = params.account;
+var unique = [account, channel].join("-");
+var operator = localStorage.operator;
+var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+var origin = location.origin;
+var port = location.port;
+var host = (port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port] : location.host.split(".")[1];
+var route = window.module;
+var stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [route];
+var components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [route];
+var dexie = new Dexie('evo');
+dexie.version(1).stores({ user: 'f_accounts' });
+xmlSpider.dexie = dexie;
+*/
+
+//console.log(xmlSpider);

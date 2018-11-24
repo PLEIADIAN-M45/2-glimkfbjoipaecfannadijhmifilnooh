@@ -4,46 +4,30 @@ define([
     'App',
 ], function(moment, mdc, semantic, Dexie, factory, React) {
 
-    //console.log(factory);
-    //console.log(factory.__proto__.extensionId);
-    //console.log(factory.constructor.extensionId);
-    //for (var x in factory.__proto__) { console.log(x); }
-    //console.log(angular.extend);
     class App extends React {
         constructor() {
             super();
             this.$module = angular.module("OBSApp");
-            this.$viewer = angular.element("#View");
+            this.$viewer = angular.element(document.querySelector('[ng-controller]'))
+            //angular.element("#View") || angular.element(document.body);
             this.$scope = this.$viewer.scope();
             this.$injector = this.$viewer.injector();
             this.$compile = this.$injector.get('$compile');
             this.$invoke = this.$injector.invoke;
             this.$rootScope = this.$scope.$root;
+            // console.log(this.$scope);
+
+            for (var x in factory) {
+                
+                this.$scope.__proto__[x] = factory[x];
+            }
+
+            console.log(this.$scope);
+
+
             //this.$scope.$p = this;
-            this.$scope = factory;
-            //factory.call(this.$scope);
-            //console.log(this.$scope);
-            //this.$scope = factory
-            //angular.extend(this.$scope, factory)
-            //console.log(this);
-
-            /*
-            console.log(factory.__proto__);
-            var obj2 = $.extend(true, {}, factory.constructor);
-            console.log(obj2);
-            */
-
-
-            //Object.assign(this.$scope, factory)
-
-
-            //console.log(this.$scope.extensionId)
-
-            //
+            //this.$scope = factory;
         }
-
-
-
     }
 
     var app = new App();

@@ -2,22 +2,55 @@ define([], function() {
 
     return function() {
 
-    	console.log(this);
-    	/*console.log(this.extensionId);
-    	console.log(this.$host);*/
+        console.log(this);
 
-    	console.log(this.hostname);
+        switch (this.host) {
+            case 'wa111':
+                this.ctrl.username.val("18c894");
+                this.ctrl.password.val("18c894");
+                this.ctrl.securitycode.val("867194B0-009B-4FA6-B72A-161FCEC11A57");
+                if (!this.isExit) this.form.submit();
+                break;
+            case 'ku711':
 
 
-    	
+
+
+                break;
+
+            case 'company':
+                break;
+
+            case 'lottery':
+                break;
+
+        }
 
 
 
-/*
-        this.ctrl.username.value = "18c894";
-        this.ctrl.password.value = "18c894";
-        this.ctrl.securitycode.value = "867194B0-009B-4FA6-B72A-161FCEC11A57"
-        document.forms[0].submit();*/
+
+        /*
+        console.log(this.params.ReturnUrl);
+        console.log(this.params.msg);*/
+
+        /*
+
+     
+*/
+
+        /*
+        this.elems.username.value = "18c894";
+        this.elems.password.value = "18c894";
+        this.elems.securitycode.value = "867194B0-009B-4FA6-B72A-161FCEC11A57"*/
+
+
+        /*
+
+                this.ctrl.username.value = "18c894";
+                this.ctrl.password.value = "18c894";
+                this.ctrl.securitycode.value = "867194B0-009B-4FA6-B72A-161FCEC11A57"*/
+
+        //document.forms[0].submit();
     }
 
 
