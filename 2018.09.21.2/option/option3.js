@@ -31,6 +31,7 @@ const getTokenInfo = function(token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, function(tokenInfo) {
+                console.log(tokenInfo);
                 localStorage.tokenInfo = angular.toJson(tokenInfo, true)
                 window.tokenInfo = tokenInfo
                 resolve()
@@ -352,12 +353,12 @@ var myApp = angular.module('myApp', [])
 
         getProfileUserInfo()
             .then(userInfo => {
-                return
+
+                console.log(userInfo);
+                
                 local.setItem('userInfo', userInfo);
                 $scope.userInfo = userInfo;
                 $scope.$apply();
-
-
             })
 
 
@@ -392,17 +393,18 @@ var myApp = angular.module('myApp', [])
         $scope.getAuthToken = function() {
             getAuthToken(true)
                 .then(getTokenInfo)
-                .then(function() {
-                    return
-                    getGB2260();
-                    $scope.getDangerIP();
+                .then(function(d) {
+                    console.log(d);
+                    
+                   // getGB2260();
+                   /* $scope.getDangerIP();
                     $scope.getMyConfig();
                     $scope.getMessages();
                     $scope.getAccusation();
                     $scope.getSensitive();
                     $scope.getBlackList();
                     $scope.getBlackPhone();
-                    $scope.getDashboards();
+                    $scope.getDashboards();*/
                 })
         }
 
@@ -413,6 +415,7 @@ var myApp = angular.module('myApp', [])
             $('.dropdown').dropdown();
             $("input[type=text]").click(function() { $(this).select(); });
             chrome.storage.sync.get(null, function(items) {
+                console.log(items);
                 Object.entries(items).forEach(function([key, value]) {
                     //console.log(value);
                     if(value) {

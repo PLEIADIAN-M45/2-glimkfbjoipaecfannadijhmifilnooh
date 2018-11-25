@@ -9,8 +9,12 @@ function trim(value) { return value.toString().trim(); }
 function s(array) { console.log(array); }
 
 
+chrome.storage.sync.get(null, function(items) {
+    console.log(items);
+})
 
 //openOptionsPage();
+
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 
@@ -64,6 +68,7 @@ function _toLocalStorage(res) {
     console.log(res);
     res.forEach(([name, value]) => { localStorage[name] = value; })
 }
+
 function _toJson(res) { return res.json() }
 
 function _toText(res) { return res.text() }

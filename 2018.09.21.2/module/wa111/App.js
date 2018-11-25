@@ -1,16 +1,13 @@
 define([
-    "angular",
-    "angular-sanitize",
-    "factory",
-], function(angular, sanitize, factory) {
+    "angular", "angular-sanitize",
+], function(angular, sanitize) {
     return class wa111 {
         constructor() {
-            var viewElement = document.createElement('div');
-            viewElement.setAttribute('id', 'View');
-            viewElement.setAttribute('ng-controller', 'ViewCtrl');
-            angular.element(document.body).append(viewElement);
-            angular.element(document).attr("ng-app", "OBSApp");
+            var rootElement = document.createElement('div');
+            rootElement.setAttribute('id', 'View');
+            rootElement.setAttribute('ng-controller', 'ViewCtrl');
             angular.module("OBSApp", ["ngSanitize"]).controller('ViewCtrl', function() {});
+            angular.element(document.body).append(rootElement);
             angular.bootstrap(document, ["OBSApp"]);
         }
     }
