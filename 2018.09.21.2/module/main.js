@@ -1,20 +1,64 @@
-var port = location.port;
-if(port) {
-    var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port];
-} else {
-    var host = location.host.split(".")[1];
-}
-var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+class Basic {
+    constructor() {
 
+    }
+    /*get channel() {
+
+    }
+    set channel() {
+
+    }*/
+    get port() { return location.port; }
+    get path() { return location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase() }
+    get host() {
+        if(location.port) {
+            return { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port];
+        } else { return location.host.split(".")[1]; }
+    }
+    get route() {
+        return {
+            "wa111": {
+                "login": "login",
+                "index": "home",
+                "memberlist": "list",
+                "membermodify": "edit",
+                "depositbonus": "bonus",
+                "igetmemberinfo": "logs",
+                "samebrowserlist": "logs",
+                "deltabank": "cash",
+                "deltaonline": "cash",
+                "deltawechat": "cash",
+                "deltaalipay": "cash",
+                "withdrawalsbank": "cash",
+                "astropaywithdrawals": "cash"
+            },
+            "ku711": {
+                "signin": "login",
+                "member": "home",
+                "memberinfomanage": "list",
+                "editmemberinfomanage": "edit",
+                "bonuslog": "bonus",
+                "memberloginlog": "log"
+            }
+        } [this.host][this.path];
+    }
+}
+
+
+var _ = new Basic();
+//console.log(_);
 requirejs.config({
-    baseUrl: require.toUrl('host'),
+    //baseUrl                  : require.toUrl(host),
+    baseUrl: require.toUrl('./wa111'),
     paths: {
-        'AEP': '../App',
-        'Evo': '../App',
+        'OBSApp': '../OBSApp',
+        //'App'            : '../App',
+        //'React'          : './App',
         'xmlSpider': '../xmlSpider',
         'factory': '../factory',
+        'SendSms': '../../core/SendSms',
         'angular': '../../lib/angular/angular',
-        'angular-animate': '../../lib/angular/angular-animate',
+        'angular-animate': '../../lib/angular/angular-animate.min',
         'angular-aria': '../../lib/angular/angular-aria',
         'angular-cookies': '../../lib/angular/angular-cookies',
         'angular-messages': '../../lib/angular/angular-messages',
@@ -39,7 +83,6 @@ requirejs.config({
         'material': '../../lib/material/0.36.0/material-components-web',
         'semantic': '../../lib/semantic/semantic',
         'Mock': '../../lib/mock',
-        'SendSms': '../../core/SendSms',
     },
     shim: {
         'angular': { exports: 'angular' },
@@ -56,9 +99,54 @@ requirejs.config({
     }
 });
 
+//console.log(require.toUrl('.'));
+//console.log(_);
+console.log(_.route);
+
+if(_.route) {
+
+    requirejs(['App', _.route], function($scope, module) {
+        //console.log($scope, mod);
+        module.call($scope)
+    })
+
+    //requirejs([_.route], function(module) {
+    //console.log(module);
+    //console.log(window.$scope);
+    //if(module) { module.call($scope, $scope); }
+    // })
+
+}
+
+
+//requirejs(['App'], function($scope) {
+/*requirejs([_.route], function(module) {
+    if(module) { module.call($scope, $scope); }
+})*/
+//})
+
+
+
+/*
+if(_.route) {
+    requirejs(['App'], function($scope) {
+        requirejs([_.route], function(module) {
+            if(module) { module.call($scope, $scope); }
+        })
+    })
+}
+*/
+
+/*
+var port = location.port;
+if(port) { var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [port]; } else {
+    var host = location.host.split(".")[1];
+}
+var path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();*/
+
 //console.log(path);
 //console.log(host);
-var route = {
+/*var route = {
     "wa111": {
         "login": "login",
         "index": "home",
@@ -82,18 +170,23 @@ var route = {
         "bonuslog": "bonus",
         "memberloginlog": "log"
     }
-}
+} [host][path];
+*/
 
-console.log(route);
 
+//console.log(route);
+
+
+//requirejs(["factory"], function(factory) {})
+
+//requirejs(["App"], function(App) {})
+
+/*
 if(route) {
-
-    requirejs(['AEP'], function($scope) {
-
-        requirejs([route], function(submodule) {
-            //console.log($scope);
-            if(submodule) { submodule.call($scope, $scope); }
-
+    requirejs(['../App'], function($scope) {
+        requirejs([route], function(module) {
+            if(module) { module.call($scope, $scope); }
         })
     })
 }
+*/

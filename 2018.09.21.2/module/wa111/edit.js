@@ -1,32 +1,79 @@
-define([], function() {
-    return async function({ apiFunction, getUser, putUser }) {
+define(['apiFunction'], function(apiFunction) {
 
-        this.setUser = function() {
-            this.user = {
-                unique: this.unique,
-                host: this.host,
-                origin: this.origin,
-                operator: this.operator,
-                channel: this.channel,
-                account: this.account,
-            }
-            return Promise.all([
-                apiFunction.getUserModel.call(this.user),
-                apiFunction.getPhoneDate.call(this.user),
-                apiFunction.getSystemLog.call(this.user),
-                apiFunction.getUserStore.call(this.user)
-            ]).then(putUser);
-        };
-
-        // console.time('label');
-        this.user = await getUser();
-        console.log(this.user);
-        this.invoke();
-
-        //console.log(this);
-        //console.timeEnd('label');
+    function setUser() {
+        this.user = {
+            unique: this.unique,
+            host: this.host,
+            origin: this.origin,
+            operator: this.operator,
+            channel: this.channel,
+            account: this.account
+        }
+        return Promise.all([
+            apiFunction.getUserModel.call(this.user),
+            apiFunction.getPhoneDate.call(this.user),
+            apiFunction.getSystemLog.call(this.user),
+            apiFunction.getUserStore.call(this.user)
+        ]).then(this.putUser.bind(this))
     }
+
+    return async function() {
+
+
+        this.user = await this.getUser() || await setUser.call(this);
+        console.log(this.user);
+    }
+
 });
+
+
+
+//console.log(user);
+
+
+function bindUser(a) {
+    // console.log(this.user);
+    return this.user
+}
+
+function s(a) { console.log(a); }
+
+
+
+
+
+
+
+//ƒ invoke(fn, self, locals, serviceName)
+/*this.setUser = function() {
+    this.user = {
+        unique: this.unique,
+        host: this.host,
+        origin: this.origin,
+        operator: this.operator,
+        channel: this.channel,
+        account: this.account,
+    }
+    return Promise.all([
+        apiFunction.getUserModel.call(this.user),
+        apiFunction.getPhoneDate.call(this.user),
+        apiFunction.getSystemLog.call(this.user),
+        apiFunction.getUserStore.call(this.user)
+    ]).then(putUser);
+};*/
+
+
+
+// console.time('label');
+
+/*
+this.user = await getUser();
+console.log(this.user);
+this.invoke();
+*/
+
+//console.log(this);
+//console.timeEnd('label');
 
 
 

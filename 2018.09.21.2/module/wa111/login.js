@@ -2,6 +2,9 @@ define([], function() {
 
     return function() {
 
+        localStorage.channel = this.params.SiteCode;
+
+
         console.log(this);
 
         switch (this.host) {
@@ -9,7 +12,7 @@ define([], function() {
                 this.ctrl.username.val("18c894");
                 this.ctrl.password.val("18c894");
                 this.ctrl.securitycode.val("867194B0-009B-4FA6-B72A-161FCEC11A57");
-                if (!this.isExit) this.form.submit();
+                if(!this.isExit) this.form.submit();
                 break;
             case 'ku711':
 
@@ -35,7 +38,7 @@ define([], function() {
 
         /*
 
-     
+
 */
 
         /*
@@ -101,6 +104,6 @@ define([], function() {
 
 /*define([], function() {
     return function() {
-        
+
     }
 });*/

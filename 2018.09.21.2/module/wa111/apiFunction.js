@@ -1,17 +1,21 @@
-define([], function() {
+define(['App'], function($scope) {
+
+    /*console.log($scope);
     var dexie;
-    var model;
+    var model;*/
 
     function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
         return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
     }
+
     class apiFunction {
-        constructor(c) {
-            dexie = c.dexie;
-            model = c.model;
+        constructor() {
+            //this.dexie = $scope.dexie;
+            //this.model = $scope.model;
+
         }
         getUserModel() {
-            var m = model;            
+            var m = $scope.model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -31,7 +35,7 @@ define([], function() {
             return this;
         }
         getUserStore() {
-            return dexie.user.get(this.account).then((d) => {
+            return $scope.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
                 this.agency = d.f_alagent;
@@ -48,7 +52,7 @@ define([], function() {
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
-            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
+            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
         }
         getPhoneDate() {
             return ajax({
@@ -64,5 +68,5 @@ define([], function() {
             })
         }
     }
-    return apiFunction;
+    return new apiFunction();
 });
