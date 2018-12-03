@@ -1,3 +1,11 @@
+Array.prototype.toObj = function() {
+    var obj = {};
+    this.forEach(([name, value]) => { obj[trim(name)] = trim(value); });
+    return obj;
+}
+
+
+
 function isJson(str) { try { JSON.parse(str); } catch (e) { return false; } return true; }
 
 function openOptionsPage() { chrome.runtime.openOptionsPage() };
@@ -10,7 +18,7 @@ function s(array) { console.log(array); }
 
 
 chrome.storage.sync.get(null, function(items) {
-    console.log(items);
+    //console.log(items);
 })
 
 //openOptionsPage();
@@ -49,6 +57,16 @@ var evo = {
 };
 
 
+function decoder(value) {
+    try {
+        return JSON.parse(decodeURI(atob(value)))
+    } catch (ex) {
+        return decodeURI(atob(value))
+    }
+
+}
+
+//console.log(decoder(localStorage.sms).toObj());
 
 /*
 console.log(evo.store.user);

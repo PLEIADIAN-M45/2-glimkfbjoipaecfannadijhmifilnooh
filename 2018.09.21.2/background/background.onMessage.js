@@ -3,14 +3,20 @@ chrome.runtime.onMessageExternal.addListener(response_message)
 
 function response_message(request, sender, sendResponse) {
     var params = $serialize(sender);
-    if (request.command != "apiFunctions.XMLHttpRequest") {
+    if(request.command != "apiFunctions.XMLHttpRequest") {
         request.time = Date.now();
         request.url = window.baseUrl[request.channel];
     }
     try {
+
+      //  console.log(request);
+
         var promise = eval(request.command).call(request).then(sendResponse);
+
+       // console.log(promise);
+
     } catch (ex) {
-        console.error(request);
+        //console.error(request);
     }
     return true;
 }
@@ -20,19 +26,12 @@ function response_message(request, sender, sendResponse) {
 
 function toString(x) { return x.toString(); }
 
-function trim(x) { if (x != undefined) { return x.toString().trim(); } }
-
-
-Array.prototype.toObj = function() {
-    var obj = {};
-    this.forEach(([name, value]) => { obj[trim(name)] = trim(value); });
-    return obj;
-}
+function trim(x) { if(x != undefined) { return x.toString().trim(); } }
 
 
 function $serialize({ url, postData }) {
     var obj = {};
-    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }

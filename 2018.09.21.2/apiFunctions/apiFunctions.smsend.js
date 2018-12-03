@@ -1,4 +1,34 @@
-apiFunctions.smssend = function() {
+apiFunctions.sendsms = function() {
+    var { operator, account, channel, mobile } = this.params;
+    var smscontent = decoder(localStorage.sms).toObj();
+    var message = smscontent[channel]
+
+    return $.ajax({
+        dataType: "html",
+        url: 'https://client.motosms.com/smsc/smssend',
+        method: 'post',
+        data: {
+            sender: '',
+            phones: '86' + mobile.value,
+            smscontent: message,
+            taskType: 1,
+            taskTime: '',
+            batch: 1,
+            splittime: 0,
+            packid: ''
+        }
+    }).then((res) => {
+        if(res.match(/(會員登錄)/)) { var status = 3; }
+        if(res.match(/(msg = '')/)) { var status = 0; }
+        if(res.match(/(msg = '101')/)) { var status = 101; }
+        if(res.match(/(msg = '102')/)) { var status = 102; }
+        console.log(status);
+        return Promise.resolve({ operator, account, channel, message, mobile, status });
+    })
+
+    // return Promise.resolve()
+
+    /*
     var { account, mobile, status, channel, operator } = this.params;
     var smss = new Map(evo.decoder(localStorage.sms));
     var countrycode = { "16": "86", "26": "86", "35": "86", "17": "86", "21": "886", "35": "886", "2": "886" } [channel];
@@ -26,5 +56,5 @@ apiFunctions.smssend = function() {
             console.log(status);
             return { operator, account, channel, message, mobile, status }
         }
-    }
+    }*/
 }

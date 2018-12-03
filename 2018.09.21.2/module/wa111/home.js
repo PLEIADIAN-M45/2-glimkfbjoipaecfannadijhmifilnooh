@@ -1,4 +1,3 @@
-//(function(window, angular) {'use strict';	console.log(angular);})(window, window.angular);
 define([], function() {
     return function() {
         localStorage.channel = window.siteNumber;
@@ -8,10 +7,3 @@ define([], function() {
 });
 
 
-
-
-/*
-var injector = angular.injector(["ng"]);
-//console.log(injector);
-return
-*/

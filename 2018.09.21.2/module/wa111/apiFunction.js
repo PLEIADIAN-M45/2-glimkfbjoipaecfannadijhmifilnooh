@@ -1,21 +1,15 @@
 define(['App'], function($scope) {
 
-    /*console.log($scope);
-    var dexie;
-    var model;*/
+    var m = $scope.model;
 
     function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
         return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
     }
 
     class apiFunction {
-        constructor() {
-            //this.dexie = $scope.dexie;
-            //this.model = $scope.model;
+        constructor() {}
 
-        }
         getUserModel() {
-            var m = $scope.model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;

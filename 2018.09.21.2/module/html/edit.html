@@ -2,8 +2,8 @@
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
         <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{sendsms.status}}</a>
-        <a class="item" ng-click="events.createTab(route.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
-        <a class="item" ng-click="events.setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
+        <a class="item" ng-click="createTab(urls.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
+        <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
         <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>简讯<br>开通</b></a>
         <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==0"><i class="envelope outline icon"></i><b>简讯<br>开通</b></a>
     </div>

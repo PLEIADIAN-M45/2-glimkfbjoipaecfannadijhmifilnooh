@@ -1,105 +1,84 @@
 define(['apiFunction'], function(apiFunction) {
 
-    function setUser() {
-        this.user = {
-            unique: this.unique,
-            host: this.host,
-            origin: this.origin,
-            operator: this.operator,
-            channel: this.channel,
-            account: this.account
-        }
-        return Promise.all([
-            apiFunction.getUserModel.call(this.user),
-            apiFunction.getPhoneDate.call(this.user),
-            apiFunction.getSystemLog.call(this.user),
-            apiFunction.getUserStore.call(this.user)
-        ]).then(this.putUser.bind(this))
-    }
-
     return async function() {
+        this.setUser = function() {
+            this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
+            return Promise.all([
+                apiFunction.getUserModel.call(this.user),
+                apiFunction.getPhoneDate.call(this.user),
+                apiFunction.getSystemLog.call(this.user),
+                apiFunction.getUserStore.call(this.user)
+            ]).then(this.putUser.bind(this));
+        };
+
+        this.user = await this.getUser() || await this.setUser(this);
+
+        function sendSms($scope) {
+
+            var user = $scope.user
+
+            /*
+            console.log(user.mobile.value);
+
+            function Dialog({ status, message, mobile }) {
+                $scope.mdcDialog = {
+                    "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                    "0": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: mobile, description: "" },
+                    "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                    "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                    "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
+                } [status];
+                if(!$scope.$$phase) { $scope.$apply(); }
+                var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+                dialog.listen("MDCDialog:accept", function() {});
+                dialog.listen("MDCDialog:cancel", function() {});
+                dialog.show();
+            };
+
+            function Assign(res) {
+                //console.log(res);
+                $scope.sendsms.status = res.status;
+                localStorage[res.mobile] = res.status;
+                return res;
+            }
 
 
-        this.user = await this.getUser() || await setUser.call(this);
+
+            this.status = localStorage[user.mobile.value] || user.status[0];
+            this.mobile = user.mobile.value;
+            this.status = 0;
+            this.mobile = user.mobile.value;
+            this.channel = user.channel;
+            this.account = user.account;
+            this.operator = user.operator;
+            */
+
+            this.status = 0
+
+            this.send = function() {
+
+                $scope.sendMessage({ command: 'apiFunctions.sendsms', params: this.user }).then((res) => {
+                    console.log(res);
+                })
+                ///.then(Assign).then(Dialog);
+               // console.log(this.mobile);
+            }.bind($scope)
+
+
+
+        }
+
+
+
+        this.sendsms = new sendSms(this)
+
+        this.$apply()
+        //.send()
+
+
+        //new SendSms(this);
+
         console.log(this.user);
-    }
 
+    }
 });
-
-
-
-//console.log(user);
-
-
-function bindUser(a) {
-    // console.log(this.user);
-    return this.user
-}
-
-function s(a) { console.log(a); }
-
-
-
-
-
-
-
-//ƒ invoke(fn, self, locals, serviceName)
-/*this.setUser = function() {
-    this.user = {
-        unique: this.unique,
-        host: this.host,
-        origin: this.origin,
-        operator: this.operator,
-        channel: this.channel,
-        account: this.account,
-    }
-    return Promise.all([
-        apiFunction.getUserModel.call(this.user),
-        apiFunction.getPhoneDate.call(this.user),
-        apiFunction.getSystemLog.call(this.user),
-        apiFunction.getUserStore.call(this.user)
-    ]).then(putUser);
-};*/
-
-
-
-// console.time('label');
-
-/*
-this.user = await getUser();
-console.log(this.user);
-this.invoke();
-*/
-
-//console.log(this);
-//console.timeEnd('label');
-
-
-
-
-//var m                  = this.model;
-/*this.user              = {
-    unique               : this.unique,
-    host                 : this.host,
-    origin               : this.origin,
-    operator             : this.operator,
-    channel              : this.channel,
-    account              : this.account,
-    timing               : [],
-    equpmt               : {},
-    birthday             : m.birthday,
-    status               : [m.ishow.value],
-    permit               : [m.isOpenDeposit.value],
-    author               : { title: m.txtRemittaceName, value: m.txtRemittaceName },
-    locate               : { title: m.lblIp, value: m.lblIp },
-    mobile               : { title: m.txtPhoto, value: m.txtPhoto },
-    idcard               : { title: m.txtIdCard, value: m.txtIdCard },
-    banker               : [
-        { title          : m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111.text, city: m.ddlCityArea.text, prov: m.ddlCity.text } },
-        { title          : m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2.text, city: m.ddlCityArea2.text, prov: m.ddlCity2.text } },
-        { title          : m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3.text, city: m.ddlCityArea3.text, prov: m.ddlCity3.text } },
-        { title          : m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } },
-        { title          : m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
-    ]
-};*/
