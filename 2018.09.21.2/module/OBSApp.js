@@ -1,4 +1,4 @@
-define(['moment', 'material', 'semantic', 'Dexie', 'factory'], function(moment, mdc, semantic, Dexie, factory) {
+define(['factory'], function(factory) {
     return class OBSApp {
         constructor() {
             //super();
@@ -13,7 +13,7 @@ define(['moment', 'material', 'semantic', 'Dexie', 'factory'], function(moment, 
             this.$invoke = this.$injector.invoke;
             this.$rootScope = this.$scope.$root;
 
-            Object.assign(this.$scope.__proto__, this)
+            Object.assign(this.$scope.__proto__, this);
             factory.call(this.$scope);
         }
     }

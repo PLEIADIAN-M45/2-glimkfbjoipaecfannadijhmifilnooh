@@ -1,6 +1,8 @@
-define(['angular', 'Dexie', '../prototype'], function(angular, Dexie) {
+define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], function(angular, Dexie, moment, mdc, semantic) {
+
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
+
     return function factory() {
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
@@ -50,22 +52,24 @@ define(['angular', 'Dexie', '../prototype'], function(angular, Dexie) {
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
         this.assign = function() { Object.assign(this, ...arguments) };
-        this.apply = function(res) { if(!this.$$phase) { this.$apply(); }; return res; }
+        this.apply = function(res) { if (!this.$$phase) { this.$apply(); }; return res; }
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
+                //console.log(this.extensionId, message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
+                    //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
         }
         this.injectStylesheet = function() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
         };
 
         this.injectComponents = function() {
-            if(!this.components) { return false };
+            if (!this.components) { return false };
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -87,7 +91,7 @@ define(['angular', 'Dexie', '../prototype'], function(angular, Dexie) {
             }
         } [this.host];
 
-        for(var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
+        for (var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.invoke = function() {
             this.injectStylesheet();
@@ -119,6 +123,21 @@ define(['angular', 'Dexie', '../prototype'], function(angular, Dexie) {
                     break;
             }
         }
+
+        /*
+        this.sendsms = new function() {
+
+            console.log(this);
+
+            return {
+                status: 2,
+                send: function() {
+                    console.log(this);
+                    console.log(this.sendMessage);
+                }
+            }
+
+        }*/
 
     }
 });

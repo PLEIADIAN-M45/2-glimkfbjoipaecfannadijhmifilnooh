@@ -7,7 +7,9 @@ define(['App'], function($scope) {
     }
 
     class apiFunction {
-        constructor() {}
+        constructor() {
+
+        }
 
         getUserModel() {
             this.timing = [];
@@ -46,8 +48,9 @@ define(['App'], function($scope) {
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
-            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
+            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
         }
+
         getPhoneDate() {
             return ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
@@ -58,9 +61,20 @@ define(['App'], function($scope) {
                 this.idcard.value = d.f_idCard;
                 this.equpmt.browser = d.f_browser;
                 this.equpmt.osInfo = d.f_osInfo;
+
+                //this.sms_status = this.status[0];
+                //if (this.status[0] == 3) { sessionStorage[this.mobile.value] = 3; }
+                //sessionStorage[this.mobile.value] = this.status[0];
+
+
                 return this;
             })
         }
+
+
+
     }
+
+
     return new apiFunction();
 });

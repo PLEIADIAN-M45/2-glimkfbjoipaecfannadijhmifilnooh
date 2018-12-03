@@ -162,11 +162,3 @@ if(route) {
     })
 }
 */
-
-
-requirejs.config({
-    bundles: {
-        'primary': ['main2', 'util', 'text', 'text!template.html'],
-        'secondary': ['text!secondary.html']
-    }
-});

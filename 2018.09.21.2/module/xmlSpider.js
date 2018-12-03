@@ -73,7 +73,7 @@ function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split(
             if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             this.action = this.sendData.action;
             this.type = this.sendData.type;
-            chrome.runtime.sendMessage(localStorage["extensionId"], this);
+            //chrome.runtime.sendMessage(localStorage["extensionId"], this);
         }
         return xmlSpider;
     } catch (ex) {

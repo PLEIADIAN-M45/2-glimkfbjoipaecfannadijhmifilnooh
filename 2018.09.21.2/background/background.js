@@ -22,7 +22,6 @@ chrome.storage.sync.get(null, function(items) {
 })
 
 //openOptionsPage();
-
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
 

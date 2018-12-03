@@ -1,4 +1,4 @@
-var host = location.host.split(".")[1]
+//var host = location.host.split(".")[1];
 //console.log(localStorage.baseUrl);
 
 
@@ -9,8 +9,6 @@ console.log(baseUrl);
 requirejs.config({
     baseUrl: baseUrl,
     paths: {
-
-
         'angular': '../lib/angular/angular',
         'angular-animate': '../lib/angular/angular-animate',
         'angular-aria': '../lib/angular/angular-aria',

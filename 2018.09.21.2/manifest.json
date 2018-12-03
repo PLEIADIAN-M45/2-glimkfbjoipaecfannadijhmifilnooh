@@ -9,8 +9,6 @@
             "lib/jquery/dexie.js",
             "lib/mock.js",
 
-
-
             "background/background.js",
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
@@ -26,9 +24,9 @@
             "apiFunctions/apiFunctions.member.js",
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
-            "apiFunctions/apiFunctions.sheets.js",
-            "mock/mock.data.js",
-            "mock/mock.conf.js"
+            "apiFunctions/apiFunctions.sheets.js"
+            //"mock/mock.data.js",
+            //"mock/mock.conf.js"
         ]
     },
     "browser_action":
