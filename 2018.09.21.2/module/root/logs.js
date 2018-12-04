@@ -114,6 +114,7 @@ define(['@page'], function() {
 
                 this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
                 this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+                
                 this.user = await this.getUser()
                 /********************************************/
                 //this.user.author.value = "王杰";

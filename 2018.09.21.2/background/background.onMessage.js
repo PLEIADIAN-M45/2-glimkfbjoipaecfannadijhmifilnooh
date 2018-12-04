@@ -7,8 +7,10 @@ function response_message(request, sender, sendResponse) {
         request.time = Date.now();
         request.url = window.baseUrl[request.channel];
     }
+    
     try {
         var promise = eval(request.command).call(...arguments).then(sendResponse);
+        //console.log(promise);
     } catch (ex) {
         //console.error(request);
     }

@@ -1,29 +1,21 @@
 define(['apiFunction'], function(apiFunction) {
 
     function sendSms() {
-
         return {
-            //status: this.user.mobile.value,
-            status: this.user.status[0],
-
+            status: sessionStorage[this.user.mobile.value] || this.user.status[0],
             send: function() {
-
+                console.log(this);
                 this.sendMessage({ command: 'apiFunctions.sendsms', params: this.user })
                     .then((res) => {
-
                         console.log(res);
-
-
-                        //this.status = res.status;
-                        //localStorage[res.mobile.value] = res.status;
-                        //this.$apply();
+                        this.dialog(res);
                     });
             }.bind(this)
         }
     }
 
-    return async function() {
 
+    return async function() {        
         this.setUser = function() {
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
             return Promise.all([
@@ -33,29 +25,27 @@ define(['apiFunction'], function(apiFunction) {
                 apiFunction.getUserStore.call(this.user)
             ]).then(this.putUser.bind(this));
         };
-
-
+        
         this.user = await this.getUser() || await this.setUser(this);
-
-        //this.user = await this.setUser(this);
-
-
-        //console.log(this.user.status);
-
         this.sendsms = sendSms.apply(this);
         this.$apply();
 
-        //console.log(this.user);
-
-
-        /*this.$watch('user', function(nv, ov) {
-            console.log(nv);
-        }, true)*/
-
+        console.log(this.user);
     }
+
 });
 
 
+
+
+//this.status = res.status;
+//localStorage[res.mobile.value] = res.status;
+//this.$apply();
+
+
+/*this.$watch('user', function(nv, ov) {
+    console.log(nv);
+}, true)*/
 
 
 //console.log(this.sendsms);
@@ -90,14 +80,6 @@ this.$watch('user.status', function(newValue, oldValue) {
     console.log(newValue);
 });
 */
-
-
-
-
-
-
-
-
 
 
 /*

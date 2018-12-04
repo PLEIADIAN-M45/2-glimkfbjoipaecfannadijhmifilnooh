@@ -4,6 +4,8 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
     dexie.version(1).stores({ user: 'f_accounts' });
 
     return function factory() {
+        this.mdc = mdc;
+        this.pathname = location.pathname;
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
@@ -33,12 +35,12 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
             }
         } [this.host][this.path];
         this.operator = localStorage.operator;
-        this.channel = localStorage.channel;
         this.extensionId = localStorage.extensionId;
         this.origin = location.origin;
         this.searchParams = new URLSearchParams(location.search);
         this.params = Array.from(this.searchParams).serialize();
-        this.account = this.params.account;
+        this.account = this.params.account || this.params.member;
+        this.channel = localStorage.channel || this.params.siteNumber;
         this.referrer = document.referrer;
         this.forms = document.forms;
         this.form = document.forms[0];
@@ -55,6 +57,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
         this.apply = function(res) { if (!this.$$phase) { this.$apply(); }; return res; }
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
+            //console.log(message);
             return new Promise((resolve, reject) => {
                 //console.log(this.extensionId, message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
@@ -63,6 +66,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
                 })
             })
         }
+
         this.injectStylesheet = function() {
             if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
@@ -124,20 +128,48 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
             }
         }
 
-        /*
-        this.sendsms = new function() {
 
-            console.log(this);
+        this.dialog = function({ status, message, mobile }) {
 
-            return {
-                status: 2,
-                send: function() {
-                    console.log(this);
-                    console.log(this.sendMessage);
-                }
-            }
+            this.mdcDialog = {
+                "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "1": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "0": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: mobile, description: "" },
+                "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
+            } [status];
 
-        }*/
+
+            if (!this.$$phase) { this.$apply(); }
+            var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            dialog.listen("MDCDialog:accept", function() {});
+            dialog.listen("MDCDialog:cancel", function() {});
+            dialog.show();
+        }
+
 
     }
 });
+
+
+
+
+
+
+
+
+/*
+this.sendsms = new function() {
+
+    console.log(this);
+
+    return {
+        status: 2,
+        send: function() {
+            console.log(this);
+            console.log(this.sendMessage);
+        }
+    }
+
+}*/
