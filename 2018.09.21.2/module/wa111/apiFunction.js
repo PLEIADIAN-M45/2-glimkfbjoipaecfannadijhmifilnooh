@@ -8,9 +8,7 @@ define(['App'], function($scope) {
 
     class apiFunction {
 
-        constructor() {
-
-        }
+        constructor() {}
 
         getUserState() {
             this.status = [m.ishow.value];
@@ -75,11 +73,3 @@ define(['App'], function($scope) {
     return new apiFunction();
 });
 
-
-
-
-
-
-//this.sms_status = this.status[0];
-//if (this.status[0] == 3) { sessionStorage[this.mobile.value] = 3; }
-//sessionStorage[this.mobile.value] = this.status[0];

@@ -55,6 +55,7 @@ Spreadsheets.prototype.siribonus = function() {
 
 
 var Spreadsheets = {
+    
     authorize_wa111: function(user, postData) {
 
         console.log(user);
@@ -105,6 +106,8 @@ function getUser() {
     var channel = this.channel;
     return evo.store.user.get({ account, channel });
 }
+
+
 
 var robot = {
 

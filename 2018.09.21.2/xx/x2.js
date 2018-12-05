@@ -12,6 +12,15 @@ console.log($.param({ a: 3, b: 4 }));
 
 
 
+
+
+
+//this.sms_status = this.status[0];
+//if (this.status[0] == 3) { sessionStorage[this.mobile.value] = 3; }
+//sessionStorage[this.mobile.value] = this.status[0];
+
+
+
 /*
 function copy(e) { copy(e) { document.execCommand("copy"); } }
 function cut(e) { document.execCommand("cut"); }
@@ -53,6 +62,12 @@ function jsonqs(str) {
     }
 };
 */
+
+
+
+
+
+
 
 https://xs66.net/
 

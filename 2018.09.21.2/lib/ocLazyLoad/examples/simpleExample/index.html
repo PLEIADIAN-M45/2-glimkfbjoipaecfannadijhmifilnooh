@@ -13,6 +13,7 @@
         <script>
             angular.module("LazyLoadTest", ["oc.lazyLoad"])
                 .controller("TestController", function($scope, $ocLazyLoad, $compile) {
+                    
                     $ocLazyLoad.load("js/testApp.js").then(function() {
                         console.log('loaded!!');
                         var el, elToAppend;

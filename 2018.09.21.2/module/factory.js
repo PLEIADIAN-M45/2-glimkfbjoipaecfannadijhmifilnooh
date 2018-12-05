@@ -1,4 +1,4 @@
-define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], function(angular, Dexie, moment, mdc, semantic) {
+define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], function(angular, Dexie, moment, mdc, semantic) {
 
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
@@ -128,8 +128,6 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
                     break;
             }
         }
-
-
 
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {

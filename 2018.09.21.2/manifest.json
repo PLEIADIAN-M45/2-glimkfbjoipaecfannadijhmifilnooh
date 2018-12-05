@@ -25,7 +25,7 @@
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js"
-            
+
             //"mock/mock.data.js",
             //"mock/mock.conf.js"
         ]
@@ -47,7 +47,7 @@
             "lib/semantic/semantic.css"
         ],
         "js": [
-            "injector.js"
+            "module/injector.js"
         ],
         "matches": [
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
@@ -71,7 +71,8 @@
     {
         "accepts_tls_channel_id": false,
         "ids": ["*"],
-        "matches": ["*://127.0.0.1/*",
+        "matches": [
+            "*://127.0.0.1/*",
             "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"
         ]
     },
