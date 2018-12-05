@@ -6,6 +6,8 @@ define(["apiFunction", "xmlSpider"], function(apiFunction, xmlSpider) {
     xmlSpider.loadend = function() {
         console.log(this.action);
 
+        
+
     };
 
 
