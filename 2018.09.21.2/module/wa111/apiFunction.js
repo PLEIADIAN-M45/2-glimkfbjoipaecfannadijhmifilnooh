@@ -12,12 +12,15 @@ define(['App'], function($scope) {
 
         }
 
+        getUserState() {
+            this.status = [m.ishow.value];
+            this.permit = [m.isOpenDeposit.value];
+        }
+
         getUserModel() {
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
-            this.status = [m.ishow.value];
-            this.permit = [m.isOpenDeposit.value];
             this.author = { attr: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
             this.locate = { attr: 'locate', title: m.lblIp, value: m.lblIp };
             this.mobile = { attr: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
@@ -29,6 +32,7 @@ define(['App'], function($scope) {
                 { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } },
                 { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
             ];
+            this.smss = m.ishow.value;
             return this;
         }
 
@@ -67,13 +71,7 @@ define(['App'], function($scope) {
                 return this;
             })
         }
-
-
-
-
     }
-
-
     return new apiFunction();
 });
 

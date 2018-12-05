@@ -3,6 +3,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
 
+
     return function factory() {
         this.mdc = mdc;
         this.pathname = location.pathname;
@@ -129,8 +130,8 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
         }
 
 
-        this.dialog = function({ status, message, mobile }) {
 
+        this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
                 "1": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -139,14 +140,30 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
                 "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
             } [status];
-
-
             if (!this.$$phase) { this.$apply(); }
             var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
-            dialog.listen("MDCDialog:accept", function() {});
+            dialog.listen("MDCDialog:accept", function() {
+                window.open("http://client.motosms.com/login", "_blank");
+            });
             dialog.listen("MDCDialog:cancel", function() {});
             dialog.show();
         }
+
+        this.sendSms = function() {
+            this.user.smss = false;
+            this.sendMessage({
+                command: 'apiFunctions.sendsms',
+                params: this.user
+            }).then((res) => {
+                this.user.smss = res.status;
+                this.dialog(res);
+                this.putUser();
+                this.$apply();
+            });
+        }
+
+
+
 
 
     }
@@ -158,6 +175,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', '../prototype'], f
 
 
 
+//this.status = res.status;
 
 /*
 this.sendsms = new function() {

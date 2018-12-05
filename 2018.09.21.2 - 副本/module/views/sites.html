@@ -1,0 +1,37 @@
+<div class="extra content grid grid-4" ng-if="me.attr!='locate'">
+    <div ng-repeat="s in me.sites" ng-init="apiFunctions.member(s)">
+        <div class="ui image label" ng-click="showSemanticModal(s);">
+            <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
+        </div>
+        <!-- pagination -->
+        <div class="ui image label">
+            <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member(s, $event);" ng-disabled="s.index==1 || s.active"></i>
+            <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
+            <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+            <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+        </div>
+        <!-- account -->
+        <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
+            <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
+            <!-- extra content 警示訊息 -->
+            <aside class="hidden" ng-init="setPopup(row)">
+                <table class="ui celled selectable striped collapsing table inverted pink small" name="{{popupId}}">
+                    <thead>
+                        <th>警示帐号</th>
+                        <th>汇款户名</th>
+                        <th>汇款帐号</th>
+                        <th>警示讯息</th>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="w in row.list_Accounts">
+                            <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
+                            <td>{{w.f_RemittanceName||w.AccountName}}</td>
+                            <td>{{w.f_RemittanceAccount}}</td>
+                            <td>{{w.f_remarks||w.Memo}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </aside>
+        </div>
+    </div>
+</div>

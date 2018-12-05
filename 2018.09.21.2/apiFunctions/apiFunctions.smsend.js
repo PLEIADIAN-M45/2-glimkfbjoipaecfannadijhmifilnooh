@@ -20,7 +20,7 @@ apiFunctions.sendsms = function(sender, sendResponse) {
         }
     }).then((res, b, c) => {
         //if (res.match(/(會員登錄)/)) { var status = this.params.status[0]; }
-        if (res.match(/(會員登錄)/)) { var status = 1; }
+        if (res.match(/(會員登錄)/)) { var status = 3; }
         if (res.match(/(msg = '')/)) { var status = 0; }
         if (res.match(/(msg = '101')/)) { var status = 101; }
         if (res.match(/(msg = '102')/)) { var status = 102; }

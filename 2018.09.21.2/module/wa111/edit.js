@@ -1,33 +1,22 @@
 define(['apiFunction'], function(apiFunction) {
-
-    function sendSms() {
-        return {
-            status: sessionStorage[this.user.mobile.value] || this.user.status[0],
-            send: function() {
-                console.log(this);
-                this.sendMessage({ command: 'apiFunctions.sendsms', params: this.user })
-                    .then((res) => {
-                        console.log(res);
-                        this.dialog(res);
-                    });
-            }.bind(this)
-        }
-    }
-
-
-    return async function() {        
+    
+    return async function() {
         this.setUser = function() {
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
             return Promise.all([
+                apiFunction.getUserState.call(this.user),
                 apiFunction.getUserModel.call(this.user),
                 apiFunction.getPhoneDate.call(this.user),
                 apiFunction.getSystemLog.call(this.user),
                 apiFunction.getUserStore.call(this.user)
             ]).then(this.putUser.bind(this));
         };
-        
+
+
         this.user = await this.getUser() || await this.setUser(this);
-        this.sendsms = sendSms.apply(this);
+
+        apiFunction.getUserState.call(this.user);
+
         this.$apply();
 
         console.log(this.user);
@@ -38,6 +27,38 @@ define(['apiFunction'], function(apiFunction) {
 
 
 
+
+/*
+
+        ///this.sendSms.status = sessionStorage[this.user.mobile.value] || this.user.status[0];
+        //this.sendsms = sendSms.apply(this);
+        //console.log(this.sendSms.status);
+        //console.log(this.user);
+function sendSms() {
+    //console.log(this);
+    //if (this.user.status[0] == 3) { sessionStorage[this.user.mobile.value] = 3 }
+    return {
+        //status: sessionStorage[this.user.mobile.value],
+        send: function() {
+
+            this.user.sms_status = false;
+            //console.log(this);
+            //this.status = false;
+            this.sendMessage({ command: 'apiFunctions.sendsms', params: this.user })
+                .then((res) => {
+                    console.log(res.status);
+                    this.user.sms_status = res.status;
+                    //this.status = res.status;
+                    this.dialog(res);
+                    this.$apply();
+                });
+        }.bind(this)
+    }
+}
+*/
+//console.log(res);
+
+//|| this.user.status[0]
 //this.status = res.status;
 //localStorage[res.mobile.value] = res.status;
 //this.$apply();
