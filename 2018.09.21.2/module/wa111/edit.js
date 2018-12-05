@@ -1,6 +1,7 @@
 define(['apiFunction'], function(apiFunction) {
-    
+
     return async function() {
+        
         this.setUser = function() {
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
             return Promise.all([
