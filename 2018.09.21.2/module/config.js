@@ -31,3 +31,12 @@ define([], function() {
         } [this.host][this.path];
     }
 });
+
+
+/*
+
+In the manifest file :
+
+https://stackoverflow.com/questions/9057292/requirejs-in-a-chrome-extension
+
+*/

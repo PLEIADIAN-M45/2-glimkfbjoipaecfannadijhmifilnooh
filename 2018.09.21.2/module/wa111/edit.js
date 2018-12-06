@@ -1,17 +1,13 @@
 define(["apiFunction", "xmlSpider"], function(apiFunction, xmlSpider) {
 
-
     //console.log(xmlSpider);
 
+    
     xmlSpider.loadend = function() {
-
-        console.log(this.action);
-
+        console.log(this);
 
        
     };
-
-
 
 
 

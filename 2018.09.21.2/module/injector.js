@@ -16,9 +16,10 @@ function injectScript(attrs) {
 
 
 
-injectScript({ "src": getURL("/module/prototype.js") });
 
 injectScript({ "src": getURL("/module/xmlSpider.js") });
+
+
 
 document.onreadystatechange = function() {
     switch (document.readyState) {
@@ -34,6 +35,9 @@ document.onreadystatechange = function() {
 
 
 
+
+
+//injectScript({ "src": getURL("/module/prototype.js") });
 
 
 
@@ -140,6 +144,7 @@ var robot = {
             }
         }
     },
+
     StopMember: function(user) {
         if (this.respData == 1) { return };
         Spreadsheets.authorize_wa111(user, { f_ishow: 2, f_depositStatus: 0 });
@@ -154,6 +159,8 @@ var robot = {
         //Spreadsheets.authorize_wa111.call(this)
         //user.status[0] = 1;
     },
+
+
     getmodel: async function() { /*開通*/
         var account = this.sendData.account;
         var channel = this.channel;
@@ -169,6 +176,7 @@ var robot = {
         var user = await evo.store.user.get({ account, channel });
         Spreadsheets.authorize_ku711(user, this.sendData);
     },
+
     UpdateMemberSNInfoBackend: async function() { //控制用户状态開關 //判斷一下是否執行成功 //這個動作用於 轉為停權
         //if (this.respData.Data.Message == "更新成功") {}
         var account = this.sendData.AccountID;
@@ -190,6 +198,7 @@ var robot = {
         if (this.respData.Data.Message != "更新成功") { return };
         window.cacheBonusData = this.sendData;
     },
+
     GetMemberBonusLogBackendByCondition: async function() {
         if (window.cacheBonusData) {
             var postData = this.dataRows.find((row) => { return row.BonusNumber == window.cacheBonusData.BonusNumber; });

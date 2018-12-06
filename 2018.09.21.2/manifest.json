@@ -46,9 +46,8 @@
             "lib/angular/angular-csp.css",
             "lib/semantic/semantic.css"
         ],
-        "js": [
-            "module/injector.js"
-        ],
+        "js": ["lib/require/require.js", "myscript.js"],
+        //"js": ["module/prototype.js", "module/injector.js"],
         "matches": [
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
             "http://*/layout/Login.aspx",
@@ -104,7 +103,6 @@
     },
     "options_page": "option/option3.html",
     "optional_permissions": ["tabs", "http://www.google.com/"],
-
     "permissions": [
         //"declarativeWebRequest",
         "activeTab",

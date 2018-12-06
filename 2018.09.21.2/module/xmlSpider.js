@@ -1,4 +1,8 @@
-(function webpackUniversalModuleDefinition(root, factory) {
+
+
+
+
+;(function webpackUniversalModuleDefinition(root, factory) {
     if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
     else if (typeof define === 'function' && define.amd) define([], factory);
     else if (typeof exports === 'object') exports["xmlSpider"] = factory();
@@ -6,7 +10,20 @@
 })(this, function() {
 
 
-    function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); };
+    function $getAllResponseHeaders(obj) {
+        /*
+        var arr = obj.getAllResponseHeaders().split('\r')
+        console.log(arr);
+        return
+        //.map((x)
+        */
+
+        return obj.getAllResponseHeaders().split('\r').map((x) => {
+            //console.log(x);
+            return x.split(":")
+        }).serialize();
+    };
+
 
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -52,5 +69,32 @@
     }
 });
 
+
+
+
+
+class Spider {
+
+    constructor() {
+        this.prototype = XMLHttpRequest.prototype
+    }
+
+}
+
+
+//Spider.prototype = XMLHttpRequest.prototype;
+
+
+console.log(Spider.withCredentials);
+
+
+
+
+
+
+
+
+
+//Spider.prototype
 
 //chrome.runtime.sendMessage(localStorage["extensionId"], this);

@@ -63,16 +63,24 @@ requirejs(['config'], function(c) {
 
     if (c.route) {
         
+
         requirejs(['App', c.route], function($scope, module) {
 
+
             if (module) {
-                
+
                 module.call($scope, $scope);
+
                 $scope.invoke();
 
             } else {
+
                 console.error(c.route);
+
             }
         })
     }
+
+
+
 });

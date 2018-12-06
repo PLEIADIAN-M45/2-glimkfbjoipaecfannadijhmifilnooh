@@ -22,6 +22,7 @@
  Array.prototype.parseToModel = function() { return this.map((elem) => { return [elem.sname, elem.model]; }).serialize(); };
  Array.prototype.parseToCtrl = function() { return this.map((elem) => { return [elem.sname, elem]; }).serialize(); };
  Array.prototype.serialize = function() {
+     console.log(this);
      try {
          var obj = {};
          this.forEach(([name, value]) => { if (name && value) { obj[name] = value } });
@@ -53,8 +54,6 @@
 
  function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} };
 
- function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); };
-
  function trim(value) { return value.toString().trim() };
 
  function s(a) { console.log(a); }
@@ -62,7 +61,7 @@
 
 
 
-
+//console.log(11, 22);
 
 
 

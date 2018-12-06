@@ -1,9 +1,6 @@
 define(['factory'], function(factory) {
-
     return class OBSApp2 {
-
         constructor() {
-
             this.$name      = "OBSApp";
             this.$element   = document.querySelector('[ng-controller]');
             this.$view      = angular.element(this.$element);

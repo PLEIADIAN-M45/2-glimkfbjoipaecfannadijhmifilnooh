@@ -110,6 +110,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
         this.putUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
         }
+        
         this.createTab = function(_url) {
             console.log(_url);
             window.open(_url, "_blank");
@@ -129,6 +130,8 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
             }
         }
 
+
+
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -146,6 +149,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
             dialog.listen("MDCDialog:cancel", function() {});
             dialog.show();
         }
+
 
         this.sendSms = function() {
             this.user.smss = false;
@@ -176,7 +180,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
         }
 
 
-        
+
     }
 });
 

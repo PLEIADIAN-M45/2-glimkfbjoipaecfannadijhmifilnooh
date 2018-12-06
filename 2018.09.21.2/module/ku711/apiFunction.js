@@ -16,10 +16,14 @@ define([], function() {
             ]).then(([banker, meta, city, prov]) => { return $scope.user.banker = banker.filter((x) => x.IsSQL).map((c, i) => { return { title: c.PayeeAccountNoShow, value: c.PayeeAccountNo, region: { meta: meta[c.BankCodeID], prov: prov[c.BankProID], city: city[c.BankCityID] } } }) })
         }
 
+
         getStatus() {
+
             return Promise.all([
+
                 getModule('UpdateEditMemberInfoManage.MemberStatus'),
                 getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
+
             ]).then(([status, permit]) => {
 
 
@@ -27,6 +31,7 @@ define([], function() {
                 $scope.user.permit.push(permit);
                 return $scope.user;
             })
+            
         }
 
         getSystemLog() {
