@@ -5,5 +5,3 @@ define([], function() {
         localStorage.operator = this.model.hdfsite_tab.split('_')[0];
     }
 });
-
-

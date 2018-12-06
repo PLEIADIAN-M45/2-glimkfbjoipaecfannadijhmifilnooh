@@ -8,7 +8,9 @@ define(['App'], function($scope) {
 
     class apiFunction {
 
-        constructor() {}
+        constructor() {
+
+        }
 
         getUserState() {
             this.status = [m.ishow.value];
@@ -72,4 +74,3 @@ define(['App'], function($scope) {
     }
     return new apiFunction();
 });
-

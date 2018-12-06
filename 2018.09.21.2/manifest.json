@@ -3,6 +3,7 @@
     {
         "persistent": true,
         "scripts": [
+
             "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
@@ -25,7 +26,6 @@
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js"
-
             //"mock/mock.data.js",
             //"mock/mock.conf.js"
         ]
@@ -73,7 +73,12 @@
         "ids": ["*"],
         "matches": [
             "*://127.0.0.1/*",
-            "*://119.81.201.133/company/*", "*://161.202.184.9/layout/*", "*://161.202.9.231/*", "*://*.wa111.net/*", "*://*.ku711.net/*", "*://*.tp33.net/*"
+            "*://119.81.201.133/company/*",
+            "*://161.202.184.9/layout/*",
+            "*://161.202.9.231/*",
+            "*://*.wa111.net/*",
+            "*://*.ku711.net/*",
+            "*://*.tp33.net/*"
         ]
     },
     "icons":

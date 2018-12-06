@@ -6,7 +6,7 @@ define([], function() {
         this.host                      = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
         this.route                     = {
             "wa111"                    : {
-                "login"                : "login",
+                "login"                : "sign",
                 "index"                : "home",
                 "memberlist"           : "list",
                 "membermodify"         : "edit",
@@ -21,7 +21,7 @@ define([], function() {
                 "astropaywithdrawals"  : "cash"
             },
             "ku711"                    : {
-                "signin"               : "login",
+                "signin"               : "sign",
                 "member"               : "home",
                 "memberinfomanage"     : "list",
                 "editmemberinfomanage" : "edit",
@@ -30,4 +30,4 @@ define([], function() {
             }
         } [this.host][this.path];
     }
-})
+});

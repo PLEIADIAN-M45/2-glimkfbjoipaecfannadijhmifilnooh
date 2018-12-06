@@ -1,19 +1,9 @@
-define([], function() {
-
-    return class ku711 {
-        constructor() {
-
-        }
-    }
+define(["OBSApp"], function(OBSApp2) {
+    //console.log(window.OBSApp);
+    //console.log(OBSApp2);
+    //console.log(this);
 
 
+
+    return new OBSApp2().$scope;
 });
-
-
-
-
-
-
-/*
-var myApp = angular.module("OBSApp");
-return myApp;*/

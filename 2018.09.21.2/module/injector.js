@@ -15,7 +15,10 @@ function injectScript(attrs) {
 }
 
 
-//injectScript({ "src": getURL("/module/xmlSpider.js") });
+
+injectScript({ "src": getURL("/module/prototype.js") });
+
+injectScript({ "src": getURL("/module/xmlSpider.js") });
 
 document.onreadystatechange = function() {
     switch (document.readyState) {

@@ -102,6 +102,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 }, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['requestHeaders', 'blocking']);
 
 /**************************************************************************************************************/
+
+
 window.baseUrl = {};
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
@@ -122,7 +124,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
-//console.log(window.baseUrl);
+console.log(window.baseUrl);
 /**************************************************************************************************************/
 
 

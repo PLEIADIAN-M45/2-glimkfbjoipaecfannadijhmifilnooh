@@ -1,4 +1,12 @@
-define(['prototype'], function() {
+(function webpackUniversalModuleDefinition(root, factory) {
+    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
+    else if (typeof define === 'function' && define.amd) define([], factory);
+    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
+    else root["xmlSpider"] = factory();
+})(this, function() {
+
+
+    function $getAllResponseHeaders(obj) { return obj.getAllResponseHeaders().split('\r').map((x) => { return x.split(":") }).serialize(); };
 
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -22,7 +30,7 @@ define(['prototype'], function() {
         };
         xmlSpider.loadend = function() {};
         xmlSpider.load = function() {
-            //console.log(this);
+            console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
             this.responseHeaders = $getAllResponseHeaders(this);
             this.channel = localStorage.channel;
@@ -37,11 +45,12 @@ define(['prototype'], function() {
             if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             this.action = this.sendData.action;
             this.type = this.sendData.type;
-            //chrome.runtime.sendMessage(localStorage["extensionId"], this);
         }
         return xmlSpider;
     } catch (ex) {
         console.error('xmlSpider');
     }
+});
 
-})
+
+//chrome.runtime.sendMessage(localStorage["extensionId"], this);

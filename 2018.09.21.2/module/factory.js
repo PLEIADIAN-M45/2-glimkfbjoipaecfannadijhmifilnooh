@@ -161,9 +161,22 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
         }
 
 
+        this.getModule = function(objPath) {
+            return new Promise((resolve, reject) => {
+                var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
+                (function repeater(object) {
+                    var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        } else { resolve(alphaVal); }
+                    }
+                }(object));
+            })
+        }
 
 
-
+        
     }
 });
 

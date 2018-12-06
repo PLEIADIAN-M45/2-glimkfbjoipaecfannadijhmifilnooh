@@ -17,7 +17,7 @@
                  return trim(this.outerText);
          }
      }
- })
+ });
 
  Array.prototype.parseToModel = function() { return this.map((elem) => { return [elem.sname, elem.model]; }).serialize(); };
  Array.prototype.parseToCtrl = function() { return this.map((elem) => { return [elem.sname, elem]; }).serialize(); };
@@ -28,8 +28,6 @@
          return obj;
      } catch (ex) {}
  }
-
-
 
  function $serialize({ href, url, postData }) {
      var obj = {};
@@ -69,9 +67,14 @@
 
 
 
+ /*
+  Array.prototype.serialize = function() {
+      var obj = {};
+      this.forEach(([name, value]) => { if (name && value) { obj[name.trim()] = value.trim() } });
+      return obj;
+  }
 
-
-
+ */
 
  /*
   Array.prototype.serialize = function() {

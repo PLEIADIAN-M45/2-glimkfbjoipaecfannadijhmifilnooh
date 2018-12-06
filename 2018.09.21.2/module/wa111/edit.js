@@ -4,18 +4,23 @@ define(["apiFunction", "xmlSpider"], function(apiFunction, xmlSpider) {
     //console.log(xmlSpider);
 
     xmlSpider.loadend = function() {
+
         console.log(this.action);
 
-        
 
+       
     };
+
+
 
 
 
     return async function() {
 
         this.setUser = function() {
+
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
+            
             return Promise.all([
                 apiFunction.getUserState.call(this.user),
                 apiFunction.getUserModel.call(this.user),
@@ -23,6 +28,7 @@ define(["apiFunction", "xmlSpider"], function(apiFunction, xmlSpider) {
                 apiFunction.getSystemLog.call(this.user),
                 apiFunction.getUserStore.call(this.user)
             ]).then(this.putUser.bind(this));
+
         };
 
 

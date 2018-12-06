@@ -1,25 +1,14 @@
-define(["apiFunction"], function(apiFunction) {
+define(['@ku711/api'], function(apiFunction) {
 
+    console.log($scope.create);
 
-    console.log(apiFunction);
 
     function setUser() {
-
-        this.user = {
-            sequel: "",
-            unique: "",
-            timing: [],
-            status: [],
-            permit: [],
-            author: { title: null, value: null },
-            locate: { title: null, value: null },
-            mobile: { title: null, value: null },
-            idcard: { title: null, value: null },
-            banker: []
-        }
+        
+        $scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
 
         return Promise.all([
-
+            
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
             getSystemLog(),
@@ -92,67 +81,23 @@ define(["apiFunction"], function(apiFunction) {
     }
 
 
-
-
-    return function() {
-
-        //$scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
-
-
-        this.setUser = function() {
-
-            this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
-
-            return Promise.all([
-
-                this.getModule('OldMemberBaseInfo'),
-                this.getModule('OldMemberRisksInfo'),
-
-
-
-
-            ]).then(this.putUser.bind(this));
-
-        };
-
-
-
-
-        this.model = this.ctrl.model;
-
-
-        this.getModule('OldMemberBaseInfo').then((x) => { console.log(x); })
-
-
-
+    /*
+    $scope.openDeposit = function() {
+        console.log(1, 1);
+        $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+        $scope.ctrl.DepositChanged();
+        $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
     }
 
+    $scope.openLogPage = function(_url) {
+        console.log(_url);
+        window.open(_url, '_blank');
+    }
+    */
+
+    return { setUser }
+});
 
 
-})
 
-
-
-
-
-/*
-apiFunction.getUserState.call(this.user),
-    apiFunction.getUserModel.call(this.user),
-    apiFunction.getPhoneDate.call(this.user),
-    apiFunction.getSystemLog.call(this.user),
-    apiFunction.getUserStore.call(this.user)
-*/
-
-// console.log(this.ctrl);
-//console.log(this.model.OldMemberBaseInfo);
-//getModule('OldMemberBaseInfo')
-
-//getModule.bind(this);
-
-//console.log(this);
-
-//model
-
-//getModule('OldMemberBaseInfo')
-
-//this.model.OldMemberBaseInfo
+//define([], function() {})
