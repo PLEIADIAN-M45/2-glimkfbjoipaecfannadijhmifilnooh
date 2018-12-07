@@ -1,32 +1,60 @@
 define([], function() {
 
+
+
+
+
+    function createElement(value) {
+        return $('<b>').text(value[0])
+            .addClass('pointer')
+            .popup({ on: 'click' })
+            .click(this.copy)
+            .attr('data-content', value.reverse().join('-'))
+    }
+
+
+    function addHighlightAccountsId(account, channel) {
+        if (this.user.channel == channel && this.user.account == account) {
+            this.children[2].style.backgroundColor = "#01579b";
+            this.children[2].style.color = "white";
+        }
+    }
+
+
+    function addChannelToAccountsId() {
+        var account = this.children[2].outerText;
+        var channel = this.children[0].outerText.split('-').shift();
+        this.children[2].firstChild.remove();
+        this.createElement([account]).appendTo(this.children[2]);
+        this.createElement([channel, account]).appendTo(this.children[2]);
+        this.addHighlightAccountsId(account, channel);
+    }
+
+
+
     return async function($scope) {
 
+        this.createElement = createElement;
+        this.addChannelToAccountsId = addChannelToAccountsId;
+        this.addHighlightAccountsId = addHighlightAccountsId;
+
+        this.user = await this.getUser();
         this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
         this.apiFunctions = {};
-
         this.apiFunctions.region = function(params, e) {
             params.command = "apiFunctions.region";
             params.active = true;
             params.region = (params.attr == "banker") ? params.region : {};
-
-            //console.log(params);
-            //if (params.attr !== "mobile") { return }
-
             chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-
-                console.log(res);
-
                 params.active = false;
                 Object.assign(params, res);
-                
                 this.$apply();
                 this.putUser();
             });
-
         }.bind(this);
+
 
         this.apiFunctions.member = function(params) {
             params.command = "apiFunctions.member"
@@ -40,9 +68,42 @@ define([], function() {
         }.bind(this);
 
 
+
         this.apiFunctions.getProtocolSet = function(params) {
 
-            //console.log(params);
+            var cells = $('#divCookie > ul').filter((i, { firstElementChild, children }) => {
+                return firstElementChild.outerText && children.length > 10;
+            }).toArray().forEach((ul) => {
+                //console.log(ul.children);
+                //ul.children.user = this.user;
+                //Object.assign(this, ul)
+                this.children = ul.children;
+                //this.addHighlightAccountsId(ul.children);
+                this.addChannelToAccountsId();
+            });
+
+
+
+
+            /*
+            .forEach(({ children }) => {
+                //console.log(this);
+                this.children = children;
+                this.channel = children[0].outerText.split("-")[0];
+                this.account = children[2].outerText;
+                this.author = children[4].outerText;
+                this.province = children[7].outerText;
+                this.protocol = children[9].outerText;
+                this.unique = [this.account, this.channel].join("-");
+                this.addHighlightAccountsId(children);
+            })
+            */
+
+            //console.log(cells);
+
+
+            //210
+
             return
 
 
@@ -60,6 +121,15 @@ define([], function() {
             this.user.region = params.rows.map((x) => { return x.IPLocation });
 
         }.bind(this);
+
+
+
+
+        //ul.children = this.children;
+        //ul.unique = this.unique;
+        //this.channel = this.children[0];
+        //this.account = this.children[2];
+
 
 
         this.changeColor = function(r) {
@@ -107,7 +177,6 @@ define([], function() {
 
 
 
-        this.user = await this.getUser();
 
 
         this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard]
@@ -138,3 +207,6 @@ define([], function() {
     }
 
 })
+
+
+//.forEach(({ children }) => {

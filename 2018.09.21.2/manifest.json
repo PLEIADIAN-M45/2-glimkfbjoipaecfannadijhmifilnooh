@@ -46,8 +46,7 @@
             "lib/angular/angular-csp.css",
             "lib/semantic/semantic.css"
         ],
-        "js": ["lib/require/require.js", "myscript.js"],
-        //"js": ["module/prototype.js", "module/injector.js"],
+        "js": ["module/injector.js"],
         "matches": [
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
             "http://*/layout/Login.aspx",

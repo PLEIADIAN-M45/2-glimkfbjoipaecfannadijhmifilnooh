@@ -3,13 +3,13 @@ var arrProtocol = new Map();
 
 function dispatch() { return Promise.resolve() }
 
-function checkSensitiveProvince(el) { var test = google.region.search(el.outerText); if(test) { el.classList.add('danger'); } }
+function checkSensitiveProvince(el) { var test = google.region.search(el.outerText); if (test) { el.classList.add('danger'); } }
 
-function checkSensitiveProtocol(el) { var test = google.locate.search(el.outerText); if(test) { el.classList.add('danger'); } }
+function checkSensitiveProtocol(el) { var test = google.locate.search(el.outerText); if (test) { el.classList.add('danger'); } }
 
-function checkSensitiveUserName(el) { var test = google.author.search(el.outerText); if(test) { el.classList.add('danger'); } }
+function checkSensitiveUserName(el) { var test = google.author.search(el.outerText); if (test) { el.classList.add('danger'); } }
 
-function checkSensitiveMessages(el) { var test = google.notice.search(el.outerText); if(test) { el.classList.add('danger'); } }
+function checkSensitiveMessages(el) { var test = google.notice.search(el.outerText); if (test) { el.classList.add('danger'); } }
 
 function addHighlightAccountsId(children) {
     var account = children[2].outerText;
@@ -35,7 +35,7 @@ function addChannelToAccountsId(children) {
         .appendTo(children[2]);
     createElement([channel, account])
         .appendTo(children[2]);
-    if(evo.channel == channel && evo.account == account) {
+    if (evo.channel == channel && evo.account == account) {
         addHighlightAccountsId(children);
         catchProvinceProtocols(children);
     }
@@ -49,7 +49,10 @@ function catchProvinceProtocols(children) {
 }
 
 function getAllIPAddress(scope) {
-    [...document.querySelectorAll('ul:not([class]):not([style])')].filter(({ children, firstElementChild }) => { return (children.length > 5 && firstElementChild.outerText) })
+    [...document.querySelectorAll('ul:not([class]):not([style])')]
+    .filter(({ children, firstElementChild }) => {
+            return (children.length > 5 && firstElementChild.outerText)
+        })
         .forEach(({ children }) => {
             addChannelToAccountsId(children);
             checkSensitiveUserName(children[4]);

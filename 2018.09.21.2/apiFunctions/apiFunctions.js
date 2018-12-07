@@ -5,28 +5,11 @@ var apiFunctions = {};
 apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
 
 apiFunctions.region = async function() {
-    console.log(this);
-    // evo.store[table.name].get(this.params)
-    //evo.store.user.get(this.unique).then((s) => { console.log(s); })
+    //console.log(this);
     var r = await apiFunctions[this.attr].call(this);
-    //search.region.compare(r.region);
-    //search.region.compare.call(r)
-    //console.log(r);
-
-
-    //var c = search.region.compare(r.region)
-
     r.alarm = search.region.compare(r.region);
-
-    //r.region.
-
-    console.log(r);
-
-
+    //console.log(r);
     return Promise.resolve(r);
-
-
-    return r;
 }
 
 
@@ -36,18 +19,19 @@ var { author, locate, mobile, banker, region, danger, notice } = localStorage;
 var search = { author, locate, mobile, banker, region, danger, notice };
 for (var key in search) { search[key] = decoder(search[key]) };
 
+
+//console.log(search.region);
+
+search.region.push(['河南'])
+
+
 search.author.compare = function() {
     console.log(this);
 }
 
-
-
 search.region.compare = function(res) {
-
-    var value = Object.values(res).toString()
-
+    var value = Object.values(res).toString();
     //console.log(value);
-
     return this.find((x) => {
         //console.log(value.includes(x));
         return value.includes(x);
@@ -56,9 +40,19 @@ search.region.compare = function(res) {
 
 
 
+
 console.log(search);
 
 
+
+
+//r.region.
+//evo.store[table.name].get(this.params)
+//evo.store.user.get(this.unique).then((s) => { console.log(s); })
+//search.region.compare(r.region);
+//search.region.compare.call(r)
+//console.log(r);
+//var c = search.region.compare(r.region)
 /*
 [author, locate, mobile, banker, region, danger, notice].map((x) => {
     console.log(decoder(x));

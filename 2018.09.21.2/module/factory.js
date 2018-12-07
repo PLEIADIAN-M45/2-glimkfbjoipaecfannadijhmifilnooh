@@ -1,4 +1,14 @@
-define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], function(angular, Dexie, moment, mdc, semantic) {
+define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular, Dexie, moment, mdc, semantic) {
+
+
+    document.oncopy = function(e) {
+        var copyText = e.target.dataset.content;
+        if (window.getSelection().type === "Caret") {
+            e.preventDefault();
+            if (e.clipboardData) { e.clipboardData.setData("text/plain", copyText); } else if (window.clipboardData) { window.clipboardData.setData("Text", copyText); }
+        }
+    };
+
 
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
@@ -110,7 +120,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
         this.putUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
         }
-        
+
         this.createTab = function(_url) {
             console.log(_url);
             window.open(_url, "_blank");
@@ -131,6 +141,9 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'prototype'], func
         }
 
 
+        this.cut = function(e) { document.execCommand("cut"); }
+        this.copy = function(e) { document.execCommand("copy"); }
+        this.paste = function(e) { document.execCommand("paste"); }
 
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {

@@ -1,7 +1,3 @@
-
-
-
-
 ;(function webpackUniversalModuleDefinition(root, factory) {
     if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
     else if (typeof define === 'function' && define.amd) define([], factory);
@@ -11,15 +7,7 @@
 
 
     function $getAllResponseHeaders(obj) {
-        /*
-        var arr = obj.getAllResponseHeaders().split('\r')
-        console.log(arr);
-        return
-        //.map((x)
-        */
-
         return obj.getAllResponseHeaders().split('\r').map((x) => {
-            //console.log(x);
             return x.split(":")
         }).serialize();
     };
@@ -47,7 +35,7 @@
         };
         xmlSpider.loadend = function() {};
         xmlSpider.load = function() {
-            console.log(this);
+            //console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
             this.responseHeaders = $getAllResponseHeaders(this);
             this.channel = localStorage.channel;
@@ -60,6 +48,7 @@
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
             if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            /*----------------------------------------------------------------------------------------------------*/
             this.action = this.sendData.action;
             this.type = this.sendData.type;
         }
@@ -70,22 +59,6 @@
 });
 
 
-
-
-
-class Spider {
-
-    constructor() {
-        this.prototype = XMLHttpRequest.prototype
-    }
-
-}
-
-
-//Spider.prototype = XMLHttpRequest.prototype;
-
-
-console.log(Spider.withCredentials);
 
 
 

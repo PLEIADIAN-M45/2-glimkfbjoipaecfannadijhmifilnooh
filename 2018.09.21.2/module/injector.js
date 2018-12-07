@@ -6,20 +6,19 @@ localStorage.extensionId = chrome.runtime.id;
 localStorage.host = host;
 
 
+
 function injectScript(attrs) {
     var script = document.createElement('script');
     script.async = 1;
     script.onload = function() { this.remove(); };
     Object.entries(attrs).forEach(([name, value]) => { script.setAttribute(name, value); });
-    (document.head || document.documentElement).appendChild(script);
+    (document.head || document.documentElement).appendChild(script);  
 }
 
 
 
-
+injectScript({ "src": getURL("/module/prototype.js") });
 injectScript({ "src": getURL("/module/xmlSpider.js") });
-
-
 
 document.onreadystatechange = function() {
     switch (document.readyState) {
@@ -37,7 +36,6 @@ document.onreadystatechange = function() {
 
 
 
-//injectScript({ "src": getURL("/module/prototype.js") });
 
 
 
