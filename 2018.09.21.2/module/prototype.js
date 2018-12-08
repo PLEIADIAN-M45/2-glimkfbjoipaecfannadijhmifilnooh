@@ -3,8 +3,8 @@
 
 
 if (!HTMLElement.hasOwnProperty("sname")) {}
-
 if (!HTMLElement.hasOwnProperty("model")) {}
+    
 
 Object.defineProperty(HTMLElement.prototype, "sname", {
     get: function() {

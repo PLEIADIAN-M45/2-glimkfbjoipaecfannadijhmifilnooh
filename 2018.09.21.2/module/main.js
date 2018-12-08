@@ -3,10 +3,13 @@ requirejs.config({
     paths: {
         'OBSApp': '../OBSApp',
         'config': '../config',
+        'Robot': '../Robot',
+
         'prototype': '../prototype',
         'xmlSpider': '../xmlSpider',
         'factory': '../factory',
         'SendSms': '../SendSms',
+
         'angular': '../../lib/angular/angular',
         'angular-animate': '../../lib/angular/angular-animate.min',
         'angular-aria': '../../lib/angular/angular-aria',
@@ -52,8 +55,51 @@ requirejs.config({
 
 
 
+//console.log(XMLHttpRequest.prototype);
+
+/*
+class XmlSpider {
+    constructor(x) {
+        //console.log(x);
+        for (var c in x) {
+            this[c] = x[c]
+            console.log(c);
+        }
+        //console.log(this);
+        //console.log(this.prototype);
+        //this.prototype = x
+        //Object.assign(this, x)
+    }
+}
+console.log(XmlSpider);
+var xmlSpider = new XmlSpider(XMLHttpRequest.prototype)
+*/
 
 
+class MyClass {
+    foo() { return 1; }
+    get[Symbol.unscopables]() {
+        return { foo: true };
+    }
+}
+
+
+
+var foo = function() { return 2; };
+
+console.log(MyClass.prototype);
+
+with(MyClass.prototype) {
+
+    foo();
+}
+
+
+//XmlSpider.prototype = XMLHttpRequest.prototype
+
+
+
+//console.log(xmlSpider);
 
 
 
@@ -67,9 +113,7 @@ requirejs(['config'], function(c) {
 
             if (module) {
                 //console.log(module);
-
                 module.call($scope, $scope);
-
                 $scope.invoke();
 
             } else {
@@ -79,7 +123,4 @@ requirejs(['config'], function(c) {
             }
         })
     }
-
-
-
 });

@@ -1,5 +1,6 @@
-define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular, Dexie, moment, mdc, semantic) {
+//define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'xmlSpider'], function(angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
+define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function(angular, Dexie, moment, mdc, semantic, Robot) {
 
     document.oncopy = function(e) {
         var copyText = e.target.dataset.content;
@@ -13,6 +14,9 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular,
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
 
+    //xmlSpider.dexie = dexie;
+    //console.log(xmlSpider);
+
 
     return function factory() {
         this.mdc = mdc;
@@ -20,29 +24,29 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular,
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-        this.route                     = {
-            "wa111"                    : {
-                "login"                : "login",
-                "index"                : "home",
-                "memberlist"           : "list",
-                "membermodify"         : "edit",
-                "depositbonus"         : "bonus",
-                "igetmemberinfo"       : "logs",
-                "samebrowserlist"      : "logs",
-                "deltabank"            : "cash",
-                "deltaonline"          : "cash",
-                "deltawechat"          : "cash",
-                "deltaalipay"          : "cash",
-                "withdrawalsbank"      : "cash",
-                "astropaywithdrawals"  : "cash"
+        this.route = {
+            "wa111": {
+                "login": "login",
+                "index": "home",
+                "memberlist": "list",
+                "membermodify": "edit",
+                "depositbonus": "bonus",
+                "igetmemberinfo": "logs",
+                "samebrowserlist": "logs",
+                "deltabank": "cash",
+                "deltaonline": "cash",
+                "deltawechat": "cash",
+                "deltaalipay": "cash",
+                "withdrawalsbank": "cash",
+                "astropaywithdrawals": "cash"
             },
-            "ku711"                    : {
-                "signin"               : "login",
-                "member"               : "home",
-                "memberinfomanage"     : "list",
-                "editmemberinfomanage" : "edit",
-                "bonuslog"             : "bonus",
-                "memberloginlog"       : "log"
+            "ku711": {
+                "signin": "login",
+                "member": "home",
+                "memberinfomanage": "list",
+                "editmemberinfomanage": "edit",
+                "bonuslog": "bonus",
+                "memberloginlog": "log"
             }
         } [this.host][this.path];
         this.operator = localStorage.operator;
@@ -68,15 +72,19 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular,
         this.apply = function(res) { if (!this.$$phase) { this.$apply(); }; return res; }
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
-            //console.log(message);
+            //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
-                //console.log(this.extensionId, message);
+                //console.log(message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
+
             })
         }
+
+
+        xmlSpider.sendMessage = this.sendMessage;
 
         this.injectStylesheet = function() {
             if (!this.stylesheet) { return false };
@@ -191,10 +199,10 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic'], function(angular,
                 }(object));
             })
         }
-
-
-
     }
+
+
+
 });
 
 

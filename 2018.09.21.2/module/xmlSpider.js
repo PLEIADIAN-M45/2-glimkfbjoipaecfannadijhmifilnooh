@@ -1,4 +1,5 @@
-;(function webpackUniversalModuleDefinition(root, factory) {
+;
+(function webpackUniversalModuleDefinition(root, factory) {
     if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
     else if (typeof define === 'function' && define.amd) define([], factory);
     else if (typeof exports === 'object') exports["xmlSpider"] = factory();
@@ -11,7 +12,6 @@
             return x.split(":")
         }).serialize();
     };
-
 
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
@@ -33,12 +33,15 @@
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
+
         xmlSpider.loadend = function() {};
+        
         xmlSpider.load = function() {
             //console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
-            this.responseHeaders = $getAllResponseHeaders(this);
+            this.extensionId = localStorage.extensionId;
             this.channel = localStorage.channel;
+            this.responseHeaders = $getAllResponseHeaders(this);
             this.hostname = $hostname();
             this.lastPath = $lastPath(this);
             this.sendData = $serialize(this);
@@ -48,20 +51,28 @@
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
             if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
-            /*----------------------------------------------------------------------------------------------------*/
+            /*-------------------------------------------------------------------------------------------------------*/
             this.action = this.sendData.action;
             this.type = this.sendData.type;
+
+
+            
+
+            chrome.runtime.sendMessage(this.extensionId, this);
+
         }
+
+
+        //console.log(xmlSpider);
+
+
         return xmlSpider;
+
+
     } catch (ex) {
         console.error('xmlSpider');
     }
 });
-
-
-
-
-
 
 
 

@@ -132,10 +132,6 @@ console.log(window.baseUrl);
 
 
 
-
-
-
-
 function forTest() {
     chrome.webRequest.onBeforeRequest.addListener(function(details) {
         //console.log(details);

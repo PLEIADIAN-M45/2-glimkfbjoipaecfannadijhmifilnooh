@@ -25,7 +25,8 @@
             "apiFunctions/apiFunctions.member.js",
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
-            "apiFunctions/apiFunctions.sheets.js"
+            "apiFunctions/apiFunctions.sheets.js",
+            "apiFunctions/apiFunctions.XMLHttpRequest.js"
             //"mock/mock.data.js",
             //"mock/mock.conf.js"
         ]
