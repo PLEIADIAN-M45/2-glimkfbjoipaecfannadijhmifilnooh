@@ -49,6 +49,9 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
                 "memberloginlog": "log"
             }
         } [this.host][this.path];
+
+
+
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
         this.origin = location.origin;
