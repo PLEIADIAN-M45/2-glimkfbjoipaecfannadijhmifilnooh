@@ -82,7 +82,6 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
                     //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
-
             })
         }
 

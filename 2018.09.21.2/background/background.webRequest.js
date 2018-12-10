@@ -124,7 +124,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
-console.log(window.baseUrl);
+//console.log(window.baseUrl);
 /**************************************************************************************************************/
 
 

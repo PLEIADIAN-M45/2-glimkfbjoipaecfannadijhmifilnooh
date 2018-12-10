@@ -39,8 +39,6 @@ search.region.compare = function(res) {
 }
 
 
-
-
 console.log(search);
 
 
