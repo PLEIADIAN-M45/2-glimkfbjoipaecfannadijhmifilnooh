@@ -24,7 +24,12 @@ requirejs.config({
         'config': '../config',
         'Robot': '../Robot',
 
+
         'prototype': '../prototype',
+
+        'service': '../service',
+
+
 
         'xmlSpider': '../xmlSpider',
         'xmlSpider.extend': '../xmlSpider.extend',
@@ -105,15 +110,11 @@ requirejs.config({
 //requirejs(['bar'], function(bar) {})
 
 
-requirejs(['myApp'], function(App) {
+requirejs(['myApp'], function({ $scope }) {
 
-    console.log(App);
-
-
-
+    //console.log($scope);
     //console.log(module);
 
-    /*
     if ($scope.module) {
 
         requirejs([$scope.module], function(module) {
@@ -124,7 +125,7 @@ requirejs(['myApp'], function(App) {
 
         })
 
-    }*/
+    }
 
 })
 

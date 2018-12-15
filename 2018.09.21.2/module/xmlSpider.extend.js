@@ -1,4 +1,19 @@
-define(["xmlSpider"], function(xmlSpider) {
+define([], function() {
+
+
+
+    return {
+
+
+        
+
+        delDiceWinRecords: function() { /*用於刪除*/
+            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+        }
+
+
+
+    }
 
     //console.log(xmlSpider);
 

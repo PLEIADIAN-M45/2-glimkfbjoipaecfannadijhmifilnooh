@@ -4,8 +4,6 @@
 
 define([], function() {
 
-    //console.log('qwe');
-
     if (!HTMLElement.hasOwnProperty("sname")) {}
     if (!HTMLElement.hasOwnProperty("model")) {}
 
@@ -74,6 +72,19 @@ define([], function() {
     function trim(value) { return value.toString().trim() };
 
     function s(a) { console.log(a); }
+
+
+
+
+
+    document.oncopy = function(e) {
+        var copyText = e.target.dataset.content;
+        if (window.getSelection().type === "Caret") {
+            e.preventDefault();
+            if (e.clipboardData) { e.clipboardData.setData("text/plain", copyText); } else if (window.clipboardData) { window.clipboardData.setData("Text", copyText); }
+        }
+    };
+
 
 
 })
