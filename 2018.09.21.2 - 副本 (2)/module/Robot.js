@@ -1,6 +1,5 @@
 define(["xmlSpider"], function(xmlSpider) {
 
-
     //console.log(xmlSpider);
 
     xmlSpider.getmodel = async function() { /*開通*/

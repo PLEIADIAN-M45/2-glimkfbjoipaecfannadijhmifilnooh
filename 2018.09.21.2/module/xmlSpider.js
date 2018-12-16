@@ -1,10 +1,4 @@
-;
-(function webpackUniversalModuleDefinition(root, factory) {
-    if (typeof exports === 'object' && typeof module === 'object') module.exports = factory();
-    else if (typeof define === 'function' && define.amd) define([], factory);
-    else if (typeof exports === 'object') exports["xmlSpider"] = factory();
-    else root["xmlSpider"] = factory();
-})(this, function() {
+define(['prototype', 'xmlSpider.extend'], function(prototype, extend) {
 
 
     function $getAllResponseHeaders(obj) {
@@ -35,7 +29,7 @@
         };
 
         xmlSpider.loadend = function() {};
-        
+
         xmlSpider.load = function() {
             //console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
@@ -55,30 +49,13 @@
             this.action = this.sendData.action;
             this.type = this.sendData.type;
 
-
-            
-
             chrome.runtime.sendMessage(this.extensionId, this);
-
         }
 
-
-        //console.log(xmlSpider);
-
+        Object.assign(xmlSpider.__proto__, extend);
 
         return xmlSpider;
-
-
     } catch (ex) {
         console.error('xmlSpider');
     }
-});
-
-
-
-
-
-
-//Spider.prototype
-
-//chrome.runtime.sendMessage(localStorage["extensionId"], this);
+})

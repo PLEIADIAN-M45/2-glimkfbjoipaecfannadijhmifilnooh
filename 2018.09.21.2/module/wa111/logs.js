@@ -36,7 +36,12 @@ define([], function() {
         this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
         this.apiFunctions = {};
+
+
+
         this.apiFunctions.region = function(params, e) {
+
+            return
             params.command = "apiFunctions.region";
             params.active = true;
             params.region = (params.attr == "banker") ? params.region : {};
@@ -46,10 +51,14 @@ define([], function() {
                 this.$apply();
                 this.putUser();
             });
+
         }.bind(this);
 
 
         this.apiFunctions.member = function(params) {
+
+            return
+
             params.command = "apiFunctions.member"
             params.active = true;
             params.rows = [];
@@ -63,8 +72,7 @@ define([], function() {
 
 
         this.apiFunctions.getProtocolSet = function(params) {
-            console.log(params);
-            return
+
             var cells = $('#divCookie > ul').filter((i, { firstElementChild, children }) => {
                 return firstElementChild.outerText && children.length > 10;
             }).toArray().forEach((ul) => {
@@ -124,6 +132,7 @@ define([], function() {
             this.notice = search.notice.compare(this.f_remarks || this.Memo);
         }
 
+
         this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard]
             .concat(this.user.banker).map((x) => {
                 var params = { attr: x.attr, value: x.value, index: 1 };
@@ -137,11 +146,21 @@ define([], function() {
             });
 
 
+
+
         console.log(this.list);
         console.log(this.user);
+
         this.$apply();
     }
+
 })
 
 
+
+
 //.forEach(({ children }) => {
+//ul.children = this.children;
+//ul.unique = this.unique;
+//this.channel = this.children[0];
+//this.account = this.children[2];

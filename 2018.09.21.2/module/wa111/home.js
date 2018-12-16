@@ -1,4 +1,5 @@
 define([], function() {
+    //console.log(this);
     return function() {
         localStorage.channel = window.siteNumber;
         localStorage.siteName = this.model.spTitle2;

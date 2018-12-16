@@ -1,0 +1,80 @@
+<aside>
+    <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
+        <a class="item">{{user.author.value}}</a>
+        <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{user.smss}}</a>
+        <a class="item" ng-click="createTab(urls.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
+        <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
+        <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a>
+    </div>
+</aside>
+<style type="text/css">
+.ui.inverted.menu.danger {
+    background-color: #d2115a !important;
+}
+
+.w140 {
+    display: inline-block;
+    min-width: 150px !important;
+}
+
+.m {
+    display: inline-block;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.ui.labeled.icon.menu {
+    position: fixed !important;
+    top: 0px !important;
+    right: 0px !important;
+    z-index: 99999 !important;
+}
+
+.ui.popup,
+.ui.popup::before {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.ui.popup>.content {
+    text-align: left;
+    font-family: Roboto, Microsoft Yahei;
+    font-weight: bold;
+}
+
+.success {
+    color: green !important;
+}
+
+.isBlack,
+.error {
+    color: red;
+}
+
+.mdl-dialog {
+    width: 350px;
+}
+
+.mdl-dialog__title {
+    line-height: 1.28571em !important;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    font-family: Roboto, Microsoft JhengHei;
+}
+
+.mdl-dialog__content {
+    font-family: Roboto, Microsoft JhengHei !important;
+}
+
+.material-icons {
+    margin-right: 10px;
+    line-height: inherit !important;
+}
+
+._mobile {
+    font-family: Roboto;
+    font-weight: bold;
+}
+</style>
+<!-- <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>简讯<br>开通</b></a> -->

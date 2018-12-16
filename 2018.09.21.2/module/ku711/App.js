@@ -1,9 +1,9 @@
-define(["OBSApp"], function(OBSApp2) {
-    //console.log(window.OBSApp);
-    //console.log(OBSApp2);
-    //console.log(this);
+define(["prototype"], function(prototype) {
 
-
-
-    return new OBSApp2().$scope;
 });
+
+//console.log(window.OBSApp);
+//console.log(OBSApp2);
+//console.log(this);
+//console.log(OBSApp);
+//return new OBSApp2().$scope;

@@ -5,10 +5,19 @@ var apiFunctions = {};
 apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
 
 apiFunctions.region = async function() {
-    //console.log(this);
+
+
+    console.log(this);
+
+
+
     var r = await apiFunctions[this.attr].call(this);
-    r.alarm = search.region.compare(r.region);
-    //console.log(r);
+
+    //r.alarm = search.region.compare(r.region);
+    console.log(r);
+
+
+
     return Promise.resolve(r);
 }
 
@@ -20,7 +29,9 @@ var search = { author, locate, mobile, banker, region, danger, notice };
 for (var key in search) { search[key] = decoder(search[key]) };
 
 
-//console.log(search.region);
+console.log(search);
+
+
 
 search.region.push(['河南'])
 
@@ -39,7 +50,9 @@ search.region.compare = function(res) {
 }
 
 
-console.log(search);
+
+
+//console.log(search);
 
 
 

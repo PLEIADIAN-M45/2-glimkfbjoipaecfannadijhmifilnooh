@@ -1,0 +1,107 @@
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+*[disabled] {
+  pointer-events: none !important;
+  opacity: 0.5 !important;
+  cursor: not-allowed; }
+
+body {
+  font-size: 12.5px; }
+
+.ui.cards {
+  margin-top: 20px;
+  width: 100%;
+  align-items: flex-start;
+  justify-content: center; }
+  .ui.cards .card.success,
+  .ui.cards .card {
+    min-width: fit-content;
+    background-repeat: round !important;
+    background-image: url("chrome-extension://__MSG_@@extension_id__/images/1.jpg") !important;
+    box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); }
+    .ui.cards .card.success .content,
+    .ui.cards .card .content {
+      color: #fff; }
+    .ui.cards .card.success .extra,
+    .ui.cards .card .extra {
+      background-color: #fefefe;
+      padding: 3px; }
+    .ui.cards .card.success .extra.grid,
+    .ui.cards .card .extra.grid {
+      display: grid; }
+    .ui.cards .card.success .extra.flex,
+    .ui.cards .card .extra.flex {
+      display: flex; }
+    .ui.cards .card.success .extra.grid.grid-4,
+    .ui.cards .card .extra.grid.grid-4 {
+      grid-template-columns: 25% 25% 25% 25%; }
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: auto auto auto auto; }
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: auto auto auto; }
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 50% 50%; }
+
+.grid-1 {
+  display: grid;
+  grid-template-columns: auto; }
+
+.ui.image.label.protocol {
+  flex-wrap: wrap; }
+
+.ui.image.label.center {
+  text-align: center; }
+
+.ui.image.label,
+.ui.image.label.visible {
+  display: flex !important;
+  margin: 2px;
+  padding: 0;
+  line-height: 28px;
+  text-align: left; }
+  .ui.image.label .angle.icon,
+  .ui.image.label.visible .angle.icon {
+    cursor: pointer;
+    margin: 0;
+    padding: 0 8px;
+    background: rgba(0, 0, 0, 0.15);
+    display: flex;
+    height: max-content; }
+  .ui.image.label .angle.icon:hover,
+  .ui.image.label.visible .angle.icon:hover {
+    background: rgba(0, 0, 0, 0.25);
+    font-weight: bold; }
+  .ui.image.label .angle.icon.left,
+  .ui.image.label.visible .angle.icon.left {
+    margin-right: 1px;
+    border-top-left-radius: 0.285714rem;
+    border-bottom-left-radius: 0.285714rem; }
+  .ui.image.label .angle.icon.right,
+  .ui.image.label.visible .angle.icon.right {
+    margin-left: 1px;
+    border-top-right-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem; }
+  .ui.image.label span,
+  .ui.image.label .detail,
+  .ui.image.label.visible span,
+  .ui.image.label.visible .detail {
+    border-radius: 0;
+    margin: 0;
+    padding: 0 8px;
+    flex-grow: 1;
+    text-align: inherit;
+    width: -webkit-fill-available; }
+  .ui.image.label .detail.center,
+  .ui.image.label.visible .detail.center {
+    text-align: center; }
+
+/*# sourceMappingURL=cards.csssa.map */
