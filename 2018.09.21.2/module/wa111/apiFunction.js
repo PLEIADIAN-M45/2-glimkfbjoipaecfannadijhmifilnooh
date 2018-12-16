@@ -1,6 +1,6 @@
-define(['App'], function($scope) {
+define([], function() {
 
-    var m = $scope.model;
+    //var m = $scope.model;
 
     function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
         return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })

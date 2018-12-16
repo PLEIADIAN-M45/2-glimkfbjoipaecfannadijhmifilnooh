@@ -1,5 +1,4 @@
-define(['prototype', 'xmlSpider.extend'], function(prototype, extend) {
-
+define(['xmlSpider.extend'], function(extend) {
 
     function $getAllResponseHeaders(obj) {
         return obj.getAllResponseHeaders().split('\r').map((x) => {
@@ -28,7 +27,11 @@ define(['prototype', 'xmlSpider.extend'], function(prototype, extend) {
             return send.apply(this, arguments);
         };
 
-        xmlSpider.loadend = function() {};
+
+        xmlSpider.loadend = function() {
+            //console.log(this.type);
+            if(this.extend) { this.extend.call(this); }
+        };
 
         xmlSpider.load = function() {
             //console.log(this);
@@ -44,17 +47,23 @@ define(['prototype', 'xmlSpider.extend'], function(prototype, extend) {
             this.dataRows = $dataRows(this);
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
-            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             /*-------------------------------------------------------------------------------------------------------*/
             this.action = this.sendData.action;
             this.type = this.sendData.type;
+            this.extend = extend[this.type];
 
             chrome.runtime.sendMessage(this.extensionId, this);
         }
 
-        Object.assign(xmlSpider.__proto__, extend);
+
+        //xmlSpider.extend = extend;
+
+        //Object.assign(xmlSpider.__proto__, extend);
 
         return xmlSpider;
+
+
     } catch (ex) {
         console.error('xmlSpider');
     }

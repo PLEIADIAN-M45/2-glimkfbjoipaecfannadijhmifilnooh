@@ -1,5 +1,6 @@
 define(["apiFunction"], function(apiFunction) {
     return async function() {
+
         this.setUser = function() {
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
             return Promise.all([
@@ -10,8 +11,10 @@ define(["apiFunction"], function(apiFunction) {
                 apiFunction.getUserStore.call(this.user)
             ]).then(this.putUser.bind(this));
         };
+
         this.user = await this.getUser() || await this.setUser(this);
-        this.$apply();
+
+
         console.log(this.user);
     }
 });

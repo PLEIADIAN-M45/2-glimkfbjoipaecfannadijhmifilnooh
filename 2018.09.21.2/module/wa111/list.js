@@ -1,18 +1,12 @@
 define([], function() {
-    //console.log(xmlSpider);
-    return function($scope) {
-
-        console.log(this.xmlSpider);
-
+    return function() {
         this.xmlSpider.loadend = function() {
-
-            if (this.type == "getAllUser") {
-
-                console.log(this.dexie);
-
-                //this.dataRows.map((r) => { $scope.dexie.user.put(r); })
-            }
+            if(this.type == "getAllUser") {
+                this.dataRows.map((r) => {
+                	//console.log(r);
+                    this.dexie.user.put(r);
+                });
+            };
         };
-
-    }
+    };
 });

@@ -1,6 +1,8 @@
-define(["prototype"], function(prototype) {
+define([], function() {
 
 });
+
+
 
 //console.log(window.OBSApp);
 //console.log(OBSApp2);

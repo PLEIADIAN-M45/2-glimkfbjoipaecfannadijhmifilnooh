@@ -1,43 +1,11 @@
-//console.log(location.pathname);
-
-//var pathname             = location.pathname.split(".")[0].split("/").pop();
-
-var route = location.pathname.split(".")[0].split("/").pop();
-
-//console.log(route);
-
-//console.log(require.toUrl("."));
-
-
 requirejs.config({
-
-
     baseUrl: localStorage.baseUrl,
-
-    //baseUrl: require.toUrl("."),
-
-
     paths: {
-
-        'myApp': '../myApp',
-
-        'config': '../config',
-        'Robot': '../Robot',
-
-
-        'prototype': '../prototype',
-
-        'service': '../service',
-
-
-
+        'app': '../app',
+        'instances': '../instances',
+        'services': '../services',
         'xmlSpider': '../xmlSpider',
         'xmlSpider.extend': '../xmlSpider.extend',
-
-        'factory': '../factory',
-
-        'scope': '../scope',
-
         'SendSms': '../SendSms',
 
         'angular': '../../lib/angular/angular',
@@ -79,56 +47,49 @@ requirejs.config({
         'angular-sanitize': { deps: ['angular'] },
         'angular-scenario': { deps: ['angular'] },
         'angular-touch': { deps: ['angular'] }
-    },
-
-    map: {
-        '*': {
-            'foo': 'foo1.2'
-        },
-        'some/oldmodule': {
-            'foo': 'foo1.0'
-        }
-    },
-
-    config: {
-        'OBSApp': {
-            host: localStorage.host
-        },
-
-        'bar': {
-            size: 'large'
-        },
-        'baz': {
-            color: 'blue'
-        }
-    },
+    }
 });
 
 
 
 
-//requirejs(['bar'], function(bar) {})
 
-
-requirejs(['myApp'], function({ $scope }) {
-
-    //console.log($scope);
-    //console.log(module);
-
-    if ($scope.module) {
-
+requirejs(['app'], function({ $scope }) {
+    if($scope.module) {
         requirejs([$scope.module], function(module) {
-
             module.call($scope, $scope);
-
+            $scope.apply();
             $scope.invoke();
-
         })
-
     }
+});
 
+
+
+
+
+
+
+//console.log(location.pathname);
+
+//var pathname             = location.pathname.split(".")[0].split("/").pop();
+//console.log(localStorage.baseUrl);
+//'config'                 : '../config',
+//'Robot'                  : '../Robot',
+//'factory'                : '../factory',
+//var route = location.pathname.split(".")[0].split("/").pop();
+
+/*
+requirejs(['myApp'], function({ $scope }) {
+    if($scope.module) {
+        requirejs([$scope.module], function(module) {
+            module.call($scope, $scope);
+            $scope.$apply();
+            $scope.invoke();
+        })
+    }
 })
-
+*/
 
 
 

@@ -45,6 +45,16 @@ document.onreadystatechange = function() {
 
 
 
+/*
+<script data-main="main" src="local/path/require.js"></script>
+*/
+
+
+//<!-- advanced setup: using public CDN with local file fallback -->
+/*
+<script data-main="main" src="http://requirejs.org/docs/release/2.1.14/minified/require.js"></script>
+<script>window.require || document.write('<script data-main="main" src="local/path/require.js"></script>')</script>
+*/
 
 
 

@@ -1,19 +1,23 @@
 define([], function() {
 
-
-
     return {
 
+        /*
+        getAllUser: function() {
+            this.dataRows.map((r) => { this.dexie.user.put(r); });
+        },*/
 
-        
 
         delDiceWinRecords: function() { /*用於刪除*/
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
         }
 
 
 
     }
+
+
+
 
     //console.log(xmlSpider);
 
@@ -47,7 +51,7 @@ define([], function() {
     xmlSpider.loadend = function() {
         //console.log(this);
         var action = this.action;
-        if (this[action]) {
+        if(this[action]) {
             //console.log(action);
             this[action]();
         }
@@ -82,8 +86,8 @@ define([], function() {
             user.timing[2] = timeDiff(user.timing);
             user.permit = user.permit.map($Num);
             user.status = user.status.map($Num);
-            if (user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
-            if (user.status[0] == 3) {
+            if(user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
+            if(user.status[0] == 3) {
                 user.command = "google:scripts";
                 user.module = "authorize";
             } else {
@@ -95,7 +99,7 @@ define([], function() {
     }
 
     function getUser() {
-        if (this.sendData) {
+        if(this.sendData) {
             var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
             var channel = this.channel;
             return evo.store.user.get({ account, channel });
@@ -104,8 +108,8 @@ define([], function() {
 
     function getBonus() {
         var bonus = this.dataRows.find((row) => {
-            if (row.f_id) { return row.f_id == window.cacheBonusData.id; }
-            if (row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
+            if(row.f_id) { return row.f_id == window.cacheBonusData.id; }
+            if(row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
         });
         window.cacheBonusData = null;
         return bonus;
@@ -124,26 +128,26 @@ define([], function() {
     var robot = {
 
         delDiceWinRecords: function() { /*用於刪除*/
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         DelDiceWinRecords: function() { /*用於給點*/
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         getDepositBonusList: async function() { /*禮金表*/
-            if (window.cacheBonusData) {
+            if(window.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
                 window.cacheBonusData = null;
                 var account = postData.f_accounts;
                 var channel = this.channel;
                 var user = await evo.store.user.get({ account, channel });
-                if (user) {
+                if(user) {
                     user.bonus = postData;
                     Spreadsheets.siribonus(user);
                 }
             }
         },
         StopMember: function(user) {
-            if (this.respData == 1) { return };
+            if(this.respData == 1) { return };
             Spreadsheets.authorize_wa111(user, { f_ishow: 2, f_depositStatus: 0 });
             return
             /*1還原 或 2停權*/
@@ -169,7 +173,7 @@ define([], function() {
 
 
         UpdateMemberRiskInfoAccountingBackend: async function() { //控制存款開關
-            if (this.respData.Data.Message != "更新成功") { return }
+            if(this.respData.Data.Message != "更新成功") { return }
             var account = this.sendData.AccountID;
             var channel = this.channel;
             var user = await evo.store.user.get({ account, channel });
@@ -184,7 +188,7 @@ define([], function() {
         },
 
         UpdateMemberRisksInfoBackendIsFSuspension: async function() { //還原或停權
-            if (this.sendData.IsFSuspension == false) { return }
+            if(this.sendData.IsFSuspension == false) { return }
             var account = this.sendData.AccountID;
             var channel = this.channel;
             var user = await evo.store.user.get({ account, channel });
@@ -193,17 +197,17 @@ define([], function() {
 
         /************************************************************************************/
         UpdateMemberBonusLog: async function() {
-            if (this.respData.Data.Message != "更新成功") { return };
+            if(this.respData.Data.Message != "更新成功") { return };
             window.cacheBonusData = this.sendData;
         },
         GetMemberBonusLogBackendByCondition: async function() {
-            if (window.cacheBonusData) {
+            if(window.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.BonusNumber == window.cacheBonusData.BonusNumber; });
                 window.cacheBonusData = null;
                 var account = postData.AccountID;
                 var channel = this.channel;
                 var user = await evo.store.user.get({ account, channel });
-                if (user) {
+                if(user) {
                     user.bonus = postData;
                     Spreadsheets.siribonus(user);
                 }
@@ -216,26 +220,26 @@ define([], function() {
     var robot = {
 
         delDiceWinRecords: function() { /*用於刪除*/
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         DelDiceWinRecords: function() { /*用於給點*/
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         getDepositBonusList: async function() { /*禮金表*/
-            if (window.cacheBonusData) {
+            if(window.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
                 window.cacheBonusData = null;
                 var account = postData.f_accounts;
                 var channel = this.channel;
                 var user = await evo.store.user.get({ account, channel });
-                if (user) {
+                if(user) {
                     user.bonus = postData;
                     Spreadsheets.siribonus(user);
                 }
             }
         },
         StopMember: function(user) {
-            if (this.respData == 1) { return };
+            if(this.respData == 1) { return };
             Spreadsheets.authorize_wa111(user, { f_ishow: 2, f_depositStatus: 0 });
             return
             /*1還原 或 2停權*/
@@ -261,7 +265,7 @@ define([], function() {
 
 
         UpdateMemberRiskInfoAccountingBackend: async function() { //控制存款開關
-            if (this.respData.Data.Message != "更新成功") { return }
+            if(this.respData.Data.Message != "更新成功") { return }
             var account = this.sendData.AccountID;
             var channel = this.channel;
             var user = await evo.store.user.get({ account, channel });
@@ -276,7 +280,7 @@ define([], function() {
         },
 
         UpdateMemberRisksInfoBackendIsFSuspension: async function() { //還原或停權
-            if (this.sendData.IsFSuspension == false) { return }
+            if(this.sendData.IsFSuspension == false) { return }
             var account = this.sendData.AccountID;
             var channel = this.channel;
             var user = await evo.store.user.get({ account, channel });
@@ -285,17 +289,17 @@ define([], function() {
 
         /************************************************************************************/
         UpdateMemberBonusLog: async function() {
-            if (this.respData.Data.Message != "更新成功") { return };
+            if(this.respData.Data.Message != "更新成功") { return };
             window.cacheBonusData = this.sendData;
         },
         GetMemberBonusLogBackendByCondition: async function() {
-            if (window.cacheBonusData) {
+            if(window.cacheBonusData) {
                 var postData = this.dataRows.find((row) => { return row.BonusNumber == window.cacheBonusData.BonusNumber; });
                 window.cacheBonusData = null;
                 var account = postData.AccountID;
                 var channel = this.channel;
                 var user = await evo.store.user.get({ account, channel });
-                if (user) {
+                if(user) {
                     user.bonus = postData;
                     Spreadsheets.siribonus(user);
                 }
