@@ -4,18 +4,15 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
 
     document.oncopy = function(e) {
         var copyText = e.target.dataset.content;
-        if (window.getSelection().type === "Caret") {
+        if(window.getSelection().type === "Caret") {
             e.preventDefault();
-            if (e.clipboardData) { e.clipboardData.setData("text/plain", copyText); } else if (window.clipboardData) { window.clipboardData.setData("Text", copyText); }
+            if(e.clipboardData) { e.clipboardData.setData("text/plain", copyText); } else if(window.clipboardData) { window.clipboardData.setData("Text", copyText); }
         }
     };
 
 
     var dexie = new Dexie('evo');
     dexie.version(1).stores({ user: 'f_accounts' });
-
-    //xmlSpider.dexie = dexie;
-    //console.log(xmlSpider);
 
 
     return function factory() {
@@ -72,7 +69,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
         this.assign = function() { Object.assign(this, ...arguments) };
-        this.apply = function(res) { if (!this.$$phase) { this.$apply(); }; return res; }
+        this.apply = function(res) { if(!this.$$phase) { this.$apply(); }; return res; }
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
             //if (message) { console.log(message); }
@@ -89,12 +86,12 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
         xmlSpider.sendMessage = this.sendMessage;
 
         this.injectStylesheet = function() {
-            if (!this.stylesheet) { return false };
+            if(!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
         };
 
         this.injectComponents = function() {
-            if (!this.components) { return false };
+            if(!this.components) { return false };
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -106,9 +103,13 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
         };
 
         this.urls = {
-            wa111: {
+            wa1112: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+            },
+            wa111: {
+                cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
             ku711: {
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
@@ -116,26 +117,21 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
             }
         } [this.host];
 
-        for (var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
+        for(var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.invoke = function() {
             this.injectStylesheet();
             this.injectComponents();
         };
 
-        this.getUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-        }
+        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
 
-        this.putUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
-        }
+        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
 
         this.createTab = function(_url) {
             console.log(_url);
             window.open(_url, "_blank");
         }
-
         this.setPermit = function() {
             switch (this.host) {
                 case "wa111":
@@ -149,12 +145,9 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
                     break;
             }
         }
-
-
         this.cut = function(e) { document.execCommand("cut"); }
         this.copy = function(e) { document.execCommand("copy"); }
         this.paste = function(e) { document.execCommand("paste"); }
-
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -164,7 +157,7 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
                 "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
             } [status];
-            if (!this.$$phase) { this.$apply(); }
+            if(!this.$$phase) { this.$apply(); }
             var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             dialog.listen("MDCDialog:accept", function() {
                 window.open("http://client.motosms.com/login", "_blank");
@@ -193,9 +186,9 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if (typeof alphaVal == "object") {
-                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if(typeof alphaVal == "object") {
+                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -209,23 +202,3 @@ define(['angular', 'Dexie', 'moment', 'material', 'semantic', 'Robot'], function
 
 
 
-
-
-
-
-//this.status = res.status;
-
-/*
-this.sendsms = new function() {
-
-    console.log(this);
-
-    return {
-        status: 2,
-        send: function() {
-            console.log(this);
-            console.log(this.sendMessage);
-        }
-    }
-
-}*/

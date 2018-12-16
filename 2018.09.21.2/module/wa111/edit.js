@@ -1,5 +1,4 @@
 define(["apiFunction"], function(apiFunction) {
-    //console.log(xmlSpider);
     return async function() {
         this.setUser = function() {
             this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
@@ -16,9 +15,3 @@ define(["apiFunction"], function(apiFunction) {
         console.log(this.user);
     }
 });
-
-
-
-
-//this.user = await this.setUser(this);
-//apiFunction.getUserState.call(this.user);

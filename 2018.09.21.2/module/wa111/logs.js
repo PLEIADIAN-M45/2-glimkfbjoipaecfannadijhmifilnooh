@@ -1,9 +1,5 @@
 define([], function() {
 
-
-
-
-
     function createElement(value) {
         return $('<b>').text(value[0])
             .addClass('pointer')
@@ -12,9 +8,8 @@ define([], function() {
             .attr('data-content', value.reverse().join('-'))
     }
 
-
     function addHighlightAccountsId(account, channel) {
-        if (this.user.channel == channel && this.user.account == account) {
+        if(this.user.channel == channel && this.user.account == account) {
             this.children[2].style.backgroundColor = "#01579b";
             this.children[2].style.color = "white";
         }
@@ -29,8 +24,6 @@ define([], function() {
         this.createElement([channel, account]).appendTo(this.children[2]);
         this.addHighlightAccountsId(account, channel);
     }
-
-
 
     return async function($scope) {
 
@@ -70,7 +63,8 @@ define([], function() {
 
 
         this.apiFunctions.getProtocolSet = function(params) {
-
+            console.log(params);
+            return
             var cells = $('#divCookie > ul').filter((i, { firstElementChild, children }) => {
                 return firstElementChild.outerText && children.length > 10;
             }).toArray().forEach((ul) => {
@@ -82,66 +76,21 @@ define([], function() {
                 this.addChannelToAccountsId();
             });
 
-
-
-
-            /*
-            .forEach(({ children }) => {
-                //console.log(this);
-                this.children = children;
-                this.channel = children[0].outerText.split("-")[0];
-                this.account = children[2].outerText;
-                this.author = children[4].outerText;
-                this.province = children[7].outerText;
-                this.protocol = children[9].outerText;
-                this.unique = [this.account, this.channel].join("-");
-                this.addHighlightAccountsId(children);
-            })
-            */
-
-            //console.log(cells);
-
-
-            //210
-
-            return
-
-
-            //params.rows = cells.owners
-
-            // console.log(cells.owners);
-
-
-
-            /* params.rows = this.cells.toArray().filter((el) => {
-                 //console.log(el.IPLocation, el.IPAddress);
-                 return el.unique = this.unique;
-             })*/
-
             this.user.region = params.rows.map((x) => { return x.IPLocation });
 
         }.bind(this);
 
 
-
-
-        //ul.children = this.children;
-        //ul.unique = this.unique;
-        //this.channel = this.children[0];
-        //this.account = this.children[2];
-
-
-
         this.changeColor = function(r) {
             r.$id = "#" + this.$id;
             r.sequel = this.user.sequel;
-            if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-            if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-            if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+            if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+            if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+            if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
         };
 
         this.setPopup = function(r) {
-            if (r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+            if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
         }
 
         this.showSemanticModal = function(s) {
@@ -175,10 +124,6 @@ define([], function() {
             this.notice = search.notice.compare(this.f_remarks || this.Memo);
         }
 
-
-
-
-
         this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idcard]
             .concat(this.user.banker).map((x) => {
                 var params = { attr: x.attr, value: x.value, index: 1 };
@@ -194,18 +139,8 @@ define([], function() {
 
         console.log(this.list);
         console.log(this.user);
-
-
-
         this.$apply();
-
-
-
-
-
-
     }
-
 })
 
 

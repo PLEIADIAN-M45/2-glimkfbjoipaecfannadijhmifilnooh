@@ -15,11 +15,3 @@ define(['factory'], function(factory) {
         }
     }
 });
-
-
-
-
-
-
-//this.$element = angular.element(this.element);
-//factory.call(this.$scope);
