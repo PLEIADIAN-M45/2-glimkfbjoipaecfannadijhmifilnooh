@@ -87,7 +87,10 @@ document.oncopy = function(e) {
 
 define([], function() {
 
-})
+});
+
+
+
 
 //console.log(11, 22);
 

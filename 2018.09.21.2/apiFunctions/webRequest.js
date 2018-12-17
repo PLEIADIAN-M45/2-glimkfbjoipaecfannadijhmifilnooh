@@ -131,10 +131,7 @@ chrome.webRequest.onResponseStarted.addListener(function(details) {
 
 
 chrome.webRequest.onResponseStarted.addListener(function(details) {
-
     console.log(details);
-
-
 }, {
     urls: [
         //"data:*",
@@ -142,7 +139,6 @@ chrome.webRequest.onResponseStarted.addListener(function(details) {
         "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/putUser"
         //"https://glimkfbjoipaecfannadijhmifilnooh.chromiumapp.org/putUser*",
     ]
-
 }, ['responseHeaders']);
 
 
@@ -211,12 +207,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
     return { redirectUrl: ArrayBufferToBase64(buffer) }
     return { cancel: true }
-
-
-
-
 }, {
-
     urls: [
         "*://*/putUser",
         "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/putUser"

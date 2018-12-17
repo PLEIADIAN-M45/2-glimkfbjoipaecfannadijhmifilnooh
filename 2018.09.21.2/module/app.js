@@ -10,8 +10,7 @@ define(['App', 'app.services'], function(App, services) {
         this.$invoke         = this.$injector.invoke;
         this.$rootScope      = this.$scope.$root;
         this.$scope.$view    = this.$view;
-        this.$scope.$compile = this.$compile;
-        
+        this.$scope.$compile = this.$compile;        
         angular.extend(this.$scope.__proto__, services);
     }
 });

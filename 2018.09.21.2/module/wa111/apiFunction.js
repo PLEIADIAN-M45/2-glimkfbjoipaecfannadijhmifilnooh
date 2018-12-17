@@ -1,14 +1,52 @@
 define([], function() {
 
-    //var m = $scope.model;
 
-    function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
-        return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+
+
+    //console.log(global);
+
+    function sendMessage() {
+
+        //console.log(localStorage.extensionId);
+        //console.log(this);
+        //console.log(params);
+
+        this.active = true;
+
+
+        chrome.runtime.sendMessage(localStorage.extensionId, this, (res) => {
+
+
+            console.log(res);
+
+            this.active = false;
+
+            /*
+            params.active = false;
+            Object.assign(params, res);
+            this.$apply();
+            this.putUser();
+            */
+        });
+
     }
 
-    class apiFunction {
+    //return new class apiFunction {
 
-        constructor() {}
+    return class apiFunction {
+
+        constructor($scope) {
+
+            this.extensionId = $scope.extensionId;
+            //this.apply = $scope.apply;
+
+
+            //Object.assign(this, $scope);
+            //console.log($scope.extensionId);
+
+            //sendMessage.bind($scope)
+
+        }
 
         getUserState(m) {
             this.status = [m.ishow.value];
@@ -35,7 +73,6 @@ define([], function() {
         }
 
         getUserStore($scope) {
-            console.log($scope);
             return $scope.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
@@ -49,16 +86,20 @@ define([], function() {
             })
         }
 
-        getSystemLog() {
-            return ajax({
+        getSystemLog($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
-            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
+            }).then((rows) => {
+                return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                });
+            })
         }
 
-        getPhoneDate() {
-            return ajax({
+        getPhoneDate($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
                 data: "type=getPhoneDate&account=" + this.account
             }).then((rows) => {
@@ -70,7 +111,100 @@ define([], function() {
                 return this;
             })
         }
+
+
+        apply(c) {
+
+            console.log(c);
+
+        }
+
+
+        region(parameters, e) {
+
+            //console.log(this);
+
+            if (parameters.region && e == undefined) { return };
+
+            parameters.command = "apiFunctions.region";
+            parameters.active = true;
+            parameters.region = "";
+
+            //parameters.assign = this.assign;
+
+            chrome.runtime.sendMessage(
+
+                this.extensionId,
+
+                parameters, (res) => {
+
+                    //console.log(this);
+
+                    //parameters.active = false;
+                    //parameters.assign(res);
+
+
+                    var c = angular.merge(parameters, res);
+
+                    this.apply(c);
+
+                    /*
+                    console.log(parameters);
+
+
+
+                  
+                    this.putUser();
+
+                    */
+
+
+                });
+        }
+
+
     }
 
-    return new apiFunction();
 });
+
+
+
+
+/*
+  Object.assign(parameters, {
+                        active: false,
+                        res
+                    })
+
+           Object.assign(parameters, {
+               command: "apiFunctions.region",
+               active: true,
+               region: ""
+           })
+           console.log(parameters);
+
+           paramaters
+
+           return
+           */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
+      return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+  }
+return new apiFunction();
+*/

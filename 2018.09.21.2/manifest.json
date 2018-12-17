@@ -11,6 +11,7 @@
             "lib/mock.js",
 
             "background/background.js",
+
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
             "background/background.onMessage.js",
@@ -28,6 +29,7 @@
             "apiFunctions/apiFunctions.sheets.js",
             "apiFunctions/apiFunctions.XMLHttpRequest.js"
             
+            //"apiFunctions/webRequest.2.js"
             //"mock/mock.data.js",
             //"mock/mock.conf.js"
         ]

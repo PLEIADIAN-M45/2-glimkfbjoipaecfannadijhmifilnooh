@@ -23,7 +23,7 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
+        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="getProtocolSet(me);">
             <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>

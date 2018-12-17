@@ -1,10 +1,9 @@
-
 define([
 
     'angular', 'dexie', 'moment', 'material', 'semantic',
 
-    'app.instances', 
-    'app.xmlSpider', 
+    'app.instances',
+    'app.xmlSpider',
     'apiFunction'
 
 ], function(
@@ -18,13 +17,10 @@ define([
 
         this.mdc = mdc;
 
-        this.apiFunction = apiFunction
 
         this.dexie = new Dexie('evo');
 
         this.dexie.version(1).stores({ user: 'f_accounts' });
-
-
 
         this.pathname = location.pathname;
         this.port = location.port;
@@ -79,17 +75,28 @@ define([
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-        this.assign = function() { Object.assign(this, ...arguments) };
+        this.assign = function() {
+            Object.assign(this, ...arguments)
+        };
 
-        this.apply = function(res) { if(!this.$$phase) { this.$apply(); }; return res; }
+        this.apply = function(res) {
+
+            console.log(this);
+
+            if (!this.$$phase) { this.$apply(); };
+            return res;
+        }
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+
+
         this.sendMessage = function(message) {
             //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
                 //console.log(message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     //console.log(res);
+                    res.active = false;
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -102,12 +109,12 @@ define([
 
 
         this.injectStylesheet = function() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
         };
 
         this.injectComponents = function() {
-            if(!this.components) { return false };
+            if (!this.components) { return false };
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -119,11 +126,11 @@ define([
         };
 
         this.urls = {
-            wa1112: {
+            wa111: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
-            wa111: {
+            wa111_home: {
                 cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
@@ -133,16 +140,24 @@ define([
             }
         } [this.host];
 
-        for(var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
+        for (var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.invoke = function() {
             this.injectStylesheet();
             this.injectComponents();
         };
 
-        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
 
-        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
+
+        this.getUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+        }
+
+        this.putUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
+        }
+
+
 
         this.createTab = function(_url) {
             console.log(_url);
@@ -164,7 +179,10 @@ define([
             }
         }
         this.cut = function(e) { document.execCommand("cut"); }
-        this.copy = function(e) { document.execCommand("copy"); }
+        this.copy = function(e) {
+            console.log(e);
+            document.execCommand("copy");
+        }
         this.paste = function(e) { document.execCommand("paste"); }
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {
@@ -175,7 +193,7 @@ define([
                 "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
             } [status];
-            if(!this.$$phase) { this.$apply(); }
+            if (!this.$$phase) { this.$apply(); }
             var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             dialog.listen("MDCDialog:accept", function() {
                 window.open("http://client.motosms.com/login", "_blank");
@@ -204,14 +222,24 @@ define([
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
             })
         }
+
+
+        this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
+            return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+        }
+
+
+        //this.apiFunction = new apiFunction(this);
+
+
     }
 
 });
