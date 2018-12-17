@@ -1,4 +1,4 @@
-define(['xmlSpider.extend'], function(extend) {
+define([], function() {
 
     function $getAllResponseHeaders(obj) {
         return obj.getAllResponseHeaders().split('\r').map((x) => {
@@ -30,7 +30,7 @@ define(['xmlSpider.extend'], function(extend) {
 
         xmlSpider.loadend = function() {
             //console.log(this.type);
-            if(this.extend) { this.extend.call(this); }
+            if (this.extend) { this.extend.call(this); }
         };
 
         xmlSpider.load = function() {
@@ -47,11 +47,11 @@ define(['xmlSpider.extend'], function(extend) {
             this.dataRows = $dataRows(this);
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
-            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             /*-------------------------------------------------------------------------------------------------------*/
             this.action = this.sendData.action;
             this.type = this.sendData.type;
-            this.extend = extend[this.type];
+            //this.extend = extend[this.type];
 
             chrome.runtime.sendMessage(this.extensionId, this);
         }

@@ -9,6 +9,12 @@
 		root["Mock"] = factory();
 })(this, function() {
 return /******/ (function(modules) { // webpackBootstrap
+
+
+	console.log(modules);
+
+
+
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
 

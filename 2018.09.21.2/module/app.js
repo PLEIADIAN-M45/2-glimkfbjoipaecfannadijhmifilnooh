@@ -1,4 +1,4 @@
-define(['App', 'services'], function(App, services) {
+define(['App', 'app.services'], function(App, services) {
     return new function() {
         this.$name           = "OBSApp";
         this.$element        = document.querySelector('[ng-controller]');
@@ -11,6 +11,7 @@ define(['App', 'services'], function(App, services) {
         this.$rootScope      = this.$scope.$root;
         this.$scope.$view    = this.$view;
         this.$scope.$compile = this.$compile;
+        
         angular.extend(this.$scope.__proto__, services);
     }
 });

@@ -68,7 +68,7 @@ function decoder(value) {
 
 }
 
-//console.log(decoder(localStorage.sms).toObj());
+console.log(decoder(localStorage.sms).toObj());
 
 /*
 console.log(evo.store.user);

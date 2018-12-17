@@ -33,7 +33,7 @@ console.log(search);
 
 
 
-search.region.push(['河南'])
+//search.region.push(['河南'])
 
 
 search.author.compare = function() {

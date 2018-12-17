@@ -8,16 +8,14 @@ define([], function() {
 
     class apiFunction {
 
-        constructor() {
+        constructor() {}
 
-        }
-
-        getUserState() {
+        getUserState(m) {
             this.status = [m.ishow.value];
             this.permit = [m.isOpenDeposit.value];
         }
 
-        getUserModel() {
+        getUserModel(m) {
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -36,7 +34,8 @@ define([], function() {
             return this;
         }
 
-        getUserStore() {
+        getUserStore($scope) {
+            console.log($scope);
             return $scope.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
@@ -72,5 +71,6 @@ define([], function() {
             })
         }
     }
+
     return new apiFunction();
 });

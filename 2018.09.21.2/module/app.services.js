@@ -1,9 +1,11 @@
 
 define([
 
-    'angular', 'Dexie', 'moment', 'material', 'semantic',
+    'angular', 'dexie', 'moment', 'material', 'semantic',
 
-    'instances', 'xmlSpider', 'apiFunction'
+    'app.instances', 
+    'app.xmlSpider', 
+    'apiFunction'
 
 ], function(
 
