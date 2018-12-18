@@ -21,14 +21,10 @@ define([
         this.dexie = new Dexie('evo');
 
         this.dexie.version(1).stores({ user: 'f_accounts' });
-
-
-
         this.pathname = location.pathname;
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-
         this.module = {
             "wa111": {
                 "login": "login",
@@ -82,6 +78,7 @@ define([
         this.apply = function(res) { if(!this.$$phase) { this.$apply(); }; return res; }
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+
         this.sendMessage = function(message) {
             //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
@@ -161,6 +158,7 @@ define([
                     break;
             }
         }
+
         this.cut = function(e) { document.execCommand("cut"); }
         this.copy = function(e) { document.execCommand("copy"); }
         this.paste = function(e) { document.execCommand("paste"); }
