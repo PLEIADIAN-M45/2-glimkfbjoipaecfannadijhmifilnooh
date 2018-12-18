@@ -1,52 +1,33 @@
 define([], function() {
 
-
-
-
-    //console.log(global);
-
-    function sendMessage() {
-
-        //console.log(localStorage.extensionId);
-        //console.log(this);
-        //console.log(params);
-
-        this.active = true;
-
-
-        chrome.runtime.sendMessage(localStorage.extensionId, this, (res) => {
-
-
-            console.log(res);
-
-            this.active = false;
-
-            /*
-            params.active = false;
-            Object.assign(params, res);
-            this.$apply();
-            this.putUser();
-            */
-        });
-
-    }
-
     //return new class apiFunction {
+
+    var scope;
 
     return class apiFunction {
 
         constructor($scope) {
+            //console.log($scope);
+            //scope = $scope
+            //this.extensionId = $scope.extensionId;
+            //this.$scope = $scope;
+            this.sendMessage = $scope.sendMessage;
+
+            //this.apply.bind($scope);
+
+            //this.region.bind($scope);
 
             this.extensionId = $scope.extensionId;
-            //this.apply = $scope.apply;
-
-
-            //Object.assign(this, $scope);
-            //console.log($scope.extensionId);
-
-            //sendMessage.bind($scope)
-
+            //console.log($scope);
+            //Object.assign(this, $scope)
+            //var c =
+            //angular.merge($scope, this);
+            //angular.merge(this, $scope);
+            //scope = $scope;
+            //console.log($scope);
+            //this.$apply = $scope.apply;
         }
+
 
         getUserState(m) {
             this.status = [m.ishow.value];
@@ -72,6 +53,7 @@ define([], function() {
             return this;
         }
 
+
         getUserStore($scope) {
             return $scope.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
@@ -86,6 +68,7 @@ define([], function() {
             })
         }
 
+
         getSystemLog($scope) {
             return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
@@ -97,6 +80,8 @@ define([], function() {
                 });
             })
         }
+
+
 
         getPhoneDate($scope) {
             return $scope.ajax({
@@ -112,57 +97,56 @@ define([], function() {
             })
         }
 
+        region(params, e) {
 
-        apply(c) {
+            // console.log(this.sendMessage);
+            /*return
+            console.log(params);*/
 
-            console.log(c);
+
+
+            if (params.region && e == undefined) { return };
+            params.command = "apiFunctions.region";
+            params.active = true;
+
+
+            //this.sendMessage(params, this.apply.bind(this));
+
+            chrome.runtime.sendMessage(this.extensionId, params, this.apply.bind(this))
+
+
+            return
+
+            //chrome.runtime.sendMessage(
+            //this.$scope.extensionId, params, (res) => {
+
+            /*
+
+             params.active = false;
+
+             Object.assign(params, res);
+
+             this.$scope.apply();
+
+             this.$scope.putUser();
+             */
+
+            //});
 
         }
 
 
-        region(parameters, e) {
-
-            //console.log(this);
-
-            if (parameters.region && e == undefined) { return };
-
-            parameters.command = "apiFunctions.region";
-            parameters.active = true;
-            parameters.region = "";
-
-            //parameters.assign = this.assign;
-
-            chrome.runtime.sendMessage(
-
-                this.extensionId,
-
-                parameters, (res) => {
-
-                    //console.log(this);
-
-                    //parameters.active = false;
-                    //parameters.assign(res);
 
 
-                    var c = angular.merge(parameters, res);
-
-                    this.apply(c);
-
-                    /*
-                    console.log(parameters);
+        apply(res) {
 
 
-
-                  
-                    this.putUser();
-
-                    */
+            console.log(res);
+            console.log(this);
 
 
-                });
+            this.$scope.$apply();
         }
-
-
     }
 
 });
@@ -170,7 +154,83 @@ define([], function() {
 
 
 
+
+
+
 /*
+
+            //this.region.bind($scope)
+            //this.apply = $scope.apply;
+            //Object.assign(this, $scope);
+            //console.log($scope.extensionId);
+            //sendMessage.bind($scope)
+
+
+return new function apiFunc() {
+
+    this.region = function(params) {
+
+        console.log(params);
+
+        console.log(this);
+
+    }
+
+}
+*/
+
+
+
+//console.log(global);
+function sendMessage333() {
+    //console.log(localStorage.extensionId);
+    //console.log(this);
+    //console.log(params);
+    this.active = true;
+    chrome.runtime.sendMessage(localStorage.extensionId, this, (res) => {
+        console.log(res);
+        this.active = false;
+        /*
+        params.active = false;
+        Object.assign(params, res);
+        this.$apply();
+        this.putUser();
+        */
+    });
+}
+
+
+//parameters.assign = this.assign;
+/*
+region(parameters, e) {
+    //console.log(this);
+    if (parameters.region && e == undefined) { return };
+    parameters.command = "apiFunctions.region";
+    parameters.active = true;
+    parameters.region = "";
+    chrome.runtime.sendMessage(
+        this.extensionId,
+        parameters, (res) => {
+            var c = angular.merge(parameters, res);
+            this.apply(c);
+            console.log(this);
+        });
+}
+*/
+
+
+
+/*
+           //console.log(this);
+          //parameters.active = false;
+          //parameters.assign(res);
+          console.log(parameters);                  
+          this.putUser();
+          */
+
+/*
+
+
   Object.assign(parameters, {
                         active: false,
                         res

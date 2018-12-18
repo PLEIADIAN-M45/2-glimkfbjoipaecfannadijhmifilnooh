@@ -68,7 +68,9 @@ function decoder(value) {
 
 }
 
-console.log(decoder(localStorage.sms).toObj());
+
+
+//console.log(decoder(localStorage.sms).toObj());
 
 /*
 console.log(evo.store.user);
@@ -96,6 +98,8 @@ function _toText(res) { return res.text() }
 function flat(array) { return array.flat(); }
 
 function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
+
+
 
 function download() {
     return Promise.all([

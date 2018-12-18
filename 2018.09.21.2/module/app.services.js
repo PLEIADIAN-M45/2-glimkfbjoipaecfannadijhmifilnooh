@@ -16,17 +16,12 @@ define([
     return new function() {
 
         this.mdc = mdc;
-
-
         this.dexie = new Dexie('evo');
-
         this.dexie.version(1).stores({ user: 'f_accounts' });
-
         this.pathname = location.pathname;
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-
         this.module = {
             "wa111": {
                 "login": "login",
@@ -66,12 +61,9 @@ define([
         this.referrer = document.referrer;
         this.forms = document.forms;
         this.form = document.forms[0];
-
         this.isExit = this.referrer.includes('Exit') || this.referrer.includes('SignOut');
         this.responseType = { text(res) { return res.text(); }, json(res) { return res.json(); } }
         this.unique = [this.account, this.channel].join("-");
-
-
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
@@ -80,23 +72,23 @@ define([
         };
 
         this.apply = function(res) {
-
-            console.log(this);
-
+            //console.log(this);
             if (!this.$$phase) { this.$apply(); };
             return res;
         }
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
-
+        
 
         this.sendMessage = function(message) {
+            console.log(message);
+            console.log(this.extensionId);
             //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
                 //console.log(message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     //console.log(res);
-                    res.active = false;
+                    if (res) { res.active = false; }
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -126,19 +118,22 @@ define([
         };
 
         this.urls = {
+            /*wa111_home: {
+                            cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                            device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+                        },*/
             wa111: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
-            wa111_home: {
-                cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-                device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-            },
+
             ku711: {
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                 device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
             }
+
         } [this.host];
+
 
         for (var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
@@ -146,8 +141,6 @@ define([
             this.injectStylesheet();
             this.injectComponents();
         };
-
-
 
         this.getUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
@@ -157,13 +150,10 @@ define([
             return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
         }
 
-
-
         this.createTab = function(_url) {
-            console.log(_url);
+            //console.log(_url);
             window.open(_url, "_blank");
         }
-
 
         this.setPermit = function() {
             switch (this.host) {
@@ -178,9 +168,10 @@ define([
                     break;
             }
         }
+
         this.cut = function(e) { document.execCommand("cut"); }
         this.copy = function(e) {
-            console.log(e);
+            //console.log(e);
             document.execCommand("copy");
         }
         this.paste = function(e) { document.execCommand("paste"); }
@@ -237,9 +228,23 @@ define([
         }
 
 
-        //this.apiFunction = new apiFunction(this);
+        //this.apiFunction = apiFunction;
+
+        //console.log(apiFunction);
+
+        //this.apiFunc.region.bind(this);
+
+
+        //console.log(this.apiFunc);
 
 
     }
 
+
+
 });
+
+
+
+//this.apiFunction = new apiFunction(this);        
+//this.apiFunc.region.bind(this)

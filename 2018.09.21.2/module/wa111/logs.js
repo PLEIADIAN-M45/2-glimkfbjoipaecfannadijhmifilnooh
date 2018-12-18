@@ -1,6 +1,6 @@
-define([], function() {
+define(['apiFunction'], function(apiFunction) {
 
-
+    //console.log(apiFunction);
 
     function addHighlightAccountsId(account, channel) {
         if (this.user.channel == channel && this.user.account == account) {
@@ -11,19 +11,26 @@ define([], function() {
 
 
     function addChannelToAccountsId() {
-
-        console.log(this);
-
+        //console.log(this);
         var account = this.children[2].outerText;
         var channel = this.children[0].outerText.split('-').shift();
         this.children[2].firstChild.remove();
-
         createElement([account]).appendTo(this.children[2]);
         createElement([channel, account]).appendTo(this.children[2]);
         //this.addHighlightAccountsId(account, channel);
     }
 
+
+
     return async function($scope) {
+
+        
+        this.apiFunction = new apiFunction($scope);
+
+
+
+
+        //console.log(this.apiFunction);
 
         this.createElement = function createElement(value) {
             return $('<b>').text(value[0])
@@ -33,8 +40,6 @@ define([], function() {
                 .attr('data-content', value.reverse().join('-'))
         };
 
-
-
         this.addChannelToAccountsId = addChannelToAccountsId;
         this.addHighlightAccountsId = addHighlightAccountsId;
 
@@ -42,59 +47,15 @@ define([], function() {
         this.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         this.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
-
-
-        this.apiFunctions = {};
-
-        this.apiFunctions.region = function(params, e) {
-            if (params.region && e == undefined) { return };
-            params.command = "apiFunctions.region";
-            params.active = true;
-            chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                console.log(res);
-                params.active = false;
-                Object.assign(params, res);
-                this.$apply();
-                this.putUser();
-            });
-
-        }.bind(this);
-
-
-        this.apiFunctions.member = function(params) {
-
-            return
-
-            params.command = "apiFunctions.member"
-            params.active = true;
-            params.rows = [];
-            chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                params.active = false;
-                Object.assign(params, res);
-                this.$apply();
-            });
-
-        }.bind(this);
-
-
-
         this.cells = $('#divCookie > ul:not(.TrHead):not(.TrHead2)').filter((i, { firstElementChild, children }) => {
             return firstElementChild.outerText && children.length > 10;
         }).toArray();
 
 
-
-
-
         this.cells.forEach(function(ul) {
-
             //addChannelToAccountsId.call(ul)
-
             //console.log(this);
         })
-
-
-
 
         this.getUsersRegion = function() {
             this.user.region = this.cells.map(({ children }) => { return children[9].outerText; });
@@ -109,10 +70,9 @@ define([], function() {
                     children[9].outerText
                 ]
             });
+
             //console.log(params.rows);
             //console.log(new Map(params.rows));
-
-
             /*return {
                 IPAddress: children[7].outerText,
                 IPLocation: children[9].outerText
@@ -153,6 +113,7 @@ define([], function() {
         this.queryInputModel = function() {
             switch (this.host) {
                 case "wa111":
+
                     break;
                 case "ku711":
                     $scope.ctrl.model.QueryInputModel.AccountID = this.params.accounts;
@@ -184,16 +145,54 @@ define([], function() {
             });
 
 
-
-
-        console.log(this.list);
-        console.log(this.user);
+        //console.log(this.list);
+        //console.log(this.user);
 
         this.$apply();
     }
 
 })
 
+
+
+
+
+
+//for (var x of apiFunction.__proto__) { console.log(x); }
+//console.log(apiFunction($scope));
+//console.log($scope);
+//this.apiFunc
+//this.apiFunc = new apiFunction($scope);
+//console.log(var1, var2);
+
+//this.apiFunction.region.bind(this);
+/*
+this.apiFunctions = {};
+this.apiFunctions.region = function(params, e) {
+    if (params.region && e == undefined) { return };
+    params.command = "apiFunctions.region";
+    params.active = true;
+    chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+        console.log(res);
+        params.active = false;
+        Object.assign(params, res);
+        this.$apply();
+        this.putUser();
+    });
+
+}.bind(this);
+this.apiFunctions.member = function(params) {
+    params.command = "apiFunctions.member"
+    params.active = true;
+    params.rows = [];
+    chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+        params.active = false;
+        Object.assign(params, res);
+        this.$apply();
+    });
+
+}.bind(this);
+*/
 
 //params.region = (params.attr == "banker") ? params.region : {};
 //.forEach(({ children }) => {

@@ -57,6 +57,7 @@ requirejs.config({
 
 
 requirejs(['app'], function({ $scope }) {
+    
     if($scope.module) {
         
         requirejs([$scope.module], function(module) {
