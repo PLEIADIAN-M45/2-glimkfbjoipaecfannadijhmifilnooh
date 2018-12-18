@@ -1,5 +1,5 @@
 //window.origins.set(port.name, url.origin);
-console.log("background.webRequest.js");
+//console.log("background.webRequest.js");
 
 //{2}
 

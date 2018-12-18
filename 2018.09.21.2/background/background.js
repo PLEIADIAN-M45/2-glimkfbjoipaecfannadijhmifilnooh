@@ -68,6 +68,8 @@ function decoder(value) {
 
 }
 
+
+
 //console.log(decoder(localStorage.sms).toObj());
 
 /*
@@ -96,6 +98,8 @@ function _toText(res) { return res.text() }
 function flat(array) { return array.flat(); }
 
 function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
+
+
 
 function download() {
     return Promise.all([

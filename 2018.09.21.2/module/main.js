@@ -1,4 +1,5 @@
 requirejs.config({
+
     baseUrl                : localStorage.baseUrl,
     paths                  : {
         'app'              : '../app',
@@ -55,9 +56,13 @@ requirejs.config({
 
 
 requirejs(['app'], function({ $scope }) {
+
     if($scope.module) {
+
         requirejs([$scope.module], function(module) {
+
             module.call($scope, $scope);
+
             $scope.apply();
             $scope.invoke();
         })
@@ -74,10 +79,20 @@ requirejs(['app'], function({ $scope }) {
 
 //var pathname             = location.pathname.split(".")[0].split("/").pop();
 //console.log(localStorage.baseUrl);
-//'config'                 : '../config',
-//'Robot'                  : '../Robot',
-//'factory'                : '../factory',
-//var route                = location.pathname.split(".")[0].split("/").pop();
+<<
+<< << < HEAD
+    //'config'             : '../config',
+    //'Robot'              : '../Robot',
+    //'factory'            : '../factory',
+    //var route            = location.pathname.split(".")[0].split("/").pop();
+                           ===
+                           === =
+    //'config'             : '../config',
+    //'Robot'              : '../Robot',
+    //'factory'            : '../factory',
+    //var route            = location.pathname.split(".")[0].split("/").pop();
+    >>>
+    >>> > c50e5cd4a233c1d83e439711ab5a1f139eab09ce
 
 /*
 requirejs(['myApp'], function({ $scope }) {

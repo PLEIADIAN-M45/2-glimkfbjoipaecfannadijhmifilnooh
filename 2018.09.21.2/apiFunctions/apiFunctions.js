@@ -33,28 +33,27 @@ console.log(search);
 
 
 
-search.region.push(['河南'])
+//search.region.push(['河南'])
 
 
-search.author.compare = function() {
-    console.log(this);
+if (search.author) {
+    search.author.compare = function() {
+        console.log(this);
+    }
 }
 
-search.region.compare = function(res) {
-    var value = Object.values(res).toString();
-    //console.log(value);
-    return this.find((x) => {
-        //console.log(value.includes(x));
-        return value.includes(x);
-    })
+if (search.author) {
+    search.region.compare = function(res) {
+        var value = Object.values(res).toString();
+        //console.log(value);
+        return this.find((x) => {
+            //console.log(value.includes(x));
+            return value.includes(x);
+        })
+    }
 }
 
 
 
 
 //console.log(search);
-
-
-
-
-

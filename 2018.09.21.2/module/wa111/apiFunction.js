@@ -1,23 +1,40 @@
 define([], function() {
 
-    //var m = $scope.model;
+    //return new class apiFunction {
 
-    function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
-        return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
-    }
+    var scope;
 
-    class apiFunction {
+    return class apiFunction {
 
-        constructor() {
+        constructor($scope) {
+            //console.log($scope);
+            //scope = $scope
+            //this.extensionId = $scope.extensionId;
+            //this.$scope = $scope;
+            this.sendMessage = $scope.sendMessage;
 
+            //this.apply.bind($scope);
+
+            //this.region.bind($scope);
+
+            this.extensionId = $scope.extensionId;
+            //console.log($scope);
+            //Object.assign(this, $scope)
+            //var c =
+            //angular.merge($scope, this);
+            //angular.merge(this, $scope);
+            //scope = $scope;
+            //console.log($scope);
+            //this.$apply = $scope.apply;
         }
 
-        getUserState() {
+
+        getUserState(m) {
             this.status = [m.ishow.value];
             this.permit = [m.isOpenDeposit.value];
         }
 
-        getUserModel() {
+        getUserModel(m) {
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -36,7 +53,8 @@ define([], function() {
             return this;
         }
 
-        getUserStore() {
+
+        getUserStore($scope) {
             return $scope.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
@@ -50,16 +68,23 @@ define([], function() {
             })
         }
 
-        getSystemLog() {
-            return ajax({
+
+        getSystemLog($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
-            }).then((rows) => { return rows.find(({ f_field, f_oldData, f_newData, f_time }) => { if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; } }); })
+            }).then((rows) => {
+                return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                });
+            })
         }
 
-        getPhoneDate() {
-            return ajax({
+
+
+        getPhoneDate($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
                 data: "type=getPhoneDate&account=" + this.account
             }).then((rows) => {
@@ -71,6 +96,175 @@ define([], function() {
                 return this;
             })
         }
+
+        region(params, e) {
+
+            // console.log(this.sendMessage);
+            /*return
+            console.log(params);*/
+
+
+
+            if (params.region && e == undefined) { return };
+            params.command = "apiFunctions.region";
+            params.active = true;
+
+
+            //this.sendMessage(params, this.apply.bind(this));
+
+            chrome.runtime.sendMessage(this.extensionId, params, this.apply.bind(this))
+
+
+            return
+
+            //chrome.runtime.sendMessage(
+            //this.$scope.extensionId, params, (res) => {
+
+            /*
+
+             params.active = false;
+
+             Object.assign(params, res);
+
+             this.$scope.apply();
+
+             this.$scope.putUser();
+             */
+
+            //});
+
+        }
+
+
+
+
+        apply(res) {
+
+
+            console.log(res);
+            console.log(this);
+
+
+            this.$scope.$apply();
+        }
     }
-    return new apiFunction();
+
 });
+
+
+
+
+
+
+
+/*
+
+            //this.region.bind($scope)
+            //this.apply = $scope.apply;
+            //Object.assign(this, $scope);
+            //console.log($scope.extensionId);
+            //sendMessage.bind($scope)
+
+
+return new function apiFunc() {
+
+    this.region = function(params) {
+
+        console.log(params);
+
+        console.log(this);
+
+    }
+
+}
+*/
+
+
+
+//console.log(global);
+function sendMessage333() {
+    //console.log(localStorage.extensionId);
+    //console.log(this);
+    //console.log(params);
+    this.active = true;
+    chrome.runtime.sendMessage(localStorage.extensionId, this, (res) => {
+        console.log(res);
+        this.active = false;
+        /*
+        params.active = false;
+        Object.assign(params, res);
+        this.$apply();
+        this.putUser();
+        */
+    });
+}
+
+
+//parameters.assign = this.assign;
+/*
+region(parameters, e) {
+    //console.log(this);
+    if (parameters.region && e == undefined) { return };
+    parameters.command = "apiFunctions.region";
+    parameters.active = true;
+    parameters.region = "";
+    chrome.runtime.sendMessage(
+        this.extensionId,
+        parameters, (res) => {
+            var c = angular.merge(parameters, res);
+            this.apply(c);
+            console.log(this);
+        });
+}
+*/
+
+
+
+/*
+           //console.log(this);
+          //parameters.active = false;
+          //parameters.assign(res);
+          console.log(parameters);                  
+          this.putUser();
+          */
+
+/*
+
+
+  Object.assign(parameters, {
+                        active: false,
+                        res
+                    })
+
+           Object.assign(parameters, {
+               command: "apiFunctions.region",
+               active: true,
+               region: ""
+           })
+           console.log(parameters);
+
+           paramaters
+
+           return
+           */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+function ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
+      return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+  }
+return new apiFunction();
+*/

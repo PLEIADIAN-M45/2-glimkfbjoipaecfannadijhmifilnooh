@@ -1,11 +1,12 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunctions.region(me)">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunction.region(me)">
+
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.attr]" title="{{heads[me.attr]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.region(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunction.region(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -23,7 +24,7 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="apiFunctions.getProtocolSet(me);">
+        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="getProtocolSet(me);">
             <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
