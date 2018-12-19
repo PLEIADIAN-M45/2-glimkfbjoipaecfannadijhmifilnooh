@@ -5,6 +5,10 @@
         <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
         <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
         <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a>
+
+
+        <a class="item" ng-click="setPermit()" ng-if="sendSms.show"><i class="handshake outline icon"></i><b>开通</b></a>
+        <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a>
     </div>
 </aside>
 <style type="text/css">
