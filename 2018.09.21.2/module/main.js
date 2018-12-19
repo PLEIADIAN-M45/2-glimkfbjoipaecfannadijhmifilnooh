@@ -1,14 +1,14 @@
 requirejs.config({
-
     baseUrl                : localStorage.baseUrl,
     paths                  : {
         'app'              : '../app',
-        'instances'        : '../instances',
-        'services'         : '../services',
-        'xmlSpider'        : '../xmlSpider',
-        'xmlSpider.extend' : '../xmlSpider.extend',
-        'SendSms'          : '../SendSms',
 
+        'app.sms'          : '../app.sms',
+        'app.instances'    : '../app.instances',
+        'app.services'     : '../app.services',
+        'app.xmlSpider'    : '../app.xmlSpider',
+
+        'xmlSpider.extend' : '../xmlSpider.extend',
         'angular'          : '../../lib/angular/angular',
         'angular-animate'  : '../../lib/angular/angular-animate.min',
         'angular-aria'     : '../../lib/angular/angular-aria',
@@ -27,7 +27,7 @@ requirejs.config({
         'jquery'           : '../../lib/jquery/jquery-3.2.1.min',
         'js-url'           : '../../lib/jquery/url.min',
         'moment'           : '../../lib/jquery/moment-with-locales.min',
-        'Dexie'            : '../../lib/jquery/dexie',
+        'dexie'            : '../../lib/jquery/dexie',
         'crypto'           : '../../lib/crypto/rollups/',
         'aes'              : '../../lib/crypto/rollups/aes',
         'md5'              : '../../lib/crypto/rollups/md5',
@@ -58,11 +58,8 @@ requirejs.config({
 requirejs(['app'], function({ $scope }) {
 
     if($scope.module) {
-
         requirejs([$scope.module], function(module) {
-
             module.call($scope, $scope);
-
             $scope.apply();
             $scope.invoke();
         })
@@ -75,24 +72,19 @@ requirejs(['app'], function({ $scope }) {
 
 
 
+
+
+
+
+
+
+
+
 //console.log(location.pathname);
 
 //var pathname             = location.pathname.split(".")[0].split("/").pop();
 //console.log(localStorage.baseUrl);
-<<
-<< << < HEAD
-    //'config'             : '../config',
-    //'Robot'              : '../Robot',
-    //'factory'            : '../factory',
-    //var route            = location.pathname.split(".")[0].split("/").pop();
-                           ===
-                           === =
-    //'config'             : '../config',
-    //'Robot'              : '../Robot',
-    //'factory'            : '../factory',
-    //var route            = location.pathname.split(".")[0].split("/").pop();
-    >>>
-    >>> > c50e5cd4a233c1d83e439711ab5a1f139eab09ce
+
 
 /*
 requirejs(['myApp'], function({ $scope }) {
@@ -115,17 +107,10 @@ requirejs(['myApp'], function({ $scope }) {
 
 /*
 requirejs(['config'], function(c) {
-
-
     console.log(require.toUrl('.'));
     console.log(c.route);
-
-
     if (c.route) {
-
         requirejs(['App', c.route], function($scope, module) {
-
-
             if (module) {
                 //console.log(module);
                 module.call($scope, $scope);

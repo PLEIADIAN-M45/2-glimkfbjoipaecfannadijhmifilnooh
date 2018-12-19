@@ -1,27 +1,20 @@
 define([
-
     'angular', 'dexie', 'moment', 'material', 'semantic',
-
     'app.instances',
     'app.xmlSpider',
-    'apiFunction'
-
 ], function(
 
     angular, Dexie, moment, mdc, semantic,
-
-    instances, xmlSpider, apiFunction) {
-
+    instances, xmlSpider) {
 
     return new function() {
-
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
         this.pathname = location.pathname;
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-        this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
+        this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" }[location.port] : location.host.split(".")[1];
         this.module = {
             "wa111": {
                 "login": "login",
@@ -46,11 +39,10 @@ define([
                 "bonuslog": "bonus",
                 "memberloginlog": "log"
             }
-        } [this.host][this.path];
+        }[this.host][this.path];
 
-        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
-        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
-
+        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] }[this.module];
+        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] }[this.module];
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
         this.origin = location.origin;
@@ -67,10 +59,8 @@ define([
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-        this.assign = function() {
-            Object.assign(this, ...arguments)
-        };
 
+        this.assign = function() { Object.assign(this, ...arguments) };
         this.apply = function(res) {
             //console.log(this);
             if (!this.$$phase) { this.$apply(); };
@@ -78,16 +68,9 @@ define([
         }
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
-
-
         this.sendMessage = function(message) {
-            console.log(message);
-            console.log(this.extensionId);
-            //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
-                //console.log(message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    //console.log(res);
                     if (res) { res.active = false; }
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
@@ -117,25 +100,21 @@ define([
             });
         };
 
-        this.urls = {
-            /*wa111_home: {
-                            cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-                            device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-                        },*/
+
+
+        this.router = {
             wa111: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
-
             ku711: {
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                 device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
             }
+        }[this.host];
+        for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
-        } [this.host];
 
-
-        for (var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.invoke = function() {
             this.injectStylesheet();
@@ -174,6 +153,7 @@ define([
             //console.log(e);
             document.execCommand("copy");
         }
+
         this.paste = function(e) { document.execCommand("paste"); }
         this.dialog = function({ status, message, mobile }) {
             this.mdcDialog = {
@@ -183,7 +163,7 @@ define([
                 "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
-            } [status];
+            }[status];
             if (!this.$$phase) { this.$apply(); }
             var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             dialog.listen("MDCDialog:accept", function() {
@@ -195,6 +175,7 @@ define([
 
 
         this.sendSms = function() {
+
             this.user.smss = false;
             this.sendMessage({
                 command: 'apiFunctions.sendsms',
@@ -223,28 +204,12 @@ define([
         }
 
 
+
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
 
-        //this.apiFunction = apiFunction;
-
-        //console.log(apiFunction);
-
-        //this.apiFunc.region.bind(this);
-
-
-        //console.log(this.apiFunc);
-
 
     }
-
-
-
 });
-
-
-
-//this.apiFunction = new apiFunction(this);
-//this.apiFunc.region.bind(this)

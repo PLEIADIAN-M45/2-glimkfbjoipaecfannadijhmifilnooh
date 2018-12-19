@@ -13,11 +13,7 @@ define(['App', 'app.services'], function(App, services) {
         this.$scope.$view    = this.$view;
         this.$scope.$compile = this.$compile;
 
-
-
         angular.extend(this.$scope.__proto__, services);
-
-        //angular.extend(this.$scope.__proto__, apiFunction);      
     }
 });
 

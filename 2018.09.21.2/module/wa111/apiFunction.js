@@ -7,17 +7,19 @@ define([], function() {
     return class apiFunction {
 
         constructor($scope) {
+
+
+            this.sendMessage = $scope.sendMessage;
+            this.extensionId = $scope.extensionId;
+
+            
             //console.log($scope);
             //scope = $scope
             //this.extensionId = $scope.extensionId;
             //this.$scope = $scope;
-            this.sendMessage = $scope.sendMessage;
-
             //this.apply.bind($scope);
-
             //this.region.bind($scope);
 
-            this.extensionId = $scope.extensionId;
             //console.log($scope);
             //Object.assign(this, $scope)
             //var c =
