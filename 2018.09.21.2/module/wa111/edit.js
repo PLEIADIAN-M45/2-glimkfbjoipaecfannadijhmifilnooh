@@ -100,22 +100,26 @@ define([], function() {
             this.user = user;
             this.mobile = user.mobile.value;
             this.status = user.status[0];
+
+            this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
+            this.mdcDialog.listen("MDCDialog:cancel", function() {});
+
+
+            //mdcDialog.show();
             //this.session = user.status[0];
             //this.status = user.status[0];
             //this.createSession();
         }
+
 
         createSession() {
             if (!sessionStorage[this.mobile] && this.status == 0) { sessionStorage[this.mobile] = this.status; }
             return sessionStorage[this.mobile];
         }
 
-        get mdcDialog() {
-            /*
-            console.log(this.status);
-            console.log(this.mobile);
-            console.log(this.message);
-            */
+        get dialog() {
+           
             return {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
                 "0": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -125,6 +129,8 @@ define([], function() {
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: this.message, description: "" }
             } [this.status];
         }
+
+
 
         dialog() {
             var dialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
@@ -139,15 +145,23 @@ define([], function() {
                 command: 'apiFunctions.sendsms',
                 params: this.user
             }).then((x) => {
+
+                console.log(x);
                 this.status = x.status;
                 this.message = x.message;
+
+                this.mdcDialog.message = x.message;
                 this.dialog();
+                this.mdcDialog.show();
+                
                 this.$scope.apply();
             });
         }
+
         get status() { return sessionStorage[this.mobile]; }
         set status(value) { sessionStorage[this.mobile] = value; }
     }
+
 
     return async function() {
         //this.user = await this.getUser() || await setUser.call(this);
