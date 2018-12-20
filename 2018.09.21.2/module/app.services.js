@@ -8,6 +8,8 @@ define([
     instances, xmlSpider) {
 
     return new function() {
+
+
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
@@ -69,6 +71,11 @@ define([
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
+
+            
+            console.log(message);
+            console.log(this.extensionId);
+
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     if (res) { res.active = false; }
@@ -174,19 +181,27 @@ define([
         }
 
 
+        /*
         this.sendSms = function() {
 
             this.user.smss = false;
+
             this.sendMessage({
+
                 command: 'apiFunctions.sendsms',
+
                 params: this.user
+
             }).then((res) => {
+
                 this.user.smss = res.status;
+
                 this.dialog(res);
                 this.putUser();
                 this.$apply();
             });
         }
+        */
 
 
         this.getModule = function(objPath) {
@@ -202,7 +217,6 @@ define([
                 }(object));
             })
         }
-
 
 
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {

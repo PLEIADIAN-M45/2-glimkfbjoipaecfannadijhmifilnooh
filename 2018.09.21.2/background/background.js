@@ -69,14 +69,6 @@ function decoder(value) {
 }
 
 
-
-//console.log(decoder(localStorage.sms).toObj());
-
-/*
-console.log(evo.store.user);
-evo.store.users.put({ account: 'F61539', channel: "26" })
-*/
-
 var resp = {
     text: function(r) {
         return r.text()
@@ -114,6 +106,14 @@ function download() {
 
 
 
+
+
+//console.log(decoder(localStorage.sms).toObj());
+
+/*
+console.log(evo.store.user);
+evo.store.users.put({ account: 'F61539', channel: "26" })
+*/
 
 
 //console.log(chrome.identity.getRedirectURL());

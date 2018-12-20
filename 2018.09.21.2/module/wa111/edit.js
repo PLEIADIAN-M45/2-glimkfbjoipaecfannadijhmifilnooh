@@ -87,64 +87,57 @@ define([], function() {
     }
 
 
-    function sendSms33333() {
-        //console.log(this.active);
-        /*
-        console.log(this.status[0]);
-        console.log(this.permit[0]);
-        console.log(this.mobile.value);
-        */
-        this.status = this.status[0];
-        this.mobile = this.mobile.value;
-        sessionStorage[this.mobile]
-    }
-
-
-
-
     class sendSms {
 
-        constructor(user) {
+        constructor(user, $scope) {
 
-            this.show = true;
+            Object.assign(this.__proto__, $scope.__proto__)
+
+            this.user = user;
             this.mobile = user.mobile.value;
-
-            this.session = user;
             this.status = user.status[0];
-
-            
-
-
-
-
-            //this.status = sessionStorage[this.mobile]
-            //console.log(this);
+            this.session = this.createSession();
         }
 
 
-
-        get session() {
+        createSession() {
+            if (!sessionStorage[this.mobile] && this.status == 0) {
+                sessionStorage[this.mobile] = this.status;
+            }
             return sessionStorage[this.mobile]
         }
 
+        send() {
 
-        
-        set session(user) {
+            //console.log(12454);
+            console.log(this.user);
 
-            console.log(user);
+            this.sendMessage({
+                    command: 'apiFunctions.sendsms'
+                    params: this.user
+                })
+                .then((x) => {
+                    console.log(x);
+                })
 
-            if (user == 1) {
-                sessionStorage[this.mobile] = a
-                //this.session = a
-            }
 
         }
 
-       
+        /*
+        get session() {
+            return sessionStorage[this.mobile];
+        }
 
+        set session(user) {
+            if (this.status == 3 && !this.session) {
+                sessionStorage[this.mobile] = this.state;
+            } else {
+                console.log('xxxxxx');
+            }
+        }
+        */
 
     }
-
 
 
 
@@ -152,42 +145,14 @@ define([], function() {
 
         this.user = await this.getUser() || await setUser.call(this);
 
-        this.sendSms = new sendSms(this.user);
-
-
-        console.log(this.sendSms.status);
-
-        console.log(this.sendSms.session);
+        this.sendSms = new sendSms(this.user, this);
 
 
 
+        console.log(this.user);
 
-        //console.log(this.sendSms);
-        //console.log(this.sendSms.mobile);
-        //console.log(this.sendSms);
-        //console.log(this.sendSms.account);
-        //console.log(sendSms.__proto__);
-        //console.log(sendSms.prototype);
-        //sendSms.prototype.constructor = Object.create(this.user);
-        //sendSms.__proto__ = Object.create(this.user);
-        //Object.create(this.user);
-        //console.log(this.sendSms);
-        //console.log(this.sendSms.account);
-        //console.log(this.user);
-        //sendSms.constructor = this.user;
-        //console.log(sendSms.constructor());
-        /*
-        Programmer.prototype = Object.create(Person.prototype);
-        Programmer.prototype.constructor = Programmer;
-        */
-        //console.log(sessionStorage[]);
-        //console.log(this.user.status[0]);
-        //this._setPermit = true;
-        /*
-        console.log(this.router);
-        console.log(this.setPermit);
         console.log(this.sendSms);
-        */
+
     }
 
 
