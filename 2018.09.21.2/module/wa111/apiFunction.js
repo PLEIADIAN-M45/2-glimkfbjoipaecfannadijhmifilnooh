@@ -1,33 +1,14 @@
 define([], function() {
 
-    //return new class apiFunction {
-
     var scope;
 
     return class apiFunction {
 
         constructor($scope) {
-            //console.log($scope);
-            //scope = $scope
-            //this.extensionId = $scope.extensionId;
-            //this.$scope = $scope;
+            this.$scope = $scope;
             this.sendMessage = $scope.sendMessage;
-
-            //this.apply.bind($scope);
-
-            //this.region.bind($scope);
-
             this.extensionId = $scope.extensionId;
-            //console.log($scope);
-            //Object.assign(this, $scope)
-            //var c =
-            //angular.merge($scope, this);
-            //angular.merge(this, $scope);
-            //scope = $scope;
-            //console.log($scope);
-            //this.$apply = $scope.apply;
         }
-
 
         getUserState(m) {
             this.status = [m.ishow.value];
@@ -76,12 +57,10 @@ define([], function() {
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             })
         }
-
-
 
         getPhoneDate($scope) {
             return $scope.ajax({
@@ -98,55 +77,17 @@ define([], function() {
         }
 
         region(params, e) {
-
-            // console.log(this.sendMessage);
-            /*return
-            console.log(params);*/
-
-
-
-            if (params.region && e == undefined) { return };
+            if(params.region && e == undefined) { return };
             params.command = "apiFunctions.region";
             params.active = true;
-
-
-            //this.sendMessage(params, this.apply.bind(this));
-
-            chrome.runtime.sendMessage(this.extensionId, params, this.apply.bind(this))
-
-
-            return
-
-            //chrome.runtime.sendMessage(
-            //this.$scope.extensionId, params, (res) => {
-
-            /*
-
-             params.active = false;
-
-             Object.assign(params, res);
-
-             this.$scope.apply();
-
-             this.$scope.putUser();
-             */
-
-            //});
-
+            chrome.runtime.sendMessage(this.extensionId, params, (res) => {
+                params.active = false;
+                Object.assign(params, res);
+                this.$scope.$apply();
+                this.$scope.putUser();
+            });
         }
 
-
-
-
-        apply(res) {
-
-
-            console.log(res);
-            console.log(this);
-
-
-            this.$scope.$apply();
-        }
     }
 
 });
@@ -154,8 +95,27 @@ define([], function() {
 
 
 
-
-
+/*
+apply(res) {
+    console.log(res);
+    console.log(this);
+    this.$scope.$apply();
+}
+*/
+//console.log($scope);
+//scope = $scope
+//this.extensionId = $scope.extensionId;
+//this.$scope = $scope;
+//this.apply.bind($scope);
+//this.region.bind($scope);
+//console.log($scope);
+//Object.assign(this, $scope)
+//var c =
+//angular.merge($scope, this);
+//angular.merge(this, $scope);
+//scope = $scope;
+//console.log($scope);
+//this.$apply = $scope.apply;
 
 /*
 
@@ -224,7 +184,7 @@ region(parameters, e) {
            //console.log(this);
           //parameters.active = false;
           //parameters.assign(res);
-          console.log(parameters);                  
+          console.log(parameters);
           this.putUser();
           */
 

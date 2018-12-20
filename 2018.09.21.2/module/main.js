@@ -3,9 +3,12 @@ requirejs.config({
     baseUrl                : localStorage.baseUrl,
     paths                  : {
         'app'              : '../app',
-        'instances'        : '../instances',
-        'services'         : '../services',
-        'xmlSpider'        : '../xmlSpider',
+        'app.instances'    : '../app.instances',
+        'app.services'     : '../app.services',
+        'app.xmlSpider'    : '../app.xmlSpider',
+        //'apiFunction'      : '../apiFunction',
+
+
         'xmlSpider.extend' : '../xmlSpider.extend',
         'SendSms'          : '../SendSms',
 
@@ -27,7 +30,7 @@ requirejs.config({
         'jquery'           : '../../lib/jquery/jquery-3.2.1.min',
         'js-url'           : '../../lib/jquery/url.min',
         'moment'           : '../../lib/jquery/moment-with-locales.min',
-        'Dexie'            : '../../lib/jquery/dexie',
+        'dexie'            : '../../lib/jquery/dexie',
         'crypto'           : '../../lib/crypto/rollups/',
         'aes'              : '../../lib/crypto/rollups/aes',
         'md5'              : '../../lib/crypto/rollups/md5',
@@ -79,20 +82,7 @@ requirejs(['app'], function({ $scope }) {
 
 //var pathname             = location.pathname.split(".")[0].split("/").pop();
 //console.log(localStorage.baseUrl);
-<<
-<< << < HEAD
-    //'config'             : '../config',
-    //'Robot'              : '../Robot',
-    //'factory'            : '../factory',
-    //var route            = location.pathname.split(".")[0].split("/").pop();
-                           ===
-                           === =
-    //'config'             : '../config',
-    //'Robot'              : '../Robot',
-    //'factory'            : '../factory',
-    //var route            = location.pathname.split(".")[0].split("/").pop();
-    >>>
-    >>> > c50e5cd4a233c1d83e439711ab5a1f139eab09ce
+
 
 /*
 requirejs(['myApp'], function({ $scope }) {

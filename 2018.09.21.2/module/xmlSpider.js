@@ -57,10 +57,6 @@ define(['xmlSpider.extend'], function(extend) {
         }
 
 
-        //xmlSpider.extend = extend;
-
-        //Object.assign(xmlSpider.__proto__, extend);
-
         return xmlSpider;
 
 

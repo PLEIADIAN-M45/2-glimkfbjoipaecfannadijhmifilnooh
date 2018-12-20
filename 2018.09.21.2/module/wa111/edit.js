@@ -1,6 +1,5 @@
 define(['apiFunction'], function(apiFunction) {
 
-    //console.log(apiFunction);
     return async function() {
 
         this.apiFunction = new apiFunction(this);
@@ -20,11 +19,9 @@ define(['apiFunction'], function(apiFunction) {
             ]).then(this.putUser.bind(this));
         };
 
-
-
         this.user = await this.getUser() || await this.setUser(this);
 
-        console.log(this.user);
+        //console.log(this.user);
     }
 
 

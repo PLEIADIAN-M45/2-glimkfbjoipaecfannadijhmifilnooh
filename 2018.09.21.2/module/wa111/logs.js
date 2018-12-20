@@ -3,7 +3,7 @@ define(['apiFunction'], function(apiFunction) {
     //console.log(apiFunction);
 
     function addHighlightAccountsId(account, channel) {
-        if (this.user.channel == channel && this.user.account == account) {
+        if(this.user.channel == channel && this.user.account == account) {
             this.children[2].style.backgroundColor = "#01579b";
             this.children[2].style.color = "white";
         }
@@ -24,12 +24,7 @@ define(['apiFunction'], function(apiFunction) {
 
     return async function($scope) {
 
-        
         this.apiFunction = new apiFunction($scope);
-
-
-
-
         //console.log(this.apiFunction);
 
         this.createElement = function createElement(value) {
@@ -90,13 +85,13 @@ define(['apiFunction'], function(apiFunction) {
         this.changeColor = function(r) {
             r.$id = "#" + this.$id;
             r.sequel = this.user.sequel;
-            if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-            if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-            if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+            if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+            if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+            if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
         };
 
         this.setPopup = function(r) {
-            if (r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+            if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
         }
 
         this.showSemanticModal = function(s) {
@@ -145,9 +140,6 @@ define(['apiFunction'], function(apiFunction) {
             });
 
 
-        //console.log(this.list);
-        //console.log(this.user);
-
         this.$apply();
     }
 
@@ -156,6 +148,9 @@ define(['apiFunction'], function(apiFunction) {
 
 
 
+
+//console.log(this.list);
+//console.log(this.user);
 
 
 //for (var x of apiFunction.__proto__) { console.log(x); }

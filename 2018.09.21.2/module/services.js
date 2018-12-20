@@ -1,4 +1,3 @@
-
 define([
 
     'angular', 'Dexie', 'moment', 'material', 'semantic',
@@ -15,11 +14,8 @@ define([
     return new function() {
 
         this.mdc = mdc;
-
-        this.apiFunction = apiFunction
-
+        this.apiFunction = apiFunction;
         this.dexie = new Dexie('evo');
-
         this.dexie.version(1).stores({ user: 'f_accounts' });
         this.pathname = location.pathname;
         this.port = location.port;
