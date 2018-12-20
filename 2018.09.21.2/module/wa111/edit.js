@@ -40,7 +40,13 @@ define([], function() {
             { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } },
             { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
         ];
-        //this.smss = m.ishow.value;
+
+        /*
+        console.log(m);
+        this.sendSms = (function() {
+            console.log(m.ishow.value);
+        }());
+        */
         return this;
     }
 
@@ -86,76 +92,71 @@ define([], function() {
         ]).then(this.putUser.bind(this));
     }
 
-
     class sendSms {
 
         constructor(user, $scope) {
-
-            Object.assign(this.__proto__, $scope.__proto__)
-
+            Object.assign(this.__proto__, $scope.__proto__);
+            this.$scope = $scope;
             this.user = user;
             this.mobile = user.mobile.value;
             this.status = user.status[0];
-            this.session = this.createSession();
+            //this.session = user.status[0];
+            //this.status = user.status[0];
+            //this.createSession();
         }
-
 
         createSession() {
-            if (!sessionStorage[this.mobile] && this.status == 0) {
-                sessionStorage[this.mobile] = this.status;
-            }
-            return sessionStorage[this.mobile]
-        }
-
-        send() {
-
-            //console.log(12454);
-            console.log(this.user);
-
-            this.sendMessage({
-                    command: 'apiFunctions.sendsms'
-                    params: this.user
-                })
-                .then((x) => {
-                    console.log(x);
-                })
-
-
-        }
-
-        /*
-        get session() {
+            if (!sessionStorage[this.mobile] && this.status == 0) { sessionStorage[this.mobile] = this.status; }
             return sessionStorage[this.mobile];
         }
 
-        set session(user) {
-            if (this.status == 3 && !this.session) {
-                sessionStorage[this.mobile] = this.state;
-            } else {
-                console.log('xxxxxx');
-            }
+        get mdcDialog() {
+            /*
+            console.log(this.status);
+            console.log(this.mobile);
+            console.log(this.message);
+            */
+            return {
+                "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "0": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "1": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: this.mobile, description: "" },
+                "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: this.message, description: "" }
+            } [this.status];
         }
-        */
 
+        dialog() {
+            var dialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            dialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
+            dialog.listen("MDCDialog:cancel", function() {});
+            dialog.show();
+        }
+
+        send($scope) {
+            this.status = 9;
+            this.sendMessage({
+                command: 'apiFunctions.sendsms',
+                params: this.user
+            }).then((x) => {
+                this.status = x.status;
+                this.message = x.message;
+                this.dialog();
+                this.$scope.apply();
+            });
+        }
+        get status() { return sessionStorage[this.mobile]; }
+        set status(value) { sessionStorage[this.mobile] = value; }
     }
-
-
 
     return async function() {
-
-        this.user = await this.getUser() || await setUser.call(this);
-
+        //this.user = await this.getUser() || await setUser.call(this);
+        this.user = await setUser.call(this);
         this.sendSms = new sendSms(this.user, this);
-
-
-
+        this.apply();
         console.log(this.user);
-
-        console.log(this.sendSms);
-
+        //console.log(this.sendSms);
+        //console.log(this.sendSms.mdcDialog);
     }
-
-
-
 
 });

@@ -20,6 +20,7 @@ var robot = {
             Spreadsheets.siribonus(user, "禮金表");
         }
     },
+    
     getDepositBonusList: async function() {
         if(window.cacheBonusData) {
             this.sendData = getBonus.call(this);
