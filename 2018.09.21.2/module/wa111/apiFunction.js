@@ -5,9 +5,24 @@ define([], function() {
     return class apiFunction {
 
         constructor($scope) {
-            this.$scope = $scope;
             this.sendMessage = $scope.sendMessage;
             this.extensionId = $scope.extensionId;
+
+            //console.log($scope);
+            //scope = $scope
+            //this.extensionId = $scope.extensionId;
+            //this.$scope = $scope;
+            //this.apply.bind($scope);
+            //this.region.bind($scope);
+
+            //console.log($scope);
+            //Object.assign(this, $scope)
+            //var c =
+            //angular.merge($scope, this);
+            //angular.merge(this, $scope);
+            //scope = $scope;
+            //console.log($scope);
+            //this.$apply = $scope.apply;
         }
 
         getUserState(m) {

@@ -1,23 +1,22 @@
 define(['App', 'app.services'], function(App, services) {
-    
+
     return new function() {
-        this.$name           = "OBSApp";
-        this.$element        = document.querySelector('[ng-controller]');
-        this.$view           = angular.element(this.$element);
-        this.$module         = angular.module(this.$name);
-        this.$scope          = this.$view.scope();
-        this.$injector       = this.$view.injector();
-        this.$compile        = this.$injector.get('$compile');
-        this.$invoke         = this.$injector.invoke;
-        this.$rootScope      = this.$scope.$root;
-        this.$scope.$view    = this.$view;
+        this.$name = "OBSApp";
+        this.$element = document.querySelector('[ng-controller]');
+        this.$view = angular.element(this.$element);
+        this.$module = angular.module(this.$name);
+        this.$scope = this.$view.scope();
+        this.$injector = this.$view.injector();
+        this.$compile = this.$injector.get('$compile');
+        this.$invoke = this.$injector.invoke;
+        this.$rootScope = this.$scope.$root;
+        this.$scope.$view = this.$view;
         this.$scope.$compile = this.$compile;
 
 
 
+        //console.log(services);
         angular.extend(this.$scope.__proto__, services);
-
-        //angular.extend(this.$scope.__proto__, apiFunction);      
     }
 });
 

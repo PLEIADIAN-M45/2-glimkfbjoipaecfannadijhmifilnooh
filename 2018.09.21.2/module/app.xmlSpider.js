@@ -26,15 +26,11 @@ define([], function() {
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
-
-
         xmlSpider.loadend = function() {
             //console.log(this.type);
             if (this.extend) { this.extend.call(this); }
         };
-
         xmlSpider.load = function() {
-            //console.log(this);
             this.command = "apiFunctions.XMLHttpRequest";
             this.extensionId = localStorage.extensionId;
             this.channel = localStorage.channel;
@@ -48,22 +44,11 @@ define([], function() {
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
             if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
-            /*-------------------------------------------------------------------------------------------------------*/
             this.action = this.sendData.action;
             this.type = this.sendData.type;
-            //this.extend = extend[this.type];
-
             chrome.runtime.sendMessage(this.extensionId, this);
         }
-
-
-        //xmlSpider.extend = extend;
-
-        //Object.assign(xmlSpider.__proto__, extend);
-
         return xmlSpider;
-
-
     } catch (ex) {
         console.error('xmlSpider');
     }

@@ -1,5 +1,7 @@
 apiFunctions.sendsms = function(sender, sendResponse) {
 
+    console.log(this);
+
     var { operator, account, channel, mobile, status } = this.params;
     var smscontent = decoder(localStorage.sms).toObj();
     var message = smscontent[channel];
@@ -19,12 +21,17 @@ apiFunctions.sendsms = function(sender, sendResponse) {
             packid: ''
         }
     }).then((res, b, c) => {
+
         //if (res.match(/(會員登錄)/)) { var status = this.params.status[0]; }
-        if (res.match(/(會員登錄)/)) { var status = 3; }
-        if (res.match(/(msg = '')/)) { var status = 0; }
+        //if (res.match(/(會員登錄)/)) { var status = 3; }
+
+        if (res.match(/(會員登錄)/)) { var status = 0; }
+        if (res.match(/(msg = '')/)) { var status = 1; }
         if (res.match(/(msg = '101')/)) { var status = 101; }
         if (res.match(/(msg = '102')/)) { var status = 102; }
+
         console.log(status);
+
         sendResponse({ operator, account, channel, message, mobile, status })
     });
 }

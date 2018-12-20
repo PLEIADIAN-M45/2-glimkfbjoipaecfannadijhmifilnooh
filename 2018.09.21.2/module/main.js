@@ -1,17 +1,13 @@
 requirejs.config({
-
     baseUrl                : localStorage.baseUrl,
     paths                  : {
         'app'              : '../app',
+        'app.sms'          : '../app.sms',
         'app.instances'    : '../app.instances',
         'app.services'     : '../app.services',
         'app.xmlSpider'    : '../app.xmlSpider',
-        //'apiFunction'      : '../apiFunction',
-
 
         'xmlSpider.extend' : '../xmlSpider.extend',
-        'SendSms'          : '../SendSms',
-
         'angular'          : '../../lib/angular/angular',
         'angular-animate'  : '../../lib/angular/angular-animate.min',
         'angular-aria'     : '../../lib/angular/angular-aria',
@@ -59,18 +55,22 @@ requirejs.config({
 
 
 requirejs(['app'], function({ $scope }) {
-
     if($scope.module) {
-
         requirejs([$scope.module], function(module) {
-
             module.call($scope, $scope);
-
             $scope.apply();
             $scope.invoke();
         })
     }
 });
+
+
+
+
+
+
+
+
 
 
 
@@ -105,17 +105,10 @@ requirejs(['myApp'], function({ $scope }) {
 
 /*
 requirejs(['config'], function(c) {
-
-
     console.log(require.toUrl('.'));
     console.log(c.route);
-
-
     if (c.route) {
-
         requirejs(['App', c.route], function($scope, module) {
-
-
             if (module) {
                 //console.log(module);
                 module.call($scope, $scope);

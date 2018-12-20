@@ -1,21 +1,20 @@
 define([
-    'angular', 'dexie', 'moment', 'material', 'semantic',
-    'app.instances',
-    'app.xmlSpider',
+
+    'angular', 'Dexie', 'moment', 'material', 'semantic',
+
+    'instances', 'xmlSpider', 'apiFunction'
+
 ], function(
 
     angular, Dexie, moment, mdc, semantic,
-    instances, xmlSpider) {
 
-    return new function() { <<
-        << << < HEAD
-            ===
-            === =
+    instances, xmlSpider, apiFunction) {
 
 
-            >>>
-            >>> > 3 f26bdc776e5109cfd2a2902ba088e509ea49d9a
+    return new function() {
+
         this.mdc = mdc;
+        this.apiFunction = apiFunction;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
         this.pathname = location.pathname;
@@ -50,6 +49,7 @@ define([
 
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
+
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
         this.origin = location.origin;
@@ -60,27 +60,27 @@ define([
         this.referrer = document.referrer;
         this.forms = document.forms;
         this.form = document.forms[0];
+
         this.isExit = this.referrer.includes('Exit') || this.referrer.includes('SignOut');
         this.responseType = { text(res) { return res.text(); }, json(res) { return res.json(); } }
         this.unique = [this.account, this.channel].join("-");
+
+
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-
         this.assign = function() { Object.assign(this, ...arguments) };
-        this.apply = function(res) {
-            //console.log(this);
-            if(!this.$$phase) { this.$apply(); };
-            return res;
-        }
+
+        this.apply = function(res) { if(!this.$$phase) { this.$apply(); }; return res; }
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+
         this.sendMessage = function(message) {
-            //console.log(message);
-            //console.log(this.extensionId);
+            //if (message) { console.log(message); }
             return new Promise((resolve, reject) => {
+                //console.log(message);
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    if(res) { res.active = false; }
+                    //console.log(res);
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -109,14 +109,14 @@ define([
             });
         };
 
-        this.router = {
-            wa111: {
-                cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-                device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-            },
+        this.urls = {
             wa1112: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+            },
+            wa111: {
+                cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
             ku711: {
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
@@ -124,26 +124,22 @@ define([
             }
         } [this.host];
 
-        for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
-
+        for(var key in this.urls) { this.urls[key] = this.urls[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.invoke = function() {
             this.injectStylesheet();
             this.injectComponents();
         };
 
-        this.getUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-        }
+        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
 
-        this.putUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
-        }
+        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
 
         this.createTab = function(_url) {
-            //console.log(_url);
+            console.log(_url);
             window.open(_url, "_blank");
         }
+
 
         this.setPermit = function() {
             switch (this.host) {
@@ -160,36 +156,27 @@ define([
         }
 
         this.cut = function(e) { document.execCommand("cut"); }
-        this.copy = function(e) {
-            //console.log(e);
-            document.execCommand("copy");
+        this.copy = function(e) { document.execCommand("copy"); }
+        this.paste = function(e) { document.execCommand("paste"); }
+        this.dialog = function({ status, message, mobile }) {
+            this.mdcDialog = {
+                "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "1": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
+                "0": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: mobile, description: "" },
+                "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
+                "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
+            } [status];
+            if(!this.$$phase) { this.$apply(); }
+            var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            dialog.listen("MDCDialog:accept", function() {
+                window.open("http://client.motosms.com/login", "_blank");
+            });
+            dialog.listen("MDCDialog:cancel", function() {});
+            dialog.show();
         }
 
-        this.paste = function(e) { document.execCommand("paste"); }
 
-
-
-        /*
-                this.dialog = function({ status, message, mobile }) {
-                    this.mdcDialog = {
-                        "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
-                        "1": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
-                        "0": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: mobile, description: "" },
-                        "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
-                        "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
-                        "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: message, description: "" }
-                    } [status];
-                    if(!this.$$phase) { this.$apply(); }
-                    var dialog = new mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
-                    dialog.listen("MDCDialog:accept", function() {
-                        window.open("http://client.motosms.com/login", "_blank");
-                    });
-                    dialog.listen("MDCDialog:cancel", function() {});
-                    dialog.show();
-                }
-        */
-
-        /*
         this.sendSms = function() {
             this.user.smss = false;
             this.sendMessage({
@@ -202,7 +189,6 @@ define([
                 this.$apply();
             });
         }
-        */
 
 
         this.getModule = function(objPath) {
@@ -218,13 +204,6 @@ define([
                 }(object));
             })
         }
-
-
-        this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
-            return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
-        }
-
-
-
     }
+
 });
