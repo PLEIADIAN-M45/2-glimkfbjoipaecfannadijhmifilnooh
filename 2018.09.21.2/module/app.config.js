@@ -1,14 +1,17 @@
 requirejs.config({
     baseUrl                : localStorage.baseUrl,
     paths                  : {
-        'app'              : '../app',
+        'app.main'         : '../app.main',
         'app.sms'          : '../app.sms',
-        'app.instances'    : '../app.instances',
-        'app.services'     : '../app.services',
+        'app.instance'     : '../app.instance',
+        'app.service'      : '../app.service',
+        'app.factory'      : '../app.factory',
+        
+        'app.prototype'    : '../app.prototype',
+
         'app.xmlSpider'    : '../app.xmlSpider',
         'app.sendSms'      : '../app.sendSms',
 
-        'xmlSpider.extend' : '../xmlSpider.extend',
         'angular'          : '../../lib/angular/angular',
         'angular-animate'  : '../../lib/angular/angular-animate.min',
         'angular-aria'     : '../../lib/angular/angular-aria',
@@ -55,11 +58,11 @@ requirejs.config({
 
 
 
-requirejs(['app'], function({ $scope }) {
+requirejs(['app.main'], function({ $scope }) {
 
     console.log($scope);
 
-    if($scope.module) {
+    if ($scope.module) {
 
         /*
         requirejs([$scope.module], function(module) {

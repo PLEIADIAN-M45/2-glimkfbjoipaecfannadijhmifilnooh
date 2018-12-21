@@ -1,16 +1,21 @@
 define([
+
     'angular', 'dexie', 'moment', 'material', 'semantic',
-    'app.instances',
+
     'app.xmlSpider',
+
 ], function(
-    angular, Dexie, moment, mdc, semantic,
-    instances, xmlSpider) {
+
+    angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
     class Service {
+
         constructor() {
+            
             this.mdc = mdc;
             this.dexie = new Dexie('evo');
             this.dexie.version(1).stores({ user: 'f_accounts' });
+
             this.pathname = location.pathname;
             this.port = location.port;
             this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
@@ -59,43 +64,6 @@ define([
             this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
             this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-            this.assign = function() { Object.assign(this, ...arguments) };
-            this.apply = function(res) {
-                if(!this.$$phase) { this.$apply(); };
-                return res;
-            }
-
-            this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
-            this.sendMessage = function(message) {
-                return new Promise((resolve, reject) => {
-                    chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                        if(res) { res.active = false; }
-                        try { resolve(res) } catch (ex) { reject(ex) }
-                    })
-                })
-            }
-
-            this.xmlSpider = xmlSpider;
-            xmlSpider.sendMessage = this.sendMessage;
-            xmlSpider.dexie = this.dexie;
-
-            this.injectStylesheet = function() {
-                if(!this.stylesheet) { return false };
-                this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
-            };
-
-            this.injectComponents = function() {
-                if(!this.components) { return false };
-                this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
-                    fetch(src).then(this.responseType.text).then((html) => {
-                        var template = angular.element(html);
-                        this.$view.append(template);
-                        this.$compile(template)(this);
-                        this.$apply();
-                    });
-                });
-            };
-
             this.router = {
                 wa111: {
                     cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
@@ -111,8 +79,47 @@ define([
                 }
             } [this.host];
 
-            for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
+
+
+
+            this.assign = function() { Object.assign(this, ...arguments) };
+            this.apply = function(res) {
+                if (!this.$$phase) { this.$apply(); };
+                return res;
+            }
+
+            this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+            this.sendMessage = function(message) {
+                return new Promise((resolve, reject) => {
+                    chrome.runtime.sendMessage(this.extensionId, message, (res) => {
+                        if (res) { res.active = false; }
+                        try { resolve(res) } catch (ex) { reject(ex) }
+                    })
+                })
+            }
+
+            this.xmlSpider = xmlSpider;
+            xmlSpider.sendMessage = this.sendMessage;
+            xmlSpider.dexie = this.dexie;
+
+            this.injectStylesheet = function() {
+                if (!this.stylesheet) { return false };
+                this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
+            };
+
+            this.injectComponents = function() {
+                if (!this.components) { return false };
+                this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
+                    fetch(src).then(this.responseType.text).then((html) => {
+                        var template = angular.element(html);
+                        this.$view.append(template);
+                        this.$compile(template)(this);
+                        this.$apply();
+                    });
+                });
+            };
 
             this.invoke = function() {
                 this.injectStylesheet();
@@ -159,9 +166,9 @@ define([
                     var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if(typeof alphaVal == "object") {
-                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if (typeof alphaVal == "object") {
+                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -177,6 +184,19 @@ define([
     }
 
     return Service
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -236,7 +256,7 @@ define([
         this.assign = function() { Object.assign(this, ...arguments) };
         this.apply = function(res) {
             //console.log(this);
-            if(!this.$$phase) { this.$apply(); };
+            if (!this.$$phase) { this.$apply(); };
             return res;
         }
 
@@ -244,7 +264,7 @@ define([
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    if(res) { res.active = false; }
+                    if (res) { res.active = false; }
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -255,12 +275,12 @@ define([
         xmlSpider.dexie = this.dexie;
 
         this.injectStylesheet = function() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
         };
 
         this.injectComponents = function() {
-            if(!this.components) { return false };
+            if (!this.components) { return false };
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -286,7 +306,7 @@ define([
             }
         } [this.host];
 
-        for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+        for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
 
         this.invoke = function() {
@@ -335,9 +355,9 @@ define([
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));

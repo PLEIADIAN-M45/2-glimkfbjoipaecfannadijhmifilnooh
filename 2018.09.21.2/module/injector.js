@@ -10,6 +10,8 @@ var host = {
 } [location.port];
 
 
+
+
 var getURL = chrome.runtime.getURL;
 localStorage.baseUrl = getURL('/module/' + host);
 localStorage.extensionId = chrome.runtime.id;
@@ -26,22 +28,41 @@ function injectScript(attrs) {
 }
 
 
-
-
-//injectScript({ "src": getURL("/module/prototype.js") });
-//injectScript({ "src": getURL("/module/xmlSpider.js") });
-
 document.onreadystatechange = function() {
     switch (document.readyState) {
         case "loading":
             break;
         case "interactive":
-            injectScript({ "src": getURL('/lib/require/require.js'), "data-main": getURL('/module/main.js') })
+            injectScript({ "src": getURL('/lib/require/require.js'), "data-main": getURL('/module/app.config.js') })
             break;
         case "complete":
             break;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//injectScript({ "src": getURL("/module/prototype.js") });
+//injectScript({ "src": getURL("/module/xmlSpider.js") });
 
 
 
