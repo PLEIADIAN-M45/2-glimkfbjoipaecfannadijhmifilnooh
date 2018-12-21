@@ -1,3 +1,0 @@
-define(['host'], function(module) {
-
-});
