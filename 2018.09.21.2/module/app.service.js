@@ -1,8 +1,6 @@
 define([
 
-    'angular', 'dexie', 'moment', 'material', 'semantic',
-
-    'app.xmlSpider',
+    'angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider',
 
 ], function(
 
@@ -11,7 +9,7 @@ define([
     class Service {
 
         constructor() {
-            
+
             this.mdc = mdc;
             this.dexie = new Dexie('evo');
             this.dexie.version(1).stores({ user: 'f_accounts' });

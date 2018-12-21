@@ -1,4 +1,5 @@
 define([], function() {
+
     return function() {
         this.xmlSpider.loadend = function() {
             if (this.type == "getAllUser") {
@@ -9,4 +10,6 @@ define([], function() {
             };
         };
     };
+
+
 });
