@@ -72,10 +72,6 @@ function trim(value) { return value.toString().trim() };
 
 function s(a) { console.log(a); }
 
-
-
-
-
 document.oncopy = function(e) {
     var copyText = e.target.dataset.content;
     if(window.getSelection().type === "Caret") {

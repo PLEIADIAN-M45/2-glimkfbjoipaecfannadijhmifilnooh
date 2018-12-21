@@ -1,4 +1,4 @@
-define(['App', 'app.services'], function(App, services) {
+define(['App', 'app.services', 'app.sendSms'], function(App, services, sendSms) {
 
     return new function() {
         this.$name = "OBSApp";
@@ -15,8 +15,7 @@ define(['App', 'app.services'], function(App, services) {
 
 
 
-        //console.log(services);
-        angular.extend(this.$scope.__proto__, services);
+        angular.extend(this.$scope, new services());
     }
 });
 
@@ -25,7 +24,8 @@ define(['App', 'app.services'], function(App, services) {
 
 
 
-
+//console.log(services);
+//angular.extend(this.$scope.__proto__, services);
 
 
 

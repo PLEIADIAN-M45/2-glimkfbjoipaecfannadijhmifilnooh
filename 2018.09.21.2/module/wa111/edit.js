@@ -40,13 +40,6 @@ define([], function() {
             { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } },
             { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
         ];
-
-        /*
-        console.log(m);
-        this.sendSms = (function() {
-            console.log(m.ishow.value);
-        }());
-        */
         return this;
     }
 
@@ -92,34 +85,26 @@ define([], function() {
         ]).then(this.putUser.bind(this));
     }
 
-    class sendSms {
 
+
+    class sendSms {
         constructor(user, $scope) {
             Object.assign(this.__proto__, $scope.__proto__);
             this.$scope = $scope;
             this.user = user;
             this.mobile = user.mobile.value;
             this.status = user.status[0];
-
             this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
             this.mdcDialog.listen("MDCDialog:cancel", function() {});
-
-
-            //mdcDialog.show();
-            //this.session = user.status[0];
-            //this.status = user.status[0];
-            //this.createSession();
         }
-
-
+        /*
         createSession() {
             if(!sessionStorage[this.mobile] && this.status == 0) { sessionStorage[this.mobile] = this.status; }
             return sessionStorage[this.mobile];
-        }
+        }*/
 
         get dialog() {
-
             return {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
                 "0": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
@@ -129,8 +114,6 @@ define([], function() {
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: this.message, description: "" }
             } [this.status];
         }
-
-
 
         dialog() {
             var dialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
@@ -145,7 +128,6 @@ define([], function() {
                 command: 'apiFunctions.sendsms',
                 params: this.user
             }).then((x) => {
-
                 console.log(x);
                 this.status = x.status;
                 this.message = x.message;
@@ -169,8 +151,62 @@ define([], function() {
         this.sendSms = new sendSms(this.user, this);
         this.apply();
         console.log(this.user);
-        //console.log(this.sendSms);
-        //console.log(this.sendSms.mdcDialog);
     }
 
+
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+     console.log(m);
+     this.sendSms = (function() {
+         console.log(m.ishow.value);
+     }());
+     */
+
+
+/*
+class abc {
+    constructor() {
+        this.a = 1213
+    }
+    setUser() {
+        console.log(this);
+    }
+}
+
+
+
+class xyz extends abc {
+    constructor() {
+        super();
+        this.bv = 32434
+    }
+    getUserStore() {
+        console.log(this);
+
+    }
+}
+
+
+
+
+var bc = new xyz()
+bc.setUser()
+bc.getUserStore()
+*/

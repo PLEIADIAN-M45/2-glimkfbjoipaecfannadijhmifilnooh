@@ -6,6 +6,7 @@ requirejs.config({
         'app.instances'    : '../app.instances',
         'app.services'     : '../app.services',
         'app.xmlSpider'    : '../app.xmlSpider',
+        'app.sendSms'      : '../app.sendSms',
 
         'xmlSpider.extend' : '../xmlSpider.extend',
         'angular'          : '../../lib/angular/angular',
@@ -55,12 +56,18 @@ requirejs.config({
 
 
 requirejs(['app'], function({ $scope }) {
+
+    console.log($scope);
+
     if($scope.module) {
+
+        /*
         requirejs([$scope.module], function(module) {
             module.call($scope, $scope);
             $scope.apply();
             $scope.invoke();
         })
+        */
     }
 });
 

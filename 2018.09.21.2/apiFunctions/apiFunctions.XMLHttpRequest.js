@@ -20,7 +20,7 @@ var robot = {
             Spreadsheets.siribonus(user, "禮金表");
         }
     },
-    
+
     getDepositBonusList: async function() {
         if(window.cacheBonusData) {
             this.sendData = getBonus.call(this);
@@ -72,24 +72,22 @@ var robot = {
 
 
 apiFunctions.XMLHttpRequest = function() {
-    //console.log(this);
+    console.log(this);
     var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];
     if(_robot) { _robot.call(this); }
     return Promise.resolve({});
 }
 
 
-
-
-
 apiFunctions.google = function(request) {
+
     try {
         delete request.banker[0].sites;
         delete request.idcard.sites;
         delete request.locate.sites;
         delete request.mobile.sites;
         delete request.author.sites;
-    } catch (ex) {}
+    } catch (ex) {};
 
     request.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
 
@@ -128,6 +126,7 @@ function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { va
 function $toJson({ responseText }) { try { return JSON.parse(responseText); } catch (ex) { return responseText } }
 
 var Spreadsheets = {
+
     siribonus: function(user) {
         user.command = "google:scripts";
         apiFunctions.google(user);
@@ -140,6 +139,7 @@ var Spreadsheets = {
         user.permit = user.permit.map($Num);
         user.status = user.status.map($Num);
         if(user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
+
         if(user.status[0] == 3) {
             user.command = "google:scripts";
             user.module = "authorize";

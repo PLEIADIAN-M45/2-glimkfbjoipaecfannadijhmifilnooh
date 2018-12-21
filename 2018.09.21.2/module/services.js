@@ -10,7 +10,7 @@ define([
 
     instances, xmlSpider, apiFunction) {
 
-
+    return
     return new function() {
 
         this.mdc = mdc;
