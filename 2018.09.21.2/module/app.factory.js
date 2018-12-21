@@ -4,12 +4,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
-
-
-        this.injector = $rootElement.injector();
-        this.invoke = this.injector.invoke;
-
-
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
@@ -122,10 +116,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             });
         };
 
-        this.invoke = function() {
-            this.injectStylesheet();
-            this.injectComponents();
-        };
 
         this.getUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
@@ -155,13 +145,8 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         }
 
         this.cut = function(e) { document.execCommand("cut"); }
-        this.copy = function(e) {
-            //console.log(e);
-            document.execCommand("copy");
-        }
-
+        this.copy = function(e) { document.execCommand("copy"); }
         this.paste = function(e) { document.execCommand("paste"); }
-
         this.getModule = function(objPath) {
             return new Promise((resolve, reject) => {
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
@@ -182,35 +167,29 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         }
 
 
+        /*
+        this.invoke = function() {
+            this.injectStylesheet();
+            this.injectComponents();
+        };
+        */
+
 
         this.loadModule = function() {
-
             requirejs([this.moduleId], (module) => {
-
-                //console.log(module);
-
                 if (module) {
 
+                    $templateRequest
 
-                    this.invoke(module, this)
 
-                    //console.log(module);
-                    //console.log(this.invoke);
-                    //module.call(this)
+                    module.call(this);
                 }
-            })
-
+            });
         }
 
 
 
         this.loadModule();
-
-        //console.log(this);
-        //function factory() {}
-        //factory.call($rootScope);
-        //$rootScope.loadModule();
-
     }
 
 

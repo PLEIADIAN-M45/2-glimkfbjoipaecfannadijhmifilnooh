@@ -1,16 +1,19 @@
 define(['app', 'app.factory'], function(app, factory) {
 
     var $rootElement = document.querySelector('[ng-controller]')
-    var $controller  = angular.element($rootElement);
-    var $scope       = $controller.scope();
-    var $injector    = $controller.injector();
+    var $controller = angular.element($rootElement);
+    var $scope = $controller.scope();
+    var $injector = $controller.injector();
+
+    $scope.$injector = $injector;
+    $scope.invoke = $injector.invoke;
 
 
 
     $injector.invoke(factory, $scope);
 
 
-    console.log($injector.invoke);
+    //console.log($injector.invoke);
 
 
 
