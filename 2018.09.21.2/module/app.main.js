@@ -1,21 +1,70 @@
 define(['app', 'app.factory'], function(app, factory) {
-    var $rootElement = angular.element(document);
-    var $rootScope = $rootElement.scope();
-    var $injector = $rootElement.injector();
-    return $injector.invoke(factory);
+
+    var $rootElement = document.querySelector('[ng-controller]')
+    var $controller  = angular.element($rootElement);
+    var $scope       = $controller.scope();
+    var $injector    = $controller.injector();
+
+
+
+    $injector.invoke(factory, $scope);
+
+
+    console.log($injector.invoke);
+
+
+
+
+    return {
+        $rootElement,
+        $controller,
+        $scope,
+        $injector
+    };
+
+
 });
 
 
 
 
 
-
-
-
-
+//console.log(app);
 
 
 //chrome                     ://flags/#enable-devtools-experiments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    //return $injector.invoke(factory);
+
+ //var $rootScope = $controller.scope();
+    //var $rootElement = angular.element(document);
+    //$injector.invoke(factory, $rootScope);
+    //app.$rootScope.prototype = new factory()
+
+   var initInjector = angular.injector(["ng"]);
+    console.log(initInjector);
+var $ctrlElement = angular.element(document.querySelector('[ng-controller]'));
+var $scope = $ctrlElement.scope();
+var $Injector = $rootElement.injector();
+*/
+
+
 //
 
 

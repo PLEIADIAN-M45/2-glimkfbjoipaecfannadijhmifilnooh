@@ -58,16 +58,15 @@ requirejs.config({
 
 
 
-requirejs(['app.main'], function($rootScope) {
+requirejs(['app.main'], function({ $scope }) {
 
-    //console.log($rootScope);
-
-    $rootScope.loadModule()
-
+    //console.log($scope.moduleId);
+    // $rootScope.loadModule();
 
 
 
-    if ($rootScope) {
+
+    if (window.$rootScope) {
 
 
 
