@@ -10,6 +10,7 @@ define(['app.prototype'], function() {
 
 
 
+
 function $serialize({ href, url, postData }) {
     var obj = {};
     if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }

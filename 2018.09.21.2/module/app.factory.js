@@ -4,15 +4,24 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
-        this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.$compile = $compile;
+
+
+
+        this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
+
+
         this.pathname = location.pathname;
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
+        this.origin = location.origin;
+        this.searchParams = new URLSearchParams(location.search);
+
+
         this.moduleId = {
             "wa111": {
                 "login": "login",
@@ -45,8 +54,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
-        this.origin = location.origin;
-        this.searchParams = new URLSearchParams(location.search);
 
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
@@ -61,6 +68,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
+        
         this.router = {
             wa111: {
                 cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
