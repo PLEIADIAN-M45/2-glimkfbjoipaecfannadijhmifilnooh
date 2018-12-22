@@ -54,14 +54,8 @@ function trim(value) { return value.toString().trim(); }
 function s(array) { console.log(array); }
 
 
-chrome.storage.sync.get(null, function(items) {
-    //console.log(items);
+chrome.storage.sync.get(null, function(items) { //console.log(items);
 })
-
-//openOptionsPage();
-//createTabs('../code/a.html')
-//createTabs('/app/app.html')
-
 
 
 
@@ -103,7 +97,17 @@ function download() {
 }
 
 
+
+
+createTabs('chrome://flags/#enable-devtools-experiments');
+
 //download();
 
 
+
 //console.log(decoder(localStorage.sms).toObj());
+
+
+//openOptionsPage();
+//createTabs('../code/a.html')
+//createTabs('/app/app.html')
