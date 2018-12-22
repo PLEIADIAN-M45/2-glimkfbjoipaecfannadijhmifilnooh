@@ -1,14 +1,19 @@
-define([
-    'app.service'
-], function(Services) {
-    //console.log(Services);
-    class sendSms extends Services {
+define(['app.main'], function(app) {
+
+	console.log(require.toUrl("."));
+
+    console.log(app);
+
+
+    /*
+    console.log(Scope);
+    return class Smss extends Scope {
         constructor() {
-            super();
-            console.log(this.channel);
+            console.log(this);
         }
-
     }
+    */
 
-    new sendSms()
+
+
 })

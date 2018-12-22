@@ -1,18 +1,70 @@
-define(['app', 'app.factory'], function(app, factory) {
+define(['app', 'app.factory', 'app.sendSms'], function(app, factory, sendSms) {
+
     var $container               = $("[ng-controller]");
     var $controller              = angular.element($container);
     var $scope                   = $controller.scope();
     var $injector                = $controller.injector();
+
     $scope.__proto__.$container  = $container;
     $scope.__proto__.$controller = $controller;
     $scope.__proto__.$injector   = $injector;
     $scope.__proto__.$invoke     = $injector.invoke;
+
     $scope.$invoke(factory, $scope);
+    
     return { $container, $controller, $scope, $injector };
 });
 
 
 
+
+
+
+/*
+function Scope() {};
+Scope.prototype = $scope;
+return Scope;
+*/
+
+/*
+$scope.$invoke(sendSms, $scope);
+*/
+
+
+
+
+
+//console.log(sendSms);
+
+
+
+
+
+
+
+
+
+
+
+
+//console.log($scope);
+//console.log($scope.prototype);
+//console.log($scope);
+/*
+var ax = new xyz();
+console.log(ax);
+console.log(ax.$parent);
+*/
+
+/*
+
+    //console.log(myScope.prototype);
+    //myScope = $scope
+   console.log(myScope.prototype);
+   console.log(myScope.__proto__);
+   */
+
+//$scope.prototype
 
 
 

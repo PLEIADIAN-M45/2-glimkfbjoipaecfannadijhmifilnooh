@@ -1,10 +1,13 @@
 apiFunctions.sendsms = function(sender, sendResponse) {
 
     console.log(this);
+    
 
     var { operator, account, channel, mobile, status } = this.params;
     var smscontent = decoder(localStorage.sms).toObj();
     var message = smscontent[channel];
+
+
 
     $.ajax({
         dataType: "html",

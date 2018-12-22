@@ -4,9 +4,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
-
-
-
         this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.$compile = $compile;
         this.mdc = mdc;
@@ -89,6 +86,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
         this.sendMessage = function(message) {
+            //console.log(this);
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     if (res) { res.active = false; }
@@ -176,6 +174,12 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 }
             });
         }
+
+
+
+
+
+
 
         this.loadModule();
     }

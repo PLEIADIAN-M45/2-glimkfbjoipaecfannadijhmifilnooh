@@ -9,8 +9,6 @@
 //factory.$inject = ['$compile', '$rootScope'];
 
 
-
-
 //console.log(this.$module);
 /*
 var injector = this.$view.injector();
@@ -29,5 +27,38 @@ class Logger extends ILogger {
 }
 
 
+
+
 function Logger() {}
 Logger.prototype = Object.create(ILogger.prototype); // subclass
+
+
+
+
+
+
+
+/*
+class myScope22 {
+    constructor() {}
+}
+
+function myScope() {
+
+}
+
+
+myScope.prototype = $scope;
+
+
+class xyz extends myScope {
+    constructor() {
+        super();
+        //console.log(this.$root);
+        this.abc = 3213
+    }
+}
+*/
+
+//xyz.prototype.constructor = $scope;
+//xyz.constructor = $scope;
