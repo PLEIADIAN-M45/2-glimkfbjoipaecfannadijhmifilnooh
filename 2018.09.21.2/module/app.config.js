@@ -60,36 +60,26 @@ requirejs.config({
 
 requirejs(['app.main'], function({ $scope }) {
 
-    //console.log($scope.moduleId);
-    // $rootScope.loadModule();
 
-
-
-
-    if (window.$rootScope) {
-
-
-
-        //requirejs([$rootScope.module], function(module) {            
-        //module.call($rootScope, $rootScope);
-        /*
-        $scope.apply();
-        $scope.invoke();
-        */
-        //})
-
-    }
 });
 
 
 
 
 
+//console.log(require.toUrl("."));
+//console.log($scope.moduleId);
+//$rootScope.loadModule();
 
 
-
-
-
+//if (window.$rootScope) {}
+//requirejs([$rootScope.module], function(module) {            
+//module.call($rootScope, $rootScope);
+/*
+$scope.apply();
+$scope.invoke();
+*/
+//})
 
 
 

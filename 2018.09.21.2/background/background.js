@@ -26,17 +26,16 @@ var evo = {
         // console.log(value);
         return value;
     },
-
     encoder: function(value) {
         var str = JSON.stringify(value);
         //console.log(str);
-        return btoa(encodeURI(JSON.stringify(value)))
+        return btoa(encodeURI(JSON.stringify(value)));
     },
     decoder: function(value) {
         try {
-            return JSON.parse(decodeURI(atob(value)))
+            return JSON.parse(decodeURI(atob(value)));
         } catch (ex) {
-            return decodeURI(atob(value))
+            return decodeURI(atob(value));
         }
 
     }
@@ -99,7 +98,7 @@ function download() {
 
 
 
-createTabs('chrome://flags/#enable-devtools-experiments');
+//createTabs('chrome://flags/#enable-devtools-experiments');
 
 //download();
 

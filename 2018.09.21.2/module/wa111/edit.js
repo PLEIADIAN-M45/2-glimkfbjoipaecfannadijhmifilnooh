@@ -7,7 +7,7 @@ define([], function() {
             data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
         }).then((rows) => {
             return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
             });
         });
     }
@@ -74,7 +74,7 @@ define([], function() {
     }
 
     function setUser() {
-        this.user = Object.create(this.__proto__);
+        this.user = Object.create(this);
         return Promise.all([
             getUserBasic.call(this.user, this),
             getUserModel.call(this.user, this.model),
@@ -88,74 +88,106 @@ define([], function() {
 
 
     class sendSms {
+
         constructor(user, $scope) {
-            Object.assign(this.__proto__, $scope.__proto__);
-            this.$scope = $scope;
+
+            this.__proto__ = Object.create($scope)
+
+            //console.log(Object.create($scope));
+
+            //Object.assign(this.__proto__, );
+
             this.user = user;
             this.mobile = user.mobile.value;
             this.status = user.status[0];
-            this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            this.mdcDialog = new $scope.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
             this.mdcDialog.listen("MDCDialog:cancel", function() {});
+            //console.log(this);
         }
-        /*
-        createSession() {
-            if(!sessionStorage[this.mobile] && this.status == 0) { sessionStorage[this.mobile] = this.status; }
-            return sessionStorage[this.mobile];
-        }*/
 
-        get dialog() {
-            return {
+
+        setDialog(x) {
+            this.dialog = {
                 "3": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
                 "0": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "\u8bf7\u5148\u767b\u5165\u77ed\u4fe1\u53d1\u9001\u7cfb\u7edf", description: "<a href='http://client.motosms.com/login' target='_blank'>http://client.motosms.com/login</a>" },
-                "1": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: this.mobile, description: "" },
+                "1": { title: "\u7c21\u8a0a\u767c\u9001\u6210\u529f", icon: "check_circle", status: "success", content: x.mobile, description: "" },
                 "101": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
                 "102": { title: "\u77ed\u4fe1\u53d1\u9001\u5931\u8d25", icon: "error", status: "error", content: "", description: "" },
-                "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: this.message, description: "" }
-            } [this.status];
+                "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: x.message, description: "" }
+            } [x.status];
+            this.$apply();
         }
 
-        dialog() {
-            var dialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
-            dialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
-            dialog.listen("MDCDialog:cancel", function() {});
-            dialog.show();
-        }
 
         send($scope) {
+
+            console.log(this);
+
+
             this.status = 9;
             this.sendMessage({
                 command: 'apiFunctions.sendsms',
                 params: this.user
-            }).then((x) => {
-                console.log(x);
-                this.status = x.status;
-                this.message = x.message;
-
-                this.mdcDialog.message = x.message;
-                this.dialog();
+            }).then((res) => {
+                this.setDialog(res);
                 this.mdcDialog.show();
-
-                this.$scope.apply();
             });
+
         }
+
 
         get status() { return sessionStorage[this.mobile]; }
         set status(value) { sessionStorage[this.mobile] = value; }
     }
 
 
+
     return async function() {
-        //this.user = await this.getUser() || await setUser.call(this);
-        this.user = await setUser.call(this);
+
+        //console.log(this);
+
+        //sendSms.prototype = Object.create(this);
+
+
+        this.user = await this.getUser() || await setUser.call(this);
         this.sendSms = new sendSms(this.user, this);
-        this.apply();
+        this.$apply();
+
+        /*
         console.log(this.user);
+        console.log(this.sendSms);
+        */
     }
 
 
 });
 
+
+
+
+//console.log(this);
+//console.log(this.sendMessage);
+//return
+//console.log(this.$apply);
+
+
+/*
+createSession() {
+    if(!sessionStorage[this.mobile] && this.status == 0) { sessionStorage[this.mobile] = this.status; }
+    return sessionStorage[this.mobile];
+}*/
+
+/*
+console.log(sendSms);
+console.log(sendSms.__proto__);
+console.log(sendSms.prototype);
+*/
+//sendSms.prototype//
+
+
+//this.user = await setUser.call(this);
+//this.sendSms.mdcDialog.show();
 
 
 

@@ -4,6 +4,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
+
+
+
+        this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
+        this.$compile = $compile;
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
@@ -11,7 +16,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.port = location.port;
         this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-
         this.moduleId = {
             "wa111": {
                 "login": "login",
@@ -38,6 +42,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             }
         } [this.host][this.path];
 
+
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
 
@@ -45,9 +50,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.extensionId = localStorage.extensionId;
         this.origin = location.origin;
         this.searchParams = new URLSearchParams(location.search);
+
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
         this.channel = localStorage.channel || this.params.siteNumber;
+
         this.referrer = document.referrer;
         this.forms = document.forms;
         this.form = document.forms[0];
@@ -57,8 +64,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-
-
         this.router = {
             wa111: {
                 cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
@@ -76,9 +81,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
-
-
-
         this.assign = function() { Object.assign(this, ...arguments) };
         this.apply = function(res) {
             if (!this.$$phase) { this.$apply(); };
@@ -95,6 +97,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             })
         }
 
+
         this.xmlSpider = xmlSpider;
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
@@ -109,20 +112,19 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
-                    this.$view.append(template);
-                    this.$compile(template)(this);
-                    this.$apply();
+                    angular.element(document.querySelector('[ng-controller]')).append($compile(template)(this));
                 });
             });
         };
 
-
         this.getUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+            //.then(this.$apply())
         }
 
         this.putUser = function() {
             return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
+            //.then(this.$apply())
         }
 
         this.createTab = function(_url) {
@@ -158,45 +160,52 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                         } else { resolve(alphaVal); }
                     }
                 }(object));
-            })
+            });
         }
-
 
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-
-        /*
-        this.invoke = function() {
-            this.injectStylesheet();
-            this.injectComponents();
-        };
-        */
-
-
         this.loadModule = function() {
             requirejs([this.moduleId], (module) => {
                 if (module) {
-
-                    $templateRequest
-
-
-                    module.call(this);
+                    this.injectStylesheet();
+                    this.injectComponents();
+                    this.$invoke(module, this);
                 }
             });
         }
 
-
-
         this.loadModule();
     }
+});
 
 
-})
 
 
 
+
+
+
+
+//$templateRequest
+/*this.$controller.append(template);
+this.$compile(template)(this);
+this.$apply();*/
+/*        
+//chrome.extension.getURL('views/newFolder.html')
+$templateRequest(this.baseUrl + "/html/edit.html").then(function(html) {
+    var template = angular.element(html);
+    angular.element(document.getElementById('space-for-folders')).append($compile(template)($scope));
+});
+*/
+/*
+this.invoke                                                                               = function() {
+    this.injectStylesheet();
+    this.injectComponents();
+};
+*/
 
 
 
