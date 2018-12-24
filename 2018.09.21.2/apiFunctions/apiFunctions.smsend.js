@@ -1,42 +1,72 @@
+//console.log(global , var2);
+
+
 apiFunctions.sendsms = function(sender, sendResponse) {
 
-    console.log(this);
-    
+    with(this.params) {
 
-    var { operator, account, channel, mobile, status } = this.params;
-    var smscontent = decoder(localStorage.sms).toObj();
-    var message = smscontent[channel];
+        this.smscontent = decoder(localStorage.sms).toObj();
+        this.message = this.smscontent[channel];
+        this.mobile = '86' + mobile.value;
+
+        $.ajax({
+            dataType: "html",
+            url: 'http://client.motosms.com/smsc/smssend',
+            method: 'post',
+            data: {
+                sender: '',
+                phones: this.mobile,
+                smscontent: this.message,
+                taskType: 1,
+                taskTime: '',
+                batch: 1,
+                splittime: 0,
+                packid: ''
+            }
+        }).then((res, b, c) => {
+            
+            if (res.match(/(會員登錄)/)) { var status = 401; }
+            if (res.match(/(msg = '')/)) { var status = 200; }
+            if (res.match(/(msg = '101')/)) { var status = 101; }
+            if (res.match(/(msg = '102')/)) { var status = 102; }
+
+            console.log(status);
+
+            sendResponse({ operator, account, channel, message, mobile, status })
+        });
 
 
 
-    $.ajax({
-        dataType: "html",
-        url: 'http://client.motosms.com/smsc/smssend',
-        method: 'post',
-        data: {
-            sender: '',
-            phones: '86' + mobile.value,
-            smscontent: message,
-            taskType: 1,
-            taskTime: '',
-            batch: 1,
-            splittime: 0,
-            packid: ''
-        }
-    }).then((res, b, c) => {
 
-        //if (res.match(/(會員登錄)/)) { var status = this.params.status[0]; }
-        //if (res.match(/(會員登錄)/)) { var status = 3; }
 
-        if (res.match(/(會員登錄)/)) { var status = 0; }
-        if (res.match(/(msg = '')/)) { var status = 1; }
-        if (res.match(/(msg = '101')/)) { var status = 101; }
-        if (res.match(/(msg = '102')/)) { var status = 102; }
 
+
+
+
+        console.log(mobile);
+        console.log(account);
         console.log(status);
 
-        sendResponse({ operator, account, channel, message, mobile, status })
-    });
+
+
+
+        //console.log(this.smscontent);
+        //console.log(message, mobile, channel, account, status);
+        console.log(this);
+    }
+
+    //console.log(this);
+
+
+
+    return
+
+
+
+    console.log(this);
+    console.log(message);
+
+
 }
 
 
@@ -70,6 +100,26 @@ function xxx() {
     })
 }
 
+
+
+
+
+
+/*
+console.log(arguments);
+console.log(sender);
+console.log(apiFunctions.localStorage());
+*/
+
+
+
+// var { operator, account, channel, mobile, status } = this.params;
+//console.log(sender);
+//console.log(this);
+
+
+//var smscontent = decoder(localStorage.sms).toObj();
+//
 // return Promise.resolve()
 //return Promise.resolve({ operator, account, channel, message, mobile, status });
 //setTimeout(() => {}, 3000)

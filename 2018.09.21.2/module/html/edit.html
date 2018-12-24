@@ -10,7 +10,7 @@
         <a class="item" ng-click="setPermit()" ng-if="smss.show"><i class="handshake outline icon"></i><b>开通</b></a>
 
 
-        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==0"><i class="envelope outline icon"></i><b>短信</b></a>
+        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==0 || smss.status==401"><i class="envelope outline icon"></i><b>短信</b></a>
 
     </div>
 </aside>

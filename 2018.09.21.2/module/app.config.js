@@ -1,21 +1,20 @@
 define(["app.location"], function(app) {
 
-    console.log(app);
+    //console.log(app);
 
 
     requirejs.config({
         //packages: ["wa111"],
-        baseUrl: localStorage.baseUrl + app.host,
+        baseUrl: localStorage.baseUrl,
         paths: {
-
-            /*'app.main'       : '../app.main',
-            'app.sms'          : '../app.sms',
-            'app.instance'     : '../app.instance',
-            'app.service'      : '../app.service',
-            'app.factory'      : '../app.factory',
-            'app.prototype'    : '../app.prototype',
-            'app.xmlSpider'    : '../app.xmlSpider',
-            'app.sendSms'      : '../app.sendSms',*/
+            'app.main'      : '../app.main',
+            'app.sms'       : '../app.sms',
+            'app.instance'  : '../app.instance',
+            'app.service'   : '../app.service',
+            'app.factory'   : '../app.factory',
+            'app.prototype' : '../app.prototype',
+            'app.xmlSpider' : '../app.xmlSpider',
+            'app.sendSms'   : '../app.sendSms',
 
             'angular': '../../lib/angular/angular',
             'angular-animate': '../../lib/angular/angular-animate.min',

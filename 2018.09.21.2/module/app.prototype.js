@@ -1,6 +1,5 @@
 define([], function() {
 
-
     if (!HTMLElement.hasOwnProperty("sname")) {}
     if (!HTMLElement.hasOwnProperty("model")) {}
 
@@ -38,6 +37,5 @@ define([], function() {
             return obj;
         } catch (ex) {}
     }
-
 
 })

@@ -100,7 +100,7 @@ function download() {
 
 //createTabs('chrome://flags/#enable-devtools-experiments');
 
-//download();
+download();
 
 
 

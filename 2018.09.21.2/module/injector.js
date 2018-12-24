@@ -1,8 +1,11 @@
+var host = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+
 localStorage.extensionId = chrome.runtime.id;
-localStorage.baseUrl = chrome.runtime.getURL('/module/');
+localStorage.baseUrl = chrome.runtime.getURL('/module/' + host);
+localStorage.host = host;
+
 
 //console.log(localStorage.baseUrl);
-
 
 
 function injectScript(attrs) {
@@ -13,7 +16,6 @@ function injectScript(attrs) {
         //console.log(this);
         //this.remove();
     };
-
     Object.entries(attrs).forEach(([name, value]) => { script.setAttribute(name, value); });
     (document.head || document.documentElement).appendChild(script);
 }
@@ -31,16 +33,20 @@ injectScript({
 
 
 
-/*var host = {
-    "6326": "wa111",
-    "6335": "wa111",
-    "6317": "wa111",
-    "6302": "wa111",
-    "8876": "wa111",
-    "26": "wa111",
-    "16": "ku711",
-    "": location.host.split('.')[1]
-} [location.port];
+//console.log(localStorage.baseUrl);
+
+
+
+/*
+chrome://flags/#enable-devtools-experiments
+*/
+
+//a09777511437@gmail.com
+
+
+
+
+/*
 
 
 
@@ -50,7 +56,6 @@ localStorage.extensionId = chrome.runtime.id;
 localStorage.host = host;
 
 */
-
 
 
 

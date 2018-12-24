@@ -2,7 +2,10 @@ var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" };
 
 var apiFunctions = {};
 
-apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
+//apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
+
+apiFunctions.localStorage = function() { return window.localStorage }
+
 
 apiFunctions.region = async function() {
     console.log(this);
