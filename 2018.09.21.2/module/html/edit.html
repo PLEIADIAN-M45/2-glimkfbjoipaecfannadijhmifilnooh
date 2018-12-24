@@ -1,7 +1,7 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-        
+
         <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{smss.status}}</a>
 
 
@@ -17,6 +17,11 @@
         <a class="item" ng-click="smss.send(this)" ng-show="smss.status==3 || smss.status==401"><i class="envelope outline icon"></i><b>短信</b></a>
     </div>
 </aside>
+
+<!-- 
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+-->
+
 <style type="text/css">
 .ui.inverted.menu.danger {
     background-color: #d2115a !important;
