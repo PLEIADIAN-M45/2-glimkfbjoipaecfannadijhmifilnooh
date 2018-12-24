@@ -11,16 +11,13 @@ function response_message(request, sender, sendResponse) {
     }
 
     try {
-        //console.log(arguments);
-        //console.log(request);
 
-        var promise = eval(request.command)
-            .apply(request, [sender, sendResponse, localStorage])
+        var promise = eval(request.command).bind(request);
+        promise(sender, sendResponse)
             .then(sendResponse);
 
-        //var promise = eval(request.command).call(...arguments).then(sendResponse);
-        //console.log(promise);
-
+        //.apply(request, [sender, sendResponse, localStorage])
+        //.then(sendResponse);
 
     } catch (ex) {
         //console.error(request);

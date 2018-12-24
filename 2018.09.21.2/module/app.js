@@ -3,15 +3,20 @@
      baseUrl: localStorage.baseUrl,
      paths: {
 
-         'app.main': '../app.main',
-         'app.sms': '../app.sms',
-         'app.instance': '../app.instance',
-         'app.service': '../app.service',
-         'app.factory': '../app.factory',
-         'app.prototype': '../app.prototype',
-         'app.xmlSpider': '../app.xmlSpider',
+         'app.main'             : '../app.main',
+         'app.sms'              : '../app.sms',
+         'app.instance'         : '../app.instance',
+         'app.service'          : '../app.service',
+         'app.factory'          : '../app.factory',
+         'app.prototype'        : '../app.prototype',
+         'app.xmlSpider'        : '../app.xmlSpider',
+         'app.xmlSpider.loadend' : '../app.xmlSpider.loadend',
+
+
          'app.sendSms': '../app.sendSms',
          'app.router': '../app.router',
+
+
 
          'angular': '../../lib/angular/angular',
          'angular-animate': '../../lib/angular/angular-animate.min',
@@ -80,7 +85,7 @@
              $scope.$invoke(Router, $scope);
              $scope.$invoke(Factory, $scope);
              $scope.$loadModule();
-             
+
              //console.log($scope);
          })
      }

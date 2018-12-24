@@ -92,15 +92,13 @@ define(["app.sendSms"], function(sendSms) {
     }
 
 
-
-
     return async function() {
-        
         this.user = await this.getUser() || await setUser.call(this);
         this.smss = new sendSms(this);
+        
+        console.log(this.user);
 
-        console.log(this.smss.status);
-
+        //console.log(this.smss.status);
         this.$apply();
     }
 

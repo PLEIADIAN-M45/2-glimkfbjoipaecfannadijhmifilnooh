@@ -1,7 +1,9 @@
 define([], function() {
 
     function Router() {
+        
         Object.assign(this, location);
+
         this.searchParams = new URLSearchParams(location.search);
 
         this.shortPath = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();

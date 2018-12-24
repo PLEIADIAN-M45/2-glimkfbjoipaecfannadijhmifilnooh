@@ -96,11 +96,26 @@ function download() {
 }
 
 
+//download();
+
+
+
+function parseUrl(str) {
+    var url = new URL(str);
+    console.log(url);
+    var account = url.searchParams.get('account');
+    console.log(account);
+}
+
+
+
+
+
+
 
 
 //createTabs('chrome://flags/#enable-devtools-experiments');
 
-download();
 
 
 
@@ -110,3 +125,26 @@ download();
 //openOptionsPage();
 //createTabs('../code/a.html')
 //createTabs('/app/app.html')
+
+
+
+
+function xxx() {
+    fetch("http://client.motosms.com/smsc/smssend", {
+        "credentials": "include",
+        "headers": {
+            "accept": "text/html, */*; q=0.01",
+            "accept-language": "zh-TW,zh-CN;q=0.9,zh;q=0.8,en-US;q=0.7,en;q=0.6",
+            "content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        "referrerPolicy": "no-referrer-when-downgrade",
+        "body": "sender=&phones=8617878978978&smscontent=%E6%AC%A2%E8%BF%8E%E6%82%A8%E7%9A%84%E5%8A%A0%E5%85%A5%0A%E6%9C%AC%E7%BD%91%E4%B8%BB%E7%BD%91%E5%9D%80%EF%BC%9AHTTPS%3A%2F%2FJX11.NET%0A%E6%84%9F%E8%B0%A2%E6%82%A8&taskType=1&taskTime=&batch=1&splittime=0&packid=",
+        "method": "POST",
+        "mode": "cors"
+    }).then((d) => {
+        console.log(d);
+        return d.text()
+    }).then((r) => {
+        console.log(r);
+    })
+}

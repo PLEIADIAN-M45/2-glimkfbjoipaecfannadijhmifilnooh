@@ -35,18 +35,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.assign = function() {
             Object.assign(this, ...arguments)
         };
-        /*
-        this.bind = function(obj) {
-
-            var o = Object.create(this);
-            Object.assign(obj, this);
-
-            //console.log(obj);
-            //console.log(o);
-            //Object.assign(...arguments)
-            //Object.assign(this, ...arguments)
-        };
-        */
 
         this.apply = function(res) {
             if (!this.$$phase) { this.$apply(); };
@@ -59,9 +47,10 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.sendMessage = function(message) {
             //console.log(this.extensionId);
+            //console.log(res);
+
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    //console.log(res);
                     if (res) { res.active = false; }
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
@@ -101,15 +90,22 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         }
 
         this.setPermit = function() {
-            switch (this.host) {
+
+            //console.log(this);
+
+            switch (this.serverName) {
+
                 case "wa111":
                     this.ctrl.isOpenDeposit.value = 1;
                     this.ctrl.btnSaveInfo.click();
+                    console.log(1);
                     break;
                 case "ku711":
                     this.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
                     this.ctrl.DepositChanged();
                     this.ctrl.UpdateMemberRiskInfoAccountingBackend();
+                    console.log(2);
+
                     break;
             }
         }

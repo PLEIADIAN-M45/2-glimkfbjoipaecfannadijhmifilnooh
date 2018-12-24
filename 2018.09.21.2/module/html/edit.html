@@ -1,17 +1,20 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-        <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{user.smss}}</a>
+        
+        <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{smss.status}}</a>
+
+
         <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
+
+       <!--  <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
+       <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a> -->
+
+
+
+        <a class="item" ng-click="setPermit()" ng-if="user.status[0]==0"><i class="handshake outline icon"></i><b>开通</b></a>
         <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
-        <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a>
-
-
-        <a class="item" ng-click="setPermit()" ng-if="smss.show"><i class="handshake outline icon"></i><b>开通</b></a>
-
-
-        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==0 || smss.status==401"><i class="envelope outline icon"></i><b>短信</b></a>
-
+        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==3 || smss.status==401"><i class="envelope outline icon"></i><b>短信</b></a>
     </div>
 </aside>
 <style type="text/css">
