@@ -13,7 +13,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
-
         /**********************************************************************************************/
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
@@ -21,9 +20,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
         this.channel = localStorage.channel || this.params.siteNumber;
-
-        this.operator = localStorage.operator;
-        this.extensionId = localStorage.extensionId;
         /**********************************************************************************************/
         this.referrer = document.referrer;
         this.forms = document.forms;
@@ -32,16 +28,14 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.responseType = { text(res) { return res.text(); }, json(res) { return res.json(); } }
         this.unique = [this.account, this.channel].join("-");
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-        this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
-        this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
 
+        if(this.server == "wa111") {
+            this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
+            this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
+        }
 
         this.router = {
             wa111: {
-                cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-                device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-            },
-            wa1112: {
                 cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                 device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
             },
@@ -49,8 +43,27 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                 device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
             }
-        } [this.host];
+        } [this.server];
+
+
+        console.log(this.test);
+
+        if(this.test) {
+            $(".collapse").show();
+            this.router = {
+                wa111: {
+                    cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                    device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+                },
+                ku711: {
+                    cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+                    device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+                }
+            } [this.server];
+        }
+
         for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+
 
 
         this.assign = function() {
@@ -67,9 +80,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         }
 
         this.sendMessage = function(message) {
-            //console.log(this.extensionId);
-            //console.log(res);
-
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     if(res) { res.active = false; }
@@ -77,6 +87,8 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 })
             })
         }
+
+
 
         this.xmlSpider = xmlSpider;
         xmlSpider.sendMessage = this.sendMessage;
@@ -98,25 +110,14 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         };
 
 
-        this.getUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-        }
+        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
 
-        this.putUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
-        }
+        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
 
-        this.createTab = function(_url) {
-            //console.log(_url);
-            window.open(_url, "_blank");
-        }
+        this.createTab = function(_url) { window.open(_url, "_blank"); }
 
         this.setPermit = function() {
-
-            //console.log(this);
-
-            switch (this.serverName) {
-
+            switch (this.server) {
                 case "wa111":
                     this.ctrl.isOpenDeposit.value = 1;
                     this.ctrl.btnSaveInfo.click();
@@ -127,7 +128,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                     this.ctrl.DepositChanged();
                     this.ctrl.UpdateMemberRiskInfoAccountingBackend();
                     console.log(2);
-
                     break;
             }
         }
@@ -153,10 +153,10 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-
         this.$loadModule = function() {
             console.log(this.moduleId);
             requirejs([this.moduleId], (module) => {
+                //console.log(module);
                 if(module) {
                     this.injectStylesheet();
                     this.injectComponents();
@@ -165,9 +165,16 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             });
         }
 
-        this.loadModule();
     }
 });
+
+
+
+
+
+
+
+
 
 
 

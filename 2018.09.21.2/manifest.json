@@ -3,15 +3,12 @@
     {
         "persistent": true,
         "scripts": [
-
             "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
-            "lib/mock.js",
 
             "background/background.js",
-
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
             "background/background.onMessage.js",
@@ -27,11 +24,10 @@
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js",
-            "apiFunctions/apiFunctions.XMLHttpRequest.js"
-
-            //"apiFunctions/webRequest.2.js"
-            //"mock/mock.data.js",
-            //"mock/mock.conf.js"
+            "apiFunctions/apiFunctions.XMLHttpRequest.js",
+            "mock/mock.js",
+            "mock/mock.data.js",
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":
@@ -50,7 +46,7 @@
             "lib/angular/angular-csp.css",
             "lib/semantic/semantic.css"
         ],
-        "js": [            
+        "js": [
             "module/injector.js"
         ],
         "matches": [

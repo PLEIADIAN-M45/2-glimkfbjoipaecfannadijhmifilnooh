@@ -1,3 +1,19 @@
+apiFunctions.XMLHttpRequest = function() {
+
+    console.log(this.action);
+
+
+    /*
+    var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];
+    if(_robot) { _robot.call(this); }
+    return Promise.resolve({});
+    */
+}
+
+
+
+
+
 var robot = {
 
     UpdateMemberBonusLog: function() {
@@ -68,14 +84,6 @@ var robot = {
         Spreadsheets.authorize(user, data, "還原或停權");
     },
     /************************************************************************************/
-}
-
-
-apiFunctions.XMLHttpRequest = function() {
-    //console.log(this);
-    var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];
-    if(_robot) { _robot.call(this); }
-    return Promise.resolve({});
 }
 
 

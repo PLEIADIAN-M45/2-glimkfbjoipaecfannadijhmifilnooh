@@ -1,5 +1,4 @@
-define(["app.xmlSpider.loadend"], function(loadend) {
-
+define([], function() {
 
     function $getAllResponseHeaders(obj) {
         return obj.getAllResponseHeaders().split('\r').map((x) => {
@@ -8,12 +7,9 @@ define(["app.xmlSpider.loadend"], function(loadend) {
     };
 
     try {
-
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
-
-
-        Object.assign(xmlSpider, loadend.prototype);
+        //Object.assign(xmlSpider, loadend.prototype);
 
         xmlSpider.open = function(method, url, async, user, password) {
             this.startedDateTime = Date.now();
@@ -39,8 +35,9 @@ define(["app.xmlSpider.loadend"], function(loadend) {
         //loadend
 
         xmlSpider.loadend = function() {
-            this.func = loadend.prototype[this.action];
-            console.log(this.func);
+            //console.log(this);
+            //this.func = loadend.prototype[this.action];
+            //console.log(this.func);
         };
 
 
@@ -57,7 +54,7 @@ define(["app.xmlSpider.loadend"], function(loadend) {
             this.dataRows = $dataRows(this);
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
-            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             this.action = this.sendData.action;
             this.type = this.sendData.type;
             chrome.runtime.sendMessage(this.extensionId, this);
@@ -67,6 +64,13 @@ define(["app.xmlSpider.loadend"], function(loadend) {
         console.error('xmlSpider');
     }
 });
+
+
+
+
+
+
+
 
 
 
@@ -86,7 +90,7 @@ if (this[this.action]) {
 //console.log(this.xmlSpider_extend);
 //if (this.xmlSpider_extend) { this.xmlSpider_extend.call(this); }
 //xmlSpider.prototype = ;
-//var fn = 
+//var fn =
 //Object.assign(xmlSpider, new loadend(xmlSpider))
 //console.log(loadend.prototype);
 //console.log(xmlSpider.getmodel);

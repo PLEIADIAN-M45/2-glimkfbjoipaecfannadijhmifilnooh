@@ -1,12 +1,11 @@
 var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" };
 
+
+
 var apiFunctions = {};
 
-//apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
 
 apiFunctions.localStorage = function() { return window.localStorage }
-
-
 apiFunctions.region = async function() {
     console.log(this);
     var r = await apiFunctions[this.attr].call(this);
@@ -22,13 +21,7 @@ var { author, locate, mobile, banker, region, danger, notice } = localStorage;
 var search = { author, locate, mobile, banker, region, danger, notice };
 for (var key in search) { search[key] = decoder(search[key]) };
 
-
 console.log(search);
-
-
-
-//search.region.push(['河南'])
-
 
 if (search.author) {
     search.author.compare = function() {
@@ -51,3 +44,5 @@ if (search.author) {
 
 
 //console.log(search);
+//apiFunctions.localStorage = function() { return Promise.resolve(window.localStorage); }
+//search.region.push(['河南'])

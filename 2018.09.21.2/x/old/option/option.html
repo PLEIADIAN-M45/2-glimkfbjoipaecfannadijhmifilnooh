@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html ng-app="myApp">
+
+<head>
+    <meta charset="utf-8">
+    <title>TITAN</title>
+    <script src="/lib/jquery/jquery-3.2.1.min.js"></script>
+    <script src="/lib/jquery/moment.js"></script>
+    <script src="/lib/angular/angular.min.js"></script>
+    <script src="/lib/semantic/semantic.min.js"></script>
+</head>
+
+<body class="ui container">
+    <div class="ui active dimmer" id="dimmer-body">
+        <div class="ui indeterminate text loader"><b class="chinese">资料正在同步中</b></div>
+    </div>
+    <div class="ui negative message hide" id="update-message">
+          <i class="close icon"></i>
+          <div class="header">
+            請先更新 Chrome 瀏覽器版本
+          </div>
+          <br>
+          <p>複製並打開以下這個網址進行更新版本後重啟</p>
+          <b>chrome://settings/help</b>
+    </div>
+    <style type="text/css">
+     .ui.message>b{
+        color: blue;
+     }
+    .ui.message>p{
+        font-family: Roboto,Microsoft JhengHei!important;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .ui.message>.header{
+        font-family: Roboto,Microsoft JhengHei!important;
+        font-size: 16.5px;
+        font-weight: 700;
+    }
+    </style>
+    <div ng-controller="myCtrl" class="hide" id="controller">
+        <table>
+            <tbody>
+                <tr>
+                    <td colspan="5" style="text-align: right;padding-bottom: 10px;">
+                        <div class="ui label green"><i class="mail icon"></i>{{userInfo.email}}</div>
+                        <div class="ui label grey"><i class="adn icon"></i>{{version}}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="ui labeled icon button mini orange" style="min-width: 105px;">
+                            <i class="twitter icon"></i><b class="chinese">{{i18n('nickname')}}</b>
+                        </button>
+                    </td>
+                    <td>
+                        <div class="ui left icon input mini" style="width: 120px">
+                            <input type="text" ng-model="config.private.username">
+                            <i class="student icon"></i>
+                        </div>
+                    </td>
+                    <td colspan="3" style="padding-left:140px!important;">
+                        <div class="ui checkbox" ng-repeat="(key, value) in config.countries" style="float: left; margin-right: 20px;">
+                            <input type="checkbox" ng-model="config.countries[key]">
+                            <label class="bold-12">
+                                <b class="chinese">{{i18n(key)}}</b>
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                <tr ng-repeat="dashboard in dashboards">
+                    <td>
+                        <button class="ui labeled icon button mini" ng-class="dashboard.color" style="min-width: 105px;">
+                            <i class="twitter icon"></i><b class="chinese" ng-bind="dashboard.cname"></b>
+                        </button>
+                    </td>
+                    <td>
+                        <div class="ui left icon input mini" style="width: 120px">
+                            <input type="text" alt="username" ng-model="config[dashboard.name].username">
+                            <i class="user icon"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui left icon input mini" style="width: 120px">
+                            <input type="text" alt="password" ng-model="config[dashboard.name].password">
+                            <i class="lock icon"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui dropdown fluid floating labeled icon button mini" ng-class="dashboard.color">
+                            <select ng-model="config[dashboard.name].server">
+                                <option ng-repeat="server in servers[dashboard.name]" ng-value="server.label">{{server.label}}</option>
+                            </select>
+                            <i class="world icon"></i>
+                            <span class="text"></span>
+                            <div class="menu">
+                                <div class="item" ng-repeat="server in servers[dashboard.name]">{{server.label}}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui vertical animated button mini login {{dashboard.name}}" ng-class="dashboard.color" ng-click="login(dashboard.name, $index)">
+                            <div class="hidden content">登入</div>
+                            <div class="visible content">
+                                <i class="arrow right icon"></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <button class="ui labeled icon button mini yellow" style="min-width: 105px;">
+                            <i class="bug icon"></i><b class="chinese" ng-bind="i18n('security')"></b>
+                        </button>
+                    </td>
+                    <td colspan="3">
+                        <div class="ui left icon input mini fluid">
+                            <input type="text" ng-model="config.wa111.security">
+                            <i class="protect icon"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="ui vertical animated button mini yellow" ng-click="save()">
+                            <div class="hidden content">储存</div>
+                            <div class="visible content">
+                                <i class="arrow right icon"></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <button class="ui labeled icon button mini grey fluid">
+                            <i class="cc visa icon"></i><b class="chinese">银行卡黑名单</b>
+                        </button>
+                    </td>
+                    <td>
+                        <div class="ui vertical animated button mini grey" ng-click="getBlackList()" id="btntBlackList">
+                            <div class="hidden content">同步</div>
+                            <div class="visible content">
+                                <i class="sync alternate icon"></i>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="5" style="text-align:left;width: 635px;padding: 5px;" class="ui segment inverted transparent" ng-init="checkChromeVersion()">
+                        <div class="ui dimmer" id="dimmer-blacklist" style="min-height: 100px;">
+                            <div class="ui text loader chinese small"><b>银行卡黑名单同步中</b></div>
+                        </div>
+                        <ul id="result-blacklist">
+                            <li ng-repeat="value in BlackList track by $index">{{value[0]}}</li>
+                            <li ng-bind="BlackList_length" class="total"></li>
+                        </ul>
+                        <style>
+                        td {
+                            font-family: Roboto;
+                        }
+
+                        ul {
+                            margin: 0px;
+                            padding: 0px;
+                            font-family: Roboto;
+                        }
+
+                        li.total {
+                            font-family: Roboto, Microsoft Yahei;
+                            font-weight: bold;
+                            font-size: 12px;
+                            color: #2185d0;
+                        }
+
+                        li {
+                            margin: 0px;
+                            padding: 1px;
+                            list-style-type: none;
+                            float: left;
+                            width: 25%;
+                            font-size: 12px;
+                        }
+                        </style>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <link rel="stylesheet" href="/lib/material/0.36.0/roboto.css">
+    <link rel="stylesheet" href="/lib/semantic/semantic.min.css">
+    <link rel="stylesheet" href="option.css">
+    <script src="../lib/cryptoJS/rollups/aes.js"></script>
+    <script src="../lib/cryptoJS/rollups/md5.js"></script>
+    <script src="../lib/cryptoJS/rollups/hmac-md5.js"></script>
+    <script src="./encrypt.js"></script>
+    <script src="option.config.js"></script>
+    <script src="option.js"></script>
+</body>
+
+</html>

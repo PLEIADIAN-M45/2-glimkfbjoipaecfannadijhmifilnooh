@@ -95,11 +95,9 @@ define(["app.sendSms"], function(sendSms) {
     return async function() {
         this.user = await this.getUser() || await setUser.call(this);
         this.smss = new sendSms(this);
-        
         console.log(this.user);
-
-        //console.log(this.smss.status);
         this.$apply();
+        //console.log(this.smss.status);
     }
 
 
@@ -111,7 +109,7 @@ define(["app.sendSms"], function(sendSms) {
 
 /*
 //console.log(this.smss);
-console.log(this.user);       
+console.log(this.user);
 console.log(this.smss);
 */
 
@@ -127,7 +125,7 @@ console.log(this.smss);
         Scope.prototype = this;
 this.$scope = $scope;
 Object.assign(this.__proto__, $scope.user)
-//this.user            
+//this.user
 return
 */
 
