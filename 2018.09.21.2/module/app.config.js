@@ -1,9 +1,62 @@
-define(["app.location"], function(route) {
+define(["app.location"], function(app) {
 
-    console.log(route);
+    //console.log(app);
 
 
+    requirejs.config({
+        //packages: ["wa111"],
+        baseUrl: localStorage.baseUrl,
+        paths: {
+            'app.main'      : '../app.main',
+            'app.sms'       : '../app.sms',
+            'app.instance'  : '../app.instance',
+            'app.service'   : '../app.service',
+            'app.factory'   : '../app.factory',
+            'app.prototype' : '../app.prototype',
+            'app.xmlSpider' : '../app.xmlSpider',
+            'app.sendSms'   : '../app.sendSms',
 
+            'angular': '../../lib/angular/angular',
+            'angular-animate': '../../lib/angular/angular-animate.min',
+            'angular-aria': '../../lib/angular/angular-aria',
+            'angular-cookies': '../../lib/angular/angular-cookies',
+            'angular-messages': '../../lib/angular/angular-messages',
+            'angular-mocks': '../../lib/angular/angular-mocks',
+            'angular-resource': '../../lib/angular/angular-resource',
+            'angular-route': '../../lib/angular/angular-route.min',
+            'angular-sanitize': '../../lib/angular/angular-sanitize.min',
+            'angular-scenario': '../../lib/angular/angular-scenario',
+            'angular-touch': '../../lib/angular/angular-touch',
+            "angularAMD": "../../lib/angular/angularAMD",
+            "ngload": "../../lib/angular/ngload",
+            'domReady': '../../lib/require/domReady',
+            'require': '../../lib/require/require',
+            'jquery': '../../lib/jquery/jquery-3.2.1.min',
+            'js-url': '../../lib/jquery/url.min',
+            'moment': '../../lib/jquery/moment-with-locales.min',
+            'dexie': '../../lib/jquery/dexie',
+            'crypto': '../../lib/crypto/rollups/',
+            'aes': '../../lib/crypto/rollups/aes',
+            'md5': '../../lib/crypto/rollups/md5',
+            'hmac-md5': '../../lib/crypto/rollups/hmac-md5',
+            'material': '../../lib/material/0.36.0/material-components-web',
+            'semantic': '../../lib/semantic/semantic',
+            'Mock': '../../lib/mock',
+        },
+        shim: {
+            'angular': { exports: 'angular' },
+            'angular-animate': { deps: ['angular'] },
+            'angular-aria': { deps: ['angular'] },
+            'angular-cookies': { deps: ['angular'] },
+            'angular-messages': { deps: ['angular'] },
+            'angular-mocks': { deps: ['angular'] },
+            'angular-resource': { deps: ['angular'] },
+            'angular-route': { deps: ['angular'] },
+            'angular-sanitize': { deps: ['angular'] },
+            'angular-scenario': { deps: ['angular'] },
+            'angular-touch': { deps: ['angular'] }
+        }
+    });
 });
 
 

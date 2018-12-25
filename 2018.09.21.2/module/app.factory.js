@@ -1,7 +1,7 @@
 define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], function(angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
 
-    return function($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
+    return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
@@ -14,10 +14,17 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
 
+        /**********************************************************************************************/
+        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
+        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
+        /**********************************************************************************************/
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
         this.channel = localStorage.channel || this.params.siteNumber;
 
+        this.operator = localStorage.operator;
+        this.extensionId = localStorage.extensionId;
+        /**********************************************************************************************/
         this.referrer = document.referrer;
         this.forms = document.forms;
         this.form = document.forms[0];
@@ -27,6 +34,8 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
+
+
         this.router = {
             wa111: {
                 cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
@@ -43,15 +52,24 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         } [this.host];
         for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
-        this.assign = function() { Object.assign(this, ...arguments) };
+
+        this.assign = function() {
+            Object.assign(this, ...arguments)
+        };
+
         this.apply = function(res) {
             if(!this.$$phase) { this.$apply(); };
             return res;
         }
 
-        this.extend = function(args) { Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; }) }
+        this.extend = function(args) {
+            Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
+        }
+
         this.sendMessage = function(message) {
-            //console.log(this);
+            //console.log(this.extensionId);
+            //console.log(res);
+
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
                     if(res) { res.active = false; }
@@ -59,7 +77,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 })
             })
         }
-
 
         this.xmlSpider = xmlSpider;
         xmlSpider.sendMessage = this.sendMessage;
@@ -80,19 +97,37 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             });
         };
 
-        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
-        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
-        this.createTab = function(_url) { window.open(_url, "_blank"); }
+
+        this.getUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+        }
+
+        this.putUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
+        }
+
+        this.createTab = function(_url) {
+            //console.log(_url);
+            window.open(_url, "_blank");
+        }
+
         this.setPermit = function() {
-            switch (this.host) {
+
+            //console.log(this);
+
+            switch (this.serverName) {
+
                 case "wa111":
                     this.ctrl.isOpenDeposit.value = 1;
                     this.ctrl.btnSaveInfo.click();
+                    console.log(1);
                     break;
                 case "ku711":
                     this.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
                     this.ctrl.DepositChanged();
                     this.ctrl.UpdateMemberRiskInfoAccountingBackend();
+                    console.log(2);
+
                     break;
             }
         }
@@ -118,7 +153,9 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-        this.loadModule = function() {
+
+        this.$loadModule = function() {
+            console.log(this.moduleId);
             requirejs([this.moduleId], (module) => {
                 if(module) {
                     this.injectStylesheet();
@@ -130,70 +167,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.loadModule();
     }
-
-
 });
-
-
-
-//console.log(_url);
-//.then(this.$apply())
-//.then(this.$apply())
-/*
-        this.pathname = location.pathname;
-        this.port = location.port;
-        this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-        this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-        this.origin = location.origin;
-        this.searchParams = new URLSearchParams(location.search);
-*/
-
-
-//function route() {}
-//ct.prototype.host2 = 123;
-//   return ct;
-
-
-
-
-
-
-//$templateRequest
-/*this.$controller.append(template);
-this.$compile(template)(this);
-this.$apply();*/
-/*
-//chrome.extension.getURL('views/newFolder.html')
-$templateRequest(this.baseUrl + "/html/edit.html").then(function(html) {
-    var template = angular.element(html);
-    angular.element(document.getElementById('space-for-folders')).append($compile(template)($scope));
-});
-*/
-/*
-this.invoke                                                                               = function() {
-    this.injectStylesheet();
-    this.injectComponents();
-};
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

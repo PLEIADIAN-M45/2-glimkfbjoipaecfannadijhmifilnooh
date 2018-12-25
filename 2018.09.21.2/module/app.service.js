@@ -1,15 +1,11 @@
 define([
-
     'angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider',
-
 ], function(
-
     angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
     class Service {
-
         constructor() {
-
+            
             this.mdc = mdc;
             this.dexie = new Dexie('evo');
             this.dexie.version(1).stores({ user: 'f_accounts' });
