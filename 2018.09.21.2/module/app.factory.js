@@ -1,56 +1,15 @@
 define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], function(angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
+
     return function($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
         this.$compile = $compile;
-
-
-
         this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
-
-
-        this.pathname = location.pathname;
-        this.port = location.port;
-        this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-        this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
-        this.origin = location.origin;
-        this.searchParams = new URLSearchParams(location.search);
-
-
-        this.moduleId = {
-            "wa111": {
-                "login": "login",
-                "index": "home",
-                "memberlist": "list",
-                "membermodify": "edit",
-                "depositbonus": "bonus",
-                "igetmemberinfo": "logs",
-                "samebrowserlist": "logs",
-                "deltabank": "cash",
-                "deltaonline": "cash",
-                "deltawechat": "cash",
-                "deltaalipay": "cash",
-                "withdrawalsbank": "cash",
-                "astropaywithdrawals": "cash"
-            },
-            "ku711": {
-                "signin": "login",
-                "member": "home",
-                "memberinfomanage": "list",
-                "editmemberinfomanage": "edit",
-                "bonuslog": "bonus",
-                "memberloginlog": "log"
-            }
-        } [this.host][this.path];
-
-
-        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
-        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
 
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
@@ -68,7 +27,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         this.elements = ["span", "input", "select", "button"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
         this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
-        
         this.router = {
             wa111: {
                 cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
@@ -83,12 +41,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
             }
         } [this.host];
-
-        for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+        for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
 
         this.assign = function() { Object.assign(this, ...arguments) };
         this.apply = function(res) {
-            if (!this.$$phase) { this.$apply(); };
+            if(!this.$$phase) { this.$apply(); };
             return res;
         }
 
@@ -97,7 +54,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             //console.log(this);
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    if (res) { res.active = false; }
+                    if(res) { res.active = false; }
                     try { resolve(res) } catch (ex) { reject(ex) }
                 })
             })
@@ -109,12 +66,12 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         xmlSpider.dexie = this.dexie;
 
         this.injectStylesheet = function() {
-            if (!this.stylesheet) { return false };
+            if(!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return require.toUrl('../css/@.css').replace('@', str); }).map((src) => { $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body'); });
         };
 
         this.injectComponents = function() {
-            if (!this.components) { return false };
+            if(!this.components) { return false };
             this.components.map((str) => { return require.toUrl(str + '.html').replace(/(wa111|ku711)/, 'html') }).map((src) => {
                 fetch(src).then(this.responseType.text).then((html) => {
                     var template = angular.element(html);
@@ -123,21 +80,9 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             });
         };
 
-        this.getUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-            //.then(this.$apply())
-        }
-
-        this.putUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
-            //.then(this.$apply())
-        }
-
-        this.createTab = function(_url) {
-            //console.log(_url);
-            window.open(_url, "_blank");
-        }
-
+        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
+        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
+        this.createTab = function(_url) { window.open(_url, "_blank"); }
         this.setPermit = function() {
             switch (this.host) {
                 case "wa111":
@@ -160,9 +105,9 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if (typeof alphaVal == "object") {
-                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if(typeof alphaVal == "object") {
+                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -175,7 +120,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 
         this.loadModule = function() {
             requirejs([this.moduleId], (module) => {
-                if (module) {
+                if(module) {
                     this.injectStylesheet();
                     this.injectComponents();
                     this.$invoke(module, this);
@@ -183,18 +128,30 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
             });
         }
 
-
-
-
-
-
-
         this.loadModule();
     }
+
+
 });
 
 
 
+//console.log(_url);
+//.then(this.$apply())
+//.then(this.$apply())
+/*
+        this.pathname = location.pathname;
+        this.port = location.port;
+        this.path = location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+        this.host = (location.port) ? { "8876": "wa111", "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port] : location.host.split(".")[1];
+        this.origin = location.origin;
+        this.searchParams = new URLSearchParams(location.search);
+*/
+
+
+//function route() {}
+//ct.prototype.host2 = 123;
+//   return ct;
 
 
 
@@ -205,7 +162,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
 /*this.$controller.append(template);
 this.$compile(template)(this);
 this.$apply();*/
-/*        
+/*
 //chrome.extension.getURL('views/newFolder.html')
 $templateRequest(this.baseUrl + "/html/edit.html").then(function(html) {
     var template = angular.element(html);

@@ -2,10 +2,6 @@ define(['app.prototype'], function() {
 
     //console.log(this);
 
-
-
-
-
 })
 
 
