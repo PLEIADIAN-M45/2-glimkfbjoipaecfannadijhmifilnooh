@@ -55,6 +55,11 @@ requirejs.config({
 程序员浪费生命的几种方式
 https://beginor.github.io/2013/12/16/waste-of-time.html
 
+
+基于XMLHttpRequest对象的ajax拦截
+https://blog.csdn.net/xiaochunblog/article/details/83351987
+
+
 颈椎病康复指南
 https://beginor.github.io/2016/04/05/angularjs-controller-as.html
 */
