@@ -122,6 +122,7 @@ requirejs(["app"], function(a) {
 /*
 requirejs(['app.instance', 'app.router', 'app.factory'], function(instance, router, factory) {
     require(["main"], function() {
+        
         var $container                       = $("[ng-controller]");
         var $controller                      = angular.element($container);
         var $injector                        = $controller.injector();

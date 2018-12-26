@@ -1,5 +1,3 @@
-//Object.entries(paths).map(([_name, _path]) => { paths[_name] = localStorage.baseUrl + _path; });
-//console.log(Object.entries(paths));
 requirejs.config({
     paths                                    : {
         'app'                                : 'module/app',
@@ -57,13 +55,14 @@ requirejs.config({
 
 
 
-require(["app"], function(app) {
-    console.log(app);
-
+requirejs(["app"], function(app) {
+    //console.log(app);
 })
 
 
 
+//Object.entries(paths).map(([_name, _path]) => { paths[_name] = localStorage.baseUrl + _path; });
+//console.log(Object.entries(paths));
 /*
 requirejs(['app.instance', 'app.router', 'app.factory'], function(instance, router, factory) {
     require(["main"], function() {

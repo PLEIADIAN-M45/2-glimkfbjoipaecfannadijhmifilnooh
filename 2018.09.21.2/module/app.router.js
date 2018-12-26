@@ -1,35 +1,41 @@
 define([], function() {
-    var router                     = {
-        "wa111"                    : {
-            "login"                : "login",
-            "index"                : "home",
-            "memberlist"           : "list",
-            "membermodify"         : "edit",
-            "depositbonus"         : "bonus",
-            "igetmemberinfo"       : "logs",
-            "samebrowserlist"      : "logs",
-            "deltabank"            : "cash",
-            "deltaonline"          : "cash",
-            "deltawechat"          : "cash",
-            "deltaalipay"          : "cash",
-            "withdrawalsbank"      : "cash",
-            "astropaywithdrawals"  : "cash"
+    var router = {
+        "wa111": {
+            "login": "login",
+            "index": "home",
+            "memberlist": "list",
+            "membermodify": "edit",
+            "depositbonus": "bonus",
+            "igetmemberinfo": "logs",
+            "samebrowserlist": "logs",
+            "deltabank": "cash",
+            "deltaonline": "cash",
+            "deltawechat": "cash",
+            "deltaalipay": "cash",
+            "withdrawalsbank": "cash",
+            "astropaywithdrawals": "cash",
+            //cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+            //device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
         },
-        "ku711"                    : {
-            "signin"               : "login",
-            "member"               : "home",
-            "memberinfomanage"     : "list",
-            "editmemberinfomanage" : "edit",
-            "bonuslog"             : "bonus",
-            "memberloginlog"       : "log"
+        "ku711": {
+            "signin": "login",
+            "member": "home",
+            "memberinfomanage": "list",
+            "editmemberinfomanage": "edit",
+            "bonuslog": "bonus",
+            "memberloginlog": "log",
+            //cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+            //device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
         }
     };
-    return new function Router() {
+
+    return function Router() {
         Object.assign(this, window.location, window.localStorage);
-        this.searchParams = new URLSearchParams(this.search);        
+        this.searchParams = new URLSearchParams(this.search);
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
         this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
         this.router = router[this.server][this.locator];
+        this.main = ["module", this.server, "main"].join("/");
         this.service = (this.router) ? ["module", this.server, this.router].join("/") : undefined;
     }
 });

@@ -2,6 +2,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
 
     return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
+
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
@@ -34,23 +35,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
             this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
         }
 
-        this.router = {
-            wa111: {
-                cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-                device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-            },
-            ku711: {
-                cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
-                device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
-            }
-        } [this.server];
-
-
-        console.log(this.test);
-
-
-
-        if (this.test) {
+        if (this.isTest) {
             $(".collapse").show();
             this.router = {
                 wa111: {
@@ -62,14 +47,23 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                     device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
             } [this.server];
+            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+        } else {
+            this.router = {
+                wa111: {
+                    cookie: "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                    device: "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+                },
+                ku711: {
+                    cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+                    device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+                }
+            } [this.server];
+            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
         }
-
-        for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
-
 
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
-
         this.assign = function() {
             Object.assign(this, ...arguments)
         };
@@ -157,10 +151,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-        this.$loadModule = function() {
-            console.log(this.moduleId);
-            requirejs([this.moduleId], (module) => {
-                //console.log(module);
+
+        console.log(this.service);
+
+        this.$loadModule = function() {           
+            requirejs([this.service], (module) => {
                 if (module) {
                     this.injectStylesheet();
                     this.injectComponents();
