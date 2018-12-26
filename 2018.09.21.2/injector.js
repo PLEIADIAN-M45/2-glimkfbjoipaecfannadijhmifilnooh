@@ -1,8 +1,13 @@
-var host = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+var server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+var rootUrl = chrome.runtime.getURL("/");
+var baseUrl = chrome.runtime.getURL("/module/" + server + "/");
+var extensionId = chrome.runtime.id;
 
-localStorage.extensionId = chrome.runtime.id;
-localStorage.baseUrl     = chrome.runtime.getURL('/module/' + host);
-localStorage.host        = host;
+
+localStorage.extensionId = extensionId;
+localStorage.server = server;
+localStorage.rootUrl = rootUrl;
+localStorage.baseUrl = baseUrl;
 
 
 
@@ -21,14 +26,34 @@ function injectScript(attrs) {
 
 
 
+
+
+
 injectScript({
-    "src": chrome.runtime.getURL('/lib/require/require.js'),
-    "data-main": chrome.runtime.getURL('/module/app.js')
+    "src": chrome.runtime.getURL('lib/require/require.js'),
+    "data-main": chrome.runtime.getURL('main.js')
 })
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/"]
+//var c = ["chrome-extension:/", extensionId, "module", server].join("/");
+//console.log(c);
 
 
 

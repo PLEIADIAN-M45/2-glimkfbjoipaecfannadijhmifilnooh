@@ -3,7 +3,11 @@
     {
         "persistent": true,
         "scripts": [
-            "lib/angular/angular.min.js",
+            //"injector.js"
+
+            
+            "lib/angular/angular.min.js"
+            /*
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
@@ -24,10 +28,11 @@
             "apiFunctions/apiFunctions.smsend.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js",
-            "apiFunctions/apiFunctions.XMLHttpRequest.js",
-            "mock/mock.js",
+            "apiFunctions/apiFunctions.XMLHttpRequest.js"
+            */
+            /*"mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"
+            "mock/mock.conf.js"*/
         ]
     },
     "browser_action":
@@ -47,7 +52,7 @@
             "lib/semantic/semantic.css"
         ],
         "js": [
-            "module/injector.js"
+            "injector.js"
         ],
         "matches": [
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
