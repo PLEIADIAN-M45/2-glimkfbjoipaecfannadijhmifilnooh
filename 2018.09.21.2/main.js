@@ -51,9 +51,11 @@ requirejs.config({
 });
 
 
+/*
+程序员浪费生命的几种方式
 
-
-
+https://beginor.github.io/2013/12/16/waste-of-time.html
+*/
 
 requirejs(["app"], function(app) {
     //console.log(app);
