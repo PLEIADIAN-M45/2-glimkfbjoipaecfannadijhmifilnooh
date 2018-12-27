@@ -3,10 +3,9 @@ define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
         $('html').attr('ng-app', this.name);
         $("<div>", { "id": this.ctrlId, "ng-controller": this.ctrlId }).appendTo("body");
         var controller = function($scope, $rootScope) {};
-        var app = angular.module(this.name, ["ngSanitize", "ngAnimate"]);
-        app.controller(this.ctrlId, controller);
+        var app = angular.module(this.name, ["ngSanitize", "ngAnimate"]).controller(this.ctrlId, controller);
         angular.bootstrap(document, [this.name]);
-        return app;
+        return this.app = app;
     }
 });
 

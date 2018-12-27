@@ -149,11 +149,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
-        console.log(this.module);
 
+
+        console.log(this.module);
         this.$loadModule = function() {
             requirejs([this.module], (module) => {
-
                 if (module) {
                     this.injectStylesheet();
                     this.injectComponents();

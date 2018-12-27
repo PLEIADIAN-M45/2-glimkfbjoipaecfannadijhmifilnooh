@@ -63,116 +63,49 @@ function ccc() {
     console.log(this);
 }
 
-
+/*
+chrome://extensions/
+chrome://settings/fonts
+chrome://flags/#enable-devtools-experiments
+*/
 
 
 function Evolution() {
     this.extends(localStorage, location);
-
     this.name = "OBSApp";
     this.ctrlId = "View";
     this.selector = "[ng-controller]";
-
     this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
     this.module = this.server + "/" + this.paths[this.server][this.locator];
     this.isTest = (this.hostname == "127.0.0.1") ? true : false;
-
     if (this.module) {
-        requirejs([this.server], (fn) => {
-            this.app = fn.apply(this);
-            //console.log(this.app);
+        requirejs([this.server], (app) => {
+            app.apply(this);
             requirejs(['app.instance', 'app.factory'], (instance, factory) => {
-
-                //this.extends(angular);
-                //this.$container = $("[ng-controller]");
-                //this.$controller = angular.element(this.$container);
-
-                this.$controller = angular.element(this.selector);
-                this.$injector = this.$controller.injector();
-                this.$scope = this.$controller.scope();
-                this.$invoke = this.$injector.invoke
-                
-                this.$invoke(factory)
-
-                //console.log(this.$injector);
-
-                //var c = this.injector()
-
-                //console.log(c);
-
-                //console.log(this.$injector);
-
-
-                //console.log(this.injector());
-
-                //this.$invoke(factory)
-
-
-                //console.log(this);
-                //console.log(this.$controller.__proto__);
-
-
-                //this.$injector = this.$controller.injector();
-                //this.$scope = this.$controller.scope();
-
-                //console.log(this.$scope);
-
-                //this.$invoke(factory)
-
-
-                //this.$controller = angular.element("[ng-controller]");
-
-
-                //console.log(this.$container.injector);
-                //console.log(this.$controller.injector);
-
-
-                //console.log(this.$container == this.$controller);
-
-                //console.log(this);
-
-
-                /*
-                this.$container = $("[ng-controller]");
-                this.$controller = angular.element(this.$container);
-                this.$injector = this.$controller.injector();
-                */
-
-
-                /*var $container = $("[ng-controller]");
-                var $controller = angular.element($container);
+                var $controller = angular.element(this.selector);
                 var $injector = $controller.injector();
                 var $scope = $controller.scope();
                 var $invoke = $injector.invoke;
                 $scope.extends = this.extends;
-                $scope.extends(this, window, { $container, $controller, $injector, $invoke });
+                $scope.extends(this, window, { $controller, $injector, $invoke, $scope })
                 $scope.$invoke(factory, $scope);
                 $scope.$loadModule();
-                */
             });
         })
     }
 };
 
 
-Evolution.prototype.$invoke = function(fn) {
-    with(this) {
-        //console.log($scope);
-        $scope.extends = this.extends;
-        $scope.extends(this);
-        $scope.invoke = $injector.invoke;
-        $scope.invoke(fn, $scope)
-        //$injector.invoke(arguments[0], $scope);
-    }
-    /*
-    this.$scope.extends = this.extends;
-    this.$scope.extends(this);
-    this.$injector.invoke(arguments[0], this.$scope);
-    */
-}
-
 Evolution.prototype.extends = function() {
     if (this.$root) { Object.assign(this.__proto__, ...arguments) } else { Object.assign(this, ...arguments) }
+    /*
+    var c = arguments[0].hasOwnProperty('$scope')
+    if (c) {
+        //console.log(arguments[0].$scope);
+        Object.assign(arguments[0].$scope.__proto__, window, this)
+    }
+    */
+
 }
 
 Evolution.prototype.paths = {
@@ -215,8 +148,10 @@ var evo = new Evolution();
 
 
 
+//var $container = $("[ng-controller]");
 
 
+//$scope.extends({ $controller, $injector, $invoke, $scope });
 
 
 
