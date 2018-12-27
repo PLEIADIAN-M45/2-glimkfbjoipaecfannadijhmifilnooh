@@ -1,13 +1,13 @@
-var $server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
-var $rootUrl = chrome.runtime.getURL("/");
-var $baseUrl = chrome.runtime.getURL($server);
-var $extensionId = chrome.runtime.id;
+var server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+var rootUrl = chrome.runtime.getURL("/");
+var baseUrl = chrome.runtime.getURL(server);
+var extensionId = chrome.runtime.id;
 
 
-localStorage.$extensionId = $extensionId;
-localStorage.$server = $server;
-localStorage.$rootUrl = $rootUrl;
-localStorage.$baseUrl = $baseUrl;
+localStorage.extensionId = extensionId;
+localStorage.server = server;
+localStorage.rootUrl = rootUrl;
+localStorage.baseUrl = baseUrl;
 
 
 

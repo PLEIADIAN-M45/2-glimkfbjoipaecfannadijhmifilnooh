@@ -6,27 +6,18 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
-        console.log(this);
-
-        return
         this.$compile = $compile;
-        this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
-
-
+        /**********************************************************************************************/
+        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
+        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
+        /**********************************************************************************************/
         this.searchParams = new URLSearchParams(this.search);
-
-        this.operator = localStorage.operator;
-        this.extensionId = localStorage.extensionId;
-        /**********************************************************************************************/
-        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
-        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
-        /**********************************************************************************************/
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
-        this.channel = localStorage.channel || this.params.siteNumber;
+        //this.channel = localStorage.channel || this.params.siteNumber;
         /**********************************************************************************************/
         this.referrer = document.referrer;
         this.forms = document.forms;
@@ -65,8 +56,12 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                     device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
             } [this.server];
-            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+
+            for (var key in this.router) {
+                this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account);
+            }
         }
+
 
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.moduleId];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.moduleId];
@@ -91,8 +86,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                 })
             })
         }
-
-
 
         this.xmlSpider = xmlSpider;
         xmlSpider.sendMessage = this.sendMessage;
@@ -156,12 +149,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
-
-
-        console.log(this.service);
+        console.log(this.module);
 
         this.$loadModule = function() {
-            requirejs([this.service], (module) => {
+            requirejs([this.module], (module) => {
+
                 if (module) {
                     this.injectStylesheet();
                     this.injectComponents();
@@ -221,3 +213,14 @@ $timeout
 $window
 $xhrFactory
 */
+
+
+
+
+
+
+
+//console.log(this);
+//this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
+//this.operator = localStorage.operator;
+//this.extensionId = localStorage.extensionId;

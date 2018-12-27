@@ -1,6 +1,4 @@
 //console.log(this.localStorage.server);
-
-
 //var $
 //console.log(requirejs);
 
@@ -61,118 +59,64 @@ requirejs.config({
 
 
 
+function extend() {
+    var last = arguments.length - 1;
+   /* console.log(arguments);
+    console.log(last);*/
 
-
+    if (arguments[last] == true) {
+        Object.assign(arguments[0], this)
+    } else {
+        console.log(...arguments);
+        Object.assign(this, ...arguments)
+    }
+}
 
 
 function Evolution() {
-    this.join(localStorage);
-    this.join(location);
-
-    this.$name = "OBSApp";
-    this.$ctrlId = "View";
-    this.$selector = "[ng-controller]";
-
-    this.$locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-    this.$modName = this.router[this.$server][this.$locator];
-
-    if (this.$modName) {
-
-        requirejs([this.$server], (fn) => {
-
+    this.extend = extend;
+    this.extend(localStorage);
+    this.extend(location);
+    this.name = "OBSApp";
+    this.ctrlId = "View";
+    this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+    this.module = this.server + "/" + this.paths[this.server][this.locator];
+    this.isTest = (this.hostname == "127.0.0.1") ? true : false;
+    if (this.module) {
+        requirejs([this.server], (fn) => {
             this.app = fn.apply(this);
-
+            //console.log(this.app);
             requirejs(['app.instance', 'app.factory'], (instance, factory) => {
-
-              
                 var $container = $("[ng-controller]");
                 var $controller = angular.element($container);
                 var $injector = $controller.injector();
                 var $scope = $controller.scope();
-
-                
-
-                $scope.join = this.join;
-
-                $scope.join({
-                    $container,
-                    $controller,
-                    $injector
-                })
-
-
-                this.join({
-                    $container,
-                    $controller,
-                    $injector,
-                    $scope
-                })
-
-                console.log(this);
-
-
-                // this.$scope = this.$controller.scope();
-                //var $scope = this.$controller.scope();
-
-
-
-                //Object.assign($scope.__proto__, this);
-
-                //console.log($scope);
-
-
-                //$scope.join = this.join;
-                //$scope.join(this)
-
-
-
-
-                /*
-                $scope.$apply(function() {
-                    console.log(this);
-                    //$scope.message = "Timeout called!";
-                });
-                */
-
-
-                //console.log($scope);
-                //$scope.join = this.join;
-                //$scope.join(this)
-
-                //console.log(this);
-                //this.join(this.$scope)
-
-
-
-
-                //console.log(this.$scope);
-
-
-                /*
-                this.$invoke = this.$injector.invoke;
-                //$scope.$invoke(router, $scope);
-                this.$invoke(factory, this.$scope);
-                */
-                //$scope.$loadModule();
+                var $invoke = $injector.invoke;
+                $scope.extend = extend;
+                $scope.extend(this)
+                console.log($scope);
+                return
+                $scope.extend(window);
+                //$scope.extend(this);
+                $scope.extend({ $container, $controller, $injector, $invoke });
+                console.log($scope);
+                $scope.$invoke(factory, $scope);
+                $scope.$loadModule();
             });
-
-            //console.log(require.toUrl("."));
-            //console.log(app);
         })
-
     }
-
 };
 
 
-
-
-Evolution.prototype.join = function() {
-    Object.assign(this.__proto__, ...arguments)
+/*
+Evolution.prototype.extend = function() {
+    var last = arguments.length - 1;
+    if (arguments[last] == true) { Object.assign(arguments[0], this) } else { Object.assign(this, ...arguments) }
 }
+*/
 
 
-Evolution.prototype.router = {
+Evolution.prototype.paths = {
     "wa111": {
         "login": "login",
         "index": "home",
@@ -201,9 +145,6 @@ Evolution.prototype.router = {
         //device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
     }
 };
-
-
-
 
 
 var evo = new Evolution();
