@@ -21,7 +21,7 @@
             "apiFunctions/apiFunctions.mobile.js",
             "apiFunctions/apiFunctions.google.js",
             "apiFunctions/apiFunctions.member.js",
-            "apiFunctions/apiFunctions.smsend.js",
+            "apiFunctions/apiFunctions.sendsms.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js",
             "apiFunctions/apiFunctions.XMLHttpRequest.js",
@@ -142,3 +142,10 @@
     "version": "2018.09.21.2222",
     "web_accessible_resources": ["*"]
 }
+
+
+
+/*"background":
+  {
+      "page": "background.html"
+  },*/

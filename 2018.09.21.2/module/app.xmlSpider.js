@@ -9,7 +9,6 @@ define([], function() {
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
-        //Object.assign(xmlSpider, loadend.prototype);
 
         xmlSpider.open = function(method, url, async, user, password) {
             this.startedDateTime = Date.now();
@@ -31,15 +30,14 @@ define([], function() {
             return send.apply(this, arguments);
         };
 
-
-        //loadend
-
         xmlSpider.loadend = function() {
-            //console.log(this);
-            //this.func = loadend.prototype[this.action];
-            //console.log(this.func);
+            /*
+            var mod = robot[this.action];
+            if(mod) {
+                //console.log(mod);
+                mod.apply(this);
+            }*/
         };
-
 
         xmlSpider.load = function() {
             this.command = "apiFunctions.XMLHttpRequest";
@@ -59,6 +57,7 @@ define([], function() {
             this.type = this.sendData.type;
             chrome.runtime.sendMessage(this.extensionId, this);
         }
+        //console.log(xmlSpider);
         return xmlSpider;
     } catch (ex) {
         console.error('xmlSpider');
@@ -71,6 +70,19 @@ define([], function() {
 
 
 
+
+
+
+
+
+//xmlSpider.join = join;
+//xmlSpider.join(robot);
+//Object.assign(xmlSpider, loadend.prototype);
+
+//console.log(this.getmodel);
+//console.log(this);
+//this.func = loadend.prototype[this.action];
+//console.log(this.func);
 
 
 

@@ -46,8 +46,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'], 
         } [this.server];
 
 
-        console.log(this.test);
-
+        //console.log(this.test);
         if(this.test) {
             $(".collapse").show();
             this.router = {

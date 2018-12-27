@@ -26,6 +26,7 @@ define([], function() {
         send($scope) {
             this.status = -100;
             $scope.sendMessage({ command: this.command, channel: this.channel, mobile: this.mobile }).then((result) => {
+                //console.log(result);
                 this.status = result.status;
                 this.setDialog(result);
                 this.mdcDialog.show();

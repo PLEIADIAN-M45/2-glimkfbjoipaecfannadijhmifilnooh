@@ -60,7 +60,6 @@ chrome.storage.sync.get(null, function(items) { //console.log(items);
 
 
 function decoder(value) {
-    //console.log(value);
     try {
         var str = atob(value)
         return JSON.parse(decodeURI(str))

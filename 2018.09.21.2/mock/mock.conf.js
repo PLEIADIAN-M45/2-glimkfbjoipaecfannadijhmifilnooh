@@ -11,7 +11,7 @@ if(window.MockType == true) {
     }
 
 
-    console.log(window.baseUrl);
+    //console.log(window.baseUrl);
 
     var entries = d.log.entries;
 

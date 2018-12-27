@@ -1,6 +1,138 @@
+var Spreadsheets = {
+
+    siribonus: function(user) {
+        user.command = "google:scripts";
+        apiFunctions.google(user);
+    },
+    authorize: function(user, postData) {
+        user.status[1] = postData[0];
+        user.permit[1] = postData[1];
+        user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
+        user.timing[2] = timeDiff(user.timing);
+        user.permit = user.permit.map($Num);
+        user.status = user.status.map($Num);
+        if(user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
+
+        if(user.status[0] == 3) {
+            user.command = "google:scripts";
+            user.module = "authorize";
+        } else {
+            user.command = "google:scripts";
+            user.module = "suspended";
+        }
+        console.log(user);
+        //apiFunctions.google(user);
+    }
+}
+
+function getUser() {
+    if(this.sendData) {
+        var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
+        var channel = this.channel;
+        var unique = [account, channel].join("-");
+        //console.log(unique);
+        return evo.store.user.get(unique);
+    }
+}
+
+function getBonus() {
+    var bonus = this.dataRows.find((row) => {
+        if(row.f_id) { return row.f_id == window.cacheBonusData.id; }
+        if(row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
+    });
+    window.cacheBonusData = null;
+    return bonus;
+}
+
+
+
+
 apiFunctions.XMLHttpRequest = function() {
 
-    console.log(this.action);
+
+
+
+    var robot = {
+
+        UpdateMemberBonusLog: function() {
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+        },
+        delDiceWinRecords: function( /*用於刪除*/ ) {
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+        },
+        DelDiceWinRecords: function( /*用於給點*/ ) {
+            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+        },
+        /****************************************************************/
+
+        GetMemberBonusLogBackendByCondition: async function() {
+            if(window.cacheBonusData) {
+                this.sendData = getBonus.call(this);
+                var user = await getUser.call(this);
+                user.bonus = this.sendData;
+                user.module = "bonus:ku711";
+                Spreadsheets.siribonus(user, "禮金表");
+            }
+        },
+
+        getDepositBonusList: async function() {
+            if(window.cacheBonusData) {
+                this.sendData = getBonus.call(this);
+                var user = await getUser.call(this);
+                user.bonus = this.sendData;
+                user.module = "bonus:wa111";
+                Spreadsheets.siribonus(user, "禮金表");
+            }
+        },
+        /****************************************************************/
+
+        getmodel: async function(user) {
+
+            var { f_ishow, f_depositStatus } = this.respData;
+            var data = [f_ishow, f_depositStatus];
+            var user = await getUser.call(this);
+           // console.log(user, data);
+            Spreadsheets.authorize(user, data, "開通");
+        },
+
+        UpdateMemberRiskInfoAccountingBackend: async function() {
+            if(this.respData == 1) {
+                var { MemberStatus, IsDeposit } = this.sendData;
+                var data = [MemberStatus, IsDeposit];
+                var user = await getUser.call(this);
+                Spreadsheets.authorize(user, data, "開通");
+            };
+        },
+        UpdateMemberSNInfoBackend: async function() {
+            var { MemberStatus, IsDeposit } = this.sendData;
+            var data = [MemberStatus, IsDeposit];
+            var user = await getUser.call(this);
+            Spreadsheets.authorize(user, data, "停權-用戶狀態選停權戶");
+        },
+        /****************************************************************/
+        StopMember: async function(user) {
+            if(this.respData == 2) {
+                var data = [2, 0];
+                var user = await getUser.call(this);
+                Spreadsheets.authorize(user, data, "停權");
+            };
+        },
+        UpdateMemberRisksInfoBackendIsFSuspension: async function() {
+            if(this.sendData.IsFSuspension == false) { return };
+            var data = [0, 0];
+            var user = await getUser.call(this);
+            Spreadsheets.authorize(user, data, "還原或停權");
+        },
+        /************************************************************************************/
+    }
+
+
+
+    var mod = robot[this.action];
+
+    if(mod) {
+        mod.apply(this);
+    }
 
 
     /*
@@ -13,78 +145,6 @@ apiFunctions.XMLHttpRequest = function() {
 
 
 
-
-var robot = {
-
-    UpdateMemberBonusLog: function() {
-        if(this.respData == 1) { window.cacheBonusData = this.sendData; }
-    },
-    delDiceWinRecords: function( /*用於刪除*/ ) {
-        if(this.respData == 1) { window.cacheBonusData = this.sendData; }
-    },
-    DelDiceWinRecords: function( /*用於給點*/ ) {
-        if(this.respData == 1) { window.cacheBonusData = this.sendData; }
-    },
-    /****************************************************************/
-
-    GetMemberBonusLogBackendByCondition: async function() {
-        if(window.cacheBonusData) {
-            this.sendData = getBonus.call(this);
-            var user = await getUser.call(this);
-            user.bonus = this.sendData;
-            user.module = "bonus:ku711";
-            Spreadsheets.siribonus(user, "禮金表");
-        }
-    },
-
-    getDepositBonusList: async function() {
-        if(window.cacheBonusData) {
-            this.sendData = getBonus.call(this);
-            var user = await getUser.call(this);
-            user.bonus = this.sendData;
-            user.module = "bonus:wa111";
-            Spreadsheets.siribonus(user, "禮金表");
-        }
-    },
-    /****************************************************************/
-
-    getmodel: async function(user) {
-        var { f_ishow, f_depositStatus } = this.respData;
-        var data = [f_ishow, f_depositStatus];
-        var user = await getUser.call(this);
-        Spreadsheets.authorize(user, data, "開通");
-    },
-
-    UpdateMemberRiskInfoAccountingBackend: async function() {
-        if(this.respData == 1) {
-            var { MemberStatus, IsDeposit } = this.sendData;
-            var data = [MemberStatus, IsDeposit];
-            var user = await getUser.call(this);
-            Spreadsheets.authorize(user, data, "開通");
-        };
-    },
-    UpdateMemberSNInfoBackend: async function() {
-        var { MemberStatus, IsDeposit } = this.sendData;
-        var data = [MemberStatus, IsDeposit];
-        var user = await getUser.call(this);
-        Spreadsheets.authorize(user, data, "停權-用戶狀態選停權戶");
-    },
-    /****************************************************************/
-    StopMember: async function(user) {
-        if(this.respData == 2) {
-            var data = [2, 0];
-            var user = await getUser.call(this);
-            Spreadsheets.authorize(user, data, "停權");
-        };
-    },
-    UpdateMemberRisksInfoBackendIsFSuspension: async function() {
-        if(this.sendData.IsFSuspension == false) { return };
-        var data = [0, 0];
-        var user = await getUser.call(this);
-        Spreadsheets.authorize(user, data, "還原或停權");
-    },
-    /************************************************************************************/
-}
 
 
 apiFunctions.google = function(request) {
@@ -133,55 +193,30 @@ function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { va
 
 function $toJson({ responseText }) { try { return JSON.parse(responseText); } catch (ex) { return responseText } }
 
-var Spreadsheets = {
-
-    siribonus: function(user) {
-        user.command = "google:scripts";
-        apiFunctions.google(user);
-    },
-    authorize: function(user, postData) {
-        user.status[1] = postData[0];
-        user.permit[1] = postData[1];
-        user.timing[1] = moment().format('YYYY-MM-DD HH:mm:ss');
-        user.timing[2] = timeDiff(user.timing);
-        user.permit = user.permit.map($Num);
-        user.status = user.status.map($Num);
-        if(user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
-
-        if(user.status[0] == 3) {
-            user.command = "google:scripts";
-            user.module = "authorize";
-        } else {
-            user.command = "google:scripts";
-            user.module = "suspended";
-        }
-        apiFunctions.google(user);
-    }
-}
-
-function getUser() {
-    if(this.sendData) {
-        var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
-        var channel = this.channel;
-        var unique = [account, channel].join("-");
-        //console.log(unique);
-        return evo.store.user.get(unique);
-    }
-}
-
-function getBonus() {
-    var bonus = this.dataRows.find((row) => {
-        if(row.f_id) { return row.f_id == window.cacheBonusData.id; }
-        if(row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
-    });
-    window.cacheBonusData = null;
-    return bonus;
-}
-
-
-
 
 function getUserId() {
     var c = this.dataRows.find((row) => { return row.f_id == window.cacheBonusData.id; });
     return c.f_accounts;
 }
+
+
+
+
+
+
+
+
+/*
+console.log(this.action);
+
+var a = 32;
+var b = 62;
+
+function doWork() {
+    console.log(this);
+    console.log(arguments);
+}
+*/
+
+
+//doWork.apply(this, arguments)

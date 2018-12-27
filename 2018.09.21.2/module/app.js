@@ -58,7 +58,11 @@ requirejs.config({
 
 
 
+function join() {
+    Object.assign(this.__proto__, ...arguments);
+    //console.log(this, arguments);
 
+}
 
 
 requirejs(['app.instance', 'app.router', 'app.factory'], function(instance, router, factory) {
@@ -72,9 +76,7 @@ requirejs(['app.instance', 'app.router', 'app.factory'], function(instance, rout
         $scope.__proto__.$injector = $injector;
         $scope.__proto__.$invoke = $injector.invoke;
 
-        $scope.join = function join() {
-            Object.assign(this.__proto__, ...arguments);
-        }
+        $scope.join = join;
 
         $scope.$invoke(router, $scope);
         $scope.$invoke(factory, $scope);

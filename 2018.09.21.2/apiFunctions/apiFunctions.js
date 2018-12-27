@@ -6,6 +6,7 @@ var apiFunctions = {};
 
 
 apiFunctions.localStorage = function() { return window.localStorage }
+
 apiFunctions.region = async function() {
     console.log(this);
     var r = await apiFunctions[this.attr].call(this);

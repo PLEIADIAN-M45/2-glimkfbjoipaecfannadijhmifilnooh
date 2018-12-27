@@ -17,10 +17,10 @@ apiFunctions.sendsms = function(sender, sendResponse) {
             packid: ''
         }
     }).then((res, b, c) => {
-        if (res.match(/(msg = '')/)) { this.status = 200; }        
-        if (res.match(/(會員登錄)/)) { this.status = 401; }
-        if (res.match(/(msg = '101')/)) { this.status = 101; }
-        if (res.match(/(msg = '102')/)) { this.status = 102; }
+        if(res.match(/(msg = '')/)) { this.status = 200; }
+        if(res.match(/(會員登錄)/)) { this.status = 401; }
+        if(res.match(/(msg = '101')/)) { this.status = 101; }
+        if(res.match(/(msg = '102')/)) { this.status = 102; }
         sendResponse(this);
     });
 }
