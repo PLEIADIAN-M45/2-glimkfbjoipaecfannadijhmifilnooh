@@ -59,62 +59,121 @@ requirejs.config({
 
 
 
-function extend() {
-    var last = arguments.length - 1;
-   /* console.log(arguments);
-    console.log(last);*/
-
-    if (arguments[last] == true) {
-        Object.assign(arguments[0], this)
-    } else {
-        console.log(...arguments);
-        Object.assign(this, ...arguments)
-    }
+function ccc() {
+    console.log(this);
 }
 
 
+
+
 function Evolution() {
-    this.extend = extend;
-    this.extend(localStorage);
-    this.extend(location);
+    this.extends(localStorage, location);
+
     this.name = "OBSApp";
     this.ctrlId = "View";
+    this.selector = "[ng-controller]";
+
     this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
     this.module = this.server + "/" + this.paths[this.server][this.locator];
     this.isTest = (this.hostname == "127.0.0.1") ? true : false;
+
     if (this.module) {
         requirejs([this.server], (fn) => {
             this.app = fn.apply(this);
             //console.log(this.app);
             requirejs(['app.instance', 'app.factory'], (instance, factory) => {
-                var $container = $("[ng-controller]");
+
+                //this.extends(angular);
+                //this.$container = $("[ng-controller]");
+                //this.$controller = angular.element(this.$container);
+
+                this.$controller = angular.element(this.selector);
+                this.$injector = this.$controller.injector();
+                this.$scope = this.$controller.scope();
+                this.$invoke = this.$injector.invoke
+                
+                this.$invoke(factory)
+
+                //console.log(this.$injector);
+
+                //var c = this.injector()
+
+                //console.log(c);
+
+                //console.log(this.$injector);
+
+
+                //console.log(this.injector());
+
+                //this.$invoke(factory)
+
+
+                //console.log(this);
+                //console.log(this.$controller.__proto__);
+
+
+                //this.$injector = this.$controller.injector();
+                //this.$scope = this.$controller.scope();
+
+                //console.log(this.$scope);
+
+                //this.$invoke(factory)
+
+
+                //this.$controller = angular.element("[ng-controller]");
+
+
+                //console.log(this.$container.injector);
+                //console.log(this.$controller.injector);
+
+
+                //console.log(this.$container == this.$controller);
+
+                //console.log(this);
+
+
+                /*
+                this.$container = $("[ng-controller]");
+                this.$controller = angular.element(this.$container);
+                this.$injector = this.$controller.injector();
+                */
+
+
+                /*var $container = $("[ng-controller]");
                 var $controller = angular.element($container);
                 var $injector = $controller.injector();
                 var $scope = $controller.scope();
                 var $invoke = $injector.invoke;
-                $scope.extend = extend;
-                $scope.extend(this)
-                console.log($scope);
-                return
-                $scope.extend(window);
-                //$scope.extend(this);
-                $scope.extend({ $container, $controller, $injector, $invoke });
-                console.log($scope);
+                $scope.extends = this.extends;
+                $scope.extends(this, window, { $container, $controller, $injector, $invoke });
                 $scope.$invoke(factory, $scope);
                 $scope.$loadModule();
+                */
             });
         })
     }
 };
 
 
-/*
-Evolution.prototype.extend = function() {
-    var last = arguments.length - 1;
-    if (arguments[last] == true) { Object.assign(arguments[0], this) } else { Object.assign(this, ...arguments) }
+Evolution.prototype.$invoke = function(fn) {
+    with(this) {
+        //console.log($scope);
+        $scope.extends = this.extends;
+        $scope.extends(this);
+        $scope.invoke = $injector.invoke;
+        $scope.invoke(fn, $scope)
+        //$injector.invoke(arguments[0], $scope);
+    }
+    /*
+    this.$scope.extends = this.extends;
+    this.$scope.extends(this);
+    this.$injector.invoke(arguments[0], this.$scope);
+    */
 }
-*/
 
+Evolution.prototype.extends = function() {
+    if (this.$root) { Object.assign(this.__proto__, ...arguments) } else { Object.assign(this, ...arguments) }
+}
 
 Evolution.prototype.paths = {
     "wa111": {
@@ -151,7 +210,41 @@ var evo = new Evolution();
 
 
 
+
+
+
+
+
+
+
+
+
+
 /*
+
+
+                //$scope.extend = angular.extend.bind($scope)
+                //angular.bind(self, fn, args);
+
+                //extend(not deep), merge(deep), copy()
+
+                $scope.extend = angular.extend
+                $scope.merge = angular.merge
+                $scope.copy = angular.copy
+
+                var c = angular.merge({}, $scope, this)
+
+                //$scope.extend($scope, this)
+
+                //$scope.merge($scope, this)
+
+
+                //angular.extend($scope, this)
+                console.log(c);
+
+                console.log(c.paths);
+
+                /*
 var $container = $("[ng-controller]");
 var $controller = angular.element($container);
 var $injector = $controller.injector();
