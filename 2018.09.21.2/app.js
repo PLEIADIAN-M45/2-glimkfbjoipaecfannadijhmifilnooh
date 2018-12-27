@@ -1,3 +1,34 @@
+this.$server = localStorage.server;
+
+console.log(this.$server);
+
+
+if (this.$server == "wa111") {
+    /*
+    define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
+        $('html').attr('ng-app', 'OBSApp');
+        $('body').append('<div ng-controller="View" id="View"></div>');
+        var app = angular.module('OBSApp', ["ngSanitize", "ngAnimate"]);
+
+        function viewController($scope, $rootScope) {};
+        app.controller('View', viewController);
+        angular.bootstrap(document, ['OBSApp']);
+        return app;
+    });
+    */
+
+}
+
+if (this.$server == "ku711") {
+
+
+}
+
+
+
+
+
+
 /*define(["app.router"], function(Router) {
     var router = new Router();
     if (router.service == undefined) { return false }
@@ -21,25 +52,3 @@
 
 //var main = ["module", localStorage.server, "main"].join("/");
 //console.log(main);
-
-define([], function() {
-    // console.log(this);
-    // console.log(localStorage.server);
-
-    return new function() {
-
-        
-        this.server = localStorage.server;
-
-
-
-        if (this.server == "wa111") {
-
-
-        }
-    }
-
-
-
-
-});

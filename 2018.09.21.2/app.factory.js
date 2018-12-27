@@ -6,11 +6,17 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
+        console.log(this);
+
+        return
         this.$compile = $compile;
         this.baseUrl = "chrome-extension://glimkfbjoipaecfannadijhmifilnooh/module";
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
         this.dexie.version(1).stores({ user: 'f_accounts' });
+
+
+        this.searchParams = new URLSearchParams(this.search);
 
         this.operator = localStorage.operator;
         this.extensionId = localStorage.extensionId;
@@ -154,7 +160,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
         console.log(this.service);
 
-        this.$loadModule = function() {           
+        this.$loadModule = function() {
             requirejs([this.service], (module) => {
                 if (module) {
                     this.injectStylesheet();
