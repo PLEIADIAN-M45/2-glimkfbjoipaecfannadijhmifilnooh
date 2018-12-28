@@ -9,7 +9,7 @@ define(["app.sendSms"], function(sendSms) {
             data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
         }).then((rows) => {
             return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
             });
         });
     }
@@ -48,6 +48,9 @@ define(["app.sendSms"], function(sendSms) {
     function getUserState(m) {
         this.status = [m.ishow.value];
         this.permit = [m.isOpenDeposit.value];
+        this.sms = {
+            status: m.ishow.value
+        }
         return this;
     }
 
@@ -62,10 +65,7 @@ define(["app.sendSms"], function(sendSms) {
     }
 
     function getUserStore() {
-
         return this.dexie.user.get(this.account).then((d) => {
-
-
             this.sequel = d.f_id;
             this.attach = d.f_joindate;
             this.agency = d.f_alagent;
@@ -96,25 +96,72 @@ define(["app.sendSms"], function(sendSms) {
     return async function() {
 
         this.xmlSpider.loadend = function() {
-            if(this.action == "getmodel") {
+            if (this.action == "getmodel") {
                 console.log(this.respData);
             }
         }
 
-        this.user = await this.getUser() || await setUser.call(this);
-        this.ctrl.btnSetPermit.toggle(this.user.status[0] == 3)
+        this.user =
+            //await this.getUser() ||
+            await setUser.call(this);
+
+        //console.log(this.user);
+
+        this.ctrl.btnSetPermit
+            .toggle(this.user.status[0] == 3)
             .click((e) => {
                 this.ctrl.btnSetPermit.toggle();
                 this.ctrl.isOpenDeposit.val(1)
                 this.ctrl.btnSaveInfo.click();
             });
 
-        this.smss = new sendSms(this);
+
+
+        this.sendSms = new sendSms(this);
+
+
+
+        console.log(this.sendSms);
+
+
         this.$apply();
     }
 });
 
 
+
+
+
+//this.extends(sendSms.prototype, true)
+//sendSms.prototype = Object.assign(sendSms.prototype, this)
+
+//.bind(this.user);
+//this.sendSms = new sendSms(this);
+//new sendSms(this);
+
+/*
+function sendSms() {
+    console.log(this);
+    this.
+}
+
+sendSms.bind(this)
+
+sendSms.a = 6
+
+sendSms.b = 6212
+
+sendSms.send = function() {
+    console.log(this);
+    console.log(this.b);
+}
+*/
+
+
+
+
+//console.log(sendSms);
+//console.log(sendSms.a);
 
 
 //console.log(window.btnSetPermit);
