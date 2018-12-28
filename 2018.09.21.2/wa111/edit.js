@@ -62,10 +62,7 @@ define(["app.sendSms"], function(sendSms) {
     }
 
     function getUserStore() {
-
         return this.dexie.user.get(this.account).then((d) => {
-
-
             this.sequel = d.f_id;
             this.attach = d.f_joindate;
             this.agency = d.f_alagent;
