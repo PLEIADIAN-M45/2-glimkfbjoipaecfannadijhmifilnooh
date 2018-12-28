@@ -4,12 +4,9 @@
         "persistent": true,
         "scripts": [
             //"injector.js"
+            //"background/background.js",
 
-            "background/background.js",
-            
-            "lib/angular/angular.min.js"
-            
-            /*
+            "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
@@ -31,7 +28,7 @@
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js",
             "apiFunctions/apiFunctions.XMLHttpRequest.js"
-            */
+
             /*"mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js"*/

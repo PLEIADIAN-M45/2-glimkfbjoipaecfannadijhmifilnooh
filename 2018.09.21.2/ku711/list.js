@@ -1,11 +1,7 @@
 define([], function() {
 
-    return function() {
-
-    	
-
-        console.log(this);
-
+    return async function() {
+        //console.log(this);
     }
 })
 
@@ -17,6 +13,6 @@ define([], function() {
 /*define(['xmlSpider', 'path'], function(xmlSpider, path) {
     xmlSpider.loadend = function() {
         console.log(this);
-        console.log(path);       
+        console.log(path);
     }
 });*/

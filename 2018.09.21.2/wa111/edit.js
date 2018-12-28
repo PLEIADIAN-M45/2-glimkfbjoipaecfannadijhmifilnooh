@@ -9,7 +9,7 @@ define(["app.sendSms"], function(sendSms) {
             data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
         }).then((rows) => {
             return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
             });
         });
     }
@@ -65,7 +65,6 @@ define(["app.sendSms"], function(sendSms) {
 
         return this.dexie.user.get(this.account).then((d) => {
 
-            console.log(d);
 
             this.sequel = d.f_id;
             this.attach = d.f_joindate;
@@ -92,18 +91,49 @@ define(["app.sendSms"], function(sendSms) {
     }
 
 
+
+
     return async function() {
+
+        this.xmlSpider.loadend = function() {
+            if(this.action == "getmodel") {
+                console.log(this.respData);
+            }
+        }
+
         this.user = await this.getUser() || await setUser.call(this);
+        this.ctrl.btnSetPermit.toggle(this.user.status[0] == 3)
+            .click((e) => {
+                this.ctrl.btnSetPermit.toggle();
+                this.ctrl.isOpenDeposit.val(1)
+                this.ctrl.btnSaveInfo.click();
+            });
+
         this.smss = new sendSms(this);
-        console.log(this.user);
         this.$apply();
-        //console.log(this.smss.status);
     }
-
-
 });
 
 
+
+
+//console.log(window.btnSetPermit);
+/*this.btnSetPermit = $('#btnSetPermit')
+this.btnSetPermit.hide()
+console.log(this.btnSetPermit);*/
+
+
+//setTimeout(function() {}, 3000)
+
+
+/*
+   return function() {
+       return new Promise(function(resolve, reject) {
+           console.log('doSomething1 end')
+           resolve(1)
+       })
+   }
+   */
 
 
 

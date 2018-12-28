@@ -6,7 +6,7 @@ requirejs.config({
     packages: ["wa111", "ku711"],
     paths: {
 
-        /*'app': 'app/app',        
+        /*'app': 'app/app',
         'app.router': 'app/app.router',
         'app.instance': 'app/app.instance',
         'app.factory': 'app/app.factory',
@@ -59,16 +59,6 @@ requirejs.config({
 
 
 
-function ccc() {
-    console.log(this);
-}
-
-/*
-chrome://extensions/
-chrome://settings/fonts
-chrome://flags/#enable-devtools-experiments
-*/
-
 
 function Evolution() {
     this.extends(localStorage, location);
@@ -76,9 +66,9 @@ function Evolution() {
     this.ctrlId = "View";
     this.selector = "[ng-controller]";
     this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-    this.module = this.server + "/" + this.paths[this.server][this.locator];
+    this.module = this.paths[this.server][this.locator];
     this.isTest = (this.hostname == "127.0.0.1") ? true : false;
-    if (this.module) {
+    if(this.module) {
         requirejs([this.server], (app) => {
             app.apply(this);
             requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -86,8 +76,9 @@ function Evolution() {
                 var $injector = $controller.injector();
                 var $scope = $controller.scope();
                 var $invoke = $injector.invoke;
+                var $compile = $injector.get('$compile');
                 $scope.extends = this.extends;
-                $scope.extends(this, window, { $controller, $injector, $invoke, $scope })
+                $scope.extends(this, window, { $controller, $injector, $invoke, $scope, $compile })
                 $scope.$invoke(factory, $scope);
                 $scope.$loadModule();
             });
@@ -97,15 +88,7 @@ function Evolution() {
 
 
 Evolution.prototype.extends = function() {
-    if (this.$root) { Object.assign(this.__proto__, ...arguments) } else { Object.assign(this, ...arguments) }
-    /*
-    var c = arguments[0].hasOwnProperty('$scope')
-    if (c) {
-        //console.log(arguments[0].$scope);
-        Object.assign(arguments[0].$scope.__proto__, window, this)
-    }
-    */
-
+    if(this.$root) { Object.assign(this.__proto__, ...arguments) } else { Object.assign(this, ...arguments) }
 }
 
 Evolution.prototype.paths = {
@@ -146,6 +129,20 @@ var evo = new Evolution();
 
 
 
+
+
+
+/*
+chrome://extensions/
+chrome://settings/fonts
+chrome://flags/#enable-devtools-experiments
+*/
+
+
+
+
+
+//this.module = this.server + "/" + this.paths[this.server][this.locator];
 
 
 //var $container = $("[ng-controller]");

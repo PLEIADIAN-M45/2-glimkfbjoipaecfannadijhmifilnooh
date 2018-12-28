@@ -1,5 +1,6 @@
 define([], function() {
     return class sendSms {
+
         constructor($scope) {
             this.command = "apiFunctions.sendsms";
             this.user = $scope.user;
@@ -8,10 +9,11 @@ define([], function() {
             this.mdcDialog = new $scope.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
             this.mdcDialog.listen("MDCDialog:cancel", function() {});
+
         }
         set status(value) { sessionStorage[this.mobile] = value; }
         get status() {
-            if (sessionStorage[this.mobile] == undefined) { this.status = this.user.status[0]; }
+            if(sessionStorage[this.mobile] == undefined) { this.status = this.user.status[0]; }
             return sessionStorage[this.mobile];
         }
         setDialog(res) {

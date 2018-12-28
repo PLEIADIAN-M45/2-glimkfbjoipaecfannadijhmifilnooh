@@ -1,5 +1,5 @@
 define([], function() {
-    return function() {
+    return async function() {
         this.xmlSpider.loadend = function() {
             if(this.type == "getAllUser") {
                 this.dataRows.map((r) => {

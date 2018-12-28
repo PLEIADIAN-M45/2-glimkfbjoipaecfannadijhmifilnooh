@@ -1,5 +1,5 @@
 define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
-    return function() {
+    return async function() {
         $('html').attr('ng-app', this.name);
         $("<div>", { "id": this.ctrlId, "ng-controller": this.ctrlId }).appendTo("body");
         var controller = function($scope, $rootScope) {};
@@ -24,7 +24,7 @@ define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
 
 
 /*
-    
+
 var app = angular.module('OBSApp', ["ngSanitize", "ngAnimate"]);
 function viewController($scope, $rootScope) {};
 app.controller('View', viewController);

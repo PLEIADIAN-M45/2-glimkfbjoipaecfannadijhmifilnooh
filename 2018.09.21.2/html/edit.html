@@ -1,27 +1,17 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-
         <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{smss.status}}</a>
-
-
         <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
-
-       <!--  <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
-       <a class="item" ng-click="sendSms()" ng-show="user.smss==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>短信</b></a> -->
-
-
-
-        <a class="item" ng-click="setPermit()" ng-if="user.status[0]==0"><i class="handshake outline icon"></i><b>开通</b></a>
-        <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a>
-        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==3 || smss.status==401"><i class="envelope outline icon"></i><b>短信</b></a>
+        <!-- <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a> -->
+        <a class="item" id="btnSetPermit"><i class="handshake outline icon"></i><b>开通</b></a>
+        <a class="item" ng-click="smss.send(this)" ng-show="smss.status==3 || smss.status==401"><i class="envelope outline icon"></i><b>短信<br>({{smss.status}})</b></a>
     </div>
 </aside>
-
-<!-- 
+<!--
+    ng-click="setPermit()"
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
 -->
-
 <style type="text/css">
 .ui.inverted.menu.danger {
     background-color: #d2115a !important;
@@ -92,9 +82,7 @@ https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects
     font-weight: bold;
 }
 </style>
-
-
-<!-- 
+<!--
 https://fonts.google.com/#_ga=2.82489438.937538001.1545233657-1452016429.1545233657
  -->
 <!-- <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>简讯<br>开通</b></a> -->
