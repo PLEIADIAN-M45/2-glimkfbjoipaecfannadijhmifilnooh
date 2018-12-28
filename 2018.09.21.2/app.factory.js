@@ -27,7 +27,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
 
 
-        if(this.isTest) {
+        if (this.isTest) {
             $(".collapse").show();
             this.router = {
                 wa111: {
@@ -39,7 +39,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                     device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
             } [this.server];
-            for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
         } else {
             this.router = {
                 wa111: {
@@ -52,7 +52,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                 }
             } [this.server];
 
-            for(var key in this.router) {
+            for (var key in this.router) {
                 this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account);
             }
         }
@@ -61,25 +61,36 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
 
-        this.assign = function() {
-            Object.assign(this, ...arguments)
-        };
+        /*
+                this.assign = function() {
+                    Object.assign(this, ...arguments)
+                };
 
+                this.apply = function(res) {
+                    if (!this.$$phase) { this.$apply(); };
+                    return res;
+                }
+
+                this.extend = function(args) {
+                    Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
+                }*/
+
+        /*
         this.apply = function(res) {
-            if(!this.$$phase) { this.$apply(); };
+            if (!this.$$phase) { this.$apply(); };
             return res;
-        }
+        }*/
 
-        this.extend = function(args) {
-            Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
-        }
+        this.extensionId = localStorage.extensionId;
 
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
-                chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                    if(res) { res.active = false; }
-                    try { resolve(res) } catch (ex) { reject(ex) }
-                })
+                if (this.extensionId && message) {
+                    chrome.runtime.sendMessage(this.extensionId, message, (res) => {
+                        if (res) { res.active = false; }
+                        try { resolve(res) } catch (ex) { reject(ex) }
+                    })
+                } else { reject(101) }
             })
         }
 
@@ -87,14 +98,13 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
 
+        this.getUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+        }
 
 
-        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
-
-        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
-
+        //this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
         this.createTab = function(_url) { window.open(_url, "_blank"); }
-
         this.setPermit = function() {
             switch (this.server) {
                 case "wa111":
@@ -120,46 +130,38 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
             });
         }
 
-
         this.ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-        this.abc = function() {
-
-            console.log(this);
-
-
+        this.setElements = function() {
             this.elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-            if(this.server == "wa111") {
-                //console.log(this.elements);
+            if (this.server == "wa111") {
                 this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
                 this.ctrl = this.elements.map((elem) => { return [elem.sname, $(elem)]; }).serialize();
-                //this.ctrl = this.elements.map((elem) => { return [elem.sname, elem]; }).serialize();
             }
         }
 
 
         this.injectStylesheet = function() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
         };
 
         this.injectComponents = function() {
-
             return new Promise((resolve, reject) => {
-                if(!this.components) {
+                if (!this.components) {
                     resolve(0);
                 } else {
                     this.components.map((str) => { return this.rootUrl + "html/" + str + ".html"; }).map((src) => {
@@ -175,37 +177,16 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         };
 
         this.$loadModule = function() {
-            if(this.module == undefined) { return }
+            if (this.module == undefined) { return }
             var module = [this.server, this.module].slash();
             //console.log(module);
             requirejs([module], (module) => {
-                if(module) {
-
+                if (module) {
                     this.injectStylesheet();
-
                     this.injectComponents().then((x) => {
-
-                        this.abc()
-
+                        this.setElements();
                         this.$invoke(module, this);
-
-                        /*
-                        setTimeout(function() {}.bind(this), 1000)
-                        setTimeout(function() {
-                        }.bind(this), 2000)
-                        */
-
-
                     })
-
-                    /*
-                    setTimeout(function() {
-                        console.log(3);
-
-                        this.$invoke(module, this);
-
-                    }.bind(this), 1000)
-                    */
                 }
             });
         }
@@ -218,5 +199,27 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
 
 
+
+
+
+
+
+
+
+
 /*.then(this.injectStylesheet.bind(this))
 .then(this.injectComponents.bind(this));*/
+
+/*
+                                     setTimeout(function() {}.bind(this), 1000)
+                                     setTimeout(function() {
+                                     }.bind(this), 2000)
+                                     */
+/*
+setTimeout(function() {
+    console.log(3);
+
+    this.$invoke(module, this);
+
+}.bind(this), 1000)
+*/

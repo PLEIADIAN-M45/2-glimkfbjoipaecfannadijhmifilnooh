@@ -1,14 +1,14 @@
 <aside id="my-mdc-dialog" class="mdc-dialog" role="alertdialog" aria-labelledby="my-mdc-dialog-label" aria-describedby="my-mdc-dialog-description">
     <div class="mdc-dialog__surface">
         <header class="mdc-dialog__header">
-            <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title" ng-class="smss.dialog.status">
-                <i class="material-icons">{{smss.dialog.icon}}</i> {{smss.dialog.title}}
+            <h2 id="my-mdc-dialog-label" class="mdc-dialog__header__title" ng-class="sendSms.dialog.status">
+                <i class="material-icons">{{sendSms.dialog.icon}}</i> {{sendSms.dialog.title}}
             </h2>
         </header>
         <section id="my-mdc-dialog-description" class="mdc-dialog__body">
-            <p ng-bind-html="smss.dialog.content" class="small"></p>
-            <p ng-bind-html="smss.dialog.description"></p>
-            <p ng-repeat="c in smss.dialog.blacklist" class="small">
+            <p ng-bind-html="sendSms.dialog.content" class="small"></p>
+            <p ng-bind-html="sendSms.dialog.description"></p>
+            <p ng-repeat="c in sendSms.dialog.blacklist" class="small">
                 <label style="width: 25px;"><b>({{$index+1}})</b></label>
                 <label style="width: 200px;"><b>{{c.value}}</b></label>
                 <label style="width: 100px;"><b>{{c.match}}</b></label>
