@@ -17,13 +17,17 @@ define([], function() {
             } [this.status];
         }
         get status() { return this.user.sms.status }
-        set status(value) { this.user.sms.status = value;
-            this.putUser(); }
+        set status(value) {
+            this.user.sms.status = value;
+            this.putUser();
+        }
 
         send() {
             this.status = -10000;
             this.command = "apiFunctions.sendsms";
-            this.sendMessage({ command: this.command, ...this.user }).then((res) => {
+            this.requestUrl = "http://client.motosms.com/smsc/smssend";
+            this.loginUrl = "http://client.motosms.com/login";
+            this.sendMessage({ ...this, ...this.user }).then((res) => {
                 this.extends(res);
                 this.mdcDialog.show();
                 this.$apply();

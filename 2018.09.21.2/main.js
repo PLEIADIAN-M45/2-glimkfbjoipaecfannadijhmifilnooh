@@ -91,9 +91,10 @@ Evolution.prototype.extends = function() {
     var last = arguments.length - 1;
     if (arguments[last] == true) {
         //console.log(arguments[0].constructor);
+        //Object.assign(arguments[0].__proto__, this.__proto__);
         return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $eval: this.$eval });
     } else {}
-    if (this.$root) { Object.assign(this.__proto__, ...arguments) } else { Object.assign(this, ...arguments) }
+    if (this.$root) { Object.assign(this, ...arguments) } else { Object.assign(this, ...arguments) }
 }
 
 Evolution.prototype.paths = {

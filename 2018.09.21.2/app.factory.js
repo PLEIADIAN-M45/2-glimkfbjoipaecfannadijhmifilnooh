@@ -75,7 +75,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                     Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
                 }*/
 
-                /*
+        /*
         this.apply = function(res) {
             if (!this.$$phase) { this.$apply(); };
             return res;
@@ -98,8 +98,12 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
 
-        this.getUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }) }
-        this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
+        this.getUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+        }
+
+
+        //this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
         this.createTab = function(_url) { window.open(_url, "_blank"); }
         this.setPermit = function() {
             switch (this.server) {
