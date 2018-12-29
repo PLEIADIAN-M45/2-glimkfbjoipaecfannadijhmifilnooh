@@ -68,7 +68,7 @@ function Evolution() {
     this.locator = this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
     this.module = this.paths[this.server][this.locator];
     this.isTest = (this.hostname == "127.0.0.1") ? true : false;
-    if (this.module) {
+    if(this.module) {
         requirejs([this.server], (app) => {
             app.apply(this);
             requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -89,12 +89,30 @@ function Evolution() {
 
 Evolution.prototype.extends = function() {
     var last = arguments.length - 1;
-    if (arguments[last] == true) {
+
+    if(arguments[last] == true) {
+
+        console.log(arguments[0].constructor.name);
+
+        switch (arguments[0].constructor.name) {
+            case "Function":
+                return Object.assign(arguments[0].prototype, this, { $apply: this.$apply, $eval: this.$eval });
+            case "Object":
+                break;
+            default:
+                return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $eval: this.$eval });
+        }
+
+        //console.log(typeof arguments[0]);
+        //console.log(arguments[0].constructor.name);
+
+
+
         //console.log(arguments[0].constructor);
         //Object.assign(arguments[0].__proto__, this.__proto__);
-        return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $eval: this.$eval });
+        //return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $eval: this.$eval });
     } else {}
-    if (this.$root) { Object.assign(this, ...arguments) } else { Object.assign(this, ...arguments) }
+    if(this.$root) { Object.assign(this, ...arguments) } else { Object.assign(this, ...arguments) }
 }
 
 Evolution.prototype.paths = {

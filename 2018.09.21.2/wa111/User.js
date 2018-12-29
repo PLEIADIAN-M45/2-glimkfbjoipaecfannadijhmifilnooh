@@ -1,30 +1,30 @@
-https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec
+define(["app.sendSms"], function(sendSms) {
 
-    class User {
+    return class User {
 
-        constructor() {
+        constructor($scope) {
+            $scope.extends(this, true);
+            //console.log(this.__proto__);
+            //return this.getUser().then((user) => { return user || this.build(); })
+        }
 
-            super();
+        getUser() {
 
-            console.log(this);
-
-            //return this.setUser()
-            //console.log(12);
         }
 
         getUserBasic() {
-            ['server', 'origin', 'unique', 'channel', 'account', 'operator']
-            .forEach((name) => { this[name] = this.__proto__[name]; });
+            ['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => { this[name] = this.__proto__[name]; });
         }
 
         getUserState(m) {
+            var m = this.model;
             this.status = [m.ishow.value];
             this.permit = [m.isOpenDeposit.value];
             //this.sms = { status: m.ishow.value }
         }
 
         getUserStore() {
-            this.dexie.user.get(this.account).then((d) => {
+            return this.dexie.user.get(this.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
                 this.agency = d.f_alagent;
@@ -37,7 +37,7 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
         }
 
         getPhoneDate() {
-            this.ajax({
+            return this.ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
                 data: "type=getPhoneDate&account=" + this.account
             }).then(([d]) => {
@@ -55,12 +55,13 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
 
         getUserModel(m) {
+            var m = this.model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -77,36 +78,103 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
             ];
         }
 
-        /*
-        getUser() {
-            //console.log(this);
-            this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-                .then((user) => {
-                    //console.log(user);
-                })
-
-        }
-        */
-
-        setUser() {
-            Promise.all([
-                this.getUserBasic(),
-                this.getUserModel(this.model),
-                this.getUserState(this.model),
-                this.getUserStore(),
-                this.getPhoneDate(),
-                this.getSystemLog(),
-            ]).then((x) => {
-                console.log("---------");
-                console.log(this);
-            })
+        sendSms() {
+            console.log(this);
         }
 
-
-
-
-        static foo() {
-            //with(this.model) {}
+        build() {
+            return Promise.all([
+                this.getUserBasic(), this.getUserModel(),
+                this.getUserState(), this.getUserStore(),
+                this.getPhoneDate(), this.getSystemLog(),
+            ]).then(() => { return this.putUser(this) })
         }
-
     }
+
+
+})
+
+
+
+/*
+var d = Date.prototype;
+d.__defineGetter__("year", function() {
+    console.log(this);
+    return this.getFullYear();
+});
+d.__defineSetter__("year", function(y) { this.setFullYear(y); });
+
+
+
+*/
+
+/*
+function Dog(name) {
+    this.name = name;
+    return Dog.now();
+}
+
+Dog.prototype.run = function() {
+    return this.name + ' is running!'
+}
+
+Dog.now = function() {
+    return Date.now()
+}
+
+
+
+var c = new Dog("happy")
+
+
+console.log(c);
+
+
+var c = new Date()
+
+console.log(c);
+
+console.log(c.getDate());
+*/
+
+
+var obj = {};
+
+var readCallback = function() {
+    console.log('name was read');
+}
+
+obj.__defineGetter__('name', readCallback);
+
+console.log(obj.name); // 读取 name 属性后，会调用上面的函数。
+
+var reassignCallback = function(val) { // 新值会作为参数传进来
+    console.log('name was assigned again with : ' + val);
+};
+
+obj.__defineSetter__('name', reassignCallback);
+
+obj.name = 'name'; // 修改 name 属性后，会调用上面的函数。
+
+var lookupGetFun = obj.__lookupGetter__('name'); // 返回上面我们设置的 Getter函数
+console.log(lookupGetFun === readCallback) // 输出 true
+
+var lookupSetFun = obj.__lookupSetter__('name'); // 返回上面我们设置的 Setter函数
+console.log(lookupSetFun === reassignCallback) // 输出 true
+
+obj.__proto__.constructor === Object // 因为 obj 的原型式 Object ，因此输出 true
+
+var hasNameProp = obj.hasOwnProperty('name') // 输出 true
+
+obj.isPrototypeOf(Object);
+
+var secondObj = {};
+secondObj.__proto__.isPrototypeOf(obj)
+// 因为 secondObj 和 obj 是共用一个原型，因此输出 true
+
+var isNameEnumerable = obj.propertyIsEnumerable('name');
+
+
+
+
+

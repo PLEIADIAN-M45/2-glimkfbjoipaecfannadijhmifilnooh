@@ -1,4 +1,4 @@
-define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], function(angular, Dexie, moment, mdc, semantic, xmlSpider) {
+define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'app.sendSms'], function(angular, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
 
     return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
@@ -27,7 +27,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
 
 
-        if (this.isTest) {
+        if(this.isTest) {
             $(".collapse").show();
             this.router = {
                 wa111: {
@@ -39,7 +39,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                     device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
             } [this.server];
-            for (var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
+            for(var key in this.router) { this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account); }
         } else {
             this.router = {
                 wa111: {
@@ -52,7 +52,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                 }
             } [this.server];
 
-            for (var key in this.router) {
+            for(var key in this.router) {
                 this.router[key] = this.router[key].replace('#1', this.channel).replace('#2', this.account);
             }
         }
@@ -85,9 +85,9 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
-                if (this.extensionId && message) {
+                if(this.extensionId && message) {
                     chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                        if (res) { res.active = false; }
+                        if(res) { res.active = false; }
                         try { resolve(res) } catch (ex) { reject(ex) }
                     })
                 } else { reject(101) }
@@ -98,12 +98,17 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
 
+        /*
         this.getUser = function() {
+            console.log(this.unique);
             return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
         }
 
+        this.putUser = function(_user) {
+            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: _user || this.user })
+        }
+        */
 
-        //this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
         this.createTab = function(_url) { window.open(_url, "_blank"); }
         this.setPermit = function() {
             switch (this.server) {
@@ -130,9 +135,9 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if (typeof alphaVal == "object") {
-                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if(typeof alphaVal == "object") {
+                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -145,7 +150,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
         this.setElements = function() {
             this.elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-            if (this.server == "wa111") {
+            if(this.server == "wa111") {
                 this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
                 this.ctrl = this.elements.map((elem) => { return [elem.sname, $(elem)]; }).serialize();
             }
@@ -153,7 +158,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
 
         this.injectStylesheet = function() {
-            if (!this.stylesheet) { return false };
+            if(!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
@@ -161,7 +166,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
         this.injectComponents = function() {
             return new Promise((resolve, reject) => {
-                if (!this.components) {
+                if(!this.components) {
                     resolve(0);
                 } else {
                     this.components.map((str) => { return this.rootUrl + "html/" + str + ".html"; }).map((src) => {
@@ -177,11 +182,11 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         };
 
         this.$loadModule = function() {
-            if (this.module == undefined) { return }
+            if(this.module == undefined) { return }
             var module = [this.server, this.module].slash();
             //console.log(module);
             requirejs([module], (module) => {
-                if (module) {
+                if(module) {
                     this.injectStylesheet();
                     this.injectComponents().then((x) => {
                         this.setElements();

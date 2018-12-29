@@ -1,11 +1,15 @@
 define([], function() {
 
     class sendSms {
+
         constructor($scope) {
-            $scope.extends(this, true);
-            this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            this.aaa = 56
+            //$scope.extends(this, true);
+
+            /*this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
             this.mdcDialog.listen("MDCDialog:cancel", function() {});
+            */
         }
         get dialog() {
             return {
@@ -16,13 +20,15 @@ define([], function() {
                 "blacklisk": { title: "\u9280\u884c\u5361\u9ed1\u540d\u55ae", icon: "error", status: "error", blacklist: this.content, description: "" }
             } [this.status];
         }
-        get status() { return this.user.sms.status }
+
+        /*get status() { return this.user.sms.status }
         set status(value) {
             this.user.sms.status = value;
             this.putUser();
         }
+        */
 
-        send() {
+        sendxxxx() {
             this.status = -10000;
             this.command = "apiFunctions.sendsms";
             this.requestUrl = "http://client.motosms.com/smsc/smssend";
@@ -32,6 +38,10 @@ define([], function() {
                 this.mdcDialog.show();
                 this.$apply();
             });
+        }
+
+        static init($scope) {
+            return new sendSms($scope)
         }
     }
     return sendSms;
