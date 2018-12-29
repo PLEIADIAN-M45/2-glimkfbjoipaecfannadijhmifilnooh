@@ -1,30 +1,47 @@
-https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angularjs-applications-7bbf0346acec
+define(["app.sendSms"], function(sendSms) {
+
+    //console.log(sendSms);
 
     class User {
 
-        constructor() {
+        constructor($scope) {
 
-            super();
+            /*
+            this.btnSetPermit.hide()
+            this.btnSendSms.hide()
+            this.btnSetPermit.show()
+            this.btnSendSms.show()
+            */
 
-            console.log(this);
+            $scope.user__proto__ = this.__proto__;
+            return $scope.getUser().then((user) => {
+                return user || this.setUser($scope);
+            })
+        }
+      
+        /*
+        get status() { return this.user.sms.status }
+        set status(value) {
+            this.user.sms.status = value;
+            this.putUser();
+        }
+        */
 
-            //return this.setUser()
-            //console.log(12);
+        getUserBasic($scope) {
+            ['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => {
+                this[name] = $scope[name];
+            });
         }
 
-        getUserBasic() {
-            ['server', 'origin', 'unique', 'channel', 'account', 'operator']
-            .forEach((name) => { this[name] = this.__proto__[name]; });
-        }
-
-        getUserState(m) {
+        getUserState($scope) {
+            var m = $scope.model;
             this.status = [m.ishow.value];
             this.permit = [m.isOpenDeposit.value];
             //this.sms = { status: m.ishow.value }
         }
 
-        getUserStore() {
-            this.dexie.user.get(this.account).then((d) => {
+        getUserStore($scope) {
+            return $scope.dexie.user.get($scope.account).then((d) => {
                 this.sequel = d.f_id;
                 this.attach = d.f_joindate;
                 this.agency = d.f_alagent;
@@ -36,10 +53,10 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
             });
         }
 
-        getPhoneDate() {
-            this.ajax({
+        getPhoneDate($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
-                data: "type=getPhoneDate&account=" + this.account
+                data: "type=getPhoneDate&account=" + $scope.account
             }).then(([d]) => {
                 this.mobile.value = d.f_photo;
                 this.idcard.value = d.f_idCard;
@@ -48,11 +65,11 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
             });
         }
 
-        getSystemLog() {
-            return this.ajax({
+        getSystemLog($scope) {
+            return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
-                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + this.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
+                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + $scope.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
                     if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
@@ -60,7 +77,8 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
             });
         }
 
-        getUserModel(m) {
+        getUserModel($scope) {
+            var m = $scope.model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -77,36 +95,97 @@ https: //medium.com/opinionated-angularjs/techniques-for-authentication-in-angul
             ];
         }
 
-        /*
-        getUser() {
-            //console.log(this);
-            this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
-                .then((user) => {
-                    //console.log(user);
-                })
-
-        }
-        */
-
-        setUser() {
-            Promise.all([
-                this.getUserBasic(),
-                this.getUserModel(this.model),
-                this.getUserState(this.model),
-                this.getUserStore(),
-                this.getPhoneDate(),
-                this.getSystemLog(),
-            ]).then((x) => {
-                console.log("---------");
-                console.log(this);
-            })
+        go() {
+            alert(12)
         }
 
-
-
-
-        static foo() {
-            //with(this.model) {}
+        setUser($scope) {
+            return Promise.all([
+                this.getUserBasic($scope), this.getUserModel($scope),
+                this.getUserState($scope), this.getUserStore($scope),
+                this.getPhoneDate($scope), this.getSystemLog($scope),
+            ]).then(() => { return $scope.putUser(this) })
         }
-
     }
+
+    return User;
+})
+
+
+
+
+
+
+
+
+
+
+/*
+
+  get _status() {
+            return this.status
+        }
+
+        set _status(value) {
+            //console.log(value);
+            this.status = value
+            //this.status = value
+        }
+
+get status() {
+    return this._status
+}
+
+set status(value) {
+    //console.log(value);
+    this._status = value
+    //this.status = value
+}
+*/
+
+
+
+
+
+//console.log(this.extends);
+//this.extends(user, true)
+//user.extends = this.extends;
+//user.extends(this)
+//console.log(this);
+//Object.assign(user, this)
+//angular.copy(user, this)
+//user = angular.merge(user, this)
+
+//angular.extend(user.__proto__, this.__proto__)
+
+//angular.merge(user.__proto__, User.prototype)
+
+//console.log(this);
+//$scope.extends(this, true);
+//return this.setUser($scope);
+//console.log(user);
+
+//]).then(() => { return this.putUser(this) })
+
+/*
+
+
+bindProp() {
+    console.log(this.__proto__);
+}
+
+putUser(user) {
+    if (user) {
+        Object.assign(user.__proto__, User.prototype);
+        return user;
+    } else {
+        return this;
+    }
+}
+*/
+
+
+//this._status[Symbol.toPrimitive] = 123;
+//console.log(this._status[Symbol.toPrimitive]);
+
+//console.log(this._status);

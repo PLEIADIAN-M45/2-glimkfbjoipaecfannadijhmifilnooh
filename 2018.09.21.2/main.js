@@ -1,6 +1,8 @@
-//console.log(this.localStorage.server);
+console.log(this.localStorage.server);
 //var $
 //console.log(requirejs);
+
+var $server = window.localStorage.server;
 
 requirejs.config({
     packages: ["wa111", "ku711"],
@@ -14,6 +16,8 @@ requirejs.config({
         'app.service': 'app/app.service',
         'app.xmlhttp': 'app/app.xmlhttp',
         */
+
+        'User': $server + '/User',
 
         'angular': 'lib/angular/angular',
         'angular-animate': 'lib/angular/angular-animate.min',
@@ -78,7 +82,7 @@ function Evolution() {
                 var $invoke = $injector.invoke;
                 var $compile = $injector.get('$compile');
                 $scope.extends = this.extends;
-                $scope.extends(this, window, { $controller, $injector, $invoke, $scope, $compile })
+                $scope.extends(this, { $controller, $injector, $invoke, $scope, $compile })
                 $scope.$invoke(factory, $scope);
                 $scope.$loadModule();
             });
@@ -89,12 +93,20 @@ function Evolution() {
 
 Evolution.prototype.extends = function() {
     var last = arguments.length - 1;
+    // console.log(arguments);
+    //console.log(last);
+    //console.log(arguments[0]);
+
     if (arguments[last] == true) {
-        //console.log(arguments[0].constructor);
-        //Object.assign(arguments[0].__proto__, this.__proto__);
+        var arg = arguments[0];
         return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $eval: this.$eval });
-    } else {}
-    if (this.$root) { Object.assign(this, ...arguments) } else { Object.assign(this, ...arguments) }
+    }
+
+    if (this.$root) {
+        Object.assign(this, ...arguments)
+    } else {
+        Object.assign(this, ...arguments)
+    }
 }
 
 Evolution.prototype.paths = {

@@ -1,8 +1,8 @@
 define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], function(angular, Dexie, moment, mdc, semantic, xmlSpider) {
 
+    //console.log(User);
 
     return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
-
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
@@ -16,7 +16,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         this.searchParams = new URLSearchParams(this.search);
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
-        //this.channel = localStorage.channel || this.params.siteNumber;
+        this.channel = localStorage.channel || this.params.siteNumber;
         /**********************************************************************************************/
         this.referrer = document.referrer;
         this.forms = document.forms;
@@ -24,8 +24,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         this.isExit = this.referrer.includes('Exit') || this.referrer.includes('SignOut');
         this.responseType = { text(res) { return res.text(); }, json(res) { return res.json(); } }
         this.unique = [this.account, this.channel].join("-");
-
-
 
         if (this.isTest) {
             $(".collapse").show();
@@ -83,6 +81,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
 
         this.extensionId = localStorage.extensionId;
 
+
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 if (this.extensionId && message) {
@@ -98,13 +97,31 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'], fu
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
 
+
         this.getUser = function() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+            //console.log(this.unique);
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }).then((_user) => {
+                if (_user) { _user.__proto__ = this.user__proto__; }
+                return _user;
+            })
+
+        }
+        
+        this.delUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.del', params: this.unique }) }
+
+        this.putUser = function(user) {
+            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: user || this.user }).then((_user) => {
+                _user.__proto__ = this.user__proto__;
+                //console.log(_user);
+                return _user;
+            })
         }
 
 
-        //this.putUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this.user }) }
+
+
         this.createTab = function(_url) { window.open(_url, "_blank"); }
+
         this.setPermit = function() {
             switch (this.server) {
                 case "wa111":
