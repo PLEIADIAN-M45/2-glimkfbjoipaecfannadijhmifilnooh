@@ -1,9 +1,7 @@
 define(["wa111/User", "app.sendSms"], function(User, sendSms) {
 
     return async function() {
-
         var $scope = this;
-
         this.xmlSpider.loadend = function() {
             if (this.action == "getmodel") {
                 with(this.respData) {
@@ -12,27 +10,65 @@ define(["wa111/User", "app.sendSms"], function(User, sendSms) {
                     $scope.user.permit.push(f_depositStatus);
                     $scope.user.sms.status = ($scope.user.sms.status == 3) ? 9 : $scope.user.sms.status;
                     $scope.putUser();
-                    $scope.$apply();
                 }
             }
         }
 
-        //this.delUser();
+        //this.delUser()
         this.user = await new User(this);
-        this.sendSms = new sendSms(this);
-        this.$apply();
-        //console.log(this.sendSms);
+        this.smss = new sendSms(this);
+
+    
+     
         console.log(this.user);
+        //console.log(this.user.mobile);
+        //console.log(this.user.mobile.toString());
+        //console.log(this.user.mobile.valueOf());
+
+
+
+
+
     }
 });
 
 
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+
+console.log(obj);
+
+/*
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+
+    //[Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+console.log(obj); // 1
+console.log(obj.a);
+console.log(obj.valueOf());
+
+*/
 
 
 
 
 
 
+
+
+//this.delUser();
+
+
+//this.user.smss = new sendSms(this);
 
 
 

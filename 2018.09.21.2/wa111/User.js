@@ -2,11 +2,22 @@ define(["app.sendSms"], function(sendSms) {
 
     class User {
         constructor($scope) {
-            $scope.user__proto__ = this.__proto__;
+            $scope.__proto__._user = this.__proto__;
+            /*
+            this.obj = {
+                a: 789,
+                toString: () => 1,
+                valueOf: () => 2,
+                [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+            }
+            */
+            8
+
             return $scope.getUser().then((user) => {
                 return user || this.setUser($scope);
             })
         }
+
         openDeposit($scope, e) {
             e.currentTarget.hide();
             $scope.ctrl.isOpenDeposit.val(1);
@@ -62,7 +73,11 @@ define(["app.sendSms"], function(sendSms) {
             this.birthday = m.birthday;
             this.author = { attr: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
             this.locate = { attr: 'locate', title: m.lblIp, value: m.lblIp };
-            this.mobile = { attr: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
+            this.mobile = {
+                attr: 'mobile',
+                title: m.txtPhoto,
+                value: m.txtPhoto
+            };
             this.idcard = { attr: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
             this.banker = [
                 { attr: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111.text, city: m.ddlCityArea.text, prov: m.ddlCity.text } },
@@ -77,21 +92,101 @@ define(["app.sendSms"], function(sendSms) {
                 this.getUserBasic($scope), this.getUserModel($scope),
                 this.getUserState($scope), this.getUserStore($scope),
                 this.getPhoneDate($scope), this.getSystemLog($scope),
-            ]).then(() => { return $scope.putUser(this) })
+            ]).then(() => { return this })
+            //]).then(() => { return $scope.putUser(this) })
         }
+
+
     }
 
     return User;
 })
 
 
+/*
+
+https://www.jianshu.com/p/b941040e57e3
+https://coryrylan.com/blog/javascript-es6-class-syntax
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+https://www.web-tinker.com/article/21287.html
+
+
+*/
+
+
+var obj2 = {
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: () => 2111
+};
+
+console.log(obj2);
+
+
+var obj = {
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+console.log(obj + ''); // 1
+
+console.log(obj); // 1
 
 
 
 
+class Person2 {
+    constructor(name) {
+        this._name = name;
+    }
+
+    get name() {
+        return this._name.toUpperCase();
+    }
+
+    set name(newName) {
+        this._name = newName; // validation could be checked here such as only allowing non numerical values
+    }
+
+    walk() {
+        console.log(this._name + ' is walking.');
+    }
+}
+
+
+let bob = new Person2('Bob');
+
+console.log(bob); // Outputs 'BOB'
+
+
+
+
+
+
+
+
+
+/*setSmss(value) {
+    console.log(value);
+    this.sms = value;
+    //this.putUser();
+}*/
+
+/*
+set sms(value) {
+    this._sms = value
+    //console.log(value);
+}
+
+get sms() {
+    return this._sms
+}
+*/
 
 
 /*
+
 get status() { return this.user.sms.status }
 set status(value) {
     this.user.sms.status = value;

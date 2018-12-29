@@ -1,16 +1,14 @@
 define([], function() {
-
     /*
     user.sms.status
     3:    待發送(不顯示按鍵)
     9:    可發送(顯示按鍵)
     401 : 發送失敗(顯示按鍵)
     */
-
     class sendSms {
         constructor($scope) {
             $scope.extends(this, true);
-            this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
+            this.mdcDialog = new $scope.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
             this.mdcDialog.listen("MDCDialog:accept", function() { window.open("http://client.motosms.com/login", "_blank"); });
             this.mdcDialog.listen("MDCDialog:cancel", function() {});
         }
@@ -26,11 +24,12 @@ define([], function() {
         }
 
         update(res) {
-            this.user.sms = res
+            this.user.sms = res;
             this.putUser();
         }
 
         send($scope) {
+            //.disabled = true;
             this.status = -10000;
             this.command = "apiFunctions.sendsms";
             this.requestUrl = "http://client.motosms.com/smsc/smssend";
@@ -38,7 +37,6 @@ define([], function() {
             this.sendMessage({ ...this, ...this.user }).then((res) => {
                 this.update(res);
                 this.mdcDialog.show();
-                this.$apply();
             });
         }
     }
