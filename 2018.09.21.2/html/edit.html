@@ -3,16 +3,11 @@
         <a class="item">{{user.author.value}}</a>
         <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{smss.status}}</a>
         <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
-        <!-- <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a> -->
-        <a class="item" ng-click="sendSms.send()" ng-if="sendSms.status == 3 || sendSms.status == 401"><i class="envelope outline icon"></i><b>短信<br>
+        <!--         <a class="item" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]"><i class="handshake outline icon"></i><b>开通</b></a>
+         -->
+        <a class="item" ng-click="user.openDeposit(this, $event)" ng-if="user.status[0] == 3 && !user.status[1]"><i class="handshake outline icon"></i><b>开通</b></a>
 
-
-
-        <a class="item" ng-click="setPermit($event)" ng-show="user.status[0]==3 && !user.status[1]"><i class="handshake outline icon"></i><b>开通</b></a>
-        <a class="item" ng-click="sendSms($event)" ng-show="user.status[1]==1"><i class="envelope outline icon"></i><b>短信<br>
-
-        ({{user.sms.status}}-{{sendSms.status}})</b></a>
-        ({{user.sms.status}}-{{sendSms.status}})</b></a>
+        <a class="item" ng-click="sendSms.send(this, $event)" ng-show="user.sms.status==9 || user.sms.status==401"><i class="envelope outline icon"></i><b>短信 -{{user.sms.status}}</a>
     </div>
 </aside>
 <!--

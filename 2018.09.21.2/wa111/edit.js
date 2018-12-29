@@ -1,58 +1,95 @@
-define(["wa111/User"], function(User) {
+define(["wa111/User", "app.sendSms"], function(User, sendSms) {
 
     return async function() {
 
         var $scope = this;
 
-
         this.xmlSpider.loadend = function() {
             if (this.action == "getmodel") {
                 with(this.respData) {
-                    console.log(f_ishow, f_depositStatus);
+                    //console.log(f_ishow, f_depositStatus);
                     $scope.user.status.push(f_ishow);
                     $scope.user.permit.push(f_depositStatus);
+                    $scope.user.sms.status = ($scope.user.sms.status == 3) ? 9 : $scope.user.sms.status;
                     $scope.putUser();
                     $scope.$apply();
                 }
             }
         }
 
-        /*
-        f_depositStatus
-        f_ishow
-        */
-
-
-        this.setPermit = function(e) {
-            e.currentTarget.hide();
-            this.ctrl.isOpenDeposit.val(1)
-            this.ctrl.btnSaveInfo.click();
-        }
-
-        this.sendSms = function(e) {
-            e.currentTarget.hide();
-            console.log(this.user);
-        }
-
-
-
+        //this.delUser();
         this.user = await new User(this);
-        console.log(this.user);
-
-
-
+        this.sendSms = new sendSms(this);
         this.$apply();
-
-
-        //$("#btnSetPermit").click(setPermit.bind(this))
-
-
-
-
+        //console.log(this.sendSms);
+        console.log(this.user);
+    }
+});
 
 
 
-        /*
+
+
+
+
+
+
+
+
+
+//if ($scope.user.sms.status == 3) { $scope.user.sms.status = 9; }
+
+
+
+/*
+      this.setPermit = function(e) {
+          //e.currentTarget.hide();
+          this.setPermit.show = false;
+          this.ctrl.isOpenDeposit.val(1)
+          this.ctrl.btnSaveInfo.click();
+      }
+      */
+
+/*
+this.sendSms = function(e) {
+    e.currentTarget.hide();
+    console.log(this.user);
+}
+*/
+
+
+
+
+
+
+//this.setPermit.show = (this.user.status[0] == 3 && this.user.status[1] == undefined);
+//this.sendSms.show = (this.user.sms.status == 3 || this.user.sms.status == 401);
+//console.log(this.setPermit);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//$("#btnSetPermit").click(setPermit.bind(this))
+
+
+
+
+
+
+
+/*
         this.btnSendSms = $("#btnSendSms")
 
 
@@ -63,38 +100,30 @@ define(["wa111/User"], function(User) {
 
 
 
-        //console.log(this.user.status);
+//console.log(this.user.status);
 
-        //this.user.setPermit(this)
+//this.user.setPermit(this)
 
-        //console.log(this.user.status);
-
-
-
-
-        //console.log(this.ctrl.btnSetPermit);
-        /*
-        this.ctrl.btnSetPermit
-            .toggle(this.user.status[0] == 3)
-            .click((e) => {
-                this.ctrl.btnSetPermit.toggle();
-                this.ctrl.isOpenDeposit.val(1)
-                this.ctrl.btnSaveInfo.click();
-            });
-            */
-
-
-
-        //this.sendSms = new sendSms(this);
-        //console.log(this.sendSms);
-
-
-    }
-});
+//console.log(this.user.status);
 
 
 
 
+//console.log(this.ctrl.btnSetPermit);
+/*
+this.ctrl.btnSetPermit
+    .toggle(this.user.status[0] == 3)
+    .click((e) => {
+        this.ctrl.btnSetPermit.toggle();
+        this.ctrl.isOpenDeposit.val(1)
+        this.ctrl.btnSaveInfo.click();
+    });
+    */
+
+
+
+//this.sendSms = new sendSms(this);
+//console.log(this.sendSms);
 
 
 

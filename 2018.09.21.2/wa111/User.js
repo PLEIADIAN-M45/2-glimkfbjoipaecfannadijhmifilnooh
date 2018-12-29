@@ -1,45 +1,26 @@
 define(["app.sendSms"], function(sendSms) {
 
-    //console.log(sendSms);
-
     class User {
-
         constructor($scope) {
-
-            /*
-            this.btnSetPermit.hide()
-            this.btnSendSms.hide()
-            this.btnSetPermit.show()
-            this.btnSendSms.show()
-            */
-
             $scope.user__proto__ = this.__proto__;
             return $scope.getUser().then((user) => {
                 return user || this.setUser($scope);
             })
         }
-      
-        /*
-        get status() { return this.user.sms.status }
-        set status(value) {
-            this.user.sms.status = value;
-            this.putUser();
+        openDeposit($scope, e) {
+            e.currentTarget.hide();
+            $scope.ctrl.isOpenDeposit.val(1);
+            $scope.ctrl.btnSaveInfo.click();
         }
-        */
-
         getUserBasic($scope) {
-            ['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => {
-                this[name] = $scope[name];
-            });
+            ['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => { this[name] = $scope[name]; });
         }
-
         getUserState($scope) {
             var m = $scope.model;
             this.status = [m.ishow.value];
             this.permit = [m.isOpenDeposit.value];
-            //this.sms = { status: m.ishow.value }
+            this.sms = { status: m.ishow.value };
         }
-
         getUserStore($scope) {
             return $scope.dexie.user.get($scope.account).then((d) => {
                 this.sequel = d.f_id;
@@ -52,7 +33,6 @@ define(["app.sendSms"], function(sendSms) {
                 this.banker = this.banker.filter((a) => { return a.value });
             });
         }
-
         getPhoneDate($scope) {
             return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
@@ -64,7 +44,6 @@ define(["app.sendSms"], function(sendSms) {
                 this.equpmt.osInfo = d.f_osInfo;
             });
         }
-
         getSystemLog($scope) {
             return $scope.ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
@@ -76,7 +55,6 @@ define(["app.sendSms"], function(sendSms) {
                 });
             });
         }
-
         getUserModel($scope) {
             var m = $scope.model;
             this.timing = [];
@@ -94,11 +72,6 @@ define(["app.sendSms"], function(sendSms) {
                 { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
             ];
         }
-
-        go() {
-            alert(12)
-        }
-
         setUser($scope) {
             return Promise.all([
                 this.getUserBasic($scope), this.getUserModel($scope),
@@ -118,6 +91,13 @@ define(["app.sendSms"], function(sendSms) {
 
 
 
+/*
+get status() { return this.user.sms.status }
+set status(value) {
+    this.user.sms.status = value;
+    this.putUser();
+}
+*/
 
 
 /*
