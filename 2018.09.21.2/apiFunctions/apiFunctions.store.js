@@ -20,6 +20,11 @@ evo.store = store;
 apiFunctions.store = {};
 evo.store.tables.forEach(function(table, index) {
     apiFunctions.store[table.name] = {
+        del: function() {
+            return evo.store[table.name].where("unique").equals(this.params).delete().then(() => {
+                console.log("Database successfully deleted");
+            })
+        },
         put: function() {
             return evo.store[table.name].put(this.params).then(() => { return this.params })
         },

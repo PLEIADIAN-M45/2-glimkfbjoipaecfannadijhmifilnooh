@@ -1,10 +1,13 @@
 define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'app.sendSms'], function(angular, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
+    //console.log(User);
 
     return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
-
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
+
+
+        this.extensionId = localStorage.extensionId;
 
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
@@ -16,7 +19,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
         this.searchParams = new URLSearchParams(this.search);
         this.params = Array.from(this.searchParams).serialize();
         this.account = this.params.account || this.params.member;
-        //this.channel = localStorage.channel || this.params.siteNumber;
+        this.channel = localStorage.channel || this.params.siteNumber;
         /**********************************************************************************************/
         this.referrer = document.referrer;
         this.forms = document.forms;
@@ -26,8 +29,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
         this.unique = [this.account, this.channel].join("-");
 
 
-
-        if(this.isTest) {
+        if (this.isTest) {
             $(".collapse").show();
             this.router = {
                 wa111: {
@@ -60,29 +62,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
 
         this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
         this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
-
-        /*
-                this.assign = function() {
-                    Object.assign(this, ...arguments)
-                };
-
-                this.apply = function(res) {
-                    if (!this.$$phase) { this.$apply(); };
-                    return res;
-                }
-
-                this.extend = function(args) {
-                    Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
-                }*/
-
-        /*
-        this.apply = function(res) {
-            if (!this.$$phase) { this.$apply(); };
-            return res;
-        }*/
-
-        this.extensionId = localStorage.extensionId;
-
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 if(this.extensionId && message) {
@@ -98,35 +77,30 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
         xmlSpider.sendMessage = this.sendMessage;
         xmlSpider.dexie = this.dexie;
 
-        /*
-        this.getUser = function() {
-            console.log(this.unique);
-            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique })
+
+
+
+        this.bindUser = function(user) {
+            if (user) { user.__proto__ = this._user; }
+            this.$apply();
+            return user;
         }
 
-        this.putUser = function(_user) {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: _user || this.user })
+        this.getUser = function() {
+            return this.sendMessage({ command: 'apiFunctions.store.user.get', params: this.unique }).then((user) => {
+                return this.bindUser(user)
+            })
         }
-        */
+
+        this.delUser = function() { return this.sendMessage({ command: 'apiFunctions.store.user.del', params: this.unique }) }
+
+        this.putUser = function(user) {
+            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: user || this.user }).then((user) => {
+                return this.bindUser(user)
+            })
+        }
 
         this.createTab = function(_url) { window.open(_url, "_blank"); }
-        this.setPermit = function() {
-            switch (this.server) {
-                case "wa111":
-                    this.ctrl.isOpenDeposit.value = 1;
-                    this.ctrl.btnSaveInfo.click();
-                    console.log(1);
-                    break;
-                case "ku711":
-                    this.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
-                    this.ctrl.DepositChanged();
-                    this.ctrl.UpdateMemberRiskInfoAccountingBackend();
-                    console.log(2);
-                    break;
-            }
-            this._setPermit = false;
-        }
-
         this.cut = function(e) { document.execCommand("cut"); }
         this.copy = function(e) { document.execCommand("copy"); }
         this.paste = function(e) { document.execCommand("paste"); }
@@ -156,7 +130,6 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
             }
         }
 
-
         this.injectStylesheet = function() {
             if(!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
@@ -181,16 +154,20 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
             })
         };
 
+        this.exec = async function(module) {
+            await this.$invoke(module, this);
+            this.$apply();
+        }
+
         this.$loadModule = function() {
             if(this.module == undefined) { return }
             var module = [this.server, this.module].slash();
-            //console.log(module);
             requirejs([module], (module) => {
                 if(module) {
                     this.injectStylesheet();
                     this.injectComponents().then((x) => {
                         this.setElements();
-                        this.$invoke(module, this);
+                        this.exec(module);
                     })
                 }
             });
@@ -206,6 +183,50 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
 
 
 
+
+
+/*
+        this.assign = function() {
+            Object.assign(this, ...arguments)
+        };
+
+        this.apply = function(res) {
+            if (!this.$$phase) { this.$apply(); };
+            return res;
+        }
+
+        this.extend = function(args) {
+            Object.entries(args).map(([a, b]) => { this.__proto__[a] = b; })
+        }*/
+
+/*
+this.apply = function(res) {
+    if (!this.$$phase) { this.$apply(); };
+    return res;
+}*/
+
+
+
+
+
+/*
+this.setPermit = function() {
+    switch (this.server) {
+        case "wa111":
+            this.ctrl.isOpenDeposit.value = 1;
+            this.ctrl.btnSaveInfo.click();
+            console.log(1);
+            break;
+        case "ku711":
+            this.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+            this.ctrl.DepositChanged();
+            this.ctrl.UpdateMemberRiskInfoAccountingBackend();
+            console.log(2);
+            break;
+    }
+    this._setPermit = false;
+}
+*/
 
 
 

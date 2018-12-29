@@ -1,3 +1,43 @@
+
+
+/*
+Date.prototype[@@toPrimitive]
+
+Date.prototype[Symbol.toPrimitive]
+*/
+
+
+
+
+class A extends Date {
+
+}
+
+Object.defineProperty(A.prototype, Symbol.toPrimitive, {
+    value: void 0
+});
+
+var a = new A(0);
+
+console.log(a + ''); // 0
+
+
+
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+console.log(obj + ''); // 1
+
+console.log(obj.a);
+console.log(obj.valueOf());
+
+
+
+
 function User($scope) {
     $scope.extends(this, true);
     return this.build()
@@ -36,7 +76,6 @@ User.prototype.getUserStore = function() {
         this.sequel = d.f_id;
         this.attach = d.f_joindate;
         this.agency = d.f_alagent;
-        console.log(this.agency, "+++++++++++++");
         this.black = d.f_blacklist;
         this.peril = d.f_peril;
         this.nickName = d.f_nickName;

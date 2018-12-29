@@ -1,119 +1,94 @@
-define(["wa111/User"], function(User) {
+define(["wa111/User", "app.sendSms"], function(User, sendSms) {
 
     return async function() {
-
+        var $scope = this;
         this.xmlSpider.loadend = function() {
-            if(this.action == "getmodel") { console.log(this.respData); }
+            if (this.action == "getmodel") {
+                with(this.respData) {
+                    //console.log(f_ishow, f_depositStatus);
+                    $scope.user.status.push(f_ishow);
+                    $scope.user.permit.push(f_depositStatus);
+                    $scope.user.sms.status = ($scope.user.sms.status == 3) ? 9 : $scope.user.sms.status;
+                    $scope.putUser();
+                }
+            }
         }
 
-
+        //this.delUser()
         this.user = await new User(this);
+        this.smss = new sendSms(this);
+
+
+
+        console.log(this.user);
+        //console.log(this.user.mobile);
+        //console.log(this.user.mobile.toString());
+        //console.log(this.user.mobile.valueOf());
 
 
 
 
 
-        //this.sendSms
+    }
+});
+
+
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+
+console.log(obj);
+
+/*
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+
+    //[Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+console.log(obj); // 1
+console.log(obj.a);
+console.log(obj.valueOf());
+
+*/
+
+
 
         // = new sendSms(this);
 
-        console.log(this.user);
-
-
-        //new User()
-
-        //await this.setUser.call(new User(this))
-
-        //this.user = await this.getUser() || await new User(this)
-
-        //this.putUser()
 
 
 
-        return;
+/*
+      this.setPermit = function(e) {
+          //e.currentTarget.hide();
+          this.setPermit.show = false;
+          this.ctrl.isOpenDeposit.val(1)
+          this.ctrl.btnSaveInfo.click();
+      }
+      */
 
-        console.log(this.user.server);
-        console.log(this.user.agency);
-        console.log(this.user.mobile.value);
-
-
-        return;
-
-
-
-
-        //var c = new User(this);
-        //console.log(c);
-        //console.log(c.server);
-
-        //merge //copy
-
-        //this.extends(User.prototype, true);
-
-        //angular.extend(this);
-
-        //Object.assign(User.prototype, this)
-
-        //var user = new User(this);
-        //this.user = await this.getUser() || new User()
-
-        //this.user = User.get()
-
-        //new User();
-
-        // console.log("000", this.user);
-
-        //console.log(this.user.timing[0]);
-
-        /*
-        setTimeout(function() {
-            console.log(this.user.idcard);
-        }.bind(this), 2000)
-        */
-
-
-
-
-        //User.getUser()
-
-        //var c = this.user
-
-
-
-        //this.putUser()
-
-
-        /*
-        this.user =
-            //await this.getUser() ||
-            await setUser.call(this);
-            */
-
-        //console.log(this.user);
+/*
+this.sendSms = function(e) {
+    e.currentTarget.hide();
+    console.log(this.user);
+}
+*/
 
 
 
 
 
-        /*
-        this.ctrl.btnSetPermit
-            .toggle(this.user.status[0] == 3)
-            .click((e) => {
-                this.ctrl.btnSetPermit.toggle();
-                this.ctrl.isOpenDeposit.val(1)
-                this.ctrl.btnSaveInfo.click();
-            });
-            */
+//this.setPermit.show = (this.user.status[0] == 3 && this.user.status[1] == undefined);
+//this.sendSms.show = (this.user.sms.status == 3 || this.user.sms.status == 401);
+//console.log(this.setPermit);
 
-
-
-        //this.sendSms = new sendSms(this);
-        //console.log(this.sendSms);
-
-
-        this.$apply();
-    }
-});
 
 
 
@@ -132,6 +107,47 @@ function Ninja(name, weapon) {
 }
 Ninja.prototype = Object.create(Person.prototype);
 Ninja.prototype.constructor = Ninja;
+
+
+
+
+
+
+
+
+
+
+
+
+//$("#btnSetPermit").click(setPermit.bind(this))
+
+
+
+
+
+
+
+/*
+
+/*enumerable: false,
+configurable: false,
+writable: true,*/
+//value: "static"
+/*value: {
+    a: 655,
+    b: 929
+}*/
+
+//this.extends(User.prototype, true);
+//angular.extend(this);
+//Object.assign(User.prototype, this)
+
+/*
+setTimeout(function() {
+    console.log(this.user.idcard);
+}.bind(this), 2000)
+*/
+
 
 
 

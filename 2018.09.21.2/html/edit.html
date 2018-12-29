@@ -1,11 +1,12 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-        <a class="item">{{user.status[0]}}/{{user.permit[0]}}/{{smss.status}}</a>
-        <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;"><i class="bolt icon"></i><b>一机多登</b></a>
-        <!-- <a class="item" ng-click="setPermit()" ng-if="user.status[0]==3"><i class="handshake outline icon"></i><b>开通</b></a> -->
-        <a class="item" id="btnSetPermit"><i class="handshake outline icon"></i><b>开通</b></a>
-        <a class="item" ng-click="sendSms.send()" ng-if="sendSms.status == 3 || sendSms.status == 401"><i class="envelope outline icon"></i><b>短信<br>({{user.sms.status}}-{{sendSms.status}})</b></a>
+        <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;">
+            <i class="bolt icon"></i>一机多登</a>
+        <a class="item" ng-click="user.openDeposit(this, $event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
+            <i class="handshake outline icon"></i>开通</a>
+        <a class="item"  ng-click="smss.send(this, $event)" ng-if="user.sms.status==9 || user.sms.status==401" status="{{user.sms.status}}">
+            <i class="envelope outline icon"></i>短信</a>
     </div>
 </aside>
 <!--
@@ -13,6 +14,15 @@
 https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
 -->
 <style type="text/css">
+.item.pink {
+    background-color: red !important;
+    color: #fff !important;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
 .ui.inverted.menu.danger {
     background-color: #d2115a !important;
 }
