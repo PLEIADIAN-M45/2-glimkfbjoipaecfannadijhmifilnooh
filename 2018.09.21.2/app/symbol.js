@@ -16,6 +16,7 @@ this.symbolList = function() {
             this.symbol[name] = String.fromCharCode(val)
         })
 }
+
 /*
 ’   Apostrophe  撇號
 （）   Bracket (英式) / Parentheses (美式)    括號

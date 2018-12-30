@@ -47,7 +47,7 @@ set status(value) {
 
 
 
-/*
+
 var d = Date.prototype;
 d.__defineGetter__("year", function() {
     console.log(this);
@@ -57,9 +57,9 @@ d.__defineSetter__("year", function(y) { this.setFullYear(y); });
 
 
 
-*/
 
-/*
+
+
 function Dog(name) {
     this.name = name;
     return Dog.now();
@@ -86,7 +86,7 @@ var c = new Date()
 console.log(c);
 
 console.log(c.getDate());
-*/
+
 
 
 

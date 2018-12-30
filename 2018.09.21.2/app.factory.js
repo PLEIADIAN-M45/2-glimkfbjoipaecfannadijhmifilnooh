@@ -1,13 +1,31 @@
 define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'app.sendSms'], function(angular, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
-    //console.log(User);
+    /*
+    return class Factory extends App {
+        constructor(a) {
+            super()
+            console.log(a);
+            //console.log(this.$scope);
+            //console.log(this.server);
+
+        }
+    }
+    */
+
 
     return function factory($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,
         $rootScope, $sce, $sceDelegate, $templateCache, $templateRequest, $timeout, $window, $xhrFactory) {
 
+        //this.assign = function() { Array.from(arguments).forEach((object) => { Object.assign(this.__proto__, object) }); }
+        //this.assign(window.localStorage, window.location);
 
-        this.extensionId = localStorage.extensionId;
+        //this.extensionId = localStorage.extensionId;
+
+        console.log(this);
+        console.log(this.module);
+
+
 
         this.mdc = mdc;
         this.dexie = new Dexie('evo');
@@ -27,9 +45,7 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
         this.isExit = this.referrer.includes('Exit') || this.referrer.includes('SignOut');
         this.responseType = { text(res) { return res.text(); }, json(res) { return res.json(); } }
         this.unique = [this.account, this.channel].join("-");
-
-
-        if (this.isTest) {
+        if(this.isTest) {
             $(".collapse").show();
             this.router = {
                 wa111: {
@@ -59,9 +75,8 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
             }
         }
 
-
-        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.module];
-        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.module];
+        this.components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.path];
+        this.stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.path];
         this.sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 if(this.extensionId && message) {
@@ -79,9 +94,10 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
 
 
 
+        //this.mdcDialog = new this.mdc.dialog.MDCDialog(document.querySelector(".mdc-dialog"));
 
         this.bindUser = function(user) {
-            if (user) { user.__proto__ = this._user; }
+            if(user) { user.__proto__ = this._user; }
             this.$apply();
             return user;
         }
@@ -154,30 +170,51 @@ define(['angular', 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'ap
             })
         };
 
-        this.exec = async function(module) {
-            await this.$invoke(module, this);
-            this.$apply();
-        }
+
 
         this.$loadModule = function() {
-            if(this.module == undefined) { return }
-            var module = [this.server, this.module].slash();
-            requirejs([module], (module) => {
-                if(module) {
-                    this.injectStylesheet();
-                    this.injectComponents().then((x) => {
-                        this.setElements();
-                        this.exec(module);
-                    })
-                }
+            this.injectStylesheet();
+            this.injectComponents();
+            this.setElements();
+            requirejs([this.module], (module) => {
+                this.$invoke(module, this);
             });
         }
+
+        this.$loadModule()
     }
 });
 
 
 
 
+/*
+  this.exec = async function(module) {
+            await this.$invoke(module, this);
+            this.$apply();
+        }
+if(module) {
+                    this.injectStylesheet();
+                    this.injectComponents().then((x) => {
+                        this.setElements();
+                        //this.exec(module);
+                    })
+                }
+if(this.module == undefined) { return }
+var module = [this.server, this.module].slash();
+*/
+//console.log(User);
+/*class Factory {
+    constructor(a) {
+        console.log(a);
+    }
+}*/
+
+
+//Factory.constructor(6)
+//console.log(12, 3);
+//new Factory(this)
+//console.log(sendSms);
 
 
 

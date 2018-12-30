@@ -5,26 +5,31 @@ define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
         var controller = function($scope, $rootScope) {};
         var app = angular.module(this.name, ["ngSanitize", "ngAnimate"]).controller(this.ctrlId, controller);
         angular.bootstrap(document, [this.name]);
-        return this.app = app;
+        console.log(1255);
+        return 1255
     }
 });
 
 
+/*
+
+requirejs(["app"], function(app) {
+    console.log(app);
 
 
 
+    requirejs(["angular", "angular-sanitize", "angular-animate"], function(angular) {
+        console.log(angular);
+
+    })
 
 
 
-
-
-
-
-
+})
+*/
 
 
 /*
-
 var app = angular.module('OBSApp', ["ngSanitize", "ngAnimate"]);
 function viewController($scope, $rootScope) {};
 app.controller('View', viewController);

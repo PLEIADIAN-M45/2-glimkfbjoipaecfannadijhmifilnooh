@@ -37,6 +37,101 @@ this.sendSms = function(e) {
 }
 */
 
+var obj2 = {
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: () => 2111
+};
+
+console.log(obj2);
+
+
+var obj = {
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+console.log(obj + ''); // 1
+
+console.log(obj); // 1
+
+
+
+
+class Person2 {
+    constructor(name) {
+        this._name = name;
+    }
+
+    get name() {
+        return this._name.toUpperCase();
+    }
+
+    set name(newName) {
+        this._name = newName; // validation could be checked here such as only allowing non numerical values
+    }
+
+    walk() {
+        console.log(this._name + ' is walking.');
+    }
+}
+
+
+let bob = new Person2('Bob');
+console.log(bob); // Outputs 'BOB'
+
+
+
+
+
+
+
+
+
+/*setSmss(value) {
+    console.log(value);
+    this.sms = value;
+    //this.putUser();
+}*/
+
+/*
+set sms(value) {
+    this._sms = value
+    //console.log(value);
+}
+
+get sms() {
+    return this._sms
+}
+*/
+
+
+/*
+
+get status() { return this.user.sms.status }
+set status(value) {
+    this.user.sms.status = value;
+    this.putUser();
+}
+*/
+
+
+/*
+
+  get _status() {
+            return this.status
+        }
+
+        set _status(value) {
+            //console.log(value);
+            this.status = value
+            //this.status = value
+        }
+    }
+
+
+})
 
 
 

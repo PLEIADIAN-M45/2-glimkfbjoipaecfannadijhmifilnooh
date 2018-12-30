@@ -38,6 +38,17 @@ console.log(obj.valueOf());
 
 
 
+var obj = {
+    a: 789,
+    toString: () => 1,
+    valueOf: () => 2,
+    [Symbol.toPrimitive]: Date.prototype[Symbol.toPrimitive]
+};
+
+
+console.log(obj);
+
+
 function User($scope) {
     $scope.extends(this, true);
     return this.build()
