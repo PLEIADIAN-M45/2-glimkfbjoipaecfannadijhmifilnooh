@@ -67,14 +67,22 @@ requirejs([$server], function(server) {
 */
 
 
-requirejs(["App"], function(App) {
+requirejs(["app"], function(App) {
 
     var app = new App();
+
+    app.bootstrap(app);
+
+
+
     //console.log(app);    
     //console.log(app.controller);
     //console.log(app.controller.selector);
     
-    app.bootstrap();
+
+    //console.log(app);
+    //console.log(app.components);
+
 
 
     //console.log(app);

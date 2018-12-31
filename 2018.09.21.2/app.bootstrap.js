@@ -13,26 +13,44 @@
 //localRequire(deps, callback, errback)
 
 
-define([], function() {
 
-    class Bootstrap {
+
+define(["app.factory"], function(Factory) {
+    //console.log(factory);
+
+    class Bootstrap extends Factory {
+
         constructor() {
-            this.name                = "OBSApp";
-            this.ctrlId              = "View";
-            this.requires            = ["angular", "angular-sanitize", "angular-animate"];
-            this.modules             = ["ngSanitize", "ngAnimate"];
+            var c = super();
+            //console.log(c);
+            //c.init()
+            this.name = "OBSApp";
+            this.ctrlId = "View";
+            this.requires = ["angular", "angular-sanitize", "angular-animate"];
+            this.modules = ["ngSanitize", "ngAnimate"];
             this.controller.selector = "[ng-controller]";
         }
 
         bootstrap() {
-            if (this.route) { this.build(this) }
+
+            console.log(this.route);
+            console.log(this.module);
+
+            if (this.route) {
+
+                //await this.build(this)
+
+
+
+            } else {
+
+            }
+
 
         }
-    
+
 
         loadModule() {
-            console.log(this);
-            console.log(this.module);
 
             this.$controller = angular.element(this.controller.selector);
             this.$injector = this.$controller.injector();
@@ -41,17 +59,27 @@ define([], function() {
             this.$compile = this.$injector.get('$compile');
 
 
-            requirejs([this.module], function(module) {
-                console.log(module);
-            }.bind(this))
+
+            requirejs([this.module],
+
+                function(module) {
+
+                    console.log("module:", this.module);
+
+                    this.$invoke(module, this.$scope)
+
+                }.bind(this))
 
         }
 
         build(app) {
+            //console.log(app.name, app.ctrlId, app.modules, app.controller);
+            //console.log(window.angular);
+            if (window.angular) {
 
-            console.log(app.name, app.ctrlId, app.modules, app.controller);
 
-            if (this.server == "wa111") {
+            } else {
+
                 requirejs(app.requires, function(angular) {
                     $('html').attr('ng-app', app.name);
                     $("<div>", { "id": app.ctrlId, "ng-controller": app.ctrlId }).appendTo("body");
@@ -60,6 +88,10 @@ define([], function() {
                     console.log("build...");
                     app.loadModule();
                 })
+            }
+
+            if (this.server == "wa111") {
+
             }
 
             if (this.server == "ku711") {
