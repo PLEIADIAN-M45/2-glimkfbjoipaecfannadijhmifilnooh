@@ -75,6 +75,8 @@ requirejs(["app"], function(App) {
     var app = new App();
     app.bootstrap(app);
 
+    console.log(app);
+
     /*
     console.log(app.mdc);
     console.log(app.sendMessage);

@@ -1,52 +1,22 @@
 define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixinClass, Config, Router, Factory) {
 
-    //class Factory extends Config {}
     /*
     Class 的继承 - ECMAScript 6入门
     http://es6.ruanyifeng.com/#docs/class-extends
     https://www.jianshu.com/p/3d3d52b47762
     */
-
-    class App1 extends mixinClass(Config, Router, Factory) {
+    class App extends mixinClass(Router, Factory) {
         constructor() {
             super();
-            this.isTest = (window.location.hostname == "127.0.0.1");
-            this.locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-
-
-            console.log(this.router);
-            console.log(this.server);
-            console.log(this.locator);
-
-
-
-            //this.route = this.router[this.server][this.locator];
-            //this.module = (this.route) ? [this.server, this.route].join("/") : undefined;
-
-        }
-        bootstrap() {
-
-        }
-    }
-
-
-    Object.assign(App1.prototype, window.localStorage);
-    Object.assign(App1.prototype, Factory.prototype);
-
-    return App1
-
-
-
-    class App extends Config {
-
-        constructor() {
-            super();
-
-            console.log(this.sendMessage);
+            this.name = "OBSApp";
+            this.ctrlId = "View";
+            this.requires = ["angular", "angular-sanitize", "angular-animate"];
+            this.modules = ["ngSanitize", "ngAnimate"];
+            this.controller.selector = "[ng-controller]";
 
             this.isTest = (window.location.hostname == "127.0.0.1");
             this.locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
-            this.route = router[this.server][this.locator];
+            this.route = this.router[this.server][this.locator];
             this.module = (this.route) ? [this.server, this.route].join("/") : undefined;
             /*****************************************************************************/
             /*this.searchParams = new URLSearchParams(window.location.search);
@@ -60,6 +30,7 @@ define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixin
              */
             /*****************************************************************************/
         }
+        controller($scope, $rootScope) {}
 
         bootstrap(app) {
             console.log("bootstrap...");
@@ -72,11 +43,55 @@ define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixin
             })
         }
 
+        get $controller() { return angular.element(this.controller.selector); }
+        get $injector() { return this.$controller.injector(); }
+        get $scope() { return this.$controller.scope(); }
+        get $invoke() { return this.$injector.invoke; }
+        get $compile() { return this.$injector.get('$compile'); }
+
 
 
         loadModule() {
+            console.log("module:", this.module);
+
+            requirejs([this.module],
 
 
+                function(module) {
+
+                    //console.log(module);
+
+
+                    this.$invoke(module, this)
+
+                }.bind(this))
+
+
+
+            //console.log(this.elements);
+            //this.$controller = angular.element(this.controller.selector);
+            //this.$injector = this.$controller.injector();
+            //this.$scope = this.$controller.scope();
+            //this.$invoke = this.$injector.invoke;
+            //this.$compile = this.$injector.get('$compile');
+
+
+            return
+            requirejs([this.module],
+
+                function(module) {
+
+                    console.log("module:", this.module);
+
+                    //this.$invoke(module, this.$scope)
+
+                }.bind(this))
+
+
+            var $injector = angular.injector();
+            console.log($injector);
+
+            console.log('loadModule..');
 
 
             return
@@ -113,6 +128,7 @@ define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixin
                 }.bind(this))
 
             return
+
             requirejs([this.module],
 
                 function(module) {
@@ -128,9 +144,9 @@ define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixin
 
 
     Object.assign(App.prototype, window.localStorage);
-    Object.assign(App.prototype, Factory.prototype);
 
-    Object.assign(App.prototype, f.__proto__);
+    //Object.assign(App.prototype, Factory.prototype);
+
 
 
 

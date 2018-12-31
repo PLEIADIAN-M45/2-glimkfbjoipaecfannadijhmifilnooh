@@ -2,10 +2,6 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
     function(instance, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
         //var injects = ['$anchorScroll', '$animate']
-
-
-
-
         class Factory {
             constructor() {
                 console.log(111111111);
@@ -86,12 +82,23 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                     .flat().filter((elem) => { return elem.name || elem.id; });
             }
 
+            get model() {
+                //console.log(this.elements);
+                return this.elements.map((elem) => {
+                    //console.log(elem.name, elem.id);
+                    return [elem.name || elem.id, elem.value || elem.outerText]
+                    //return [elem.sname, elem.model];
+                }).serialize();
+            }
+
             setElements() {
+
                 //this.elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-                if (this.server == "wa111") {
+
+                /*if (this.server == "wa111") {
                     this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
                     this.ctrl = this.elements.map((elem) => { return [elem.sname, $(elem)]; }).serialize();
-                }
+                }*/
             }
 
             injectStylesheet() {

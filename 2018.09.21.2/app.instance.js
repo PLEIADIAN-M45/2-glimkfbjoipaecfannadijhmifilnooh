@@ -1,6 +1,7 @@
 define([], function() {
 
-
+    console.log(1);
+    
     if (!HTMLElement.hasOwnProperty("sname")) {}
     if (!HTMLElement.hasOwnProperty("model")) {}
 
