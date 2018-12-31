@@ -88,16 +88,20 @@ function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value
 
 
 function download() {
-    return Promise.all([
-        fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMA').then(_toJson),
-        fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMB').then(_toJson)
-    ]).then(flat).then(save);
+    if (window.localStorage.length < 5) {
+        return Promise.all([
+            fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMA').then(_toJson),
+            fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMB').then(_toJson)
+        ]).then(flat).then(save).then((x) => {
+            console.log(localStorage);
+        })
+    }
 }
 
+download();
 
 
 
-//download();
 
 
 
