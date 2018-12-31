@@ -3,12 +3,12 @@ define(['app',
     function(App, angular, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
     //var App = require("App")
-    console.log(App);
-
-    
+    console.log(App);    
 
     class Factory {
+
         constructor() {
+            
             this.mdc = mdc;
             this.dexie = new Dexie('evo');
             this.dexie.version(1).stores({ user: 'f_accounts' });

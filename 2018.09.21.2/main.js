@@ -65,20 +65,40 @@ requirejs([$server], function(server) {
     //console.log(server);
 })
 */
-
-
+/*
+class A {}
+class B extends A {}
+class C extends B {}
+*/
 requirejs(["app"], function(App) {
 
     var app = new App();
-
     app.bootstrap(app);
+
+    /*
+    console.log(app.mdc);
+    console.log(app.sendMessage);
+    */
+
+
+    //console.log(app);
+    //console.log(app.sendMessage);
+    /*
+    requirejs(["app.factory"], function(Factory) {
+        //console.log(Factory);
+        //class B extends Factory {}
+    })
+    */
+
+
+    //app.bootstrap(app);
 
 
 
     //console.log(app);    
     //console.log(app.controller);
     //console.log(app.controller.selector);
-    
+
 
     //console.log(app);
     //console.log(app.components);

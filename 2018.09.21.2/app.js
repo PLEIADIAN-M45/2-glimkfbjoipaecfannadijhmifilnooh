@@ -1,56 +1,112 @@
-define(["app.instance", "app.Config", "app.router"], function(instance, Config, router) {
+define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixinClass, Config, Router, Factory) {
 
-    class App extends Config {
-        
+    //class Factory extends Config {}
+    /*
+    Class 的继承 - ECMAScript 6入门
+    http://es6.ruanyifeng.com/#docs/class-extends
+    https://www.jianshu.com/p/3d3d52b47762
+    */
+
+    class App1 extends mixinClass(Config, Router, Factory) {
         constructor() {
             super();
+            this.isTest = (window.location.hostname == "127.0.0.1");
+            this.locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+
+
+            console.log(this.router);
+            console.log(this.server);
+            console.log(this.locator);
+
+
+
+            //this.route = this.router[this.server][this.locator];
+            //this.module = (this.route) ? [this.server, this.route].join("/") : undefined;
+
+        }
+        bootstrap() {
+
+        }
+    }
+
+
+    Object.assign(App1.prototype, window.localStorage);
+    Object.assign(App1.prototype, Factory.prototype);
+
+    return App1
+
+
+
+    class App extends Config {
+
+        constructor() {
+            super();
+
+            console.log(this.sendMessage);
+
             this.isTest = (window.location.hostname == "127.0.0.1");
             this.locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
             this.route = router[this.server][this.locator];
             this.module = (this.route) ? [this.server, this.route].join("/") : undefined;
             /*****************************************************************************/
-            this.searchParams = new URLSearchParams(window.location.search);
-
+            /*this.searchParams = new URLSearchParams(window.location.search);
             this.params = Array.from(this.searchParams).serialize(); //instance
             this.account = this.params.account || this.params.member;
             this.channel = localStorage.channel || this.params.siteNumber;
             this.unique = [this.account, this.channel].join("-");
-            /*****************************************************************************/
             this.referrer = document.referrer;
             this.forms = document.forms;
             this.form = document.forms[0];
+             */
+            /*****************************************************************************/
         }
 
         bootstrap(app) {
-
+            console.log("bootstrap...");
             requirejs(app.requires, function(angular) {
                 $('html').attr('ng-app', app.name);
                 $("<div>", { "id": app.ctrlId, "ng-controller": app.ctrlId }).appendTo("body");
-                angular.module(app.name, app.modules).controller(app.ctrlId, app.controller);
+                var c = angular.module(app.name, app.modules).controller(app.ctrlId, app.controller);
                 angular.bootstrap(document, [app.name]);
-                console.log("build...");
-
                 app.loadModule();
             })
-            console.log(this.name);
         }
 
 
 
         loadModule() {
 
+
+
+
+            return
+
+            //requirejs(["app.Factory"], function(Factory) { console.log(Factory); })
+
+
+            return
+
+
             this.$controller = angular.element(this.controller.selector);
             this.$injector = this.$controller.injector();
             this.$scope = this.$controller.scope();
             this.$invoke = this.$injector.invoke;
             this.$compile = this.$injector.get('$compile');
+            //console.log(this.$controller);
+            //console.log(this);
+            Object.assign(this.$scope, this)
 
+            return
 
             requirejs(["app.Factory"],
 
                 function(Factory) {
 
-                    console.log(Factory);
+                    this.$invoke(Factory, this.$scope)
+
+                    //console.log(this);
+                    //App
+                    //console.log(Factory);
 
                     //this.$invoke(module, this.$scope)
 
@@ -68,32 +124,43 @@ define(["app.instance", "app.Config", "app.router"], function(instance, Config, 
                 }.bind(this))
 
         }
-
-
-
-        get isExit() {
-            return this.referrer.includes('Exit') || this.referrer.includes('SignOut');
-        }
-
-        get components() {
-            return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.route];
-        }
-
-        get stylesheet() {
-            return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.route];
-        }
     }
 
 
     Object.assign(App.prototype, window.localStorage);
+    Object.assign(App.prototype, Factory.prototype);
+
+    Object.assign(App.prototype, f.__proto__);
+
+
+
+
+
+
+    //Object.assign(App.prototype, Factory.prototype);
+
+
+
+
+
     //Object.assign(App.prototype, window.location);
 
     return App;
 })
 
+//console.log(this.constructor);
 
+/*
+            class B extends this.constructor {
+                constructor(x) {
+                    super()
+                    console.log(1233);
+                }
 
-
+            }
+            var c = new B(123)
+            console.log(c.referrer);
+            */
 
 
 
