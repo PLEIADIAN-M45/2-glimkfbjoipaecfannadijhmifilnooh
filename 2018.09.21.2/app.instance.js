@@ -1,7 +1,7 @@
 define([], function() {
 
-    console.log(1);
-    
+    console.log('app.instance.js');
+
     if (!HTMLElement.hasOwnProperty("sname")) {}
     if (!HTMLElement.hasOwnProperty("model")) {}
 
@@ -45,6 +45,7 @@ define([], function() {
     Array.prototype.slash = function() { return this.join(String.fromCharCode(47)) }
     Array.prototype.parseToModel = function() { return this.map((elem) => { return [elem.sname, elem.model]; }).serialize(); };
     Array.prototype.parseToCtrl = function() { return this.map((elem) => { return [elem.sname, elem]; }).serialize(); };
+
     Array.prototype.serialize = function() {
         try {
             var obj = {};

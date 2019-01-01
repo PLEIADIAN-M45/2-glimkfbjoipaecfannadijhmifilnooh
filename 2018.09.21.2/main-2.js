@@ -5,7 +5,6 @@ var $server = window.localStorage.server;
 requirejs.config({
     packages: ["wa111", "ku711"],
     paths: {
-        '$server': $server + "/main",
 
         /*'app': 'app/app',
         'app.router': 'app/app.router',
@@ -32,9 +31,7 @@ requirejs.config({
         "ngload": "lib/angular/ngload",
         'domReady': 'lib/require/domReady',
         'require': 'lib/require/require',
-        'jquery2': 'lib/jquery/jquery-3.2.1.min',
-        'jquery': 'lib/jquery/jquery-3.3.1',
-
+        'jquery': 'lib/jquery/jquery-3.2.1.min',
         'js-url': 'lib/jquery/url.min',
         'moment': 'lib/jquery/moment-with-locales.min',
         'dexie': 'lib/jquery/dexie',
@@ -61,157 +58,292 @@ requirejs.config({
     }
 });
 
-/*
-requirejs(["jquery"], function(jquery) {
-   console.log(jquery);
-});
-*/
+
+requirejs(["angular"], function(angular) {
+
+    class Evolution {
+
+        constructor() {
+            this.name = "OBSApp";
+            this.ctrlId = "View";
+            this.selector = "[ng-controller]";
+
+            this.extend(localStorage)
+            this.extend(location)
+        }
+
+        /*
+        get name() { return "OBSApp" }
+        get ctrlId() { return "View" }
+        get selector() { return "[ng-controller]" }
+        get moduleId() { return }
+        get moduleId() { return }
+        get moduleId() { return }
+        hello() {}
+        */
 
 
-
-requirejs(["app"], function(App) {
-    var app = new App();
-    app.bootstrap(app);
-    console.log(app);
-});
-
-
-
-/*
-   console.log(app.mdc);
-   console.log(app.sendMessage);
-   */
-
-
-//console.log(app);
-//console.log(app.sendMessage);
-/*
-requirejs(["app.factory"], function(Factory) {
-    //console.log(Factory);
-    //class B extends Factory {}
-})
-*/
-
-
-//app.bootstrap(app);
-
-
-
-//console.log(app);
-//console.log(app.controller);
-//console.log(app.controller.selector);
-
-
-//console.log(app);
-//console.log(app.components);
-
-
-
-//console.log(app);
-//app.loadMain();
-/*
-requirejs([$server], function(server) {
-    //console.log(server);
-})
-*/
-/*
-class A {}
-class B extends A {}
-class C extends B {}
-*/
-/*
- return
-    console.log(app);
-    if(app.module) {
-        requirejs([app.server], function(server) {
-            //console.log(server);
-            server.call(app)
-            requirejs(["app.instance", "app.factory"], (instance, Factory) => {
-                //console.log(factory);
-                new Factory()
-
-            })
-        })
-    }
-console.log(app);
-console.log(app.module);
-*/
-
-
-
-
-//var evolution = new Evolution();
-//console.log(evolution.moduleId);
-
-/*
-console.log(evolution);
-console.log(evolution.server);
-console.log(evolution.moduleId);
-*/
-
-
-/*
-if(this.module) {
-    requirejs([this.server], (app) => {
-        app.apply(this);
-        requirejs(['app.instance', 'app.factory'], (instance, factory) => {
-
-            var $controller = angular.element(this.selector);
-            var $injector = $controller.injector();
-            var $scope = $controller.scope();
-            var $invoke = $injector.invoke;
-            var $compile = $injector.get('$compile');
-
-            $scope.extends = this.extends;
-            $scope.extends(this, { $controller, $injector, $invoke, $scope, $compile })
-            $scope.$invoke(factory, $scope);
-            $scope.$loadModule();
-        });
-    })
-}
-*/
-
-
-/*
-static defineProperty([name, value]) {
-    Object.entries(arguments[0]).forEach(([name, value]) => {
-        Object.defineProperty(this.prototype, name, {
-            value: value,
-            enumerable: false
-        });
-    });
-}*/
-
-/*
-       get name() { return "OBSApp" }
-       get ctrlId() { return "View" }
-       get selector() { return "[ng-controller]" }
-       get moduleId() { return }
-       get moduleId() { return }
-       get moduleId() { return }
-       hello() {}
         extend() {
-           Object
-           angular.extend(this.__proto__, arguments[0])
-       }
+            angular.extend(this.__proto__, arguments[0])
+        }
 
-       static extend() { //level:1
-           angular.extend(this.prototype, arguments[0])
-       }
+        static extend() { //level:1
+            angular.extend(this.prototype, arguments[0])
+        }
 
-       */
+        get moduleId() { return this.paths[this.server][this.locator] }
+        get isTest() { return this.hostname == "127.0.0.1" }
+        get locator() { return this.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase(); }
+        get paths() {
+            return {
+                "wa111": {
+                    "login": "login",
+                    "index": "home",
+                    "memberlist": "list",
+                    "membermodify": "edit",
+                    "depositbonus": "bonus",
+                    "igetmemberinfo": "logs",
+                    "samebrowserlist": "logs",
+                    "deltabank": "cash",
+                    "deltaonline": "cash",
+                    "deltawechat": "cash",
+                    "deltaalipay": "cash",
+                    "withdrawalsbank": "cash",
+                    "astropaywithdrawals": "cash",
+                    //cookie: "/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                    //device: "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+                },
+                "ku711": {
+                    "signin": "login",
+                    "member": "home",
+                    "memberinfomanage": "list",
+                    "editmemberinfomanage": "edit",
+                    "bonuslog": "bonus",
+                    "memberloginlog": "log",
+                    //cookie: "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+                    //device: "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+                }
+            };
+        }
+
+        defineProperty() {
+            Object.entries(arguments[0]).forEach(([name, value]) => {
+                Object.defineProperty(this.__proto__, name, {
+                    value: value,
+                    enumerable: false
+                });
+            });
+        }
+
+        static entries() {
+
+        }
+        /*
+        static defineProperty([name, value]) {
+            Object.entries(arguments[0]).forEach(([name, value]) => {
+                Object.defineProperty(this.prototype, name, {
+                    value: value,
+                    enumerable: false
+                });
+            });
+        }*/
+
+    }
+
+
+
+    //Evolution.extend(localStorage)
+    //Evolution.extend(location)
+
+    var evo = new Evolution()
+
+    console.log(evo);
+
+
+    //console.log(Evolution.prototype);
+
+    return
+
+    //console.log(Object);
+    //Evolution.prototype =
+    //var c = angular.copy(Object, Evolution.prototype)
+
+    var c = angular.copy(Object)
+
+
+    console.log(c);
+    console.log(c.assign);
+    console.log(c.hello);
+
+
+    console.log(Evolution.prototype);
+
+    return
+
+    console.log(Evolution.prototype);
+    console.log(Evolution.prototype.assign);
+
+
+    return
+
+    var a = {
+        qaz: 265
+    }
+
+
+
+    //var c = angular.merge(a, Object)
+    var c = angular.merge(Object, a)
+
+
+    console.log(a);
+    console.log(a.qaz);
+    console.log(a.assign);
+    console.log(c.assign);
+
+
+    return
+
+
+
+    console.log(a);
+    return
+
+
+    Object.assign(c, a)
+
+    console.log(c);
+    console.log(c.assign);
+
+
+    return
+
+
+    //console.log(Object.create(Object).__proto__);
+
+    var c = function() {
+
+    }
+
+    c.prototype = Object.create(Object).__proto__
+    //Object.assign({}, Object.create(Object).__proto__);
+
+    var a = new c()
+
+
+    console.log(a.assign);
+
+    return
+
+    Object;
+
+    console.log(c.assign);
+
+
+
+    return
+
+    Object.assign(Evolution.prototype, Object.constructor)
+
+
+    console.log(Evolution.prototype);
+
+
+    return
+
+    console.log(Evolution.prototype);
+
+    //var c = angular.copy(Object, {})
+    var c = angular.merge(Object, Evolution.prototype)
+
+
+    console.log(c);
+    console.log(c.assign);
+    return
+
+    console.log(Object.extends);
+    console.log(Evolution.prototype);
+
+
+    return
+
+
+    console.log(c);
+    console.log(c.assign);
+
+
+    return
+
+
+    function Ninja(name, weapon) {
+        this.weapon = weapon;
+    }
+    Ninja.prototype = Object
+    var c = new Ninja('RYAN', "G17")
+    console.log(c);
+
+    console.log(c.assign);
+
+
+    return
+
+    //Object.create(Person.prototype);
+    //Ninja.prototype.constructor = Ninja;
 
 
 
 
+    var c = Object.constructor()
+
+    class A extends c {
+        constructor() {
+            super()
+            //console.log(this);
+        }
+
+        hello() {
+
+        }
+    }
+
+    console.log(new A());
+
+    return
+
+    //console.log(Object.prototype);
+    var c = angular.copy(Object, Evolution.prototype)
+
+    console.log(c);
+    console.log(Evolution.prototype);
+
+    console.log(c.assign);
+
+    //Object.assign(Object.constructor, Evolution.prototype)
+    //Object.assign(Evolution.prototype, Object.__proto__)
 
 
+    /*console.log(Object.prototype);
+    console.log(Object.__proto__);
+    console.log(Object.constructor);
+    */
 
 
+    //Evolution.extend(angular)
+    //Evolution.extend(location)
+
+    /*
+        angular.merge(location, Evolution.prototype)
+        angular.merge(localStorage, Evolution.prototype)
+        angular.merge(angular, Evolution.prototype)
+    */
 
 
+    return
+    var evo = new Evolution(angular);
+    console.log(evo);
 
 
+})
 
 
 

@@ -1,25 +1,57 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp', 'app.sendSms'],
     function(instance, Dexie, moment, mdc, semantic, xmlSpider, sendSms) {
 
+        function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+
+        function _model_(elem) {
+            switch (elem.localName) {
+                case 'input':
+                    return elem.value;
+                case 'select':
+                    return elem.selectedOptions[0].label
+                case 'button':
+                    return elem.title;
+                case 'span':
+                    return elem.outerText;
+            }
+        }
+
+        var dexie = new Dexie('evo');
+        dexie.version(1).stores({ user: 'f_accounts' });
+        //console.log(dexie);
+        xmlSpider.dexie = dexie;
+
         //var injects = ['$anchorScroll', '$animate']
+
+
         class Factory {
             constructor() {
-                console.log(111111111);
-                console.log(mdc);
 
-                this.mdc = mdc;
-                this.dexie = new Dexie('evo');
-                this.dexie.version(1).stores({ user: 'f_accounts' });
-                this.xmlSpider = xmlSpider;
-                xmlSpider.sendMessage = this.sendMessage;
-                xmlSpider.dexie = this.dexie;
-
-                console.log(this.mdc);
             }
 
-            get isExit() {
-                return this.referrer.includes('Exit') || this.referrer.includes('SignOut');
+            get mdc() { return mdc }
+            get dexie() { return dexie }
+            get xmlSpider() { return xmlSpider }
+            get sendSms() { return sendSms }
+
+            get params() {
+                return Array.from(this.searchParams).serialize(); //instance
             }
+            get account() {
+                return this.params.account || this.params.member;
+            }
+
+            set operator(value) { localStorage.operator = value }
+            get operator() { return localStorage.operator; }
+
+            set siteName(value) { localStorage.siteName = value }
+            get siteName() { return localStorage.siteName; }
+
+            set channel(value) { localStorage.channel = value }
+            get channel() { return localStorage.channel || this.params.siteNumber; }
+            get unique() { return [this.account, this.channel].join("-"); }
+
+            get isExit() { return this.referrer.includes('Exit') || this.referrer.includes('SignOut'); }
 
             get components() {
                 return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.route];
@@ -31,9 +63,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
             sendMessage(message) {
                 return new Promise((resolve, reject) => {
-                    if (this.extensionId && message) {
+                    if(this.extensionId && message) {
                         chrome.runtime.sendMessage(this.extensionId, message, (res) => {
-                            if (res) { res.active = false; }
+                            if(res) { res.active = false; }
                             try { resolve(res) } catch (ex) { reject(ex) }
                         })
                     } else { reject(101) }
@@ -63,9 +95,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                     var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -83,26 +115,21 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             }
 
             get model() {
-                //console.log(this.elements);
                 return this.elements.map((elem) => {
-                    //console.log(elem.name, elem.id);
-                    return [elem.name || elem.id, elem.value || elem.outerText]
-                    //return [elem.sname, elem.model];
+                    return [_sname_(elem), _model_(elem)]
                 }).serialize();
             }
 
-            setElements() {
-
-                //this.elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-
-                /*if (this.server == "wa111") {
-                    this.model = this.elements.map((elem) => { return [elem.sname, elem.model]; }).serialize();
-                    this.ctrl = this.elements.map((elem) => { return [elem.sname, $(elem)]; }).serialize();
-                }*/
+            get ctrl() {
+                return this.elements.map((elem) => {
+                    return [_sname_(elem), $(elem)];
+                }).serialize();
             }
 
+            setElements() {}
+
             injectStylesheet() {
-                if (!this.stylesheet) { return false };
+                if(!this.stylesheet) { return false };
                 this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
                     $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
                 });
@@ -110,7 +137,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
             injectComponents() {
                 return new Promise((resolve, reject) => {
-                    if (!this.components) {
+                    if(!this.components) {
                         resolve(0);
                     } else {
                         this.components.map((str) => { return this.rootUrl + "html/" + str + ".html"; }).map((src) => {

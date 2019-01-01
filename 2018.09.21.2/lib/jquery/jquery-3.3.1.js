@@ -13,6 +13,8 @@
  */
 ( function( global, factory ) {
 
+	console.log(global);
+
 	"use strict";
 
 	if ( typeof module === "object" && typeof module.exports === "object" ) {
