@@ -1,17 +1,12 @@
 define(["app.sendSms"], function(sendSms) {
 
-    class User {
-        constructor($scope) {
-            this.__proto__.__proto__ = $scope;
-            return this.setUser()
 
-            /*
-            $scope.extends(this, true);
-            return $scope.getUser().then((user) => {
-                if(user) { user.__proto__ = this.__proto__; return user } else {
-                    return this.setUser($scope);
-                }
-            })*/
+    class User {
+
+        constructor(args) {
+            //args.setUser = this.setUser;
+            //return this.setUser(args)
+            return args.getUser()
         }
 
         openDeposit($scope, e) {
@@ -20,35 +15,43 @@ define(["app.sendSms"], function(sendSms) {
             $scope.ctrl.btnSaveInfo.click();
         }
 
-        getUserBasic() {
-            //console.log(this.server);
-            ['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => { this[name] = this[name]; });
-        }
-        getUserState($scope) {
-            var m = $scope.model;
-            this.status = [m.ishow.value];
-            this.permit = [m.isOpenDeposit.value];
-            this.sms = { status: m.ishow.value };
-        }
-
-        getUserStore($scope) {
-            return $scope.dexie.user.get($scope.account).then((d) => {
-                this.sequel = d.f_id;
-                this.attach = d.f_joindate;
-                this.agency = d.f_alagent;
-                this.black = d.f_blacklist;
-                this.peril = d.f_peril;
-                this.nickName = d.f_nickName;
-                this.banker.map((b, i) => { b.value = d.f_RemittanceAccount.split('|')[i]; });
-                this.banker = this.banker.filter((a) => { return a.value });
-            });
+        getUserBasic({ $server, $origin, $unique, $channel, $account, $operator }) {
+            console.log($server, $origin, $unique, $channel, $account, $operator);
+            this.server = $server
+            this.origin = $origin
+            this.unique = $unique
+            this.channel = $channel
+            this.account = $account
+            this.operator = $operator
+            //['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => { this[name] = this[name]; });
         }
 
-        getPhoneDate($scope) {
-            return $scope.ajax({
+        getUserState({ ctrl }) {
+            this.status = [ctrl.ishow.value];
+            this.permit = [ctrl.isOpenDeposit.value];
+            this.sms = { status: ctrl.ishow.value };
+        }
+
+        getUserStore({ $dexie, $account }) {
+            return $dexie.user.get($account)
+                .then((d) => {
+                    this.sequel = d.f_id;
+                    this.attach = d.f_joindate;
+                    this.agency = d.f_alagent;
+                    this.black = d.f_blacklist;
+                    this.peril = d.f_peril;
+                    this.nickName = d.f_nickName;
+                    this.banker.map((b, i) => { b.value = d.f_RemittanceAccount.split('|')[i]; });
+                    this.banker = this.banker.filter((a) => { return a.value });
+                });
+        }
+
+        getPhoneDate({ $ajax, $account }) {
+            return $ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
-                data: "type=getPhoneDate&account=" + $scope.account
+                data: "type=getPhoneDate&account=" + $account
             }).then(([d]) => {
+                //console.log(d);
                 this.mobile.value = d.f_photo;
                 this.idcard.value = d.f_idCard;
                 this.equpmt.browser = d.f_browser;
@@ -56,20 +59,21 @@ define(["app.sendSms"], function(sendSms) {
             });
         }
 
-        getSystemLog($scope) {
-            return $scope.ajax({
+        getSystemLog({ $ajax, $account }) {
+            return $ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
-                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + $scope.account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
+                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" +
+                    $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
 
-        getUserModel($scope) {
-            var m = $scope.model;
+        getUserModel({ model }) {
+            var m = model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -86,29 +90,21 @@ define(["app.sendSms"], function(sendSms) {
             ];
         }
 
-        save() {
-            return this.sendMessage({ command: 'apiFunctions.store.user.put', params: this })
-                .then((user) => {
-                    console.log('save...');
-                    return user;
-                })
-        }
+        setUser(args) {
 
-        setUser($scope) {
-            return Promise.all([
-                this.getUserBasic(),
-                /*this.getUserModel($scope),
-                this.getUserState($scope), this.getUserStore($scope),
-                this.getPhoneDate($scope), this.getSystemLog($scope),*/
-            ]).then(() => { return this })
-        }
+            console.log(this);
 
-        _setUser($scope) {
+            /*
             return Promise.all([
-                this.getUserBasic($scope), this.getUserModel($scope),
-                this.getUserState($scope), this.getUserStore($scope),
-                this.getPhoneDate($scope), this.getSystemLog($scope),
-            ]).then(() => { return this })
+                this.getUserBasic(args),
+                this.getUserModel(args),
+                this.getUserState(args),
+                this.getUserStore(args),
+                this.getPhoneDate(args),
+                this.getSystemLog(args),
+            ]).then(() => {
+                return args.putUser(this)
+            })*/
         }
     }
 
@@ -122,6 +118,29 @@ define(["app.sendSms"], function(sendSms) {
 
 //this.mobile.__proto__[Symbol.toPrimitive] = function() { return d.f_photo };
 
+/*
+ .then((user) => {
+
+ })
+
+ var args = arguments[0];
+
+ return this.setUser(args)
+ */
+
+/*
+.then((user) => {
+    console.log(user);
+})
+*/
+
+/*
+$scope.extends(this, true);
+return $scope.getUser().then((user) => {
+    if(user) { user.__proto__ = this.__proto__; return user } else {
+        return this.setUser($scope);
+    }
+})*/
 
 
 /*

@@ -7,23 +7,50 @@ https://medium.freecodecamp.org/5-javascript-bad-parts-that-are-fixed-in-es6-c7c
 https://medium.com/opinionated-angularjs/angular-model-objects-with-javascript-classes-2e6a067c73bc
 */
 
+
+
 define(["wa111/User", "app.sendSms"], function(User, sendSms) {
 
-    return async function() {
 
-        var $scope = this;
-        this.xmlSpider.loadend = function() {
-            if(this.action == "getmodel") {
+    return async function({ $xmlSpider, $scope }) {
+
+        $xmlSpider.loadend = function() {
+            if (this.action == "getmodel") {
                 with(this.respData) {
                     //console.log(f_ishow, f_depositStatus);
                     $scope.user.status.push(f_ishow);
                     $scope.user.permit.push(f_depositStatus);
                     $scope.user.sms.status = ($scope.user.sms.status == 3) ? 9 : $scope.user.sms.status;
                     $scope.$digest();
-                    //$scope.$apply();
                 }
             }
         }
+      
+        this.user = await new User(this);
+        
+        console.log("++++++++++++++");
+        console.log(this.user);
+
+        return
+        return
+
+        /*
+        console.log(arguments);
+        console.log(arguments[0]);
+        console.log(...arguments[0]);
+        */
+
+        //$scope.user = await new User(this);
+
+
+
+
+
+        console.log(this.user);
+
+
+
+        return
 
 
 
@@ -38,7 +65,7 @@ define(["wa111/User", "app.sendSms"], function(User, sendSms) {
         this.user = await new User(this);
         this.smss = new sendSms(this);
         this.$watch('user', (newVal, oldVal) => {
-            if(newVal) { this.user.save() }
+            if (newVal) { this.user.save() }
         }, true);
 
     }

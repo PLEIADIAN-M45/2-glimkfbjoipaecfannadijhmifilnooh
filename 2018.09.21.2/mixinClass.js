@@ -1,4 +1,4 @@
-define([], function() {
+define([], function() { 
 
     const mixinClass = (base, ...mixins) => {
         const mixinProps = (target, source) => {
@@ -7,7 +7,6 @@ define([], function() {
                 Object.defineProperty(target, prop, Object.getOwnPropertyDescriptor(source, prop));
             })
         };
-
         let Ctor;
         if (base && typeof base === 'function') {
             Ctor = class extends base {
@@ -26,6 +25,14 @@ define([], function() {
 
     return mixinClass;
 })
+
+
+
+
+
+
+
+
 
 
 

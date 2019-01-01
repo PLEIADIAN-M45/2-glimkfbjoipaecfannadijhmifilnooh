@@ -1,15 +1,17 @@
 define([], function() {
-    return async function() {
 
+    return async function({ $dexie, $xmlSpider }) {
 
-        this.xmlSpider.loadend = function() {
-            if(this.type == "getAllUser") {
+        $xmlSpider.loadend = function(a) {
+            if (this.type == "getAllUser") {
                 this.dataRows.map((r) => {
                     console.log(r);
-                    this.dexie.user.put(r);
+                    $dexie.user.put(r);
                 });
             };
         };
+
+        
 
     };
 });

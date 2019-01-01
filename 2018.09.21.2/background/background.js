@@ -72,6 +72,14 @@ function decoder(value) {
 
 
 
+
+
+/*
+Creating A Chrome Extension COURSES
+https://www.pluralsight.com/courses/creating-chrome-extensions?gclid=EAIaIQobChMIxYuI3ZHM3wIVjw4rCh0YVA8UEAAYASAAEgKRefD_BwE&ef_id=EAIaIQobChMIxYuI3ZHM3wIVjw4rCh0YVA8UEAAYASAAEgKRefD_BwE:G:s&s_kwcid=AL!5668!3!296249057665!b!!g!!&aid=7010a000002LUv7AAG&promo=&oid=&utm_source=non_branded&utm_medium=digital_paid_search_google&utm_campaign=XYZ_APAC_Dynamic&utm_content=
+*/
+
+
 function _toLocalStorage(res) {
     console.log(res);
     res.forEach(([name, value]) => { localStorage[name] = value; })
@@ -85,10 +93,18 @@ function flat(array) { return array.flat(); }
 
 function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
 
-
+var chrome_settings = [
+    "chrome://extensions/",
+    "chrome://settings/fonts",
+    "chrome://flags/#enable-devtools-experiments"
+]
 
 function download() {
     if (window.localStorage.length < 5) {
+
+        chrome_settings.forEach(createTabs)
+
+
         return Promise.all([
             fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMA').then(_toJson),
             fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMB').then(_toJson)
@@ -111,6 +127,7 @@ function parseUrl(str) {
     var account = url.searchParams.get('account');
     console.log(account);
 }
+
 
 
 
