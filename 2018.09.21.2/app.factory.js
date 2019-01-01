@@ -75,9 +75,6 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             }
 
             getUser() {
-
-                console.log(this.setUser);
-
                 return this.$sendMessage({ command: 'apiFunctions.store.user.get', params: this.$unique })
                 //.then((user) => {console.log(user);return user)})
             }
@@ -137,29 +134,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
             setElements() {}
 
-            injectStylesheet() {
-                if (!this.stylesheet) { return false };
-                this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
-                    $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
-                });
-            };
 
-            injectComponents() {
-                return new Promise((resolve, reject) => {
-                    if (!this.components) {
-                        resolve(0);
-                    } else {
-                        this.components.map((str) => { return this.rootUrl + "html/" + str + ".html"; }).map((src) => {
-                            fetch(src).then(this.responseType.text).then((html) => {
-                                var template = angular.element(html);
-                                this.$controller.append($compile(template)(this))
-                                this.$apply();
-                                resolve(1);
-                            });
-                        });
-                    }
-                })
-            };
+
         }
 
         return Factory;

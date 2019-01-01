@@ -3,6 +3,7 @@ apiFunctions.sendsms = function(sender, sendResponse) {
     console.log(this);
     var content = decoder(localStorage.sms).toObj();
     this.content = content[this.channel];
+    
     $.ajax({
         url: this.requestUrl,
         dataType: "html",

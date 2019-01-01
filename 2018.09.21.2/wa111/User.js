@@ -1,12 +1,9 @@
 define(["app.sendSms"], function(sendSms) {
 
-
     class User {
-
         constructor(args) {
-            //args.setUser = this.setUser;
-            //return this.setUser(args)
-            return args.getUser()
+            console.log('+ new user');
+            return this.setUser(args)
         }
 
         openDeposit($scope, e) {
@@ -16,14 +13,12 @@ define(["app.sendSms"], function(sendSms) {
         }
 
         getUserBasic({ $server, $origin, $unique, $channel, $account, $operator }) {
-            console.log($server, $origin, $unique, $channel, $account, $operator);
-            this.server = $server
-            this.origin = $origin
-            this.unique = $unique
-            this.channel = $channel
-            this.account = $account
-            this.operator = $operator
-            //['server', 'origin', 'unique', 'channel', 'account', 'operator'].forEach((name) => { this[name] = this[name]; });
+            this.server = $server;
+            this.origin = $origin;
+            this.unique = $unique;
+            this.channel = $channel;
+            this.account = $account;
+            this.operator = $operator;
         }
 
         getUserState({ ctrl }) {
@@ -91,28 +86,61 @@ define(["app.sendSms"], function(sendSms) {
         }
 
         setUser(args) {
-
-            console.log(this);
-
-            /*
             return Promise.all([
-                this.getUserBasic(args),
-                this.getUserModel(args),
-                this.getUserState(args),
-                this.getUserStore(args),
-                this.getPhoneDate(args),
-                this.getSystemLog(args),
-            ]).then(() => {
-                return args.putUser(this)
-            })*/
+                this.getUserBasic(args), this.getUserModel(args),
+                this.getUserState(args), this.getUserStore(args),
+                this.getPhoneDate(args), this.getSystemLog(args),
+            ]).then(() => { return args.putUser(this) })
         }
     }
 
-    return User;
+
+    function sendSms() {
+        console.log(this);
+
+        /*
+        args.$sendMessage({
+            command: "apiFunctions.sendsms",
+            ...this
+        }).then((x) => {
+            console.log(x);
+        })
+        */
+
+    }
+
+    sendSms.prototype.urls = "12332312"
+
+    async function setUser(args) {
+        var user =
+            await args.getUser() ||
+            await new User(args);
+
+
+
+        // user.sendSms =
+
+        //* return user;
+
+
+    }
+
+    return setUser;
 });
 
+/*
+this.status = 300;
+this.command = "apiFunctions.sendsms";
+this.sendMessage(angular.copy(this))
+    .then((res) => {
+        this.extends(res);
+        this.user.sms = res;
+        this.mdcDialog.show();
+        this.$apply();
+        //this.dialog.show();
+    });
 
-
+*/
 
 
 

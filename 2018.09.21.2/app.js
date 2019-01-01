@@ -67,6 +67,15 @@ The "new Function" syntax
             }
         }
 
+
+        get components() {
+            return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module];
+        }
+
+        get stylesheet() {
+            return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module];
+        }
+
         $loadModule() {
 
             let MODULE_PATH = this.$server + '/' + this.$module;
@@ -74,7 +83,11 @@ The "new Function" syntax
             requirejs([MODULE_PATH], (module) => {
                 try {
 
+                    this.injectStylesheet()
+                    this.injectComponents()
+
                     module.call(this, this)
+
                     //fn.apply(self, [this])
                     //this.$invoke(module, this);
 
@@ -84,6 +97,36 @@ The "new Function" syntax
             })
 
         }
+
+
+        injectStylesheet() {
+
+            if (!this.stylesheet) { return false };
+
+            this.stylesheet.map((str) => { return this.$rootUrl + "css/" + str + ".css"; }).map((src) => {
+
+                $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+            });
+        };
+
+        injectComponents() {
+            return new Promise((resolve, reject) => {
+                if (this.components) {
+                    this.components.map((str) => { return this.$rootUrl + "html/" + str + ".html"; }).map((src) => {
+                        fetch(src)
+                            .then((res) => { return res.text(); })
+                            .then((html) => {
+                                var template = angular.element(html);
+                                this.$controller.append(this.$compile(template)(this.$scope))
+                                this.$scope.$apply();
+                                resolve(1);
+                            });
+                    });
+                } else {
+                    resolve(0);
+                }
+            })
+        };
 
     }
 

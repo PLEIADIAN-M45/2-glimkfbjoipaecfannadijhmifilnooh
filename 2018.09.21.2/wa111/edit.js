@@ -9,15 +9,16 @@ https://medium.com/opinionated-angularjs/angular-model-objects-with-javascript-c
 
 
 
-define(["wa111/User", "app.sendSms"], function(User, sendSms) {
+define(["wa111/User", "app.sendSms"], function(setUser, sendSms) {
 
 
-    return async function({ $xmlSpider, $scope }) {
+    return async function({ $xmlSpider, $scope, $ctrl }) {
 
         $xmlSpider.loadend = function() {
+            console.log(this.action);
             if (this.action == "getmodel") {
                 with(this.respData) {
-                    //console.log(f_ishow, f_depositStatus);
+                    console.log(f_ishow, f_depositStatus);
                     $scope.user.status.push(f_ishow);
                     $scope.user.permit.push(f_depositStatus);
                     $scope.user.sms.status = ($scope.user.sms.status == 3) ? 9 : $scope.user.sms.status;
@@ -25,49 +26,35 @@ define(["wa111/User", "app.sendSms"], function(User, sendSms) {
                 }
             }
         }
-      
-        this.user = await new User(this);
-        
-        console.log("++++++++++++++");
-        console.log(this.user);
-
-        return
-        return
-
-        /*
-        console.log(arguments);
-        console.log(arguments[0]);
-        console.log(...arguments[0]);
-        */
-
-        //$scope.user = await new User(this);
 
 
 
+        $scope.user = await setUser(this);
 
+        //$scope.smss = new sendSms($scope)
+        //new sendSms(this);
 
-        console.log(this.user);
+        $scope.openDeposit = function() {
+            $ctrl.isOpenDeposit.val(0)
+            $ctrl.btnSaveInfo.click();
+        }
 
-
-
-        return
-
-
-
-        this.user = await new User(this);
-
-        console.log(this.user);
-
-
-        return
-
-        //this.delUser();
-        this.user = await new User(this);
-        this.smss = new sendSms(this);
-        this.$watch('user', (newVal, oldVal) => {
-            if (newVal) { this.user.save() }
+        $scope.$watch('user', (newVal, oldVal) => {
+            if (newVal) { this.putUser() }
         }, true);
 
+
+
+        $scope.$apply();
+
+
+
+
+        console.log($ctrl);
+
+        console.log($scope.user);
+
+        //
     }
 });
 
@@ -76,6 +63,9 @@ define(["wa111/User", "app.sendSms"], function(User, sendSms) {
 
 
 
+
+//this.ctrl.isOpenDeposit.value = 0;
+//this.ctrl.btnSaveInfo.click();
 
 
 //sendSms.prototype =

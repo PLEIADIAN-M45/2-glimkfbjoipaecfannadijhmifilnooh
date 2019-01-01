@@ -12,7 +12,7 @@ define(['material'], function(mdc) {
     class sendSms {
         constructor($scope) {
             //super($scope);
-            $scope.extends(this, true);
+            //$scope.extends(this, true);
             this.requestUrl = 'http://client.motosms.com/smsc/smssend';
             this.mdcDialog = ".mdc-dialog";
             this.mobile = "86" + $scope.user.mobile.value;
