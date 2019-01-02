@@ -10,7 +10,10 @@ define(['material'], function(mdc) {
     var mdcDialog;
 
     class sendSms {
+
         constructor($scope) {
+            console.log($scope);
+            return
             //super($scope);
             //$scope.extends(this, true);
             this.requestUrl = 'http://client.motosms.com/smsc/smssend';

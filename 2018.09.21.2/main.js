@@ -62,9 +62,32 @@ requirejs.config({
 });
 
 
-requirejs(["app"], function(App) {
-    var app = new App();
-    app.$bootstrap(app);
+requirejs(["app"], function(app) {
+    //console.log(app);
+    app.$bootstrap();
+
+    //console.log(Object.keys(app));
+
+    /*
+    var obj2 = $.extend(true, {}, app);
+
+    var y = Object.assign({}, app.__proto__);
+
+    console.log(y);
+    */
+
+    //console.log(window.$name);
+
+
+    //var app = new App();
+    //app.$bootstrap(app);
+
+    //console.log(app.__proto__);
+    /*var c = Object.assign({}, app)
+    Object.assign(c, app.__proto__)
+    //angular.copy(app, {})
+    console.log(c);*/
+
 });
 
 
@@ -257,7 +280,7 @@ function xxx() {
         this.module = this.paths[this.server][this.locator];
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
 
-        if (this.module) {
+        if(this.module) {
             requirejs([this.server], (app) => {
                 app.apply(this);
                 requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -282,12 +305,12 @@ function xxx() {
         // console.log(arguments);
         //console.log(last);
         //console.log(arguments[0]);
-        if (arguments[last] == true) {
+        if(arguments[last] == true) {
             var arg = arguments[0];
             return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $digest: this.$digest, $eval: this.$eval });
         }
 
-        if (this.$root) {
+        if(this.$root) {
             Object.assign(this, ...arguments)
         } else {
             Object.assign(this, ...arguments)

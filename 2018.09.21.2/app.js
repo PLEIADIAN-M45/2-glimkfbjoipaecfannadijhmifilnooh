@@ -1,39 +1,25 @@
-define(["mixinClass", "app.Config", "app.router", "app.Factory"], function(mixinClass, Config, router, Factory) {
-    /*
-    Class 的继承 - ECMAScript 6入门
-    http://es6.ruanyifeng.com/#docs/class-extends
-    https://www.jianshu.com/p/3d3d52b47762
+define(["app.router"], function($router) {
 
-The "new Function" syntax
-    https://javascript.info/new-function
-    https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function
-    https://www.h5jun.com/post/mixin-in-es6.html
-    https://googlechrome.github.io/samples/classes-es6/
-    */
-
-
-
-    class App extends Factory {
+    class App {
         constructor() {
-            super();
+            //super();
             this.$name = "OBSApp";
             this.$ctrlId = "View";
             this.$requires = ["angular", "angular-sanitize", "angular-animate"];
             this.$modules = ["ngSanitize", "ngAnimate"];
-            //this.$controller.selector = "[ng-controller]";
-            this.$router = router;
+            this.$router = $router;
             this.$isTest = (window.location.hostname == "127.0.0.1");
             this.$locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
             this.$forms = document.forms;
             this.$form = document.forms[0];
             this.$referrer = document.referrer;
-            this.$searchParams = new URLSearchParams(window.location.search);
             this.$origin = location.origin;
         }
 
-        get $module() {
-            return this.$router[this.$server][this.$locator];
-        }
+        get $window() { return window }
+        get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
+        get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
+        get $module() { return this.$router[this.$server][this.$locator]; }
 
         get $controller() { return angular.element("[ng-controller]"); }
         get $injector() { return this.$controller.injector(); }
@@ -41,67 +27,47 @@ The "new Function" syntax
         get $invoke() { return this.$injector.invoke; }
         get $compile() { return this.$injector.get('$compile'); }
 
-        //$controller_($scope, $rootScope) {}
-
         $bootstrap(app) {
-
-            if (this.$module == undefined) { return }
-            console.log('*****', this.$module);
-
-            if (window.angular) { return this.$loadModule(); } else {
-
+            if(this.$module == undefined) { return }
+            //console.log('*****', this.$module);
+            if(window.angular) { return this.$loadModule(); } else {
                 requirejs(this.$requires, (angular) => {
-
                     $('html').attr('ng-app', this.$name);
-
                     $("<div>", { "id": this.ctrlId, "ng-controller": this.$ctrlId }).appendTo("body");
-
-                    var c = angular.module(this.$name, this.$modules);
-
-                    c.controller(this.$ctrlId, function() {});
-                    //console.log(c);
+                    angular.module(this.$name, this.$modules).controller(this.$ctrlId, function() {});
                     angular.bootstrap(document, [this.$name]);
-
                     return this.$loadModule();
                 })
             }
-        }
-
-
-        get components() {
-            return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module];
-        }
-
-        get stylesheet() {
-            return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module];
         }
 
         $loadModule() {
 
             let MODULE_PATH = this.$server + '/' + this.$module;
 
-            requirejs([MODULE_PATH], (module) => {
+            //console.log(MODULE_PATH);
+
+            requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
                 try {
-
-                    this.injectStylesheet()
-                    this.injectComponents()
-
-                    module.call(this, this)
-
-                    //fn.apply(self, [this])
+                    this.injectStylesheet();
+                    this.injectComponents();
+                    this.$invoke(Factory, this);
+                    module.call(this, this);
                     //this.$invoke(module, this);
+                    //module.apply(self, [this])
 
                 } catch (ex) {
                     console.error(ex);
                 }
             })
 
+
         }
 
 
         injectStylesheet() {
 
-            if (!this.stylesheet) { return false };
+            if(!this.stylesheet) { return false };
 
             this.stylesheet.map((str) => { return this.$rootUrl + "css/" + str + ".css"; }).map((src) => {
 
@@ -111,7 +77,7 @@ The "new Function" syntax
 
         injectComponents() {
             return new Promise((resolve, reject) => {
-                if (this.components) {
+                if(this.components) {
                     this.components.map((str) => { return this.$rootUrl + "html/" + str + ".html"; }).map((src) => {
                         fetch(src)
                             .then((res) => { return res.text(); })
@@ -127,60 +93,22 @@ The "new Function" syntax
                 }
             })
         };
-
     }
 
+    //console.log(Factory.prototype);
+    // var c = new Factory()
+
+    //console.log(Factory.prototype);
+
+    //Object.assign(App, Factory.prototype);
 
     Object.assign(App.prototype, window.localStorage);
     //Object.assign(App.prototype, window.location);
 
+    //Object.defineProperty(App.prototype, '$loadModule', { enumerable: true });
 
-    return App;
+    return new App();
+    //$controller_($scope, $rootScope) {}
+    //var injects = ['$anchorScroll', '$animate']
+
 })
-
-/*
-function hexafy() {
-    this.myFunc = function(x) {
-        return x.toString(16);
-    }
-}
-
-function hexafy2() {
-    this.myFunc = function(x) {
-        return x.toString(16);
-    }
-}
-
-
-function hexafy3(...arg) {
-    console.log(arg);
-}
-*/
-
-//fun.call(thisArg, arg1, arg2, ...)
-//func.apply(thisArg, [argsArray])
-//ƒ invoke(fn, self, locals, serviceName)
-
-
-
-//console.log(this.$injector.has("hexafy"));
-//var c = angular.module(this.name)
-/*c.service('hexafy', function() {
-    this.myFunc = function(x) {
-        return x.toString(16);
-    }
-});
-function hexafy() {
-    this.myFunc = function(x) {
-        return x.toString(16);
-    }
-}
-*/
-
-
-
-//c.requires.push('hexafy');
-//console.log(c.requires);
-//console.log(this.$injector);
-//console.log(window.OBSApp);
-//console.log($("[ng-app]").injector())

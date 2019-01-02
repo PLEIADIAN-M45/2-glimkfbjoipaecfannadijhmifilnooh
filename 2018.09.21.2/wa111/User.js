@@ -1,15 +1,16 @@
-define(["app.sendSms"], function(sendSms) {
+define([], function() {
+
+    function smss(user) {
+        this.command = 'apiFunctions.sendsms'
+        this.requestUrl = 'http://client.motosms.com/smsc/smssend';
+        this.mobile = '86' + user.mobile.value
+        this.status = user.status[0];
+        this.channel = user.channel;
+    }
 
     class User {
         constructor(args) {
-            console.log('+ new user');
             return this.setUser(args)
-        }
-
-        openDeposit($scope, e) {
-            e.currentTarget.hide();
-            $scope.ctrl.isOpenDeposit.val(1);
-            $scope.ctrl.btnSaveInfo.click();
         }
 
         getUserBasic({ $server, $origin, $unique, $channel, $account, $operator }) {
@@ -20,13 +21,10 @@ define(["app.sendSms"], function(sendSms) {
             this.account = $account;
             this.operator = $operator;
         }
-
         getUserState({ ctrl }) {
             this.status = [ctrl.ishow.value];
             this.permit = [ctrl.isOpenDeposit.value];
-            this.sms = { status: ctrl.ishow.value };
         }
-
         getUserStore({ $dexie, $account }) {
             return $dexie.user.get($account)
                 .then((d) => {
@@ -40,7 +38,6 @@ define(["app.sendSms"], function(sendSms) {
                     this.banker = this.banker.filter((a) => { return a.value });
                 });
         }
-
         getPhoneDate({ $ajax, $account }) {
             return $ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
@@ -62,13 +59,13 @@ define(["app.sendSms"], function(sendSms) {
                     $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
 
-        getUserModel({ model }) {
-            var m = model;
+        getUserModel({ $model }) {
+            var m = $model;
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
@@ -90,43 +87,29 @@ define(["app.sendSms"], function(sendSms) {
                 this.getUserBasic(args), this.getUserModel(args),
                 this.getUserState(args), this.getUserStore(args),
                 this.getPhoneDate(args), this.getSystemLog(args),
-            ]).then(() => { return args.putUser(this) })
+            ]).then(() => {
+                this.smss = new smss(this);
+                return this;
+            })
         }
     }
 
 
-    function sendSms() {
-        console.log(this);
-
-        /*
-        args.$sendMessage({
-            command: "apiFunctions.sendsms",
-            ...this
-        }).then((x) => {
-            console.log(x);
-        })
-        */
-
-    }
-
-    sendSms.prototype.urls = "12332312"
-
     async function setUser(args) {
         var user =
-            await args.getUser() ||
+            await args.$getUser() ||
             await new User(args);
-
-
-
-        // user.sendSms =
-
-        //* return user;
-
-
+        return user;
     }
 
-    return setUser;
+
+    return { setUser };
 });
+
+
+
+
+
 
 /*
 this.status = 300;
@@ -141,6 +124,25 @@ this.sendMessage(angular.copy(this))
     });
 
 */
+
+/*
+function sendSms() {
+    console.log(this);
+
+
+    args.$sendMessage({
+        command: "apiFunctions.sendsms",
+        ...this
+    }).then((x) => {
+        console.log(x);
+    })
+
+
+}
+*/
+
+
+// sendSms.prototype.urls = "12332312"
 
 
 

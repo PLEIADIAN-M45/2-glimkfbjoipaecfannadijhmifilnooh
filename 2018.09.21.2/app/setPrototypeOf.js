@@ -31,3 +31,20 @@ console.log(C);
 
 C.hello()
 B.goodbye()
+
+
+
+
+
+
+
+
+
+
+/*
+       var bValue = 38;
+       Object.defineProperty($scope, 'user', {
+           get() { return bValue; },
+           set(newValue) { bValue = newValue; },
+       });
+       */

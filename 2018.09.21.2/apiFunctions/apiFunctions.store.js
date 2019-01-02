@@ -26,6 +26,7 @@ evo.store.tables.forEach(function(table, index) {
             })
         },
         put: function() {
+            console.log(table.name, this.params);
             return evo.store[table.name].put(this.params).then(() => { return this.params })
         },
         get: function() {

@@ -1,9 +1,10 @@
 apiFunctions.sendsms = function(sender, sendResponse) {
 
     console.log(this);
+
     var content = decoder(localStorage.sms).toObj();
     this.content = content[this.channel];
-    
+
     $.ajax({
         url: this.requestUrl,
         dataType: "html",
@@ -26,6 +27,7 @@ apiFunctions.sendsms = function(sender, sendResponse) {
         if(res.match(/(msg = '102')/)) { this.status = 102; }
         sendResponse(this);
     });
+
 }
 
 
