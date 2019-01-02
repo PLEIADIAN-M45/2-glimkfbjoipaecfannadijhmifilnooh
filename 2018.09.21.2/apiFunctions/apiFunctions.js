@@ -1,12 +1,15 @@
 var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" };
 
+var { author, locate, mobile, banker, region, danger, notice } = localStorage;
+var search = { author, locate, mobile, banker, region, danger, notice };
+for (var key in search) { search[key] = decoder(search[key]) };
+
+console.log(search);
+
 
 
 var apiFunctions = {};
-
-
 apiFunctions.localStorage = function() { return window.localStorage }
-
 apiFunctions.region = async function() {
     //console.log(this);
     var r = await apiFunctions[this.attr].call(this);
@@ -17,22 +20,28 @@ apiFunctions.region = async function() {
 }
 
 
-
-
-var { author, locate, mobile, banker, region, danger, notice } = localStorage;
-var search = { author, locate, mobile, banker, region, danger, notice };
-for (var key in search) { search[key] = decoder(search[key]) };
-
-console.log(search);
-
 function region_compare(region) {
     var value = Object.values(region).toString();
-    var res = search.region.find((x) => {
-        return value.includes(x);
-    });
-    console.log(res);
-    return res || false;;
+    var alert = search.region.find((x) => { return value.includes(x); });
+    console.log(alert);
+    return alert || false;;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 if (search.author) {
