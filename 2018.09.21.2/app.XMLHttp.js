@@ -63,12 +63,22 @@ define([], function() {
         };
 
         xmlSpider.loadend = function() {
+            console.log(this.extensionId);
+            chrome.runtime.sendMessage(this.extensionId, this);
+
             /*
-            var mod = robot[this.action];
-            if(mod) {
-                //console.log(mod);
-                mod.apply(this);
-            }*/
+            getmodel: 開通表
+            StopMember: 
+            getDepositBonusList:
+            delDiceWinRecords:
+            DelDiceWinRecords:
+            -------------------------
+            UpdateMemberBonusLog
+            GetMemberBonusLogBackendByCondition
+            UpdateMemberRiskInfoAccountingBackend
+            UpdateMemberSNInfoBackend
+            UpdateMemberRisksInfoBackendIsFSuspension
+            */
         };
 
         xmlSpider.load = function() {
@@ -91,7 +101,6 @@ define([], function() {
             this.action = this.sendData.action;
             this.type = this.sendData.type;
 
-            chrome.runtime.sendMessage(this.extensionId, this);
         }
 
         return xmlSpider;

@@ -15,6 +15,7 @@ store.version(5).stores({
     GB2260: 'code, area',
     alerts: 'author'
 });
+
 evo.store = store;
 //console.log(evo.store);
 apiFunctions.store = {};
@@ -26,8 +27,11 @@ evo.store.tables.forEach(function(table, index) {
             })
         },
         put: function() {
-            console.log(table.name, this.params);
-            return evo.store[table.name].put(this.params).then(() => { return this.params })
+            //console.log(table.name, this.params);
+            return evo.store[table.name].put(this.params).then(() => {
+                console.log('put');
+                return this.params
+            })
         },
         get: function() {
             return evo.store[table.name].get(this.params).then((res) => { return res })

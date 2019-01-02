@@ -65,29 +65,6 @@ requirejs.config({
 requirejs(["app"], function(app) {
     //console.log(app);
     app.$bootstrap();
-
-    //console.log(Object.keys(app));
-
-    /*
-    var obj2 = $.extend(true, {}, app);
-
-    var y = Object.assign({}, app.__proto__);
-
-    console.log(y);
-    */
-
-    //console.log(window.$name);
-
-
-    //var app = new App();
-    //app.$bootstrap(app);
-
-    //console.log(app.__proto__);
-    /*var c = Object.assign({}, app)
-    Object.assign(c, app.__proto__)
-    //angular.copy(app, {})
-    console.log(c);*/
-
 });
 
 
@@ -97,6 +74,66 @@ requirejs(["app"], function(app) {
 
 
 
+/*
+var modules = [
+    function $ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
+        return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+    },
+    function createTab(_url) { window.open(_url, "_blank"); },
+    function getModule(objPath) {
+        return new Promise((resolve, reject) => {
+            var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
+            (function repeater(object) {
+                var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
+                if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                    if (typeof alphaVal == "object") {
+                        if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    } else { resolve(alphaVal); }
+                }
+            }(object));
+        });
+    },
+    function $console() {
+        console.log(...arguments);
+    }
+]
+
+
+modules.forEach((fn) => {
+    console.log(fn.name);
+})
+*/
+
+
+//resource
+
+
+
+
+
+
+
+//console.log(Object.keys(app));
+
+/*
+var obj2 = $.extend(true, {}, app);
+
+var y = Object.assign({}, app.__proto__);
+
+console.log(y);
+*/
+
+//console.log(window.$name);
+
+
+//var app = new App();
+//app.$bootstrap(app);
+
+//console.log(app.__proto__);
+/*var c = Object.assign({}, app)
+Object.assign(c, app.__proto__)
+//angular.copy(app, {})
+console.log(c);*/
 
 /*
 requirejs(["jquery"], function(jquery) {
@@ -280,7 +317,7 @@ function xxx() {
         this.module = this.paths[this.server][this.locator];
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
 
-        if(this.module) {
+        if (this.module) {
             requirejs([this.server], (app) => {
                 app.apply(this);
                 requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -305,12 +342,12 @@ function xxx() {
         // console.log(arguments);
         //console.log(last);
         //console.log(arguments[0]);
-        if(arguments[last] == true) {
+        if (arguments[last] == true) {
             var arg = arguments[0];
             return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $digest: this.$digest, $eval: this.$eval });
         }
 
-        if(this.$root) {
+        if (this.$root) {
             Object.assign(this, ...arguments)
         } else {
             Object.assign(this, ...arguments)

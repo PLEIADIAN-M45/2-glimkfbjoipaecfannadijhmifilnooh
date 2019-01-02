@@ -11,9 +11,9 @@ var Spreadsheets = {
         user.timing[2] = timeDiff(user.timing);
         user.permit = user.permit.map($Num);
         user.status = user.status.map($Num);
-        if(user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
+        if (user.status[0] == user.status[1] && user.permit[0] == user.permit[1]) { return }
 
-        if(user.status[0] == 3) {
+        if (user.status[0] == 3) {
             user.command = "google:scripts";
             user.module = "authorize";
         } else {
@@ -25,20 +25,37 @@ var Spreadsheets = {
     }
 }
 
-function getUser() {
-    if(this.sendData) {
+
+
+
+
+function getUser(unique) {
+
+    console.log(unique);
+    return evo.store.user.get(unique);
+
+    /*
+    if (this.sendData) {
         var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
         var channel = this.channel;
         var unique = [account, channel].join("-");
         //console.log(unique);
-        return evo.store.user.get(unique);
     }
+    */
 }
+
+
+function putUser(user) {
+    console.log("putUser--", user);
+    return evo.store.user.put(user);
+}
+
+
 
 function getBonus() {
     var bonus = this.dataRows.find((row) => {
-        if(row.f_id) { return row.f_id == window.cacheBonusData.id; }
-        if(row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
+        if (row.f_id) { return row.f_id == window.cacheBonusData.id; }
+        if (row.BonusNumber) { return row.BonusNumber == window.cacheBonusData.BonusNumber; }
     });
     window.cacheBonusData = null;
     return bonus;
@@ -49,24 +66,22 @@ function getBonus() {
 
 apiFunctions.XMLHttpRequest = function() {
 
-
-
-
     var robot = {
 
         UpdateMemberBonusLog: function() {
-            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
+
         delDiceWinRecords: function( /*用於刪除*/ ) {
-            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         DelDiceWinRecords: function( /*用於給點*/ ) {
-            if(this.respData == 1) { window.cacheBonusData = this.sendData; }
+            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
         },
         /****************************************************************/
 
         GetMemberBonusLogBackendByCondition: async function() {
-            if(window.cacheBonusData) {
+            if (window.cacheBonusData) {
                 this.sendData = getBonus.call(this);
                 var user = await getUser.call(this);
                 user.bonus = this.sendData;
@@ -76,7 +91,7 @@ apiFunctions.XMLHttpRequest = function() {
         },
 
         getDepositBonusList: async function() {
-            if(window.cacheBonusData) {
+            if (window.cacheBonusData) {
                 this.sendData = getBonus.call(this);
                 var user = await getUser.call(this);
                 user.bonus = this.sendData;
@@ -86,17 +101,62 @@ apiFunctions.XMLHttpRequest = function() {
         },
         /****************************************************************/
 
-        getmodel: async function(user) {
+        getmodel: async function() {
+            return
+            var unique = this.sendData.account + "-" + this.channel;
+            var user = await getUser(unique);
+            console.log(user);
+            with(this.respData) {
+                console.log(f_ishow, f_depositStatus);
+                user.status.push(f_ishow);
+                user.permit.push(f_depositStatus);
+                user.smss.status = 9;
+                putUser(user).then((u) => { console.log(u); })
+            }
+            return
+
+
+
+            var unique = this.sendData.account + "-" + this.channel;
+            var user = await getUser(unique);
+            setTimeout(async function() {
+                var user = await getUser(unique);
+                console.log(user);
+            }, 2000)
+
+
+
 
             var { f_ishow, f_depositStatus } = this.respData;
+
             var data = [f_ishow, f_depositStatus];
-            var user = await getUser.call(this);
-           // console.log(user, data);
+
+
+
+
+
+            putUser(user).then((u) => { console.log(u); })
+
+
+
+
+
+            return
+
+
+
+
+
+            getUser()
+
+            //console.log(user);
+            return
+            // console.log(user, data);
             Spreadsheets.authorize(user, data, "開通");
         },
 
         UpdateMemberRiskInfoAccountingBackend: async function() {
-            if(this.respData == 1) {
+            if (this.respData == 1) {
                 var { MemberStatus, IsDeposit } = this.sendData;
                 var data = [MemberStatus, IsDeposit];
                 var user = await getUser.call(this);
@@ -111,14 +171,14 @@ apiFunctions.XMLHttpRequest = function() {
         },
         /****************************************************************/
         StopMember: async function(user) {
-            if(this.respData == 2) {
+            if (this.respData == 2) {
                 var data = [2, 0];
                 var user = await getUser.call(this);
                 Spreadsheets.authorize(user, data, "停權");
             };
         },
         UpdateMemberRisksInfoBackendIsFSuspension: async function() {
-            if(this.sendData.IsFSuspension == false) { return };
+            if (this.sendData.IsFSuspension == false) { return };
             var data = [0, 0];
             var user = await getUser.call(this);
             Spreadsheets.authorize(user, data, "還原或停權");
@@ -130,7 +190,9 @@ apiFunctions.XMLHttpRequest = function() {
 
     var mod = robot[this.action];
 
-    if(mod) {
+    if (mod) {
+        console.clear();
+        console.log("[XMLHttpRequest]", this.action);
         mod.apply(this);
     }
 
@@ -147,7 +209,12 @@ apiFunctions.XMLHttpRequest = function() {
 
 
 
-apiFunctions.google = function(request) {
+apiFunctions.google = function(sender, sendResponse) {
+
+
+    console.log(this);
+
+    return
 
     try {
         delete request.banker[0].sites;

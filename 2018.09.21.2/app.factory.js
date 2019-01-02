@@ -1,6 +1,6 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
-        function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+        function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
 
         function _model_(elem) {
             switch (elem.localName) {
@@ -22,46 +22,6 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var $params = Array.from($searchParams).serialize();
 
         var $extensionId = localStorage.$extensionId;
-        var $sendMessage = function(message) {
-            return new Promise((resolve, reject) => {
-                if($extensionId && message) {
-                    chrome.runtime.sendMessage($extensionId, message, (res) => {
-                        if(res) { res.active = false; }
-                        try { resolve(res) } catch (ex) { reject(ex) }
-                    })
-                } else {
-                    console.error(this);
-                    reject(101)
-                }
-            })
-        }
-
-        var $getUser = function() {
-            return $sendMessage({ command: 'apiFunctions.store.user.get', params: $unique })
-            //.then((user) => {console.log(user);return user)})
-        }
-
-        var $delUser = function(a) {
-            if(!a) { return }
-            return $sendMessage({ command: 'apiFunctions.store.user.del', params: $unique })
-        }
-
-        var $putUser = function(user) {
-            return $sendMessage({ command: 'apiFunctions.store.user.put', params: user }).then((user) => {
-                console.log('putUser:', user);
-            })
-        }
-
-        var $account = $params.account || $params.member;
-        var $channel = localStorage.$channel;
-        var $unique = [$account, $channel].join("-");
-
-        var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
-            return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
-        }
-
-        var createTab = function(_url) { window.open(_url, "_blank"); }
-
 
         var elements = ["span", "input", "select", "button", "a"]
             .map((el) => { return Array.from(document.querySelectorAll(el)) })
@@ -85,22 +45,69 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                 return [_sname_(elem), $(elem)];
             }).serialize();
 
+
+        var $account = $params.account || $params.member;
+        var $channel = localStorage.$channel;
+        var $unique = [$account, $channel].join("-");
+
+
+        var $sendMessage = function(message) {
+            return new Promise((resolve, reject) => {
+                if ($extensionId && message) {
+                    chrome.runtime.sendMessage($extensionId, message, (res) => {
+                        if (res) { res.active = false; }
+                        try { resolve(res) } catch (ex) { reject(ex) }
+                    })
+                } else {
+                    console.error(this);
+                    reject(101)
+                }
+            })
+        }
+
+        var $getUser = function() {
+            return $sendMessage({ command: 'apiFunctions.store.user.get', params: $unique })
+            //.then((user) => {console.log(user);return user)})
+        }
+
+        var $delUser = function(a) {
+            if (!a) { return }
+            return $sendMessage({ command: 'apiFunctions.store.user.del', params: $unique })
+        }
+
+        var $putUser = function(user) {
+            return $sendMessage({ command: 'apiFunctions.store.user.put', params: user })
+                .then((user) => { console.log('putUser:', user); })
+        }
+
+
+        var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
+            return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
+        }
+
+        var createTab = function(_url) { window.open(_url, "_blank"); }
+
         var getModule = function(objPath) {
             return new Promise((resolve, reject) => {
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
             });
         }
 
-        //console.log(angular);
+        var $console = function() {
+            console.log(...arguments);
+        }
 
+
+        /***************************************************/
+        //console.log(angular);
 
         function Factory($rootScope) {
             //console.log($rootScope);
@@ -126,6 +133,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             ctrl,
             createTab,
             getModule,
+            $console
         }
 
         return Factory
@@ -193,9 +201,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                     var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if(typeof alphaVal == "object") {
-                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if (typeof alphaVal == "object") {
+                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));

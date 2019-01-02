@@ -1,13 +1,13 @@
-define(["app.router"], function($router) {
+define(["app.router"], function(Router) {
 
-    class App {
+    class App extends Router {
         constructor() {
-            //super();
+            super();
             this.$name = "OBSApp";
             this.$ctrlId = "View";
             this.$requires = ["angular", "angular-sanitize", "angular-animate"];
             this.$modules = ["ngSanitize", "ngAnimate"];
-            this.$router = $router;
+            //this.$router = $router;
             this.$isTest = (window.location.hostname == "127.0.0.1");
             this.$locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
             this.$forms = document.forms;
@@ -17,10 +17,10 @@ define(["app.router"], function($router) {
         }
 
         get $window() { return window }
+        get $module() { return this.$router[this.$server][this.$locator]; }        
         get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
         get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
-        get $module() { return this.$router[this.$server][this.$locator]; }
-
+        
         get $controller() { return angular.element("[ng-controller]"); }
         get $injector() { return this.$controller.injector(); }
         get $scope() { return this.$controller.scope(); }
@@ -28,9 +28,9 @@ define(["app.router"], function($router) {
         get $compile() { return this.$injector.get('$compile'); }
 
         $bootstrap(app) {
-            if(this.$module == undefined) { return }
+            if (this.$module == undefined) { return }
             //console.log('*****', this.$module);
-            if(window.angular) { return this.$loadModule(); } else {
+            if (window.angular) { return this.$loadModule(); } else {
                 requirejs(this.$requires, (angular) => {
                     $('html').attr('ng-app', this.$name);
                     $("<div>", { "id": this.ctrlId, "ng-controller": this.$ctrlId }).appendTo("body");
@@ -42,17 +42,15 @@ define(["app.router"], function($router) {
         }
 
         $loadModule() {
-
             let MODULE_PATH = this.$server + '/' + this.$module;
-
             //console.log(MODULE_PATH);
-
             requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
                 try {
                     this.injectStylesheet();
                     this.injectComponents();
                     this.$invoke(Factory, this);
                     module.call(this, this);
+                    console.log("[OK]", this.$module);
                     //this.$invoke(module, this);
                     //module.apply(self, [this])
 
@@ -60,14 +58,12 @@ define(["app.router"], function($router) {
                     console.error(ex);
                 }
             })
-
-
         }
 
 
         injectStylesheet() {
 
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
 
             this.stylesheet.map((str) => { return this.$rootUrl + "css/" + str + ".css"; }).map((src) => {
 
@@ -77,7 +73,7 @@ define(["app.router"], function($router) {
 
         injectComponents() {
             return new Promise((resolve, reject) => {
-                if(this.components) {
+                if (this.components) {
                     this.components.map((str) => { return this.$rootUrl + "html/" + str + ".html"; }).map((src) => {
                         fetch(src)
                             .then((res) => { return res.text(); })
@@ -95,20 +91,32 @@ define(["app.router"], function($router) {
         };
     }
 
-    //console.log(Factory.prototype);
-    // var c = new Factory()
-
-    //console.log(Factory.prototype);
-
-    //Object.assign(App, Factory.prototype);
 
     Object.assign(App.prototype, window.localStorage);
-    //Object.assign(App.prototype, window.location);
 
-    //Object.defineProperty(App.prototype, '$loadModule', { enumerable: true });
 
     return new App();
-    //$controller_($scope, $rootScope) {}
-    //var injects = ['$anchorScroll', '$animate']
 
-})
+});
+
+
+
+
+
+
+//Object.defineProperty(App.prototype, '$loadModule', { enumerable: true });
+
+//var injects = ['$anchorScroll', '$animate']
+
+//$controller_($scope, $rootScope) {}
+
+
+//Object.assign(App.prototype, window.location);
+
+
+//console.log(Factory.prototype);
+// var c = new Factory()
+
+//console.log(Factory.prototype);
+
+//Object.assign(App, Factory.prototype);

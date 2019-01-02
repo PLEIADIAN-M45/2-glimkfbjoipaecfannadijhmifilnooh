@@ -12,10 +12,9 @@ function response_message(request, sender, sendResponse) {
 
     try {
 
-        console.log(request.command);
+        //console.log(request.command);
 
         var promise = eval(request.command).bind(request);
-
 
         promise(sender, sendResponse).then(sendResponse);
 
