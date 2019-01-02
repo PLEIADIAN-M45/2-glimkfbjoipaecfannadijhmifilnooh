@@ -16,6 +16,9 @@ store.version(5).stores({
     alerts: 'author'
 });
 
+
+const USER = {};
+
 evo.store = store;
 //console.log(evo.store);
 apiFunctions.store = {};
@@ -27,9 +30,12 @@ evo.store.tables.forEach(function(table, index) {
             })
         },
         put: function() {
+            //USER[this.params.unique] = this.params;
+            //console.log(this.params);
             //console.log(table.name, this.params);
+            
             return evo.store[table.name].put(this.params).then(() => {
-                console.log('put');
+                console.log('put', Date.now());
                 return this.params
             })
         },

@@ -30,8 +30,7 @@ var Spreadsheets = {
 
 
 function getUser(unique) {
-
-    console.log(unique);
+    //console.log(unique);
     return evo.store.user.get(unique);
 
     /*
@@ -46,8 +45,10 @@ function getUser(unique) {
 
 
 function putUser(user) {
-    console.log("putUser--", user);
-    return evo.store.user.put(user);
+    //console.log("putUser--", user);
+    return evo.store.user.put(user).then(() => {
+        return user;
+    })
 }
 
 
@@ -62,140 +63,153 @@ function getBonus() {
 }
 
 
+var robot = {
 
+    UpdateMemberBonusLog: function() {
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+    },
 
-apiFunctions.XMLHttpRequest = function() {
+    delDiceWinRecords: function( /*用於刪除*/ ) {
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+    },
+    DelDiceWinRecords: function( /*用於給點*/ ) {
+        if (this.respData == 1) { window.cacheBonusData = this.sendData; }
+    },
+    /****************************************************************/
 
-    var robot = {
+    GetMemberBonusLogBackendByCondition: async function() {
+        if (window.cacheBonusData) {
+            this.sendData = getBonus.call(this);
+            var user = await getUser.call(this);
+            user.bonus = this.sendData;
+            user.module = "bonus:ku711";
+            Spreadsheets.siribonus(user, "禮金表");
+        }
+    },
 
-        UpdateMemberBonusLog: function() {
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
-        },
+    getDepositBonusList: async function() {
+        if (window.cacheBonusData) {
+            this.sendData = getBonus.call(this);
+            var user = await getUser.call(this);
+            user.bonus = this.sendData;
+            user.module = "bonus:wa111";
+            Spreadsheets.siribonus(user, "禮金表");
+        }
+    },
+    /****************************************************************/
 
-        delDiceWinRecords: function( /*用於刪除*/ ) {
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
-        },
-        DelDiceWinRecords: function( /*用於給點*/ ) {
-            if (this.respData == 1) { window.cacheBonusData = this.sendData; }
-        },
-        /****************************************************************/
+    getmodel: async function() {
 
-        GetMemberBonusLogBackendByCondition: async function() {
-            if (window.cacheBonusData) {
-                this.sendData = getBonus.call(this);
-                var user = await getUser.call(this);
-                user.bonus = this.sendData;
-                user.module = "bonus:ku711";
-                Spreadsheets.siribonus(user, "禮金表");
-            }
-        },
+        //console.log(this);
+        var unique = this.sendData.account + "-" + this.channel;
+        var user = await getUser(unique);
 
-        getDepositBonusList: async function() {
-            if (window.cacheBonusData) {
-                this.sendData = getBonus.call(this);
-                var user = await getUser.call(this);
-                user.bonus = this.sendData;
-                user.module = "bonus:wa111";
-                Spreadsheets.siribonus(user, "禮金表");
-            }
-        },
-        /****************************************************************/
+        //console.log(USER[unique]);
+        //console.log("+++++++++++++");
+        console.log(Date.now());
+        console.log(user);
 
-        getmodel: async function() {
-            return
-            var unique = this.sendData.account + "-" + this.channel;
-            var user = await getUser(unique);
-            console.log(user);
-            with(this.respData) {
-                console.log(f_ishow, f_depositStatus);
-                user.status.push(f_ishow);
-                user.permit.push(f_depositStatus);
-                user.smss.status = 9;
-                putUser(user).then((u) => { console.log(u); })
-            }
-            return
+        with(this.respData) {
+            //console.log(f_ishow, f_depositStatus);
+            user.status.push(f_ishow);
+            user.permit.push(f_depositStatus);
+            user.smss.status = 9;
 
+            return putUser(user).then((u) => {
+                console.log(Date.now());
+                console.log(u);
+                return u
+            })
+        }
 
-
-            var unique = this.sendData.account + "-" + this.channel;
-            var user = await getUser(unique);
-            setTimeout(async function() {
-                var user = await getUser(unique);
-                console.log(user);
-            }, 2000)
-
-
-
-
-            var { f_ishow, f_depositStatus } = this.respData;
-
-            var data = [f_ishow, f_depositStatus];
+        return
 
 
 
 
 
-            putUser(user).then((u) => { console.log(u); })
+
+        var user = await getUser(unique);
+        console.log(user);
+
+        return
+
+
+
+        var unique = this.sendData.account + "-" + this.channel;
+        var user = await getUser(unique);
+
+
+
+
+        var { f_ishow, f_depositStatus } = this.respData;
+
+        var data = [f_ishow, f_depositStatus];
 
 
 
 
 
-            return
+        putUser(user).then((u) => { console.log(u); })
 
 
 
 
 
-            getUser()
+        return
 
-            //console.log(user);
-            return
-            // console.log(user, data);
-            Spreadsheets.authorize(user, data, "開通");
-        },
 
-        UpdateMemberRiskInfoAccountingBackend: async function() {
-            if (this.respData == 1) {
-                var { MemberStatus, IsDeposit } = this.sendData;
-                var data = [MemberStatus, IsDeposit];
-                var user = await getUser.call(this);
-                Spreadsheets.authorize(user, data, "開通");
-            };
-        },
-        UpdateMemberSNInfoBackend: async function() {
+
+
+
+        getUser()
+
+        //console.log(user);
+        return
+        // console.log(user, data);
+        Spreadsheets.authorize(user, data, "開通");
+    },
+
+    UpdateMemberRiskInfoAccountingBackend: async function() {
+        if (this.respData == 1) {
             var { MemberStatus, IsDeposit } = this.sendData;
             var data = [MemberStatus, IsDeposit];
             var user = await getUser.call(this);
-            Spreadsheets.authorize(user, data, "停權-用戶狀態選停權戶");
-        },
-        /****************************************************************/
-        StopMember: async function(user) {
-            if (this.respData == 2) {
-                var data = [2, 0];
-                var user = await getUser.call(this);
-                Spreadsheets.authorize(user, data, "停權");
-            };
-        },
-        UpdateMemberRisksInfoBackendIsFSuspension: async function() {
-            if (this.sendData.IsFSuspension == false) { return };
-            var data = [0, 0];
+            Spreadsheets.authorize(user, data, "開通");
+        };
+    },
+    UpdateMemberSNInfoBackend: async function() {
+        var { MemberStatus, IsDeposit } = this.sendData;
+        var data = [MemberStatus, IsDeposit];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "停權-用戶狀態選停權戶");
+    },
+    /****************************************************************/
+    StopMember: async function(user) {
+        if (this.respData == 2) {
+            var data = [2, 0];
             var user = await getUser.call(this);
-            Spreadsheets.authorize(user, data, "還原或停權");
-        },
-        /************************************************************************************/
-    }
+            Spreadsheets.authorize(user, data, "停權");
+        };
+    },
+    UpdateMemberRisksInfoBackendIsFSuspension: async function() {
+        if (this.sendData.IsFSuspension == false) { return };
+        var data = [0, 0];
+        var user = await getUser.call(this);
+        Spreadsheets.authorize(user, data, "還原或停權");
+    },
+    /************************************************************************************/
+}
 
 
-
+apiFunctions.XMLHttpRequest = function(sender, sendResponse) {
     var mod = robot[this.action];
-
     if (mod) {
-        console.clear();
         console.log("[XMLHttpRequest]", this.action);
-        mod.apply(this);
+        return mod.apply(this);
     }
 
+    //return Promise.resolve(9582626)
 
     /*
     var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];

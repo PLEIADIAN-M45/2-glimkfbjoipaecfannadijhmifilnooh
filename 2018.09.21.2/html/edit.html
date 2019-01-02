@@ -1,13 +1,18 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-        <a class="item" ng-click="createTab(router.cookie)" style="margin-bottom: 50px;">
+        <a class="item">{{user.unique}}</a>
+
+        <a class="item" ng-click="createTab($router.cookie)" style="margin-bottom: 50px;">
             <i class="bolt icon"></i>一机多登</a>
-        <a class="item" ng-click="openDeposit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
+
+
+        <a class="item" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
             <i class="handshake outline icon"></i>开通</a>
-        <a class="item"  ng-click="sendSms(user)" status="{{user.smss.status}}" ng-if="user.smss.status==9 || user.smss.status==401">
-            <i class="envelope outline icon"></i>短信</a>
-        <a class="item">{{user.unique}}--{{user.smss.status}}</a>
+
+
+        <a class="item"  ng-click="sendSms($event)" status="{{user.smss.status}}" ng-if="user.smss.status==9 || user.smss.status==401">
+            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a>
     </div>
 </aside>
 <!--

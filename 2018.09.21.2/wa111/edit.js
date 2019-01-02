@@ -1,65 +1,35 @@
 define(["wa111/user"], function({ setUser }) {
 
-    return async function({ $xmlSpider, $scope, $ctrl, $sendMessage, $putUser, $delUser, $account, $console }) {
+    return async function({ $xmlSpider, $scope, $ctrl, $sendMessage, $getUser, $putUser, $delUser, $account, $console, $router }) {
 
-        $scope.$delUser(1);
+        $scope.$delUser(0);
+
+        $scope.$watch('user', function(nv, ov) { if (!angular.equals(nv, ov)) { $scope.$putUser(); } }, true);
 
         $scope.user = await setUser(this);
 
-        $console($scope.user);
-
-        $scope.$watch('user', (nv, ov) => {
-            if (nv) {
-                $putUser(nv);
-            }
-        }, true);
-
-        $scope.sendSms = function(user) {
-            if (!user) { return; }
-            $scope.user.smss.status = 99;
+        $scope.sendSms = function(e) {
+            $scope.user.smss.status = -1;
             $sendMessage($scope.user.smss).then((res) => {
                 $scope.user.smss = res;
                 $scope.$apply();
-            })
+            });
         }
 
-        $scope.openDeposit = function(e) {
-            e.currentTarget.hide();
+        $scope.setPermit = function(e) {
+            $scope.user.status[1] = -1;
             $ctrl.isOpenDeposit.val(1)
             $ctrl.btnSaveInfo.click();
         }
 
         $xmlSpider.loadend = function() {
             if (this.action == "getmodel") {
-                console.log(this);
-                with(this.respData) {
-                    //var c = await $scope.$getUser()
-                    //console.log(c);
-                    //console.log("++++++++++++++++++++++");
-                    $scope.user.status.push(f_ishow);
-                    $scope.user.permit.push(f_depositStatus);
-                    $scope.user.smss.status = 9;
-                    $scope.user.module = "google:scripts:authorize";
-                    $scope.$digest();
-                    with($scope.user) {
-                        console.log(status);
-
-                        if (status[0] != status[1]) {
-
-                            console.log("開");
-
-                            $sendMessage({
-                                command: "apiFunctions.google",
-                                params: $scope.user
-                            })
-
-                        }
-                        //console.log(f_ishow, f_depositStatus);
-                    }
-                }
+                $sendMessage(this).then((res) => {
+                    $scope.user = res;
+                    $scope.$apply();
+                })
             }
         }
-
 
         $scope.$apply();
     }
@@ -68,6 +38,36 @@ define(["wa111/user"], function({ setUser }) {
 
 
 
+
+
+
+//console.log($scope.$router);
+//console.log(this.$router);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//function modify() {}
+//e.currentTarget.hide();
+//$scope.user.smss.status = 0;
+//console.log($scope.user.smss.status);
+//console.log($scope.user.smss.status);
+//setTimeout(function() {}, 2000);
+//$scope.$digest();
 
 
 

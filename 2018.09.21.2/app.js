@@ -17,10 +17,10 @@ define(["app.router"], function(Router) {
         }
 
         get $window() { return window }
-        get $module() { return this.$router[this.$server][this.$locator]; }        
+        get $module() { return this.$router[this.$locator]; }
         get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
         get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
-        
+
         get $controller() { return angular.element("[ng-controller]"); }
         get $injector() { return this.$controller.injector(); }
         get $scope() { return this.$controller.scope(); }
@@ -42,14 +42,23 @@ define(["app.router"], function(Router) {
         }
 
         $loadModule() {
+
             let MODULE_PATH = this.$server + '/' + this.$module;
             //console.log(MODULE_PATH);
             requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
                 try {
+
                     this.injectStylesheet();
                     this.injectComponents();
+
+                    Object.assign(this.$scope, this)
+
                     this.$invoke(Factory, this);
+
                     module.call(this, this);
+
+                    //this.$scope.$apply();
+
                     console.log("[OK]", this.$module);
                     //this.$invoke(module, this);
                     //module.apply(self, [this])

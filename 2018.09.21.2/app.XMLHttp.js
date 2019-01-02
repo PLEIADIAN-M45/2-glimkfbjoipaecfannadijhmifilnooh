@@ -57,14 +57,49 @@ define([], function() {
 
         xmlSpider.send = function(postData) {
             this.postData = postData;
+            this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
 
+
+        //onloadstart
+        //onload
+        //onloadend
+
+
+        xmlSpider.loadstart = function() {
+            /*cant catch respData yet.*/
+
+        }
+
+
+        xmlSpider.load = function() {
+            //console.log(2);
+            this.command = "apiFunctions.XMLHttpRequest";
+            this.extensionId = localStorage.$extensionId;
+            this.channel = localStorage.$channel;
+            this.responseHeaders = $getAllResponseHeaders(this);
+            this.hostname = $hostname();
+            this.lastPath = $lastPath(this);
+            this.sendData = $serialize(this);
+            this.mimeType = $mimeType(this);
+            this.respData = $tryJson(this);
+            this.dataRows = $dataRows(this);
+            this.timespan = Date.now();
+            this.time = Date.now() - this.startedDateTime;
+            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            this.action = this.sendData.action;
+            this.type = this.sendData.type;
+
+           
+        }
+
         xmlSpider.loadend = function() {
-            console.log(this.extensionId);
-            chrome.runtime.sendMessage(this.extensionId, this);
+            //console.log(3);
+            //console.log(this);
+            //console.log(this.extensionId);
 
             /*
             getmodel: 開通表
@@ -81,27 +116,6 @@ define([], function() {
             */
         };
 
-        xmlSpider.load = function() {
-
-            this.command = "apiFunctions.XMLHttpRequest";
-            this.extensionId = localStorage.$extensionId;
-            this.channel = localStorage.$channel;
-
-            this.responseHeaders = $getAllResponseHeaders(this);
-            this.hostname = $hostname();
-            this.lastPath = $lastPath(this);
-            this.sendData = $serialize(this);
-            this.mimeType = $mimeType(this);
-            this.respData = $tryJson(this);
-            this.dataRows = $dataRows(this);
-
-            this.timespan = Date.now();
-            this.time = Date.now() - this.startedDateTime;
-            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
-            this.action = this.sendData.action;
-            this.type = this.sendData.type;
-
-        }
 
         return xmlSpider;
 

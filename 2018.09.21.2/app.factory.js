@@ -1,5 +1,6 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
+
         function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
 
         function _model_(elem) {
@@ -17,40 +18,17 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         /*********************************************************/
         var $dexie = new Dexie('evo');
         $dexie.version(1).stores({ user: 'f_accounts' });
-
         var $searchParams = new URLSearchParams(window.location.search);
         var $params = Array.from($searchParams).serialize();
-
         var $extensionId = localStorage.$extensionId;
-
-        var elements = ["span", "input", "select", "button", "a"]
-            .map((el) => { return Array.from(document.querySelectorAll(el)) })
-            .flat().filter((elem) => { return elem.name || elem.id; });
-
-
-        var $model =
-            elements.map((elem) => {
-                return [_sname_(elem), _model_(elem)]
-            }).serialize();
-
-
-        var ctrl =
-            elements.map((elem) => {
-                return [_sname_(elem), elem];
-            }).serialize();
-
-
-        var $ctrl =
-            elements.map((elem) => {
-                return [_sname_(elem), $(elem)];
-            }).serialize();
-
-
+        var elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
+        var $model = elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
+        var ctrl = elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
+        var $ctrl = elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
         var $account = $params.account || $params.member;
         var $channel = localStorage.$channel;
         var $unique = [$account, $channel].join("-");
-
-
+        /*********************************************************/
         var $sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 if ($extensionId && message) {
@@ -66,8 +44,15 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         }
 
         var $getUser = function() {
+            //console.log($unique);
+            //console.log(this);
             return $sendMessage({ command: 'apiFunctions.store.user.get', params: $unique })
-            //.then((user) => {console.log(user);return user)})
+                .then((user) => {
+                    //this.user = user;
+                    //this.$apply();
+                    //console.log(user);
+                    return user;
+                })
         }
 
         var $delUser = function(a) {
@@ -75,9 +60,14 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             return $sendMessage({ command: 'apiFunctions.store.user.del', params: $unique })
         }
 
-        var $putUser = function(user) {
-            return $sendMessage({ command: 'apiFunctions.store.user.put', params: user })
-                .then((user) => { console.log('putUser:', user); })
+        var $putUser = function() {
+            if (!this.user) { console.warn(this); return }
+            //var _user = user || this.user;
+            return $sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
+                .then((user) => {
+                    console.log('putUser:', user);
+                    return user;
+                })
         }
 
 
@@ -85,7 +75,11 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-        var createTab = function(_url) { window.open(_url, "_blank"); }
+        var createTab = function(_url) {
+            let redirectUrl = _url.replace('#1', this.$channel).replace('#2', this.$account)
+            //console.log(redirectUrl);
+            window.open(redirectUrl, "_blank");
+        }
 
         var getModule = function(objPath) {
             return new Promise((resolve, reject) => {
@@ -101,19 +95,13 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             });
         }
 
-        var $console = function() {
-            console.log(...arguments);
-        }
-
-
+        var $console = function() { console.log(...arguments); }
         /***************************************************/
         //console.log(angular);
-
         function Factory($rootScope) {
             //console.log($rootScope);
             Object.assign($rootScope, Factory.prototype)
             Object.assign(this, Factory.prototype)
-
         }
 
         Factory.prototype = {

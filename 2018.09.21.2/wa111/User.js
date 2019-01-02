@@ -9,6 +9,7 @@ define([], function() {
     }
 
     class User {
+        
         constructor(args) {
             return this.setUser(args)
         }
