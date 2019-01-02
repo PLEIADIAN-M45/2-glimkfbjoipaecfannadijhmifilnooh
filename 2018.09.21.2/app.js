@@ -1,12 +1,14 @@
 define(["app.router"], function(Router) {
-
+    /*
+        Router return $router
+    */
     class App extends Router {
         constructor() {
             super();
             this.$name = "OBSApp";
             this.$ctrlId = "View";
-            this.$requires = ["angular", "angular-sanitize", "angular-animate"];
-            this.$modules = ["ngSanitize", "ngAnimate"];
+            //this.$requires = ["angular", "angular-sanitize", "angular-animate"];
+            //this.$modules = ["ngSanitize", "ngAnimate"];
             //this.$router = $router;
             this.$isTest = (window.location.hostname == "127.0.0.1");
             this.$locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
@@ -20,7 +22,6 @@ define(["app.router"], function(Router) {
         get $module() { return this.$router[this.$locator]; }
         get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
         get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
-
         get $controller() { return angular.element("[ng-controller]"); }
         get $injector() { return this.$controller.injector(); }
         get $scope() { return this.$controller.scope(); }
@@ -31,10 +32,10 @@ define(["app.router"], function(Router) {
             if (this.$module == undefined) { return }
             //console.log('*****', this.$module);
             if (window.angular) { return this.$loadModule(); } else {
-                requirejs(this.$requires, (angular) => {
+                requirejs(["angular", "angular-sanitize", "angular-animate"], (angular) => {
                     $('html').attr('ng-app', this.$name);
                     $("<div>", { "id": this.ctrlId, "ng-controller": this.$ctrlId }).appendTo("body");
-                    angular.module(this.$name, this.$modules).controller(this.$ctrlId, function() {});
+                    angular.module(this.$name, ["ngSanitize", "ngAnimate"]).controller(this.$ctrlId, function() {});
                     angular.bootstrap(document, [this.$name]);
                     return this.$loadModule();
                 })
@@ -47,15 +48,42 @@ define(["app.router"], function(Router) {
             //console.log(MODULE_PATH);
             requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
                 try {
-
                     this.injectStylesheet();
                     this.injectComponents();
 
-                    Object.assign(this.$scope, this)
+                    this.$invoke(Factory, this);
+                    
+
+                    module.call(this, this);
+
+                    //this.$invoke(Factory, this.$scope);
+
+
+
+                    /*var target = this.$scope;
+                    for (var i = 0; i < 5; i++) {
+                        if (target) {
+                            //console.log(target.constructor.name);
+                            Object.assign(this, target);
+                            target = target.__proto__;
+                        }
+                    }
+                    
+                    //this.$invoke(Factory, this.$scope);
 
                     this.$invoke(Factory, this);
 
-                    module.call(this, this);
+                    var target = this;
+                    for (var i = 0; i < 5; i++) {
+                        if (target) {
+                            //console.log(target.constructor.name);
+                            Object.assign(this.$scope, target);
+                            target = target.__proto__;
+                        }
+                    }
+                    */
+
+
 
                     //this.$scope.$apply();
 

@@ -9,16 +9,26 @@ var regex = {
 
 
 apiFunctions.locate = function() {
+    //console.log(this);
 
     return $.ajax({
-
         url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
-
         dataType: "json",
+        data: {
+            "query": this.value,
+            "co": "",
+            "resource_id": 6006,
+            "t": this.time,
+            "ie": "utf8",
+            "oe": "gbk",
+            "format": "json",
+            "tn": "baidu",
+            "_": this.time
+        }
 
-        data: { "query": this.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time }
-    
     }).then((res) => {
+
+        console.log(res);
 
         if (res.status == 0) {} else { return {} };
 
@@ -47,9 +57,15 @@ apiFunctions.locate = function() {
             region.area = RegExp.$1;
         }
 
-        return { region };
+        region.alert = region_compare(region)
+        //console.log(search);
+        //search.region.compare(region);
+        this.region = region;
+        return this;
     })
+
 }
+
 
 
 

@@ -1,5 +1,5 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.alarm||me.alert}" ng-init="apiFunction.region(me)">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunction.region(me)">
 
         <div class="ui top attached content compact">
             <div class="left floated meta">

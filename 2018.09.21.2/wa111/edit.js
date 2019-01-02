@@ -1,27 +1,20 @@
-define(["wa111/user"], function({ setUser }) {
-
+define(["wa111/user"], function({ $setUser }) {
     return async function({ $xmlSpider, $scope, $ctrl, $sendMessage, $getUser, $putUser, $delUser, $account, $console, $router }) {
-
-        $scope.$delUser(0);
-
+        $scope.$delUser(1);
         $scope.$watch('user', function(nv, ov) { if (!angular.equals(nv, ov)) { $scope.$putUser(); } }, true);
-
-        $scope.user = await setUser(this);
-
+        $scope.user = await $setUser(this);
         $scope.sendSms = function(e) {
             $scope.user.smss.status = -1;
             $sendMessage($scope.user.smss).then((res) => {
                 $scope.user.smss = res;
                 $scope.$apply();
             });
-        }
-
+        };
         $scope.setPermit = function(e) {
-            $scope.user.status[1] = -1;
-            $ctrl.isOpenDeposit.val(1)
+            e.currentTarget.hide();
+            $ctrl.isOpenDeposit.val(1);
             $ctrl.btnSaveInfo.click();
-        }
-
+        };
         $xmlSpider.loadend = function() {
             if (this.action == "getmodel") {
                 $sendMessage(this).then((res) => {
@@ -29,8 +22,7 @@ define(["wa111/user"], function({ setUser }) {
                     $scope.$apply();
                 })
             }
-        }
-
+        };
         $scope.$apply();
     }
 });
@@ -41,9 +33,16 @@ define(["wa111/user"], function({ setUser }) {
 
 
 
+
+
+
+
+
+
+
+
 //console.log($scope.$router);
 //console.log(this.$router);
-
 
 
 

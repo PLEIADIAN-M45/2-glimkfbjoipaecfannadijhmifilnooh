@@ -32,10 +32,9 @@ evo.store.tables.forEach(function(table, index) {
         put: function() {
             //USER[this.params.unique] = this.params;
             //console.log(this.params);
-            //console.log(table.name, this.params);
-            
+            //console.log(table.name, this.params);            
             return evo.store[table.name].put(this.params).then(() => {
-                console.log('put', Date.now());
+                //console.log('put', Date.now());
                 return this.params
             })
         },

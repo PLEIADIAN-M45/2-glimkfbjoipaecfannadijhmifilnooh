@@ -9,7 +9,7 @@ define([], function() {
     }
 
     class User {
-        
+
         constructor(args) {
             return this.setUser(args)
         }
@@ -35,7 +35,9 @@ define([], function() {
                     this.black = d.f_blacklist;
                     this.peril = d.f_peril;
                     this.nickName = d.f_nickName;
-                    this.banker.map((b, i) => { b.value = d.f_RemittanceAccount.split('|')[i]; });
+                    this.banker.map((b, i) => {
+                        b.value = d.f_RemittanceAccount.split('|')[i];
+                    });
                     this.banker = this.banker.filter((a) => { return a.value });
                 });
         }
@@ -60,7 +62,7 @@ define([], function() {
                     $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
@@ -75,11 +77,11 @@ define([], function() {
             this.mobile = { attr: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
             this.idcard = { attr: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
             this.banker = [
-                { attr: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111.text, city: m.ddlCityArea.text, prov: m.ddlCity.text } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2.text, city: m.ddlCityArea2.text, prov: m.ddlCity2.text } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3.text, city: m.ddlCityArea3.text, prov: m.ddlCity3.text } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4.text, city: m.ddlCityArea4.text, prov: m.ddlCity4.text } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5.text, city: m.ddlCityArea5.text, prov: m.ddlCity5.text } }
+                { attr: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111, city: m.ddlCityArea, prov: m.ddlCity } },
+                { attr: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2, city: m.ddlCityArea2, prov: m.ddlCity2 } },
+                { attr: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3, city: m.ddlCityArea3, prov: m.ddlCity3 } },
+                { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4, city: m.ddlCityArea4, prov: m.ddlCity4 } },
+                { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
             ];
         }
 
@@ -90,13 +92,20 @@ define([], function() {
                 this.getPhoneDate(args), this.getSystemLog(args),
             ]).then(() => {
                 this.smss = new smss(this);
+                this.locate.active = true;
+                this.mobile.active = true;
+                this.idcard.active = true;
+                this.author.active = false;
+                this.banker.map((x) => {
+                    return x.active = false;
+                });
                 return this;
             })
         }
     }
 
 
-    async function setUser(args) {
+    async function $setUser(args) {
         var user =
             await args.$getUser() ||
             await new User(args);
@@ -104,7 +113,7 @@ define([], function() {
     }
 
 
-    return { setUser };
+    return { $setUser };
 });
 
 

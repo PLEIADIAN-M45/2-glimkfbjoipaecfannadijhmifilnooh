@@ -1,9 +1,10 @@
 apiFunctions.sendsms = function(sender, sendResponse) {
 
-    console.log(this);
+    //console.log(this);
 
     var content = decoder(localStorage.sms).toObj();
     this.content = content[this.channel];
+
 
     $.ajax({
         url: this.requestUrl,
@@ -21,10 +22,10 @@ apiFunctions.sendsms = function(sender, sendResponse) {
         }
     }).then((res, b, c) => {
         //this.sms.content = this.message
-        if(res.match(/(msg = '')/)) { this.status = 200; }
-        if(res.match(/(會員登錄)/)) { this.status = 401; }
-        if(res.match(/(msg = '101')/)) { this.status = 101; }
-        if(res.match(/(msg = '102')/)) { this.status = 102; }
+        if (res.match(/(msg = '')/)) { this.status = 200; }
+        if (res.match(/(會員登錄)/)) { this.status = 401; }
+        if (res.match(/(msg = '101')/)) { this.status = 101; }
+        if (res.match(/(msg = '102')/)) { this.status = 102; }
         sendResponse(this);
     });
 

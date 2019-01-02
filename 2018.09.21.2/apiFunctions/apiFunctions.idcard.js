@@ -13,5 +13,5 @@ apiFunctions.idcard = function() {
     //console.log(this);
     //this.region = region
     //return Promise.resolve(this);
-    return Promise.resolve({ region });
+    return Promise.resolve(region);
 }

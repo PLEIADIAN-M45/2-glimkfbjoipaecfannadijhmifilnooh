@@ -5,17 +5,16 @@ function response_message(request, sender, sendResponse) {
 
     var params = $serialize(sender);
 
-    if(request.command != "apiFunctions.XMLHttpRequest") {
-        request.time = Date.now();
-        request.url = window.baseUrl[request.channel];
+    if (request.command != "apiFunctions.XMLHttpRequest") {
+        //request.start = Date.now();
+        request.start = moment().format();
+        var request_url = window.baseUrl[request.channel];
+        if (request_url) { request.url = request_url };
     }
 
     try {
-
         //console.log(request.command);
-
         var promise = eval(request.command).bind(request);
-
         promise(sender, sendResponse).then(sendResponse);
 
         //.apply(request, [sender, sendResponse, localStorage])
@@ -32,12 +31,12 @@ function response_message(request, sender, sendResponse) {
 
 function toString(x) { return x.toString(); }
 
-function trim(x) { if(x != undefined) { return x.toString().trim(); } }
+function trim(x) { if (x != undefined) { return x.toString().trim(); } }
 
 
 function $serialize({ url, postData }) {
     var obj = {};
-    if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-    if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+    if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
     return obj;
 }

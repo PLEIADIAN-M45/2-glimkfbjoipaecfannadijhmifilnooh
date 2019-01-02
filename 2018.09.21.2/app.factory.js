@@ -33,6 +33,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             return new Promise((resolve, reject) => {
                 if ($extensionId && message) {
                     chrome.runtime.sendMessage($extensionId, message, (res) => {
+                        
                         if (res) { res.active = false; }
                         try { resolve(res) } catch (ex) { reject(ex) }
                     })
@@ -63,6 +64,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var $putUser = function() {
             if (!this.user) { console.warn(this); return }
             //var _user = user || this.user;
+            //console.log(this.user);
             return $sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
                 .then((user) => {
                     console.log('putUser:', user);
@@ -99,7 +101,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         /***************************************************/
         //console.log(angular);
         function Factory($rootScope) {
-            //console.log($rootScope);
+            //console.log(this.$apply);
+            //this.$apply=             
             Object.assign($rootScope, Factory.prototype)
             Object.assign(this, Factory.prototype)
         }
