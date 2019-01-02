@@ -32,8 +32,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var $sendMessage = function(message) {
             return new Promise((resolve, reject) => {
                 if ($extensionId && message) {
-                    chrome.runtime.sendMessage($extensionId, message, (res) => {
-                        
+                    chrome.runtime.sendMessage($extensionId, message, (res) => {                        
                         if (res) { res.active = false; }
                         try { resolve(res) } catch (ex) { reject(ex) }
                     })

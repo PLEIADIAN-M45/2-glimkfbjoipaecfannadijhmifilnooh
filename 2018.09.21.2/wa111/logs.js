@@ -34,13 +34,8 @@ define(['wa111/apiFunction'], function(apiFunction) {
         }
 
         $scope.apiFunction.region = function(me, e) {
-
-            //console.log(me);
             if (me.attr != "locate") { return }
-
-
             if (me.active || e) {
-
                 $sendMessage(me).then(bindUser)
             };
         }
@@ -83,6 +78,56 @@ define(['wa111/apiFunction'], function(apiFunction) {
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
         $scope.user = await $getUser();
 
+        console.log($scope.user);
+
+        //$scope.user.bind = function() { console.log(1223, this); }
+
+
+        //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+
+        /*
+        Object.defineProperty($scope.user, 'bind', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: "static"
+        })
+        */
+
+
+
+
+        //视图控制器
+        //https://www.jianshu.com/p/07ba2b0c8fca
+        /*
+        var userInfo = {};
+        Object.defineProperty(userInfo, "nickName", {
+            get: function() {
+                return document.getElementById('nickName').innerHTML;
+            },
+            set: function(nick) {
+                document.getElementById('nickName').innerHTML = nick;
+            }
+        });
+        Object.defineProperty(userInfo, "introduce", {
+            get: function() {
+                return document.getElementById('introduce').innerHTML;
+            },
+            set: function(introduce) {
+                document.getElementById('introduce').innerHTML = introduce;
+            }
+        })
+
+
+        作者： 进击的前端
+        链接： https: //www.jianshu.com/p/07ba2b0c8fca
+            來源： 简书
+        简书著作权归作者所有， 任何形式的转载都请联系作者获得授权并注明出处。
+
+*/
+
+
+
         $scope.$watch('user', function(nv, ov) {
             if (!angular.equals(nv, ov)) {
                 //console.log("+++", nv);
@@ -116,7 +161,6 @@ define(['wa111/apiFunction'], function(apiFunction) {
 
         /*
         console.log($scope.list);
-        console.log($scope.user);
     */
 
 
