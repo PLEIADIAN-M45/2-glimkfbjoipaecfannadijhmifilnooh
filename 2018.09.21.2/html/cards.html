@@ -1,12 +1,12 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunction.region(me)">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunctions.region(me)">
 
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                <i class="icon icon-text" ng-class="icons[me.attr]" title="{{heads[me.attr]}}"></i>
+                <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunction.region(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.region(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -24,13 +24,13 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content grid grid-2" ng-if="me.attr=='locate'" ng-init="getProtocolSet(me);">
+        <div class="extra content grid grid-2" ng-if="me.callee=='locate'" ng-init="getProtocolSet(me);">
             <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>
         </div>
-        <div class="extra content grid grid-4" ng-if="me.attr!='locate'">
+        <div class="extra content grid grid-4" ng-if="me.callee!='locate'">
             <div ng-repeat="s in me.sites" ng-init="apiFunctions.member(s)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
@@ -38,10 +38,10 @@
                 <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member(s, $event);" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+                    <div class="detail center" ng-hide="s.active"><b ng-show="s.member.records">{{s.member.index}}/</b>{{s.member.records}}</div>
                     <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
-                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
+                <div class="ui image label pointer" ng-repeat="row in s.member.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <aside class="hidden" ng-init="setPopup(row)" title="警示訊息">
                         <table class="ui celled selectable striped collapsing table inverted pink small" name="{{popupId}}">

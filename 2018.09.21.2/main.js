@@ -61,6 +61,10 @@ requirejs.config({
     }
 });
 
+var var2 = "";
+
+var c = console.log
+
 
 requirejs(["app"], function(app) {
     //console.log(app);
@@ -317,7 +321,7 @@ function xxx() {
         this.module = this.paths[this.server][this.locator];
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
 
-        if (this.module) {
+        if(this.module) {
             requirejs([this.server], (app) => {
                 app.apply(this);
                 requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -342,12 +346,12 @@ function xxx() {
         // console.log(arguments);
         //console.log(last);
         //console.log(arguments[0]);
-        if (arguments[last] == true) {
+        if(arguments[last] == true) {
             var arg = arguments[0];
             return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $digest: this.$digest, $eval: this.$eval });
         }
 
-        if (this.$root) {
+        if(this.$root) {
             Object.assign(this, ...arguments)
         } else {
             Object.assign(this, ...arguments)

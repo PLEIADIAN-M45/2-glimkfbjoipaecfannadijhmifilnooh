@@ -1,7 +1,7 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
-        function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+        function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
 
         function _model_(elem) {
             switch (elem.localName) {
@@ -16,6 +16,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             }
         }
         /*********************************************************/
+
         var $dexie = new Dexie('evo');
         $dexie.version(1).stores({ user: 'f_accounts' });
         var $searchParams = new URLSearchParams(window.location.search);
@@ -31,9 +32,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         /*********************************************************/
         var $sendMessage = function(message) {
             return new Promise((resolve, reject) => {
-                if ($extensionId && message) {
-                    chrome.runtime.sendMessage($extensionId, message, (res) => {                        
-                        if (res) { res.active = false; }
+                if($extensionId && message) {
+                    chrome.runtime.sendMessage($extensionId, message, (res) => {
+                        if(res) { res.active = false; }
                         try { resolve(res) } catch (ex) { reject(ex) }
                     })
                 } else {
@@ -42,41 +43,48 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                 }
             })
         }
+        /*if(result.command) { var cc = result.command.split('.')[1];console.log(cc); }*/
+        //if(result) {}
+
+
+        var $setUser = function(result) {
+            //console.log(result);
+            var source = (result.callee) ? $scope.user[result.callee] : $scope.user;
+            angular.copy(result, source);
+            $scope.$apply();
+        }
 
         var $getUser = function() {
-            //console.log($unique);
-            //console.log(this);
             return $sendMessage({ command: 'apiFunctions.store.user.get', params: $unique })
-                .then((user) => {
-                    //this.user = user;
-                    //this.$apply();
-                    //console.log(user);
-                    return user;
-                })
+                .then((user) => { return user; })
         }
 
-        var $delUser = function(a) {
-            if (!a) { return }
+        var $delUser = function(bool) {
+            if(!bool) { return }
             return $sendMessage({ command: 'apiFunctions.store.user.del', params: $unique })
-        }
-
-        var $putUser = function() {
-            if (!this.user) { console.warn(this); return }
-            //var _user = user || this.user;
-            //console.log(this.user);
-            return $sendMessage({ command: 'apiFunctions.store.user.put', params: this.user })
                 .then((user) => {
-                    console.log('putUser:', user);
-                    return user;
+                    //console.log('delUser:', $unique);
+                    return;
                 })
         }
 
+        //var _user;
+        var $putUser = function(nv, ov) {
+            if(angular.equals(nv, ov)) { return };
+            //console.log(nv);
+            return $sendMessage({ command: 'apiFunctions.store.user.put', params: nv })
+                .then((user) => {
+                    //console.log('putUser:', user);
+                    return user;
+                })
+        }
 
         var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
         var createTab = function(_url) {
+            console.log(_url);
             let redirectUrl = _url.replace('#1', this.$channel).replace('#2', this.$account)
             //console.log(redirectUrl);
             window.open(redirectUrl, "_blank");
@@ -87,9 +95,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                 var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if (typeof alphaVal == "object") {
-                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if(typeof alphaVal == "object") {
+                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -97,13 +105,19 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         }
 
         var $console = function() { console.log(...arguments); }
+        var $keydown = function(callback) { document.addEventListener('keydown', callback); }
+        var c = console.log;
+
         /***************************************************/
         //console.log(angular);
+        var $rootScope;
+        var $scope;
+
         function Factory($rootScope) {
-            //console.log(this.$apply);
-            //this.$apply=             
-            Object.assign($rootScope, Factory.prototype)
-            Object.assign(this, Factory.prototype)
+            $scope = $rootScope;
+            angular.extend(this, Factory.prototype);
+            angular.extend($rootScope, this);
+            //console.log($rootScope);
         }
 
         Factory.prototype = {
@@ -117,17 +131,41 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             $getUser,
             $delUser,
             $putUser,
+            $setUser,
             $ajax,
             $model,
             $ctrl,
             ctrl,
             createTab,
             getModule,
-            $console
+            $console,
+            c,
+            $keydown,
+
         }
 
-        return Factory
+        return Factory;
+        //$scope.$digest();
 
+
+
+        function keyboardEvent() {
+            keydown
+            keypress
+            keyup
+            //全局屏蔽键盘事件：
+            window.onkeydown = function() {
+                console.log(window.event.keyCode)
+                if(window.event.keyCode == 49) {
+                    event.returnValue = false;
+                }
+            }
+            //全局屏蔽鼠标右键：
+            window.oncontextmenu = function() {
+                console.log('点击了鼠标右键')
+                event.returnValue = false;
+            }
+        }
 
 
         /*********************************************************/
@@ -191,9 +229,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
                     var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -234,7 +272,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
 
 
-
+//console.log(this.$apply);
+//this.$apply=
+//Object.assign($rootScope, Factory.prototype)
 
 /*
 return function($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,

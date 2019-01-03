@@ -1,14 +1,22 @@
 apiFunctions.member = function() {
+
+
+
     if(this.value == "") { return Promise.resolve({}) }
     if(this.value.includes('*')) { return Promise.resolve({}) }
-    if(this.attr == "locate") { return Promise.resolve({}) }
+    if(this.callee == "locate") { return Promise.resolve({}) }
     if(!this.url) { return Promise.reject({}) }
 
-    this[this.attr] = this.value;
     this.idcard = this.idcard || "";
     this.author = this.author || "";
     this.mobile = this.mobile || "";
     this.banker = this.banker || "";
+
+    this[this.callee] = this.value;
+
+
+
+
 
     if(this.host == "ku711") {
         return $.ajax({
@@ -28,11 +36,39 @@ apiFunctions.member = function() {
         })
     }
 
+    console.log(this);
     if(this.host == "wa111") {
         return $.ajax({
             "dataType": 'json',
             "url": this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
-            "data": { "f_BankAccount": this.banker, "txtPhoto": this.mobile, "txtIdCard": this.idcard, "f_RemittanceName": this.author, "f_Account": "", "txtAlipayAccount": "", "txtEmail": "", "txtPickName": "", "txtChat": "", "ddlBankInfo": "", "zwrq": "", "zwrq2": "", "selSurplus": "", "selShow": "", "selIsDeposit": "", "selLevel": "", "selBank": "", "selMutualStatus": "", "ddlAliPay": "", "ddlWeChat": "", "ddlWarn": 0, "hidevalue_totals": "", "pageIndex": this.index, "hidevalue_RecordCount": 0, "type": "getAllUser", "_": this.time }
+            "data": {
+                "f_BankAccount": this.banker,
+                "txtPhoto": this.mobile,
+                "txtIdCard": this.idcard,
+                "f_RemittanceName": this.author,
+                "f_Account": "",
+                "txtAlipayAccount": "",
+                "txtEmail": "",
+                "txtPickName": "",
+                "txtChat": "",
+                "ddlBankInfo": "",
+                "zwrq": "",
+                "zwrq2": "",
+                "selSurplus": "",
+                "selShow": "",
+                "selIsDeposit": "",
+                "selLevel": "",
+                "selBank": "",
+                "selMutualStatus": "",
+                "ddlAliPay": "",
+                "ddlWeChat": "",
+                "ddlWarn": 0,
+                "hidevalue_totals": "",
+                "pageIndex": this.index,
+                "hidevalue_RecordCount": 0,
+                "type": "getAllUser",
+                "_": this.time
+            }
         }).then((res) => {
             res.origin = this.url;
             res.index = this.index;
@@ -52,3 +88,45 @@ apiFunctions.getMemberAlertInfoBackend = function(rows) {
         "data": angular.toJson({ "DisplayArea": "1", "Account": rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } }) })
     })
 }
+
+
+
+
+
+
+
+
+
+
+//console.log(this[this.callee]);
+
+
+/*
+    "url": "http://host35.wa111.net/LoadData/AccountManagement/GetMemberList.ashx?
+    f_BankAccount=
+    &txtPhoto=
+    &txtIdCard=
+    &f_RemittanceName=%E5%BC%A0%E5%87%AF
+    &f_Account=
+    &txtAlipayAccount=
+    &txtEmail=
+    &txtPickName=
+    &txtChat=
+    &ddlBankInfo=
+    &zwrq=
+    &zwrq2=
+    &selSurplus=
+    &selShow=
+    &selIsDeposit=
+    &selLevel=
+    &selBank=
+    &selMutualStatus=
+    &ddlAliPay=
+    &ddlWeChat=
+    &ddlWarn=0
+    &hidevalue_totals=
+    &pageIndex=1
+    &hidevalue_RecordCount=0
+    &type=getAllUser
+    &_=1536853781864",
+    */

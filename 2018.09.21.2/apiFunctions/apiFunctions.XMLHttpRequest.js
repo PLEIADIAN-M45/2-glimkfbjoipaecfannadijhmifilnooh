@@ -113,7 +113,7 @@ var robot = {
             //console.log(f_ishow, f_depositStatus);
             user.status.push(f_ishow);
             user.permit.push(f_depositStatus);
-            user.smss.status = 9;
+            user.sendsms.status = 9;
 
             return putUser(user).then((u) => {
                 console.log(Date.now());

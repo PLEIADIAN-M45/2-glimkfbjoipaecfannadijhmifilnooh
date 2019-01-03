@@ -1,7 +1,7 @@
 define(['wa111/apiFunction'], function(apiFunction) {
 
     function addHighlightAccountsId(account, channel) {
-        if (this.user.channel == channel && this.user.account == account) {
+        if(this.user.channel == channel && this.user.account == account) {
             this.children[2].style.backgroundColor = "#01579b";
             this.children[2].style.color = "white";
         }
@@ -17,70 +17,60 @@ define(['wa111/apiFunction'], function(apiFunction) {
         //this.addHighlightAccountsId(account, channel);
     }
 
+    return async function({ $scope, $getUser, $putUser, $setUser, $sendMessage }) {
+        $scope.apiFunctions = function() {}
 
-
-    return async function({ $scope, $getUser, $sendMessage }) {
-
-        //console.log($apply);
-
-        $scope.apiFunction = function() {}
-
-
-        function bindUser(result) {
-            console.log(result);
-            var source = $scope.user[result.attr];
-            angular.copy(result, source);
-            $scope.$apply();
-        }
-
-        $scope.apiFunction.region = function(me, e) {
-            if (me.attr != "locate") { return }
-            if (me.active || e) {
-                $sendMessage(me).then(bindUser)
+        $scope.apiFunctions.region = function(me, e) {
+            if(me.callee == "banker") { return }
+            if(me.callee == "author") { return }
+            if(!me.active || e) {
+                me.region = "";
+                me.active = true;
+                $sendMessage(me).then((res) => {
+                    me.active = false;
+                    me.region = res;
+                    $scope.$apply();
+                })
             };
         }
 
-
-        //if (me.attr != "locate") { return }
-        //console.log(me.active);
-
-
-        $scope.apiFunction.region22 = function(params, e) {
-
-            //console.log(params.attr);
-            //console.log($scope.user[params.attr]);
-            if (params.region && e == undefined) { return };
-            //params.command = "apiFunctions.region";
-            params.active = true;
-            $sendMessage(params).then((res) => {
-                Object.assign(params, res);
-                params.active = false;
+        $scope.apiFunctions.member = function(me, e) {
+            //if(me.channel != "35") { return }
+            //if(me.callee != "author") { return }
+            me.command = "apiFunctions.member";
+            me.active = true;
+            me.member = "";
+            $sendMessage(me).then((res) => {
+                me.active = false;
+                me.member = res
                 $scope.$apply();
-                //$scope.$apply();
-                //console.log(res);
             })
-
-            return
-
-            chrome.runtime.sendMessage(this.extensionId, params, (res) => {
-                params.active = false;
-                Object.assign(params, res);
-                this.$scope.$apply();
-                this.$scope.putUser();
-            });
         }
-
-
-
-
 
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
         $scope.user = await $getUser();
-
         console.log($scope.user);
 
-        //$scope.user.bind = function() { console.log(1223, this); }
+        $scope.user.author.value = "王杰"
+
+        $scope.$watch('user', $putUser, true);
+
+        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard]
+            .concat($scope.user.banker).map((x) => {
+                //x.command = "apiFunctions.region";
+                x.command = "apiFunctions." + x.callee;
+                var params = { callee: x.callee, value: x.value, index: 1 };
+                x.sites = [
+                    { channel: "26", host: "wa111", ...params },
+                    { channel: "35", host: "wa111", ...params },
+                    { channel: "17", host: "wa111", ...params },
+                    { channel: "16", host: "ku711", ...params }
+                ];
+                return x;
+            });
+
+        $scope.$apply();
 
 
         //https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
@@ -94,6 +84,9 @@ define(['wa111/apiFunction'], function(apiFunction) {
         })
         */
 
+
+        /* user.author .26.member
+               user.author.site[26].member*/
 
 
 
@@ -127,36 +120,15 @@ define(['wa111/apiFunction'], function(apiFunction) {
 */
 
 
+        /*
+                $scope.$watch('user', function(nv, ov) {
+                    if(!angular.equals(nv, ov)) {
+                        //console.log("+++", nv);
+                        $scope.$putUser();
+                    }
+                }, true);
+                */
 
-        $scope.$watch('user', function(nv, ov) {
-            if (!angular.equals(nv, ov)) {
-                //console.log("+++", nv);
-                $scope.$putUser();
-            }
-        }, true);
-
-
-        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard]
-            .concat($scope.user.banker).map((x) => {
-
-                x.command = "apiFunctions.region";
-                x.command = "apiFunctions." + x.attr;
-
-
-                var params = { attr: x.attr, value: x.value, index: 1 };
-                x.sites = [
-                    { channel: "26", host: "wa111", ...params },
-                    { channel: "35", host: "wa111", ...params },
-                    { channel: "17", host: "wa111", ...params },
-                    { channel: "16", host: "ku711", ...params }
-                ];
-                return x;
-            });
-
-
-
-
-        $scope.$apply();
 
 
         /*
@@ -228,13 +200,13 @@ define(['wa111/apiFunction'], function(apiFunction) {
         this.changeColor = function(r) {
             r.$id = "#" + this.$id;
             r.sequel = this.user.sequel;
-            if (r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
-            if (r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
-            if (r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
+            if(r.list_Accounts && r.list_Accounts.length) { this.color = "pink"; };
+            if(r.f_blacklist == 17 || r.IsBlackList == true) { this.color = "black" };
+            if(r.f_id == r.sequel || r.MNO == r.sequel) { this.color = "brown" };
         };
 
         this.setPopup = function(r) {
-            if (r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
+            if(r.list_Accounts && r.list_Accounts.length) { setTimeout((popupId) => { $(popupId).popup({ html: $(popupId).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, r.$id); };
         }
 
         this.showSemanticModal = function(s) {

@@ -11,7 +11,7 @@
             <i class="handshake outline icon"></i>开通</a>
 
 
-        <a class="item"  ng-click="sendSms($event)" status="{{user.smss.status}}" ng-if="user.smss.status==9 || user.smss.status==401">
+        <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.sendsms.status==9 || user.sendsms.status==401">
             <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a>
     </div>
 </aside>

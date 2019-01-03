@@ -1,6 +1,7 @@
 define([], function() {
 
-    function smss(user) {
+    function sendsms(user) {
+        this.callee = "sendsms"
         this.command = 'apiFunctions.sendsms'
         this.requestUrl = 'http://client.motosms.com/smsc/smssend';
         this.mobile = '86' + user.mobile.value
@@ -8,12 +9,11 @@ define([], function() {
         this.channel = user.channel;
     }
 
+
     class User {
-
         constructor(args) {
-            return this.setUser(args)
+            return this.start(args)
         }
-
         getUserBasic({ $server, $origin, $unique, $channel, $account, $operator }) {
             this.server = $server;
             this.origin = $origin;
@@ -62,7 +62,7 @@ define([], function() {
                     $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
@@ -72,40 +72,33 @@ define([], function() {
             this.timing = [];
             this.equpmt = {};
             this.birthday = m.birthday;
-            this.author = { attr: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
-            this.locate = { attr: 'locate', title: m.lblIp, value: m.lblIp };
-            this.mobile = { attr: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
-            this.idcard = { attr: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
+            this.author = { callee: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
+            this.locate = { callee: 'locate', title: m.lblIp, value: m.lblIp };
+            this.mobile = { callee: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
+            this.idcard = { callee: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
             this.banker = [
-                { attr: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111, city: m.ddlCityArea, prov: m.ddlCity } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2, city: m.ddlCityArea2, prov: m.ddlCity2 } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3, city: m.ddlCityArea3, prov: m.ddlCity3 } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4, city: m.ddlCityArea4, prov: m.ddlCity4 } },
-                { attr: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
+                { callee: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111, city: m.ddlCityArea, prov: m.ddlCity } },
+                { callee: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2, city: m.ddlCityArea2, prov: m.ddlCity2 } },
+                { callee: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3, city: m.ddlCityArea3, prov: m.ddlCity3 } },
+                { callee: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4, city: m.ddlCityArea4, prov: m.ddlCity4 } },
+                { callee: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
             ];
         }
 
-        setUser(args) {
+        start(args) {
             return Promise.all([
                 this.getUserBasic(args), this.getUserModel(args),
                 this.getUserState(args), this.getUserStore(args),
                 this.getPhoneDate(args), this.getSystemLog(args),
             ]).then(() => {
-                this.smss = new smss(this);
-                this.locate.active = true;
-                this.mobile.active = true;
-                this.idcard.active = true;
-                this.author.active = false;
-                this.banker.map((x) => {
-                    return x.active = false;
-                });
+                this.sendsms = new sendsms(this);
                 return this;
             })
         }
     }
 
 
-    async function $setUser(args) {
+    async function $defUser(args) {
         var user =
             await args.$getUser() ||
             await new User(args);
@@ -113,12 +106,18 @@ define([], function() {
     }
 
 
-    return { $setUser };
+    return { $defUser };
 });
 
 
 
-
+/*this.locate.active = true;
+               this.mobile.active = true;
+               this.idcard.active = true;
+               this.author.active = false;
+               this.banker.map((x) => {
+                   return x.active = false;
+               });*/
 
 
 /*

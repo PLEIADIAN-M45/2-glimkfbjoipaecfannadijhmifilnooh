@@ -20,9 +20,15 @@ if(window.MockType == true) {
     Mock.mock(/(wa111\.net)/, 'get', function(req) {
         var url = new URL(req.url);
         var searchParams = url.searchParams.delete('_');
+        //console.log(url);
+        //console.log(searchParams);
+
         for(let x of entries) {
             var _url = new URL(x.request.url);
+            //console.log(_url);
             _url.searchParams.delete('_');
+            //console.log(url.href, _url.href);
+
             if(url.href == _url.href) {
                 //console.log(x.response.content.text);
                 return Mock.mock(angular.fromJson(x.response.content.text))

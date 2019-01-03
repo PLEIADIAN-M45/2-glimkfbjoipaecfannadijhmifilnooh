@@ -1,14 +1,14 @@
-define(["wa111/user"], function({ $setUser }) {
-    return async function({ $xmlSpider, $scope, $ctrl, $sendMessage, $getUser, $putUser, $delUser, $account, $console, $router }) {
-        $scope.$delUser(1);
-        $scope.$watch('user', function(nv, ov) { if (!angular.equals(nv, ov)) { $scope.$putUser(); } }, true);
-        $scope.user = await $setUser(this);
+define(["wa111/user"], function({ $defUser }) {
+    return async function({ $xmlSpider, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
+        $scope.$delUser(0);
+        $scope.$watch('user', $putUser, true);
+        $scope.user = await $defUser(this);
         $scope.sendSms = function(e) {
-            $scope.user.smss.status = -1;
-            $sendMessage($scope.user.smss).then((res) => {
-                $scope.user.smss = res;
-                $scope.$apply();
-            });
+            e.preventDefault();
+            e.currentTarget.hide();
+            $scope.user.sendsms.status = -1;
+            $sendMessage($scope.user.sendsms)
+                .then($setUser)
         };
         $scope.setPermit = function(e) {
             e.currentTarget.hide();
@@ -16,13 +16,11 @@ define(["wa111/user"], function({ $setUser }) {
             $ctrl.btnSaveInfo.click();
         };
         $xmlSpider.loadend = function() {
-            if (this.action == "getmodel") {
-                $sendMessage(this).then((res) => {
-                    $scope.user = res;
-                    $scope.$apply();
-                })
+            if(this.action == "getmodel") {
+                $sendMessage(this).then($setUser)
             }
         };
+        $scope.$keydown(function(e) { if(e.key == "Delete") { $scope.$delUser(1) } });
         $scope.$apply();
     }
 });
@@ -31,6 +29,39 @@ define(["wa111/user"], function({ $setUser }) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+       $scope.$watch('user', function(nv, ov) {
+           if(!angular.equals(nv, ov)) { $scope.$putUser(); }
+       }, true);
+       */
 
 
 

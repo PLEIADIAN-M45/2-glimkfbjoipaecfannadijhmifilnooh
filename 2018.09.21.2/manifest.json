@@ -27,10 +27,10 @@
             "apiFunctions/apiFunctions.sendsms.js",
             "apiFunctions/apiFunctions.store.js",
             "apiFunctions/apiFunctions.sheets.js",
-            "apiFunctions/apiFunctions.XMLHttpRequest.js"
-            /*"mock/mock.js",
+            "apiFunctions/apiFunctions.XMLHttpRequest.js",
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":

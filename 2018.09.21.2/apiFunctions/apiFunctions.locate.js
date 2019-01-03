@@ -8,42 +8,45 @@ var regex = {
 }
 
 
-apiFunctions.locate = function() {
+apiFunctions.locate = function(sender, sendResponse) {
     return $.ajax({ url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", dataType: "json", data: { "query": this.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time } }).then((res) => {
         console.log(res);
-        if (res.status == 0) {} else { return {} };
+        if(res.status == 0) {} else { return {} };
         var arr = res.data[0].location.split(' ');
         var region = { meta: arr[1] };
         var string = arr[0];
 
-        if (string) {
+        if(string) {
             var re = new RegExp(regex.country, 'g');
             string = string.replace(re, '');
             region.country = RegExp.$1;
         }
 
-        if (string) {
+        if(string) {
             string = string.replace(/(.+(省|自治区))/g, '');
             region.prov = RegExp.$1;
         }
 
-        if (string) {
+        if(string) {
             string = string.replace(/(.+(市|州))/g, '');
             region.city = RegExp.$1;
         }
 
-        if (string) {
+        if(string) {
             string = string.replace(/(.+(县|区))/g, '');
             region.area = RegExp.$1;
         }
 
+        region = region;
         region.alert = region_compare(region)
-        //console.log(search);
-        //search.region.compare(region);
-        this.region = region;
-        return this;
+        //return this;
+        sendResponse(region)
+
     })
 }
+
+//console.log(search);
+//search.region.compare(region);
 
 
 
