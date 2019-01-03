@@ -1,7 +1,5 @@
 var CHK = {
     author: function(value) {
-
-    	
         console.log(value);
         console.log(localStorage.author);
         console.log(decoder(localStorage.author));
@@ -9,7 +7,6 @@ var CHK = {
         var cc = decoder(localStorage.author).find(([name]) => {
             return name == value
         })
-
         console.log(cc);
 
     }

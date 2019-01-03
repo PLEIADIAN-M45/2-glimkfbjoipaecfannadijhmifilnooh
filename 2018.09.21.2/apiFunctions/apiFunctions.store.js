@@ -22,6 +22,7 @@ const USER = {};
 evo.store = store;
 //console.log(evo.store);
 apiFunctions.store = {};
+
 evo.store.tables.forEach(function(table, index) {
     apiFunctions.store[table.name] = {
         del: function() {

@@ -1,15 +1,101 @@
-class Evolution {
+class stores {
     constructor() {
 
-    	/*
+    }
+}
+
+var store = new Dexie('evo');
+store.version(5).stores({ user: 'unique', GB2260: 'code' });
+
+/*store.tables.forEach((table) => {
+    console.log(table);
+
+})
+*/
+
+class ApiFunctions {
+    constructor() {
+        //store
+        this.store = store;
+    }
+}
+
+
+
+
+
+
+
+class Evolution {
+    constructor() {
+        //super();
+        /*
         this.clear();
         this.download();
         */
+        //Object.entries(localStorage).forEach(this.decoder)
+    }
 
-        Object.entries(localStorage).forEach(this.decoder)
+    /* set _store(_store) {
+         _store.version(6).stores({ user: 'unique' });
+         _store.store.tables.forEach(function(table, index) {
 
 
+             apiFunctions.store[table.name] = {
+                 del: function() {
+                     return evo.store[table.name].where("unique").equals(this.params).delete().then(() => {
+                         console.log("Database successfully deleted");
+                     })
+                 },
+                 put: function() {
+                     //console.log(this);
+                     //USER[this.params.unique] = this.params;
+                     //console.log(this.params);
+                     //console.log(table.name, this.params);            
+                     return evo.store[table.name].put(this.params).then(() => {
+                         //console.log('put', Date.now());
+                         return this.params
+                     })
+                 },
+                 get: function() {
+                     return evo.store[table.name].get(this.params).then((res) => { return res })
+                 }
+             }
 
+         });
+
+
+         this.store = _store;
+         //user: 'sequel',
+     }
+
+     get _store() {
+         return this.store;
+     }
+     */
+
+
+    onMessage(request, sender, sendResponse) {
+
+    }
+
+    onMessageExternal(request, sender, sendResponse) {
+        console.log("command:", request.command);
+
+        try {
+            var promise = eval(request.command)
+                .apply(request, sender, sendResponse)
+                .then(sendResponse);
+
+            /*
+             .bind(request);
+             promise(sender, sendResponse).then(sendResponse);
+             */
+
+        } catch (ex) {
+            //console.error(request);
+        }
+        return true;
     }
 
     entries() {
@@ -82,8 +168,33 @@ class Evolution {
 //chrome_settings.forEach(createTabs)
 
 
+var apiFunctions = new ApiFunctions()
+
+console.log(apiFunctions);
+
+var c = apiFunctions.store.user.get("JIABO1006-26").then((user) => {
+    console.log(user);
+})
+console.log(c);
+
+
+var _command = "apiFunctions.store.user.get"
+
+var promise = eval(_command).call(store.user, { unique: "JIABO1006-26" }).then((user) => {
+    console.log(user);
+})
+//.call({ unique: "JIABO1006-26" })
+
+console.log(promise);
+
+/*
+.bind(request);
+promise(sender, sendResponse).then(sendResponse);
+*/
+
 
 const evo = new Evolution();
+console.log(evo);
 
 
 /*
@@ -93,4 +204,10 @@ console.log(angular);
 console.log(Evolution);
 */
 
-console.log(evo);
+
+
+
+
+
+
+chrome.runtime.onMessageExternal.addListener(evo.onMessageExternal)
