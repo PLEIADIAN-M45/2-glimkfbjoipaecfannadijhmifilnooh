@@ -16,6 +16,8 @@ define([], function() {
         "astropaywithdrawals": "cash",
         "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
         "device": "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+
+        
     }
 
     if(window.location.hostname == "127.0.0.1") {

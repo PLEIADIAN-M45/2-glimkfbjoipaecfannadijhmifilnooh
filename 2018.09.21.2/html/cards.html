@@ -1,19 +1,18 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunctions.region(me)">
-
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunctions.region.call(me, this)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.active}" ng-click="apiFunctions.region(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{'loading':me.region.active}" ng-click="apiFunctions.region.call(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
             <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content result">
-            <div class="ui dimmer" ng-class="{'active': me.active }">
+            <div class="ui dimmer" ng-class="{'active': me.region.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
             <div class="header padded">
@@ -31,20 +30,20 @@
             </div>
         </div>
         <div class="extra content grid grid-4" ng-if="me.callee!='locate'">
-            <div ng-repeat="s in me.sites" ng-init="apiFunctions.member(s)">
+            <div ng-repeat="s in me.sites" ng-init="apiFunctions.member.call(s, this)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member(s, $event);" ng-disabled="s.index==1 || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member.call(s, this, $event)" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="s.active"><b ng-show="s.member.records">{{s.member.index}}/</b>{{s.member.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member(s, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member.call(s, this, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
-                <div class="ui image label pointer" ng-repeat="row in s.member.rows" ng-click="openMemberModify(row, s)" ng-init="changeColor(row);" ng-class="[color]" id="{{$id}}">
+                <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row, s)" ng-init="changeColor.call(row, this);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
-                    <aside class="hidden" ng-init="setPopup(row)" title="警示訊息">
-                        <table class="ui celled selectable striped collapsing table inverted pink small" name="{{popupId}}">
+                    <aside class="hidden" ng-init="setPopup.call(row, this)" title="警示訊息">
+                        <table class="ui celled selectable striped collapsing table inverted pink small" name="{{$id}}">
                             <thead>
                                 <th>警示帐号</th>
                                 <th>汇款户名</th>

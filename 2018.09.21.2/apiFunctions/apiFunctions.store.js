@@ -30,6 +30,7 @@ evo.store.tables.forEach(function(table, index) {
             })
         },
         put: function() {
+            console.log(this);
             //USER[this.params.unique] = this.params;
             //console.log(this.params);
             //console.log(table.name, this.params);            

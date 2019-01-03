@@ -1,24 +1,34 @@
+apiFunctions.getMemberAlertInfoBackend = function(rows, _url) {
+    return $.ajax({
+        "method": 'post',
+        "dataType": 'json',
+        "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+        "data": angular.toJson({ "DisplayArea": "1", "Account": rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } }) })
+    })
+}
+
+
+
 apiFunctions.member = function() {
 
+    //if (this.value == "") { return Promise.resolve({}) }
+    //if (this.value.includes('*')) { return Promise.resolve({}) }
+    
+    if (this.callee == "locate") { return Promise.resolve({}) }
+    if (!this.url) { return Promise.reject({}) }
 
 
-    if(this.value == "") { return Promise.resolve({}) }
-    if(this.value.includes('*')) { return Promise.resolve({}) }
-    if(this.callee == "locate") { return Promise.resolve({}) }
-    if(!this.url) { return Promise.reject({}) }
-
+    /*
     this.idcard = this.idcard || "";
     this.author = this.author || "";
     this.mobile = this.mobile || "";
     this.banker = this.banker || "";
-
     this[this.callee] = this.value;
+    */
 
 
+    if (this.host == "ku711") {
 
-
-
-    if(this.host == "ku711") {
         return $.ajax({
             "dataType": 'json',
             "method": 'post',
@@ -26,18 +36,29 @@ apiFunctions.member = function() {
             "data": JSON.stringify({ "AccountID": "", "IDNumber": this.idcard, "RigistedIP": "", "TotalDepositAmount": null, "AccountNumber": "", "AccountName": this.author, "Email": "", "PhoneVerified": null, "IDVerified": null, "MinDeposit": null, "MaxDeposit": null, "StartRegistedTime": "", "EndRegistedTime": "", "PageNumber": this.index - 1, "RecordCounts": 20, "OrderField": "", "Desc": "true", "TotalDepositBonus": null, "AccountBookLevel": "", "AliPayLevel": "", "WeChatLevel": "", "CellPhone": this.mobile, "IsBlackList": null, "LevelType": null, "MemberStatus": null, "IsFisrstDeposit": null, "MemberMemoType": null, "TransferOutStatus": null, "IsLogIn": null, "AgencyID": "", "TestType": null, "PayeeAccountNo": this.banker, "LineType": "", "AccountingType": null, "ManageAccountID": "", "NickName": "" })
         }).then(({ Data }) => {
             var res = { origin: this.url, "rows": Data.Data, "records": Data.Pager.PageCount, "total": Data.TotalItemCount, "index": this.index };
-            if(res.rows && res.rows.length) {
-                return apiFunctions.getMemberAlertInfoBackend(res.rows).then((d) => {
+            if (res.rows && res.rows.length) {
+
+                /*
+                res.rows.map((row) => {
+                    row.origin = this.url;
+                    row.host = this.host;
+                    return row
+                })
+                */
+
+                return apiFunctions.getMemberAlertInfoBackend(res.rows, this.url).then((d) => {
                     res.list_RemittanceName = d.Data.AlertInfoAccountName;
                     res.rows.map((x) => { x.list_Accounts = d.Data.AlertInfoAccountId.filter((d) => { return x.AccountID == d.AccountID }); return x; })
-                    return res;
+                    return Object.assign(this, res);
                 });
-            } else { return res; }
+
+
+
+            } else { return Object.assign(this, res); }
         })
     }
 
-    console.log(this);
-    if(this.host == "wa111") {
+    if (this.host == "wa111") {
         return $.ajax({
             "dataType": 'json',
             "url": this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
@@ -70,26 +91,25 @@ apiFunctions.member = function() {
                 "_": this.time
             }
         }).then((res) => {
+            /*
+            res.rows.map((row) => {
+
+                row.origin = this.url;
+                row.host = this.host
+                return row
+            });
+            */
             res.origin = this.url;
             res.index = this.index;
             res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
-            return res;
+            return Object.assign(this, res);
         })
     }
 }
 
 
-apiFunctions.getMemberAlertInfoBackend = function(rows) {
-    return $.ajax({
-        "method": 'post',
-        "dataType": 'json',
-        //"url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-        "url": '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-        "data": angular.toJson({ "DisplayArea": "1", "Account": rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } }) })
-    })
-}
 
-
+//"url": 'https://bk.ku711.net/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
 
 
 

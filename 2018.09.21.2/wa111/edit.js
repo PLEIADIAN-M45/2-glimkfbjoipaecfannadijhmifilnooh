@@ -22,6 +22,8 @@ define(["wa111/user"], function({ $defUser }) {
         };
         $scope.$keydown(function(e) { if(e.key == "Delete") { $scope.$delUser(1) } });
         $scope.$apply();
+
+        console.log($scope.user);
     }
 });
 

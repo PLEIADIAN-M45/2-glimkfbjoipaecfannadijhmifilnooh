@@ -83,6 +83,7 @@ body {
   margin: 2px;
   padding: 0;
   line-height: 28px;
+  min-width: 76px;
   text-align: left; }
   .ui.image.label .angle.icon,
   .ui.image.label.visible .angle.icon {

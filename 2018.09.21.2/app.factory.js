@@ -71,7 +71,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         //var _user;
         var $putUser = function(nv, ov) {
             if(angular.equals(nv, ov)) { return };
-            //console.log(nv);
+            //console.log(nv);            
             return $sendMessage({ command: 'apiFunctions.store.user.put', params: nv })
                 .then((user) => {
                     //console.log('putUser:', user);

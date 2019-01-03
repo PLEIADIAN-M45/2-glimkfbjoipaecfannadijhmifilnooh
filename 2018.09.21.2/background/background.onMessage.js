@@ -1,6 +1,15 @@
 chrome.runtime.onMessage.addListener(response_message)
 chrome.runtime.onMessageExternal.addListener(response_message)
 
+
+window.baseUrl = {
+    "0": "http://chrome.evo.net",
+    "26": "http://host26.wa111.net",
+    "35": "http://host35.wa111.net",
+    "17": "http://host17.wa111.net",
+    "16": "https://bk.ku711.net"
+}
+
 function response_message(request, sender, sendResponse) {
 
     var params = $serialize(sender);
