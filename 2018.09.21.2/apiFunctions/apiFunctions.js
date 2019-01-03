@@ -1,10 +1,15 @@
 var host = { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" };
 
+
+
+
+
 var { author, locate, mobile, banker, region, danger, notice } = localStorage;
+
 var search = { author, locate, mobile, banker, region, danger, notice };
+
 for (var key in search) { search[key] = decoder(search[key]) };
 
-console.log(search);
 
 
 
@@ -28,6 +33,14 @@ function region_compare(region) {
 }
 
 
+console.log(search);
+
+search.author.compare2 = function(param) {
+
+
+    console.log(this);
+
+}
 
 
 

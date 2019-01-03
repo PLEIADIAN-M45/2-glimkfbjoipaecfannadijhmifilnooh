@@ -41,7 +41,6 @@ define(["app.router"], function(Router) { /*  Router return $router  */
 
         $loadModule() {
             //console.log(angular.element('html').scope(), var2);
-
             let MODULE_PATH = this.$server + '/' + this.$module;
             //console.log(MODULE_PATH);
             requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
@@ -50,8 +49,7 @@ define(["app.router"], function(Router) { /*  Router return $router  */
                     this.$injectComponents();
                     this.$invoke(Factory, this);
                     module.call(this, this);
-
-                    console.log("[OK]", this.$module);
+                    //console.log("[OK]", this.$module);
                     //this.$invoke(module, this);
                     //module.apply(self, [this])
 

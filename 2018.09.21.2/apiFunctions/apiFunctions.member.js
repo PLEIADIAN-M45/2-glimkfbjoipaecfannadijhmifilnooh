@@ -8,23 +8,21 @@ apiFunctions.getMemberAlertInfoBackend = function(rows, _url) {
 }
 
 
+/*
+this.idcard = this.idcard || "";
+this.author = this.author || "";
+this.mobile = this.mobile || "";
+this.banker = this.banker || "";
+this[this.callee] = this.value;
+*/
+
 
 apiFunctions.member = function() {
-
     //if (this.value == "") { return Promise.resolve({}) }
     //if (this.value.includes('*')) { return Promise.resolve({}) }
-    
-    if (this.callee == "locate") { return Promise.resolve({}) }
     if (!this.url) { return Promise.reject({}) }
+    if (this.callee == "locate") { return Promise.resolve({}) }
 
-
-    /*
-    this.idcard = this.idcard || "";
-    this.author = this.author || "";
-    this.mobile = this.mobile || "";
-    this.banker = this.banker || "";
-    this[this.callee] = this.value;
-    */
 
 
     if (this.host == "ku711") {

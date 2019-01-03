@@ -52,10 +52,11 @@ function trim(value) { return value.toString().trim(); }
 
 function s(array) { console.log(array); }
 
-
-chrome.storage.sync.get(null, function(items) { //console.log(items);
+/*
+chrome.storage.sync.get(null, function(items) {
+    //console.log(items);
 })
-
+*/
 
 
 
@@ -86,11 +87,10 @@ function _toLocalStorage(res) {
 }
 
 function _toJson(res) { return res.json() }
-
 function _toText(res) { return res.text() }
 
-function flat(array) { return array.flat(); }
 
+function flat(array) { return array.flat(); }
 function save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
 
 var chrome_settings = [
@@ -100,10 +100,10 @@ var chrome_settings = [
 ]
 
 function download() {
+
     if (window.localStorage.length < 5) {
 
         chrome_settings.forEach(createTabs)
-
 
         return Promise.all([
             fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMA').then(_toJson),
