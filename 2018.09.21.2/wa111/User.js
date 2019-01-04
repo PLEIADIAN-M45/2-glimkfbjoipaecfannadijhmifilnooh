@@ -16,30 +16,11 @@ define([], function() {
             return this.start($scope);
         }
 
-        save() {
-            console.log(this);
-            //eval:'store.user.put(#)'
-            return $sendMessage({ command: 'store.user.put(#user)', user: this })
-                .then((user) => {
-                    console.log(user);
-                    //console.log('putUser:', user);
-                    return user;
-                })
-        }
-
-        getUserBasic() {
+        getUserBasic({ server, origin, unique, channel, account, operator }) {
+            //var { $server, $origin, $unique, $channel, $account, $operator } = arguments[0];
             console.log(1);
-            var { $server, $origin, $unique, $channel, $account, $operator } = arguments[0];
-            //Object.assign(this, { $server, $origin, $unique, $channel, $account, $operator })
-            this.server = $server;
-            this.origin = $origin;
-            this.unique = $unique;
-            this.channel = $channel;
-            this.account = $account;
-            this.operator = $operator;
-            //console.log("----------");
+            Object.assign(this, { server, origin, unique, channel, account, operator })
         }
-
 
         getUserModel({ $model }) {
             console.log(2);
@@ -64,9 +45,9 @@ define([], function() {
             this.status = [ctrl.ishow.value];
             this.permit = [ctrl.isOpenDeposit.value];
         }
-        getUserStore({ $dexie, $account }) {
+        getUserStore({ $dexie, account }) {
             console.log(4);
-            return $dexie.user.get($account)
+            return $dexie.user.get(account)
                 .then((d) => {
                     this.sequel = d.f_id;
                     this.attach = d.f_joindate;
@@ -80,11 +61,11 @@ define([], function() {
                     this.banker = this.banker.filter((a) => { return a.value });
                 });
         }
-        getPhoneDate({ $ajax, $account }) {
+        getPhoneDate({ $ajax, account }) {
             console.log(5);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
-                data: "type=getPhoneDate&account=" + $account
+                data: "type=getPhoneDate&account=" + account
             }).then(([d]) => {
                 //console.log(d);
                 this.mobile.value = d.f_photo;
@@ -94,21 +75,19 @@ define([], function() {
             });
         }
 
-        getSystemLog({ $ajax, $account }) {
+        getSystemLog({ $ajax, account }) {
             console.log(6);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" +
-                    $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
+                    account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
-
-
 
         start($scope) {
             return Promise.all([
@@ -116,6 +95,7 @@ define([], function() {
                 this.getUserState($scope), this.getUserStore($scope),
                 this.getPhoneDate($scope), this.getSystemLog($scope),
             ]).then(() => {
+                console.log(this);
                 this.sendsms = new sendsms(this);
                 return this;
             })
@@ -125,7 +105,8 @@ define([], function() {
 
     async function $defUser($scope) {
         var user =
-            await $scope.$getUser() || await new User($scope);
+            await $scope.$getUser() ||
+            await new User($scope);
         return user;
     }
 
@@ -133,6 +114,42 @@ define([], function() {
     return { $defUser };
 });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+        save() {
+            console.log(this);
+            //eval:'store.user.put(#)'
+            return $sendMessage({ command: 'store.user.put(#user)', user: this })
+                .then((user) => {
+                    console.log(user);
+                    //console.log('putUser:', user);
+                    return user;
+                })
+        }
+ /*
+            this.server = $server;
+            this.origin = $origin;
+            this.unique = $unique;
+            this.channel = $channel;
+            this.account = $account;
+            this.operator = $operator;
+         
+        //console.log("----------");
+
+        */
 
 
 /*this.locate.active = true;

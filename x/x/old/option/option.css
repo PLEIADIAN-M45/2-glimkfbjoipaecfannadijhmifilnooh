@@ -1,0 +1,173 @@
+b.chinese {
+    font-family: Roboto, Microsoft Yahei;
+    color: #FFF!important;
+}
+
+
+input {
+    font-weight: bold!important;
+    font-family: Roboto!important;
+}
+
+
+body {
+    text-align: center;
+    margin: 0 auto;
+    background-color: #212121;
+    color: #fff;
+    padding: 10px;
+}
+
+.email {
+    font-family: Roboto!important;
+}
+
+.status {
+    color: #000;
+    font-family: 'Microsoft YaHei';
+    font-size: 12px!important;
+    background-color: #6afb8c!important;
+    font-weight: bold;
+}
+
+
+.hide {
+    display: none!important;
+}
+
+
+
+pre {
+    font-family: "DejaVu Sans Mono"!important;
+    text-align: left;
+}
+
+
+
+.ui.slider.checkbox input:checked~.box:before,
+.ui.slider.checkbox input:checked~label:before {
+    background-color: #fbbd08 !important;
+}
+
+
+.ui.slider.checkbox input:checked~label {
+    color: #fbbd08!important;
+}
+
+
+.ui.dropdown .text {
+    width: 150px;
+}
+
+
+
+
+
+
+/*
+body {
+    font-family: Lato, Microsoft Yahei!important;
+}
+
+.mdl-radio__label {
+    font-family: Roboto, Microsoft Yahei!important;
+    font-size: 18px;
+}
+*/
+
+table {
+    margin: 0 auto;
+}
+
+.ui.button {
+    margin-right: 0em;
+}
+
+.ui.input input,
+.ui.button {
+    border-radius: 0px;
+    height: 32.2813px;
+}
+
+
+label.bold-12 {
+    font-weight: bold;
+    font-size: 10px;
+}
+
+
+.item {
+    font-size: 12px!important;
+}
+
+
+
+
+.sync.alternate.icon.rotate {
+    width: auto;
+    height: auto;
+    margin-right: 0px;
+    line-height: auto;
+    -webkit-animation: rotate 3s infinite linear;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        -moz-transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+        -webkit-transform: rotate(360deg);
+        -moz-transform: rotate(360deg);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* 
+i.flag:not(.icon):before {
+    zoom: 1.6!important;
+} */

@@ -11,18 +11,6 @@ define(["wa111/user"], function({ $defUser }) {
 
         $scope.user = await $defUser(this);
 
-
-
-
-        //$scope.user.save();
-        //var user = await $getUser()
-        /*
-        setTimeout(() => {
-            $scope.user.momm = 2132223;
-            $scope.$apply();
-        }, 2000)
-        */
-
         $scope.sendSms = function(e) {
             e.preventDefault();
             e.currentTarget.hide();
@@ -36,17 +24,26 @@ define(["wa111/user"], function({ $defUser }) {
             $ctrl.btnSaveInfo.click();
         };
 
-        console.log($now);
+        $scope.setPermit2 = function(e) {
+            $sendMessage({
+                command: "api.google(...arguments)",
+                user: $scope.user
+            }).then((s) => { c(s) })
+
+        }
+
 
         $xmlSpider.loadend = function() {
-            if(this.action == "getmodel") {
+
+            if (this.action == "getmodel") {
+
                 with(this.respData) {
                     $scope.user.status.push(f_ishow);
                     $scope.user.permit.push(f_depositStatus);
                     $scope.user.timing.push($now);
                     $scope.user.sendsms.status = 9;
-                    $scope.$apply();
-                    if($scope.user.status[0] == 3) {
+
+                    if ($scope.user.status[0] == 3) {
                         $scope.user.module = "authorize"
                         //$scope.user.command = "google:scripts.authorize"
                     } else {
@@ -54,23 +51,28 @@ define(["wa111/user"], function({ $defUser }) {
                         //$scope.user.command = "google:scripts.suspended"
                     }
 
-                    $sendMessage({
-                        command: "api.google(...arguments)",
-                        user: $scope.user
+                    // $setUser();
 
-                    }).then((s) => { c(s) }).then($setUser)
+
+
 
 
                 }
 
-
-
-
                 //$sendMessage(this).then((s) => { c(s) }).then($setUser)
             }
         };
-        $scope.$keydown(function(e) { if(e.key == "Delete") { $scope.$delUser(1) } });
+
+
+        $scope.$keydown(function(e) { if (e.key == "Delete") { $scope.$delUser(1) } });
         $scope.$apply();
+
+        console.clear();
+
+        console.log($scope.user);
+
+        console.log($now);
+
 
     }
 });
@@ -82,6 +84,15 @@ define(["wa111/user"], function({ $defUser }) {
 
 
 
+
+//$scope.user.save();
+//var user = await $getUser()
+/*
+setTimeout(() => {
+    $scope.user.momm = 2132223;
+    $scope.$apply();
+}, 2000)
+*/
 
 
 

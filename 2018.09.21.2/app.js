@@ -2,7 +2,6 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
     class App extends Router {
         constructor() {
             super();
-            console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
             this.$name = "OBSApp";
             this.$ctrlId = "View";
             this.$isTest = (window.location.hostname == "127.0.0.1");
@@ -10,7 +9,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
             this.$forms = document.forms;
             this.$form = document.forms[0];
             this.$referrer = document.referrer;
-            this.$origin = location.origin;
+            this.origin = location.origin;
         }
 
         get $window() { return window }
@@ -31,6 +30,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
         }
 
         $bootstrap(app) {
+
             if(this.$module == undefined) { return }
             //console.log('*****', this.$module);
             if(window.angular) { return this.$loadModule(); } else {
@@ -46,8 +46,8 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
 
         $loadModule() {
             //console.log(angular.element('html').scope(), var2);
-            let MODULE_PATH = this.$server + '/' + this.$module;
-            //console.log(MODULE_PATH);
+            let MODULE_PATH = this.server + '/' + this.$module;
+            console.log(MODULE_PATH);
             requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
                 try {
                     this.$injectStylesheet();
@@ -69,7 +69,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
 
             if(!this.stylesheet) { return false };
 
-            this.stylesheet.map((str) => { return this.$rootUrl + "css/" + str + ".css"; }).map((src) => {
+            this.stylesheet.map((str) => { return this.rootUrl + "css/" + str + ".css"; }).map((src) => {
 
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
@@ -78,7 +78,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
         $injectComponents() {
             return new Promise((resolve, reject) => {
                 if(this.components) {
-                    this.components.map((str) => { return this.$rootUrl + "html/" + str + ".html"; }).map((src) => {
+                    this.components.map((str) => { return this.rootUrl + "html/" + str + ".html"; }).map((src) => {
                         fetch(src)
                             .then((res) => { return res.text(); })
                             .then((html) => {

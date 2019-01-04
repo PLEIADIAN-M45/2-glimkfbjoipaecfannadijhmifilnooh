@@ -1,150 +1,120 @@
-class stores {
-    constructor() {
-
-    }
-}
-
-
-/*
-get: function(keyOrCrit, cb) {
-        if(keyOrCrit && keyOrCrit.constructor === Object)
-            return this.where(keyOrCrit).first(cb);
-        var self = this;
-        return this._idbstore(READONLY, function(resolve, reject, idbstore) {
-            var req = idbstore.get(keyOrCrit);
-            req.onerror = eventRejectHandler(reject);
-            req.onsuccess = wrap(function() {
-                resolve(self.hook.reading.fire(req.result));
-            }, reject);
-        }).then(cb);
-    },*/
-
-
-function cb(value) {
-    console.log(value);
-}
-
-async function exec() {
-
-    var store = new Dexie('evo');
-    store.version(5).stores({ user: 'unique', GB2260: 'code' });
-    /*store.tables.forEach((table) => {    console.log(table);})*/
-    var _command = "store.user.get('JIABO1006-26')";
-
-    eval(_command).then(cb)
-
-    return
-
-    eval(_command).call(store.user, { unique: "JIABO1006-26" })
-        .then((user) => { console.log(user); })
-
-    console.log(store);
-
-    //get: ƒ (keyOrCrit, cb)
-    //where: ƒ (indexOrCrit)
-
-    store.user.get("JIABO1006-26", cb)
-    store.user.get("JIABO1006-26").then(cb)
-
-    return
-    var c = await store.user.get("JIABO1006-26")
-    console.log(c);
-    store.user.get("JIABO1006-26").then((user) => {
-        console.log(user);
-    })
-
-
-}
-
-//exec()
-
-//.call({ unique: "JIABO1006-26" })
-
-
-
-/*
-class Store {
-    constructor() {
-
-        this.user = store.user
-    }
-
-
-
-    put(a) {
-        console.log(12, a);
-
-    }
-}
-*/
-/*
-function Store() {
-
-}
-
-Store.prototype.user = store.user
-*/
-
-
-class ApiFunctions {
-    constructor() {
-        //store.
-        //super();
-        //this.store = store;
-        // console.log(store.user);
-    }
-
-    get store() {
-        return {
-            user: {
-                put: function(request) {
-                    console.log(request);
-                    return store.user.put(request.user).then(() => {
-                        return "OK"
-                    })
-                }
-
-            }
-
-        }
-    }
-
-    get XMLHttpRequest() {
-
-    }
-}
-
-var store = new Dexie('evo');
+/*var store = new Dexie('evo');
 store.version(5).stores({ user: 'unique', GB2260: 'code' });
 console.log(store);
-
-/*
-api = {};
-api.store = new Dexie('evo');
-api.store.version(5).stores({ user: 'unique', GB2260: 'code' });
 */
 
+var GLOBAL = {};
 
-class xmlHttp {
-    getmodel() {
-        console.log(this);
+
+function decoder(value) {
+    try {
+        var str = decodeURI(atob(value))
+        return angular.fromJson(str)
+    } catch (ex) {
+        return null;
     }
 }
 
+function s(res) {
+    console.log(res);
+    return res
+}
 
-//var xmlSpider = new XmlSpider();
-/*function xmlHttp() {
-    console.log(arguments);
-}*/
+/*
+const getProfileUserInfo = function() {
+    return new Promise(function(resolve, reject) {
+        chrome.identity.getProfileUserInfo(resolve)
+    })
+}
 
-class Api {
+const getTokenInfo = function(token) {
+    return new Promise(function(resolve, reject) {
+        if(token) {
+            $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
+                access_token: token
+            }, function(tokenInfo) {
+                localStorage.tokenInfo = angular.toJson(tokenInfo, true)
+                window.tokenInfo = tokenInfo
+                resolve()
+            }).fail(reject)
+        } else {
+            throw "without token";
+        }
+    })
+}
+
+const getCertForOpenIdConnect = function() {
+    return new Promise(function(resolve, reject) {
+        $.get('https://www.googleapis.com/oauth2/v2/certs', resolve)
+    })
+}
+*/
+
+console.log(chrome.identity);
+
+/*
+var c = chrome.identity.getRedirectURL()
+
+console.log(c);
+
+chrome.identity.getAuthToken({
+    "interactive": true
+}, (rs) => { console.log(rs); })
+*/
+
+function timeDiff(t1, t2, unit) {
+    t1 = moment(t1)
+    t2 = moment(t2)
+    return t2.diff(t1, unit, true);
+}
+
+class apis {
 
     constructor() {
         //super()
-        var store = new Dexie('evo');
-        store.version(5).stores({ user: 'unique', GB2260: 'code' });
-        this.store = store;
-        //this.user = store.user
+        this.store = new Dexie('evo');
+        this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
+        //this.download();
+        this.addListener();
+        this.getAuthToken();
+    }
+
+    getTokenInfo(token) {
+
+        console.log(token);
+        // api.toLocalStorage
+
+        if (token) {
+
+            $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
+                access_token: token
+            }, (tokenInfo) => {
+                console.log(this);
+                api.tokenInfo = tokenInfo;
+                //localStorage.tokenInfo = angular.toJson(tokenInfo, true);
+                //console.log(tokenInfo)
+            })
+
+        } else {
+            throw "without token";
+        }
+
+        //return new Promise((resolve, reject) => {})
+    }
+
+    getAuthToken() {
+        chrome.identity.getAuthToken({ "interactive": true }, this.getTokenInfo);
+        /*return new Promise((resolve, reject) => {
+
+        })*/
+    }
+
+    addListener() {
+        chrome.runtime.onMessageExternal.addListener(this.onMessageExternal)
+    }
+
+    onMessage(request, sender, sendResponse) {
+
     }
 
     onMessageExternal(request, sender, sendResponse) {
@@ -157,13 +127,24 @@ class Api {
             return true
         } catch (ex) { return ex; }
     }
+
     get audience() {
-        return angular.fromJson(localStorage.tokenInfo).audience
+        return this.tokenInfo.audience;
+        //return angular.fromJson(localStorage.tokenInfo).audience
+    }
+
+    get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
+
+    download() {
+        if (window.localStorage.length < 51) {
+            return Promise.all([
+                fetch(this.macros + '?commands=GMA').then(this.toJson),
+                fetch(this.macros + '?commands=GMB').then(this.toJson)
+            ]).then(this.flat).then(this.save).then((x) => { console.log(localStorage); })
+        }
     }
 
     google(request, sender, sendResponse) {
-        //console.log(request);
-
         var user = request.user;
         delete user.banker[0].sites;
         delete user.idcard.sites;
@@ -171,145 +152,36 @@ class Api {
         delete user.mobile.sites;
         delete user.author.sites;
         delete user.sendsms;
-
+        /*-------------------------------------*/
+        user.audience = this.audience;
+        user.test = true;
+        user.command = "google:scripts";
+        user.mobile.region = {}
+        user.idcard.region = {}
+        user.locate.region = {}
+        user.region = []
+        user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
+        user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
         console.log(user);
-
-
         $.ajax({
-            url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
+            url: this.macros,
             method: 'get',
-            data: angular.toJson(user)
-            /*
-            test: true,
-            audience: angular.fromJson(localStorage.tokenInfo).audience,
-            //command: request.command,
-            module: request.module,
-            params: angular.toJson(request)
-            */
-
+            data: {
+                test: true,
+                audience: this.audience,
+                command: "google:scripts",
+                module: user.module,
+                user: angular.toJson(user)
+            }
         }).then(function(d) { console.log(d); })
 
-
-
     }
-
-
-    //get user() { return store.user.get(this.unique) }
-    //getUser(unique) { return store.user.get(this.unique) }
-
-    async xmlHttp(request, sender, sendResponse) {
-        var { action, sendData, channel } = request;
-        var unique = sendData.account + "-" + channel;
-        var user = await this.user.get(unique);
-        //this.unique = unique;
-        //console.log(unique);
-
-        console.log(user);
-        //var user = await getUser(unique);
-
-        switch (action) {
-            case "getmodel":
-                console.log(sendData);
-
-                break;
-            case "getDepositBonusList":
-                break;
-            case "getDepositBonusList2":
-                break;
-            case "getDepositBonusList3":
-                break;
-
-        }
-
-
-        //sendResponse(2324)
-
-    }
-}
-
-
-
-//Api.prototype.xmlHttp = new XmlHttp();
-
-
-
-var api = new Api()
-//api.xmlHttp = new xmlHttp();
-
-console.log(api);
-
-/*
-api.store222 = {
-    user: {
-        get: function(request, sender, sendResponse) {
-            console.log(request);
-            //return store.user.get(request.unique)
-        },
-        put: function(r) {
-            console.log(r);
-        },
-        put: function() {
-
-        }
-    }
-
-}
-*/
-
-
-/*
-api.xmlHttp = function(request, sender, sendResponse) {
-
-    console.log(request);
-    console.log(this);
-
-
-        var mod = robot[this.action];
-
-        if(mod) {
-            console.log("[XMLHttpRequest]", this.action);
-            return mod.apply(this);
-        }
-
-    //return Promise.resolve(9582626)
-
-
-    var _robot = robot[this.action] || robot[this.type] || robot[this.lastPath];
-    if(_robot) { _robot.call(this); }
-    return Promise.resolve({});
-
-}
-*/
-/*
-api.XMLHttpRequest.getmodel = function(request, sender, sendResponse) {
-    console.log(xxxxxxxxx);
-}
-*/
-
-//console.log(store.user);
-
-
-class Evolution {
-
-    constructor() {
-        //super();
-        /*
-        this.clear();
-        this.download();
-        */
-        //Object.entries(localStorage).forEach(this.decoder)
-    }
-
-    onMessage(request, sender, sendResponse) {
-
-    }
-
 
     entries() {
         Object.entries(localStorage).forEach(([name, value]) => {
             //console.log(name);
             //console.log(this.decoder(value));
-            if(name) {
+            if (name) {
                 this.decoder(value, name)
             }
         })
@@ -319,9 +191,13 @@ class Evolution {
     clear() {
         localStorage.clear();
     }
+
     toLocalStorage(res) {
         console.log(res);
-        return res.forEach(([name, value]) => { localStorage[name] = value; })
+        if (typeof res)
+
+
+            return res.forEach(([name, value]) => { localStorage[name] = value; })
     }
 
     toJson(res) { return res.json() }
@@ -330,73 +206,74 @@ class Evolution {
 
     flat(arr) { return arr.flat(); }
 
-    save(arr) { arr.forEach(([name, value]) => { localStorage[name] = value; }) }
-
-    decoder([name, value]) {
-        try {
-            var str = decodeURI(atob(value))
-            console.log(angular.fromJson(str));
-        } catch (ex) {
-            console.error(name);
-        }
+    save(arr) {
+        arr.forEach(([name, value]) => {
+            localStorage[name] = value;
+            GLOBAL[name] = decoder(value);
+        });
+        console.log(GLOBAL);
     }
 
 
-    get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=" }
-
-    download() {
-        if(window.localStorage.length < 51) {
-            return Promise.all([
-                fetch(this.macros + 'GMA').then(this.toJson),
-                fetch(this.macros + 'GMB').then(this.toJson)
-                //fetch('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=GMB').then(this.toJson)
-            ]).then(this.flat).then(this.save).then((x) => {
-                this.entries()
-                console.log(localStorage);
-                return localStorage;
-            })
-        } else {
-
-        }
+    entries() {
+        Object.entries(localStorage).forEach(([name, value]) => {
+            if (name) {
+                this.decoder(value, name)
+            }
+        })
     }
 
+
+
+    async xmlHttp(request, sender, sendResponse) {
+        var { action, sendData, channel } = request;
+        var unique = sendData.account + "-" + channel;
+        //var user = await this.user.get(unique);
+        //this.unique = unique;
+        //console.log(unique);
+        console.log(user);
+        //var user = await getUser(unique);
+        switch (action) {
+            case "getmodel":
+                console.log(sendData);
+                break;
+            case "getDepositBonusList":
+                break;
+            case "getDepositBonusList2":
+                break;
+            case "getDepositBonusList3":
+                break;
+
+        }
+        //sendResponse(2324)
+    }
 }
 
+
+
+
+var api = new apis();
+console.log(api);
+
+
+
+
+
+
+class xmlHttp {
+    getmodel() {
+        console.log(this);
+    }
+}
+
+
+
+
 /*
-store.user.get('JIABO1006-26').then((s) => {
-    console.log(s);
-    return sendResponse(s)
-})
+    //url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
+test: true,
+audience: angular.fromJson(localStorage.tokenInfo).audience,
+//command: request.command,
+module: request.module,
+params: angular.toJson(request)
 */
-
-//const apiFunctions = new ApiFunctions();
-//const evo = new Evolution();
-
-
-chrome.runtime.onMessageExternal.addListener(api.onMessageExternal)
-
-/*
-chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
-    var obj = request.user;
-    var promise = eval(request.command)(obj).then(sendResponse);
-    console.log(promise);
-    return true
-})
-*/
-
-//console.log(apiFunctions);
-//console.log(evo);
-//console.log(store.user);
-
-
-
-
-// get: ƒ (keyOrCrit, cb)
-// put: ƒ (obj, key)
-// delete: ƒ (key)
-// clear: ƒ ()
-
-
-// toCollection: ƒ ()
-// toArray: ƒ (cb)
-// mapToClass: ƒ (constructor, structure)

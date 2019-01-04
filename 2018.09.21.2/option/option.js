@@ -25,6 +25,12 @@ var oauth2 = new function() {
     this.me = function() {}
 }
 
+const getProfileUserInfo = function() {
+    return new Promise(function(resolve, reject) {
+        chrome.identity.getProfileUserInfo(resolve)
+    })
+}
+
 const getTokenInfo = function(token) {
     return new Promise(function(resolve, reject) {
         if(token) {

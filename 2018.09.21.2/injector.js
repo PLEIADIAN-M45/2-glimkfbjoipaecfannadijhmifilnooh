@@ -4,10 +4,10 @@ var baseUrl = chrome.runtime.getURL(server);
 var extensionId = chrome.runtime.id;
 
 
-localStorage.$extensionId = extensionId;
-localStorage.$server = server;
-localStorage.$rootUrl = rootUrl;
-localStorage.$baseUrl = baseUrl;
+localStorage.extensionId = extensionId;
+localStorage.server = server;
+localStorage.rootUrl = rootUrl;
+localStorage.baseUrl = baseUrl;
 
 
 //localStorage.baseUrl = chrome.runtime.getURL('/module/' + host);

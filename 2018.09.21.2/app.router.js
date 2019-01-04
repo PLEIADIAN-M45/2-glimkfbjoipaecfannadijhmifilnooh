@@ -41,7 +41,7 @@ define([], function() {
             this.$router = {
                 wa111,
                 ku711
-            } [this.$server];
+            } [this.server];
         }
     }
 
