@@ -1,4 +1,5 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
+
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
         function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
@@ -31,9 +32,11 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var $unique = [$account, $channel].join("-");
         /*********************************************************/
         var $sendMessage = function(message) {
+            console.log(message.command);
             return new Promise((resolve, reject) => {
                 if($extensionId && message) {
                     chrome.runtime.sendMessage($extensionId, message, (res) => {
+                        //console.log(res);
                         if(res) { res.active = false; }
                         try { resolve(res) } catch (ex) { reject(ex) }
                     })
@@ -47,36 +50,28 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         //if(result) {}
 
 
+
+        //console.log($unique);
         var $setUser = function(result) {
-            //console.log(result);
+            console.log(result);
             var source = (result.callee) ? $scope.user[result.callee] : $scope.user;
             angular.copy(result, source);
             $scope.$apply();
         }
-
         var $getUser = function() {
-            return $sendMessage({ command: 'apiFunctions.store.user.get', params: $unique })
-                .then((user) => { return user; })
+            return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
+                .then((user) => { console.log('getUser:', user); return user; })
         }
-
         var $delUser = function(bool) {
             if(!bool) { return }
-            return $sendMessage({ command: 'apiFunctions.store.user.del', params: $unique })
-                .then((user) => {
-                    //console.log('delUser:', $unique);
-                    return;
-                })
+            return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: $unique })
+                .then((user) => { console.log('delUser:', $unique); return; })
         }
-
-        //var _user;
         var $putUser = function(nv, ov) {
             if(angular.equals(nv, ov)) { return };
-            //console.log(nv);            
-            return $sendMessage({ command: 'apiFunctions.store.user.put', params: nv })
-                .then((user) => {
-                    //console.log('putUser:', user);
-                    return user;
-                })
+            console.log(nv);
+            return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
+                .then((user) => { console.log('putUser:', user); return user; })
         }
 
         var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
@@ -117,6 +112,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             $scope = $rootScope;
             angular.extend(this, Factory.prototype);
             angular.extend($rootScope, this);
+
+            $xmlSpider.$scope = $rootScope
             //console.log($rootScope);
         }
 

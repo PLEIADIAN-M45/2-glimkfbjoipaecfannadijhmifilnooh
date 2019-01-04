@@ -10,13 +10,13 @@ define([], function() {
 
     function $serialize({ href, url, postData }) {
         var obj = {};
-        if (href) { if (href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-        if (url) { if (url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-        if (postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+        if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+        if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
+        if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
         return obj;
     }
 
-    function json(str) { try { if (str.constructor.name == "Response") { return str.json() } if (typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
+    function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
 
     function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { var str = obj; } return str; }
 
@@ -24,7 +24,7 @@ define([], function() {
 
     function $isJson(d) { try { JSON.parse(d); } catch (ex) { return false; } return true; }
 
-    function $hostname() { if (location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
+    function $hostname() { if(location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
 
     function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(/\.\w+/, ''); }
 
@@ -77,7 +77,8 @@ define([], function() {
 
         xmlSpider.load = function() {
             //console.log(2);
-            this.command = "apiFunctions.XMLHttpRequest";
+            this.command = "api.xmlHttp(...arguments)";
+            //this.command = "new xmlHttp(...arguments)";
             this.extensionId = localStorage.$extensionId;
             this.channel = localStorage.$channel;
             this.responseHeaders = $getAllResponseHeaders(this);
@@ -89,11 +90,11 @@ define([], function() {
             this.dataRows = $dataRows(this);
             this.timespan = Date.now();
             this.time = Date.now() - this.startedDateTime;
-            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
             this.action = this.sendData.action;
             this.type = this.sendData.type;
 
-           
+            //console.log(this.$scope);
         }
 
         xmlSpider.loadend = function() {
@@ -103,7 +104,7 @@ define([], function() {
 
             /*
             getmodel: 開通表
-            StopMember: 
+            StopMember:
             getDepositBonusList:
             delDiceWinRecords:
             DelDiceWinRecords:

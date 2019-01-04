@@ -9,65 +9,40 @@ define([], function() {
         this.channel = user.channel;
     }
 
+    var $sendMessage;
 
     class User {
-        constructor(args) {
-            return this.start(args)
+        constructor($scope) {
+            return this.start($scope);
         }
-        getUserBasic({ $server, $origin, $unique, $channel, $account, $operator }) {
+
+        save() {
+            console.log(this);
+            //eval:'store.user.put(#)'
+            return $sendMessage({ command: 'store.user.put(#user)', user: this })
+                .then((user) => {
+                    console.log(user);
+                    //console.log('putUser:', user);
+                    return user;
+                })
+        }
+
+        getUserBasic() {
+            console.log(1);
+            var { $server, $origin, $unique, $channel, $account, $operator } = arguments[0];
+            //Object.assign(this, { $server, $origin, $unique, $channel, $account, $operator })
             this.server = $server;
             this.origin = $origin;
             this.unique = $unique;
             this.channel = $channel;
             this.account = $account;
             this.operator = $operator;
-        }
-        getUserState({ ctrl }) {
-            this.status = [ctrl.ishow.value];
-            this.permit = [ctrl.isOpenDeposit.value];
-        }
-        getUserStore({ $dexie, $account }) {
-            return $dexie.user.get($account)
-                .then((d) => {
-                    this.sequel = d.f_id;
-                    this.attach = d.f_joindate;
-                    this.agency = d.f_alagent;
-                    this.black = d.f_blacklist;
-                    this.peril = d.f_peril;
-                    this.nickName = d.f_nickName;
-                    this.banker.map((b, i) => {
-                        b.value = d.f_RemittanceAccount.split('|')[i];
-                    });
-                    this.banker = this.banker.filter((a) => { return a.value });
-                });
-        }
-        getPhoneDate({ $ajax, $account }) {
-            return $ajax({
-                url: "/LoadData/AccountManagement/GetMemberList.ashx",
-                data: "type=getPhoneDate&account=" + $account
-            }).then(([d]) => {
-                //console.log(d);
-                this.mobile.value = d.f_photo;
-                this.idcard.value = d.f_idCard;
-                this.equpmt.browser = d.f_browser;
-                this.equpmt.osInfo = d.f_osInfo;
-            });
+            //console.log("----------");
         }
 
-        getSystemLog({ $ajax, $account }) {
-            return $ajax({
-                url: "/LoadData/AccountManagement/GetSystemLog.ashx",
-                method: "POST",
-                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" +
-                    $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
-            }).then((rows) => {
-                return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
-                });
-            });
-        }
 
         getUserModel({ $model }) {
+            console.log(2);
             var m = $model;
             this.timing = [];
             this.equpmt = {};
@@ -84,12 +59,62 @@ define([], function() {
                 { callee: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
             ];
         }
+        getUserState({ ctrl }) {
+            console.log(3);
+            this.status = [ctrl.ishow.value];
+            this.permit = [ctrl.isOpenDeposit.value];
+        }
+        getUserStore({ $dexie, $account }) {
+            console.log(4);
+            return $dexie.user.get($account)
+                .then((d) => {
+                    this.sequel = d.f_id;
+                    this.attach = d.f_joindate;
+                    this.agency = d.f_alagent;
+                    this.black = d.f_blacklist;
+                    this.peril = d.f_peril;
+                    this.nickName = d.f_nickName;
+                    this.banker.map((b, i) => {
+                        b.value = d.f_RemittanceAccount.split('|')[i];
+                    });
+                    this.banker = this.banker.filter((a) => { return a.value });
+                });
+        }
+        getPhoneDate({ $ajax, $account }) {
+            console.log(5);
+            return $ajax({
+                url: "/LoadData/AccountManagement/GetMemberList.ashx",
+                data: "type=getPhoneDate&account=" + $account
+            }).then(([d]) => {
+                //console.log(d);
+                this.mobile.value = d.f_photo;
+                this.idcard.value = d.f_idCard;
+                this.equpmt.browser = d.f_browser;
+                this.equpmt.osInfo = d.f_osInfo;
+            });
+        }
 
-        start(args) {
+        getSystemLog({ $ajax, $account }) {
+            console.log(6);
+            return $ajax({
+                url: "/LoadData/AccountManagement/GetSystemLog.ashx",
+                method: "POST",
+                data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" +
+                    $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
+            }).then((rows) => {
+                return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                });
+            });
+        }
+
+
+
+        start($scope) {
             return Promise.all([
-                this.getUserBasic(args), this.getUserModel(args),
-                this.getUserState(args), this.getUserStore(args),
-                this.getPhoneDate(args), this.getSystemLog(args),
+                this.getUserBasic($scope), this.getUserModel($scope),
+                this.getUserState($scope), this.getUserStore($scope),
+                this.getPhoneDate($scope), this.getSystemLog($scope),
             ]).then(() => {
                 this.sendsms = new sendsms(this);
                 return this;
@@ -98,10 +123,9 @@ define([], function() {
     }
 
 
-    async function $defUser(args) {
+    async function $defUser($scope) {
         var user =
-            await args.$getUser() ||
-            await new User(args);
+            await $scope.$getUser() || await new User($scope);
         return user;
     }
 
@@ -139,7 +163,7 @@ function sendSms() {
     console.log(this);
 
 
-    args.$sendMessage({
+    $scope.$sendMessage({
         command: "apiFunctions.sendsms",
         ...this
     }).then((x) => {
@@ -162,9 +186,9 @@ function sendSms() {
 
  })
 
- var args = arguments[0];
+ var $scope = arguments[0];
 
- return this.setUser(args)
+ return this.setUser($scope)
  */
 
 /*

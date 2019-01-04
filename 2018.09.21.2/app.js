@@ -1,7 +1,8 @@
-define(["app.router"], function(Router) { /*  Router return $router  */
+define(["app.router", "moment"], function(Router, moment) { /*  Router return $router  */
     class App extends Router {
         constructor() {
             super();
+            console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
             this.$name = "OBSApp";
             this.$ctrlId = "View";
             this.$isTest = (window.location.hostname == "127.0.0.1");
@@ -24,6 +25,10 @@ define(["app.router"], function(Router) { /*  Router return $router  */
         get $scope() { return angular.element('html').scope() }
         get $invoke() { return this.$injector.invoke; }
         get $compile() { return this.$injector.get('$compile'); }
+        get $now() {
+            console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+            return moment().format('YYYY-MM-DD HH:mm:ss');
+        }
 
         $bootstrap(app) {
             if(this.$module == undefined) { return }

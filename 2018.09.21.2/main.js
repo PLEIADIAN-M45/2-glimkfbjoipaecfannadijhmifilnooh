@@ -66,6 +66,8 @@ var var2 = "";
 var c = console.log
 
 
+//console.log(12, 23);
+
 requirejs(["app"], function(app) {
     //console.log(app);
     app.$bootstrap();
