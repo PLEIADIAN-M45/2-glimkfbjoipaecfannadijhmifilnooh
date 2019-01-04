@@ -68,7 +68,9 @@ function timeDiff(t1, t2, unit) {
     return t2.diff(t1, unit, true);
 }
 
-
+function toString(res) {
+    return Object.values(res).toString();
+}
 
 function isJson(str) { try { JSON.parse(str); } catch (e) { return false; } return true; }
 
@@ -81,43 +83,101 @@ function trim(value) { return value.toString().trim(); }
 function s(array) { console.log(array); }
 
 class service {
-    constructor({ value, callee }, sender, sendResponse) {
-
+    constructor({ callee, value }, sender, sendResponse) {
         this.value = value;
-        this.callee = callee;
+        return this[callee]().then(this.toCheck)
+    }
+    toCheck(res) {
+        let string = Object.values(res).toString();
+        res.alert = global.region.find(([elem]) => {
+            return string.includes(elem);
+        }) || false;
+        return res;
+    }
 
 
-        return this.promise()
-            .then((region) => {
+    get birth() {
+        return moment(this.$4).locale('zh-tw').format('LL');
+    }
+    get age() {
+        return moment().diff(moment(this.$4), 'years') + '岁'
+    }
+    get sex() {
+        return (Number(this.$5) % 2 == 1) ? '男性' : '女性'
+    }
 
-                console.log(region);
+    get prov() {
+        return this.gb2260.get(Number(this.$1))
+    }
+    get city() {
+        return this.gb2260.get(Number(this.$2))
+    }
+    get area() {
+        return this.gb2260.get(Number(this.$3))
+    }
+
+    get gb2260() {
+        return new Map(global.gb2260);
+    }
+
+    get meta() {
+        return [this.birth, this.sex, this.age].join('/')
+    }
 
 
-                var string = Object.values(region).toString();
-                region.alert = global.region.find(([elem]) => {
-                    return string.includes(elem);
-                }) || false;
-                sendResponse(region);
-            })
+    idcard() {
 
+        //var [$1, $2, $3, $4, $5, $6, $7] =
+        var arr =
+            this.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/,
+                ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
+
+
+        console.log(arr);
         /*
-        this.promise()
+        340122-198710061675
+        340000-
         */
 
 
-        //let promise = this[request.callee];
+        var str = this.value.substr(0, 2).padEnd(6, 0)
+        console.log(str);
+
+        var str1 = this.value.substr(0, 4).padEnd(6, 0)
+
+        console.log(str1);
+
+        var str3 = this.value.substr(0, 6).padEnd(6, 0)
+
+
+        console.log(str3);
+
+
+        var str4 = this.value.substr(6, 8);
+        console.log(str4);
+
+
+        //str.replace(regexp | substr, newSubstr | function)
+
         /*
-        return promise().then((region) => {
-            var string = Object.values(region).toString();
-            region.alert = global.region.find(([elem]) => {
-                return string.includes(elem);
-            }) || false;
-            sendResponse(region);
-        })
+        this.$1 = $1;
+        this.$2 = $2;
+        this.$3 = $3;
+        this.$4 = $4;
+        this.$5 = $5;
+
+        var region = {
+            "prov": this.prov,
+            "city": this.city,
+            "area": this.area,
+            "meta": this.meta,
+        ].join('/')
+        }
         */
 
 
-        return this[request.callee](request)
+        console.log(region);
+        return Promise.resolve(region)
     }
 
     promise() {
@@ -127,11 +187,12 @@ class service {
     get time() { return Date.now(); }
 
     locate(request) {
+
         return $.ajax({
                 url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
                 dataType: "json",
                 data: {
-                    "query": this.value,
+                    "query": request.value,
                     "co": "",
                     "resource_id": 6006,
                     "t": this.time,
@@ -170,42 +231,7 @@ class service {
     banker(request) {
 
     }
-    idcard() {
-        console.log(11111111);
-        var GBMAP = new Map(global.gb2260);
-        console.log(GBMAP);
 
-        var [$1, $2, $3, $4, $5, $6, $7] = this.value
-            .replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/,
-                ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
-
-        var sex = (Number($5) % 2 == 1) ? '男性' : '女性',
-            age = moment().diff(moment($4), 'years') + '岁',
-            birth = moment($4).locale('zh-tw').format('LL');
-
-        var region = {
-            "prov": GBMAP.get(Number($1)),
-            "city": GBMAP.get(Number($2)),
-            "area": GBMAP.get(Number($3)),
-            "meta": [birth, sex, age].join('/')
-        }
-
-        console.log(region);
-
-        return Promise.resolve(region)
-
-
-        var c = global.region.find((a) => {
-            console.log(a);
-            console.log(a[0]);
-            return a[0] == region.prov
-            //console.log(region.prov);
-        })
-
-        console.log(c);
-
-        return sendResponse(region)
-    }
     mobile(request, sender, sendResponse) {
         return $.ajax({
             dataType: "json",
@@ -238,6 +264,31 @@ class service {
 
 }
 
+/*
+
+https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
+JavaScript Demo: String.raw()
+
+*/
+
+var filePath = String.raw `C:\Development\profile\aboutme.html`;
+
+console.log('The file was uploaded from: ' + filePath);
+
+
+function replacer(match, p1, p2, p3, offset, string) {
+
+    console.log(match, p1, p2, p3, offset, string);
+
+
+
+    // p1 is nondigits, p2 digits, and p3 non-alphanumerics
+    return [p1, p2, p3].join(' - ');
+}
+var newString = 'abc12345#$*%'.replace(/([^\d]*)(\d*)([^\w]*)/, replacer);
+
+
+console.log(newString); // abc - 12345 - #$*%
 
 //class apis extends service {
 class apis {
@@ -300,10 +351,12 @@ class apis {
         console.log(request);
 
         try {
+
             eval(request.command).then((s) => {
                 console.log(s);
                 return sendResponse(s)
             })
+
             return true
         } catch (ex) { return ex; }
     }
