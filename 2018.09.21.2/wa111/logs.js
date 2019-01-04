@@ -22,10 +22,15 @@ define([], function() {
         $scope.apiFunctions = function() {}
         $scope.apiFunctions.region = function(e) {
             //if (this.callee == "banker") { return };
-            if (this.callee !== "author") { return };
+            if (this.callee == "author") { return };
+            if (this.callee != "idcard") { return };
+
+            //console.log(this.callee);
             //if (this.region && !e) { return };
             /*--------------------------------------------------------------*/
-            angular.extend(this, { command: "apiFunctions." + this.callee, region: { active: true } });
+            //angular.extend(this, { command: "api." + this.callee + "(#)", region: { active: true } });
+            angular.extend(this, { command: "new service(#)", region: { active: true } });
+            console.log(this);
             $sendMessage(this).then((res) => {
                 console.log(res);
                 angular.copy(res, this.region);

@@ -29,7 +29,6 @@ define(["wa111/user"], function({ $defUser }) {
                 command: "api.google(...arguments)",
                 user: $scope.user
             }).then((s) => { c(s) })
-
         }
 
 

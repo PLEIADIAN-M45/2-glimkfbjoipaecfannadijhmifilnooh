@@ -4,7 +4,7 @@ console.log(store);
 */
 
 var GLOBAL = {};
-
+var global = {};
 
 function decoder(value) {
     try {
@@ -68,57 +68,237 @@ function timeDiff(t1, t2, unit) {
     return t2.diff(t1, unit, true);
 }
 
-class apis {
 
+
+function isJson(str) { try { JSON.parse(str); } catch (e) { return false; } return true; }
+
+function openOptionsPage() { chrome.runtime.openOptionsPage() };
+
+function createTabs(url) { chrome.tabs.create({ url: url }) }
+
+function trim(value) { return value.toString().trim(); }
+
+function s(array) { console.log(array); }
+
+class service {
+    constructor({ value, callee }, sender, sendResponse) {
+
+        this.value = value;
+        this.callee = callee;
+
+
+        return this.promise()
+            .then((region) => {
+
+                console.log(region);
+
+
+                var string = Object.values(region).toString();
+                region.alert = global.region.find(([elem]) => {
+                    return string.includes(elem);
+                }) || false;
+                sendResponse(region);
+            })
+
+        /*
+        this.promise()
+        */
+
+
+        //let promise = this[request.callee];
+        /*
+        return promise().then((region) => {
+            var string = Object.values(region).toString();
+            region.alert = global.region.find(([elem]) => {
+                return string.includes(elem);
+            }) || false;
+            sendResponse(region);
+        })
+        */
+
+
+        return this[request.callee](request)
+    }
+
+    promise() {
+        return this[this.callee]();
+    }
+
+    get time() { return Date.now(); }
+
+    locate(request) {
+        return $.ajax({
+                url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+                dataType: "json",
+                data: {
+                    "query": this.value,
+                    "co": "",
+                    "resource_id": 6006,
+                    "t": this.time,
+                    "ie": "utf8",
+                    "oe": "gbk",
+                    "format": "json",
+                    "tn": "baidu",
+                    "_": this.time
+                }
+            })
+            .then((res) => {
+                var region = {};
+                if (res.status == 0) {
+                    var arr = res.data[0].location.split(' ');
+                    var str = arr[0];
+                    if (str) {
+                        region.meta = arr[1];
+                        str = str.replace(/(.+(省|自治区))/g, '');
+                        region.prov = RegExp.$1;
+                        str = str.replace(/(.+(市|州))/g, '');
+                        region.city = RegExp.$1;
+                        str = str.replace(/(.+(县|区))/g, '');
+                        region.area = RegExp.$1;
+                        //region.alert = region_compare(region)
+                    }
+                }
+
+                return region;
+            })
+    }
+
+    banker(request, sender, sendResponse) {
+        //return new Promise((resolve, reject) => {        })
+        //new Map(evo.decoder(localStorage["gb2260"]));
+    }
+    banker(request) {
+
+    }
+    idcard() {
+        console.log(11111111);
+        var GBMAP = new Map(global.gb2260);
+        console.log(GBMAP);
+
+        var [$1, $2, $3, $4, $5, $6, $7] = this.value
+            .replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/,
+                ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
+
+        var sex = (Number($5) % 2 == 1) ? '男性' : '女性',
+            age = moment().diff(moment($4), 'years') + '岁',
+            birth = moment($4).locale('zh-tw').format('LL');
+
+        var region = {
+            "prov": GBMAP.get(Number($1)),
+            "city": GBMAP.get(Number($2)),
+            "area": GBMAP.get(Number($3)),
+            "meta": [birth, sex, age].join('/')
+        }
+
+        console.log(region);
+
+        return Promise.resolve(region)
+
+
+        var c = global.region.find((a) => {
+            console.log(a);
+            console.log(a[0]);
+            return a[0] == region.prov
+            //console.log(region.prov);
+        })
+
+        console.log(c);
+
+        return sendResponse(region)
+    }
+    mobile(request, sender, sendResponse) {
+        return $.ajax({
+            dataType: "json",
+            url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
+            data: {
+                "query": this.value,
+                "co": "",
+                "resource_id": 6004,
+                "t": this.time,
+                "ie": "utf8",
+                "oe": "gbk",
+                "format": "json",
+                "tn": "baidu",
+                "_": this.time,
+            }
+        }).then((res) => {
+            var region = {}
+            if (res.status == 0) {
+                var d = res.data[0];
+                region = {
+                    city: d.city,
+                    prov: d.prov,
+                    meta: d.type || "baidu",
+                    //alert: region_compare(region)
+                }
+            }
+            return region;
+        })
+    }
+
+}
+
+
+//class apis extends service {
+class apis {
     constructor() {
-        //super()
+        //super();
         this.store = new Dexie('evo');
         this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
-        //this.download();
+        this.download();
         this.addListener();
         this.getAuthToken();
+        //this.chrome_settings.forEach(createTabs);
+    }
+
+    get chrome_settings() {
+        return [
+            "chrome://extensions/",
+            "chrome://settings/fonts",
+            "chrome://flags/#enable-devtools-experiments"
+        ]
     }
 
     getTokenInfo(token) {
-
         console.log(token);
-        // api.toLocalStorage
-
         if (token) {
-
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
-                console.log(this);
                 api.tokenInfo = tokenInfo;
                 //localStorage.tokenInfo = angular.toJson(tokenInfo, true);
                 //console.log(tokenInfo)
             })
-
         } else {
             throw "without token";
         }
-
         //return new Promise((resolve, reject) => {})
     }
-
     getAuthToken() {
         chrome.identity.getAuthToken({ "interactive": true }, this.getTokenInfo);
-        /*return new Promise((resolve, reject) => {
-
-        })*/
+        /*return new Promise((resolve, reject) => {        })*/
     }
 
     addListener() {
         chrome.runtime.onMessageExternal.addListener(this.onMessageExternal)
     }
 
-    onMessage(request, sender, sendResponse) {
-
-    }
+    onMessage(request, sender, sendResponse) {}
 
     onMessageExternal(request, sender, sendResponse) {
+
+        /*if (request.callee == "locate") {
+            eval(request.command).call(request, sender, sendResponse).then((s) => {
+                console.log(s);
+                return sendResponse(s)
+            })
+            return true
+        }
+        */
+        //if (request.command.includes("#")) {}
+        request.command = request.command.replace("#", "...arguments");
         console.log(request);
+
         try {
             eval(request.command).then((s) => {
                 console.log(s);
@@ -136,11 +316,13 @@ class apis {
     get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
 
     download() {
-        if (window.localStorage.length < 51) {
+        if (window.localStorage.length < 5) {
             return Promise.all([
                 fetch(this.macros + '?commands=GMA').then(this.toJson),
                 fetch(this.macros + '?commands=GMB').then(this.toJson)
             ]).then(this.flat).then(this.save).then((x) => { console.log(localStorage); })
+        } else {
+            this.save(Object.entries(localStorage))
         }
     }
 
@@ -207,11 +389,12 @@ class apis {
     flat(arr) { return arr.flat(); }
 
     save(arr) {
+
         arr.forEach(([name, value]) => {
             localStorage[name] = value;
-            GLOBAL[name] = decoder(value);
+            global[name] = decoder(value);
         });
-        console.log(GLOBAL);
+        console.log(global);
     }
 
 
@@ -222,6 +405,12 @@ class apis {
             }
         })
     }
+
+    get now() {
+        return Date.now();
+    }
+
+
 
 
 
