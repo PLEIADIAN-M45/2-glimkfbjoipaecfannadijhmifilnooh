@@ -13,14 +13,16 @@ if(window.MockType == true) {
 
     console.log(window.baseUrl);
 
-    var entries = d.log.entries;
+    var _entries = d.log.entries;
+
+    console.log(_entries);
 
     Mock.setup({ timeout: '200-800' })
 
     Mock.mock(/(wa111\.net)/, 'get', function(req) {
         var url = new URL(req.url);
         var searchParams = url.searchParams.delete('_');
-        for(let x of entries) {
+        for(let x of _entries) {
             var _url = new URL(x.request.url);
             _url.searchParams.delete('_');
             if(url.href == _url.href) {
@@ -32,7 +34,7 @@ if(window.MockType == true) {
     });
 
     Mock.mock(/(ku711\.net)/, 'get', function(req) {
-        for(let x of entries) {
+        for(let x of _entries) {
             if(x.request.url == req.url) {
                 //console.log(x.request.postData.text, req.body);
                 if(req.body == x.request.postData.text) {
@@ -48,7 +50,7 @@ if(window.MockType == true) {
 
     Mock.mock(/(ku711\.net)/, 'post', function(req) {
         //console.log(req);
-        for(let x of entries) {
+        for(let x of _entries) {
             if(x.request.url == req.url) {
                 //console.log(x.request.postData.text, req.body);
                 if(req.body == x.request.postData.text) {

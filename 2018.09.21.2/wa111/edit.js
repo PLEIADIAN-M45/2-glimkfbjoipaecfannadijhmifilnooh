@@ -2,6 +2,8 @@ define(["wa111/user"], function({ $defUser }) {
 
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
+        //ctl00_ContentPlaceHolder1_txtRemittaceName.value = "王杰"
+
         $scope.$defUser = $defUser;
 
         $scope.$delUser(0);
@@ -33,7 +35,7 @@ define(["wa111/user"], function({ $defUser }) {
 
         $xmlSpider.loadend = function() {
 
-            if (this.action == "getmodel") {
+            if(this.action == "getmodel") {
 
                 with(this.respData) {
                     $scope.user.status.push(f_ishow);
@@ -41,7 +43,7 @@ define(["wa111/user"], function({ $defUser }) {
                     $scope.user.timing.push($now);
                     $scope.user.sendsms.status = 9;
 
-                    if ($scope.user.status[0] == 3) {
+                    if($scope.user.status[0] == 3) {
                         $scope.user.module = "authorize"
                         //$scope.user.command = "google:scripts.authorize"
                     } else {
@@ -64,8 +66,8 @@ define(["wa111/user"], function({ $defUser }) {
 
         $scope.$keydown(function(e) {
             console.log(e.key);
-            if (e.key == "Delete") { $scope.$delUser(1) }
-            if (e.key == "-") { console.clear() }
+            if(e.key == "Delete") { $scope.$delUser(1) }
+            if(e.key == "-") { console.clear() }
         });
         $scope.$apply();
 

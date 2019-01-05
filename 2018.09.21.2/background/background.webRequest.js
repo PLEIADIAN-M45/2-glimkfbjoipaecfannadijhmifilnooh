@@ -88,6 +88,7 @@ function http() {
 
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
+    console.log(lastPath, url);
     var lastPath = lastPathOf(url);
     if (initiator == location.origin) {
         requestHeaders.push({ name: 'referer', value: url });
@@ -104,7 +105,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 /**************************************************************************************************************/
 
 
-window.baseUrl = {};
+//window.baseUrl = {};
+
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     window.baseUrl["16"] = details.initiator;

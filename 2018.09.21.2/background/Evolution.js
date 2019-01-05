@@ -83,10 +83,10 @@ class Service {
     }
 
     toCheck(res) {
-        if (res) {
+        if(res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
-            if (res.age < 18) { res.alert = true }
+            if(res.age < 18) { res.alert = true }
         } else { res.alert = true; }
         res.alarm = this.compare();
         return res;
@@ -109,9 +109,9 @@ class Service {
         return $.ajax({ url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", dataType: "json", data: { "query": request.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time } }).then((res) => {
             //console.log(res);
             var region = {};
-            if (res.status == 0) {
+            if(res.status == 0) {
                 var str = res.data[0].location;
-                if (str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
+                if(str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
             }
             return region;
         })
@@ -120,7 +120,7 @@ class Service {
         return $.ajax({ dataType: "json", url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", data: { "query": request.value, "co": "", "resource_id": 6004, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time, } }).then((res) => {
             //console.log(res);
             var region = {};
-            if (res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
+            if(res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
             return region;
         })
     }
@@ -133,6 +133,14 @@ class Service {
 evo@ryan-studio.net
 */
 
+window.baseUrl = {
+    "0": "http://chrome.evo.net",
+    "26": "http://host26.wa111.net",
+    "35": "http://host35.wa111.net",
+    "17": "http://host17.wa111.net",
+    "16": "https://bk.ku711.net"
+}
+
 class apis {
     constructor() {
         //super();
@@ -144,8 +152,196 @@ class apis {
         //createTabs(this.chrome_settings)
     }
 
+
+    get requestUrl() { return window.baseUrl[this.channel] }
+
+
+    /*
+    get banker() {
+
+    }
+    get mobile() {
+
+    }
+    get author() {
+
+    }
+    get idcard() {
+
+    }
+    */
+
+
+
+
+    member(request) {
+        Object.assign(this.__proto__, { banker: "", mobile: "", author: "", idcard: "" })
+        Object.assign(this.__proto__, request);
+
+        /*console.log(this.channel);
+        console.log(this.requestUrl);
+        console.log(this.banker);*/
+
+        console.log(this);
+        console.log(this.requestUrl);
+        console.log(this.banker);
+        console.log(this.mobile);
+        console.log(this.idcard);
+        console.log(this.author);
+        console.log(this.index);
+        console.log(this.time);
+
+        // return Promise.resolve({})
+        //{ server, callee, channel, index, rows }
+        //console.log(arguments);
+        //console.log(server, callee, channel, index, rows);
+        //console.log(window.baseUrl);
+        //console.log(window.baseUrl[this.channel]);
+        //console.log(this);
+
+        switch (this.server) {
+            case "wa111":
+                return $.ajax({
+                    "dataType": 'json',
+                    "url": this.requestUrl + '/LoadData/AccountManagement/GetMemberList.ashx',
+                    "data": {
+                        "f_BankAccount": this.banker,
+                        "txtPhoto": this.mobile,
+                        "txtIdCard": this.idcard,
+                        "f_RemittanceName": this.author,
+                        "f_Account": "",
+                        "txtAlipayAccount": "",
+                        "txtEmail": "",
+                        "txtPickName": "",
+                        "txtChat": "",
+                        "ddlBankInfo": "",
+                        "zwrq": "",
+                        "zwrq2": "",
+                        "selSurplus": "",
+                        "selShow": "",
+                        "selIsDeposit": "",
+                        "selLevel": "",
+                        "selBank": "",
+                        "selMutualStatus": "",
+                        "ddlAliPay": "",
+                        "ddlWeChat": "",
+                        "ddlWarn": 0,
+                        "hidevalue_totals": "",
+                        "pageIndex": this.index,
+                        "hidevalue_RecordCount": 0,
+                        "type": "getAllUser"
+                        //"_": this.time
+                    }
+                }).then((res) => {
+                    console.log(res);
+                    /*
+                    res.rows.map((row) => {
+
+                        row.origin = this.url;
+                        row.host = this.host
+                        return row
+                    });
+                    */
+                    res.origin = this.requestUrl;
+                    res.index = this.index;
+                    res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
+                    return res
+                    //Object.assign(this, res);
+                })
+
+                break;
+            case "ku711":
+
+                console.log(this);
+
+                return $.ajax({
+                    "dataType": 'json',
+                    "method": 'post',
+                    "url": this.requestUrl + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
+                    "data": JSON.stringify({
+                        "AccountID": "",
+                        "IDNumber": this.idcard,
+                        "RigistedIP": "",
+                        "TotalDepositAmount": null,
+                        "AccountNumber": "",
+                        "AccountName": this.author,
+                        "Email": "",
+                        "PhoneVerified": null,
+                        "IDVerified": null,
+                        "MinDeposit": null,
+                        "MaxDeposit": null,
+                        "StartRegistedTime": "",
+                        "EndRegistedTime": "",
+                        "PageNumber": this.index - 1,
+                        "RecordCounts": 20,
+                        "OrderField": "",
+                        "Desc": "true",
+                        "TotalDepositBonus": null,
+                        "AccountBookLevel": "",
+                        "AliPayLevel": "",
+                        "WeChatLevel": "",
+                        "CellPhone": this.mobile,
+                        "IsBlackList": null,
+                        "LevelType": null,
+                        "MemberStatus": null,
+                        "IsFisrstDeposit": null,
+                        "MemberMemoType": null,
+                        "TransferOutStatus": null,
+                        "IsLogIn": null,
+                        "AgencyID": "",
+                        "TestType": null,
+                        "PayeeAccountNo": this.banker,
+                        "LineType": "",
+                        "AccountingType": null,
+                        "ManageAccountID": "",
+                        "NickName": ""
+                    })
+                }).then(({ Data }) => {
+
+                    console.log(Data);
+
+                    return
+                    var res = { origin: this.requestUrl, "rows": Data.Data, "records": Data.Pager.PageCount, "total": Data.TotalItemCount, "index": this.index };
+
+                    if(res.rows && res.rows.length) {
+                        /*
+                        res.rows.map((row) => {
+                            row.origin = this.url;
+                            row.host = this.host;
+                            return row
+                        })
+                        */
+                        return api.getMemberAlertInfoBackend(res.rows, this.url).then((d) => {
+                            res.list_RemittanceName = d.Data.AlertInfoAccountName;
+                            res.rows.map((x) => { x.list_Accounts = d.Data.AlertInfoAccountId.filter((d) => { return x.AccountID == d.AccountID }); return x; })
+                            return Object.assign(this, res);
+                        });
+
+                    } else {
+
+                        return Object.assign(this, res);
+                    }
+                })
+
+
+                break;
+            default:
+                // statements_def
+                break;
+        }
+    }
+
+    getMemberAlertInfoBackend() {
+        return $.ajax({
+            "method": 'post',
+            "dataType": 'json',
+            "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "data": angular.toJson({ "DisplayArea": "1", "Account": rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } }) })
+        })
+    }
+
     getTokenInfo(token) {
-        if (token) {
+        if(token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
@@ -167,23 +363,24 @@ class apis {
     onMessage(request, sender, sendResponse) {}
     onMessageExternal(request, sender, sendResponse) {
         request.command = request.command.replace("#", "...arguments");
-        //console.clear();
         console.log(request.command);
-
         try {
             eval(request.command).then((s) => {
-                console.log(s);
+                //console.log(s);
                 return sendResponse(s);
             });
             return true
-        } catch (ex) { return ex; }
+        } catch (ex) {
+            console.error(ex);
+            return ex;
+        }
     }
     get chrome_settings() { return ["chrome://extensions/", "chrome://settings/fonts", "chrome://flags/#enable-devtools-experiments"] }
     get audience() { return this.tokenInfo.audience; }
     get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
 
     download() {
-        if (window.localStorage.length < 5) {
+        if(window.localStorage.length < 5) {
             return Promise.all([
                 fetch(this.macros + '?commands=GMA').then(this.toJson),
                 fetch(this.macros + '?commands=GMB').then(this.toJson)
@@ -221,7 +418,7 @@ class apis {
 
     toLocalStorage(res) {
         //console.log(res);
-        if (typeof res) {
+        if(typeof res) {
             return res.forEach(([name, value]) => { localStorage[name] = value; })
         }
     }
@@ -242,18 +439,17 @@ class apis {
         //console.log("[OK]", localStorage);
     }
 
-
     entries() {
         Object.entries(localStorage).forEach(([name, value]) => {
-            if (name) {
+            if(name) {
                 this.decoder(value, name)
             }
         })
     }
 
-    get now() {
-        return Date.now();
-    }
+    get now() { return Date.now(); }
+    get time() { return Date.now(); }
+
 
     async xmlHttp(request, sender, sendResponse) {
         var { action, sendData, channel } = request;
@@ -300,7 +496,7 @@ console.log(api);
      global.mobile.push(["135149"])
      global.banker.push(["6217856300025"])
      global.idcard.push(["340122198"])
-     global.author.push(["王杰"])        
+     global.author.push(["王杰"])
      */
 
 

@@ -23,8 +23,6 @@ apiFunctions.member = function() {
     if (!this.url) { return Promise.reject({}) }
     if (this.callee == "locate") { return Promise.resolve({}) }
 
-
-
     if (this.host == "ku711") {
 
         return $.ajax({
@@ -49,9 +47,6 @@ apiFunctions.member = function() {
                     res.rows.map((x) => { x.list_Accounts = d.Data.AlertInfoAccountId.filter((d) => { return x.AccountID == d.AccountID }); return x; })
                     return Object.assign(this, res);
                 });
-
-
-
             } else { return Object.assign(this, res); }
         })
     }

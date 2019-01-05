@@ -10,15 +10,17 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
-            /*"mock/mock.js",
+
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js",*/
+            "mock/mock.conf.js",
+
             "background/Evolution.js",
+            "background/background.webRequest.js",
             "background/background.onUpdated.js"
 
             /*
             "background/background.js",
-            "background/background.webRequest.js",
             "background/background.onMessage.js",
             "apiFunctions/apiFunctions.js",
             "apiFunctions/apiFunctions.locate.js",

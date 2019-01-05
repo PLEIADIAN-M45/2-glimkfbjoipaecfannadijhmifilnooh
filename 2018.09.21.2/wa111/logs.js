@@ -4,11 +4,15 @@ define([], function() {
 
 
         function command(str) { return str + "(#)" }
-
+        /***************************************/
+        $('#divCookie').hide();
+        //$scope.user.author.value = "陈林";
+        //$scope.user.author.value = "王杰";
+        /***************************************/
         function apply() {
+            $scope.user.author.value = "王杰";
             //$digest or $apply
-            if (!$scope.$$phase) { $scope.$apply(); }
-
+            if(!$scope.$$phase) { $scope.$apply(); }
             console.log($scope.user);
         };
 
@@ -17,9 +21,9 @@ define([], function() {
         $scope.$watch('user', $scope.$putUser, true);
         $scope.user = await $getUser();
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].concat($scope.user.banker).map((x) => {
-            if (x.callee == "locate") { return x };
+            if(x.callee == "locate") { return x };
             var params = { command: "apiFunctions.member", callee: x.callee, [x.callee]: x.value, index: 1 };
-            x.sites = [{ channel: "26", host: "wa111", ...params }, { channel: "35", host: "wa111", ...params }, { channel: "17", host: "wa111", ...params }, { channel: "16", host: "ku711", ...params }]
+            x.sites = [{ channel: "26", server: "wa111", ...params }, { channel: "35", server: "wa111", ...params }, { channel: "17", server: "wa111", ...params }, { channel: "16", server: "ku711", ...params }]
             return x;
         });
 
@@ -27,74 +31,43 @@ define([], function() {
         $scope.apiFunctions = function() {}
 
         $scope.apiFunctions.region = function(e) {
-
-            /* Object.defineProperty($scope.user.banker[0], 'region', {
-                 writable: false
-             })*/
-            //console.log(e);
-
-            //if (this.callee == "banker") { return };
-            //if (this.callee != "author") { return };
-            //this.region = {}
-            //if (this.callee != "locate") { return };
-            //if (this.callee == "idcard") { return };
-            //if (this.callee != "mobile") { return };
-            //if (this.callee != "banker") { return };
-            //console.log(this.callee);
-
-
-            if (this.active == undefined || e) {} else { return };
-
-            //console.log(this.region);
-            console.log("---------------------");
-            /*--------------------------------------------------------------*/
-            try {
-
-                this.command = "new Service(#)"
-                //angular.extend(this, { command: "new Service(#)" });
-                //angular.extend(this, { command: "new Service(#)", region: { active: true } });
-
-            } catch (ex) {}
-            //angular.extend(this, { command: "api." + this.callee + "(#)", region: { active: true } });
-
-            // console.log(this);
-
-
-            //this.active = true;
-
-            //if (this.callee != "banker") {};
-
-            //this.region: { active: true }
-
+            return
+            if(this.active == undefined || e) {} else { return };
+            this.command = "new Service(#)";
             $sendMessage(this).then((res) => {
-
-                //console.log(res);
-                //console.log(this);
-                //this.active = false
-                this.region = res;
-
-                //angular.copy(res, this.region);
-
+                if(res) {
+                    angular.copy(res, this.region);
+                }
             }).then(apply);
         }
         $scope.apiFunctions.member = function($childScope, e) {
-            return
-            angular.extend(this, { command: "apiFunctions.member", active: true, rows: null });
-            $sendMessage(this).then((res) => { angular.copy(res, this); }).then(apply);
+
+            if(this.callee == "author" && this.channel == 16) {} else { return }
+            //if(this.callee == "author") {} else { return }
+
+            angular.extend(this, { command: "api.member(#)", active: true, rows: null });
+
+            $sendMessage(this).then((res) => {
+                console.log(res);
+                if(res) {
+                    Object.assign(this, res)
+                    //angular.copy(res, this);
+                }
+            }).then(apply);
         }
-        $scope.openMemberModify = function({ origin, host }) {
-            var redirectUrl = { wa111: `${origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`, ku711: `${origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}` } [host];
+        $scope.openMemberModify = function({ origin, server }) {
+            var redirectUrl = { wa111: `${origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`, ku711: `${origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}` } [server];
             window.open(redirectUrl, "_blank");
             console.log(redirectUrl);
         }
         $scope.changeColor = function($childScope) {
             var $sequel = $scope.user.sequel;
-            if (this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
-            if (this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
-            if (this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
+            if(this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
+            if(this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
+            if(this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
         };
         $scope.setPopup = function($childScope) {
-            if (this.list_Accounts && this.list_Accounts.length) {
+            if(this.list_Accounts && this.list_Accounts.length) {
                 setTimeout(($id) => { $($id).popup({ html: $($id).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, "#" + $childScope.$id);
             };
         }
@@ -109,16 +82,12 @@ define([], function() {
             }).toArray().filter(({ children }) => {
                 with($scope.user) { return children[0].outerText.split("-")[0] == channel && children[2].outerText.trim() == account; }
             });
-            this.rows = cells.map(({ children }) => { //检查黑名单 海南                
+            this.rows = cells.map(({ children }) => { //检查黑名单 海南
                 return { IPAddress: children[7].outerText.trim(), IPLocation: children[9].outerText.trim() };
             });
         }
 
-        /***************************************/
-        //$('#divCookie').hide();
-        $scope.user.author.value = "王杰";
-        $scope.user.author.value = "陈林";
-        /***************************************/
+
 
         console.log($scope.user);
         $scope.$apply();
