@@ -12,18 +12,15 @@ define([], function() {
     var $sendMessage;
 
     class User {
-        constructor($scope) {
-            return this.start($scope);
-        }
-
+        constructor($scope) { return this.start($scope); }
         getUserBasic({ server, origin, unique, channel, account, operator }) {
             //var { $server, $origin, $unique, $channel, $account, $operator } = arguments[0];
-            console.log(1);
+            //console.log(1);
             Object.assign(this, { server, origin, unique, channel, account, operator })
         }
 
         getUserModel({ $model }) {
-            console.log(2);
+            //console.log(2);
             var m = $model;
             this.timing = [];
             this.equpmt = {};
@@ -41,12 +38,12 @@ define([], function() {
             ];
         }
         getUserState({ ctrl }) {
-            console.log(3);
+            //console.log(3);
             this.status = [ctrl.ishow.value];
             this.permit = [ctrl.isOpenDeposit.value];
         }
         getUserStore({ $dexie, account }) {
-            console.log(4);
+            //console.log(4);
             return $dexie.user.get(account)
                 .then((d) => {
                     this.sequel = d.f_id;
@@ -62,7 +59,7 @@ define([], function() {
                 });
         }
         getPhoneDate({ $ajax, account }) {
-            console.log(5);
+            //console.log(5);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
                 data: "type=getPhoneDate&account=" + account
@@ -76,7 +73,7 @@ define([], function() {
         }
 
         getSystemLog({ $ajax, account }) {
-            console.log(6);
+            //console.log(6);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
@@ -94,26 +91,26 @@ define([], function() {
                 this.getUserBasic($scope), this.getUserModel($scope),
                 this.getUserState($scope), this.getUserStore($scope),
                 this.getPhoneDate($scope), this.getSystemLog($scope),
-            ]).then(() => {
-                console.log(this);
-                this.sendsms = new sendsms(this);
-                return this;
-            })
+            ]).then(() => { return this; })
         }
     }
 
 
     async function $defUser($scope) {
-        var user =
-            await $scope.$getUser() ||
-            await new User($scope);
+        var user = await new User($scope);
+        user.sendsms = new sendsms(user);
+        console.log("$defUser", user);
         return user;
+
     }
 
 
     return { $defUser };
 });
 
+
+
+//await $scope.$getUser() ||
 
 
 

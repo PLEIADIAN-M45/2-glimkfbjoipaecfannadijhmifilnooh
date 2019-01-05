@@ -37,7 +37,6 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var channel = localStorage.channel;
         var unique = [account, channel].join("-");
 
-
         var $sendMessage = function(message) {
             console.log(message.command);
             return new Promise((resolve, reject) => {
@@ -67,20 +66,39 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             angular.copy(result, source);
             $scope.$apply();
         }
+
+        var _user;
+
         var $getUser = function() {
             return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: unique })
-                .then((user) => { console.log('getUser:', user); return user; })
+                .then((user) => {
+                    if (user) { return user } else {
+                        return $scope.$defUser($scope)
+                    }
+                    /*
+                                        console.log('getUser:', user);
+                                        _user = user;
+                                        return user;*/
+                })
         }
         var $delUser = function(bool) {
             if (!bool) { return }
             return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
-                .then((user) => { console.log('delUser:', unique); return; })
+                .then((user) => {
+                    return;
+                    console.log('delUser:', unique);
+                })
         }
+
         var $putUser = function(nv, ov) {
+            if (!nv) { return };
             if (angular.equals(nv, ov)) { return };
-            if (!nv) { return }
+            if (angular.equals(_user, nv)) { return };
             return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
-                .then((user) => { console.log('putUser:', user); return user; })
+                .then((user) => {
+                    console.log('$putUser:', user);
+                    return user;
+                })
         }
 
         var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {

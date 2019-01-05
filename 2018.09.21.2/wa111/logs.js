@@ -3,6 +3,8 @@ define([], function() {
     return async function({ $scope, $getUser, $putUser, $setUser, $sendMessage }) {
 
 
+        function command(str) { return str + "(#)" }
+
         function apply() {
             //$digest or $apply
             if (!$scope.$$phase) { $scope.$apply(); }
@@ -18,18 +20,22 @@ define([], function() {
             x.sites = [{ channel: "26", host: "wa111", ...params }, { channel: "35", host: "wa111", ...params }, { channel: "17", host: "wa111", ...params }, { channel: "16", host: "ku711", ...params }]
             return x;
         });
+
         //console.log($scope.list);
         $scope.apiFunctions = function() {}
         $scope.apiFunctions.region = function(e) {
+            return
             //if (this.callee == "banker") { return };
             if (this.callee == "author") { return };
-            if (this.callee != "idcard") { return };
-
+            //if (this.callee == "locate") { return };
+            if (this.callee == "idcard") { return };
+            if (this.callee == "mobile") { return };
+            if (this.callee == "banker") { return };
             //console.log(this.callee);
-            //if (this.region && !e) { return };
+            if (this.region) { return };
             /*--------------------------------------------------------------*/
             //angular.extend(this, { command: "api." + this.callee + "(#)", region: { active: true } });
-            angular.extend(this, { command: "new service(#)", region: { active: true } });
+            angular.extend(this, { command: "new Service(#)", region: { active: true } });
             console.log(this);
             $sendMessage(this).then((res) => {
                 console.log(res);
@@ -58,7 +64,7 @@ define([], function() {
             };
         }
         $scope.showSemanticModal = function(s) {
-            $rootScope.list_RemittanceName = s.list_RemittanceName;
+            $scope.list_RemittanceName = s.list_RemittanceName;
             $('.ui.modal').modal('show');
         }
         $scope.getProtocolSet = function() {

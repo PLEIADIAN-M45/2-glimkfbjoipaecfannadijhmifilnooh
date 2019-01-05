@@ -1,9 +1,8 @@
 define(["wa111/user"], function({ $defUser }) {
 
-    //define(["wa111/user"], function(User) {
-
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
+        $scope.$defUser = $defUser;
 
         $scope.$delUser(1);
 
@@ -66,13 +65,10 @@ define(["wa111/user"], function({ $defUser }) {
         $scope.$keydown(function(e) { if (e.key == "Delete") { $scope.$delUser(1) } });
         $scope.$apply();
 
-        console.clear();
+        //console.clear();
 
-        console.log($scope.user);
-
-        console.log($now);
-
-
+        //console.log($scope.user);
+        //console.log($now);
     }
 });
 

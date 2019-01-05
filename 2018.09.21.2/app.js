@@ -25,7 +25,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
         get $invoke() { return this.$injector.invoke; }
         get $compile() { return this.$injector.get('$compile'); }
         get $now() {
-            console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+            //console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
             return moment().format('YYYY-MM-DD HH:mm:ss');
         }
 
