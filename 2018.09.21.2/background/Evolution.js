@@ -20,47 +20,6 @@ function s(res) {
     return res
 }
 
-/*
-const getProfileUserInfo = function() {
-    return new Promise(function(resolve, reject) {
-        chrome.identity.getProfileUserInfo(resolve)
-    })
-}
-
-const getTokenInfo = function(token) {
-    return new Promise(function(resolve, reject) {
-        if(token) {
-            $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
-                access_token: token
-            }, function(tokenInfo) {
-                localStorage.tokenInfo = angular.toJson(tokenInfo, true)
-                window.tokenInfo = tokenInfo
-                resolve()
-            }).fail(reject)
-        } else {
-            throw "without token";
-        }
-    })
-}
-
-const getCertForOpenIdConnect = function() {
-    return new Promise(function(resolve, reject) {
-        $.get('https://www.googleapis.com/oauth2/v2/certs', resolve)
-    })
-}
-*/
-
-console.log(chrome.identity);
-
-/*
-var c = chrome.identity.getRedirectURL()
-
-console.log(c);
-
-chrome.identity.getAuthToken({
-    "interactive": true
-}, (rs) => { console.log(rs); })
-*/
 
 function timeDiff(t1, t2, unit) {
     t1 = moment(t1)
@@ -82,112 +41,59 @@ function trim(value) { return value.toString().trim(); }
 
 function s(array) { console.log(array); }
 
+/*
+class IDCARD {
+    constructor(value) {
+        var [$1, $2, $3, $4, $5] = this.placer(value);
+        this.prov = global.gb2260.get($1);
+        this.city = global.gb2260.get($2);
+        this.area = global.gb2260.get($3);
+        this.sex = ($5 % 2 === 1) ? "男" : "女";
+        this.age = moment().diff($5, "years");
+        this.birth = moment($5).locale('zh-tw').format('LL');
+        return Promise.resolve(this)
+    }
+    placer(value) {
+        return value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, [
+            '$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6'
+        ]).split(",").map((x) => {
+            return (isNaN(x)) ? x : Number(x)
+        })
+    }
+}*/
+
+
 class service {
-    constructor({ callee, value }, sender, sendResponse) {
-        this.value = value;
-        return this[callee]().then(this.toCheck)
+    constructor(request, sender, sendResponse) {
+        return this[request.callee](request).then(this.toCheck)
     }
     toCheck(res) {
         let string = Object.values(res).toString();
-        res.alert = global.region.find(([elem]) => {
-            return string.includes(elem);
-        }) || false;
+        res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
         return res;
-    }
-
-
-    get birth() {
-        return moment(this.$4).locale('zh-tw').format('LL');
-    }
-    get age() {
-        return moment().diff(moment(this.$4), 'years') + '岁'
-    }
-    get sex() {
-        return (Number(this.$5) % 2 == 1) ? '男性' : '女性'
-    }
-
-    get prov() {
-        return this.gb2260.get(Number(this.$1))
-    }
-    get city() {
-        return this.gb2260.get(Number(this.$2))
-    }
-    get area() {
-        return this.gb2260.get(Number(this.$3))
-    }
-
-    get gb2260() {
-        return new Map(global.gb2260);
-    }
-
-    get meta() {
-        return [this.birth, this.sex, this.age].join('/')
-    }
-
-
-    idcard() {
-
-        //var [$1, $2, $3, $4, $5, $6, $7] =
-        var arr =
-            this.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/,
-                ['$10000', '$1$200', '$1$2$3', '$4-$5-$6', '$7', '$8', '$4年$5月$6日']).split(',');
-
-
-        console.log(arr);
-        /*
-        340122-198710061675
-        340000-
-        */
-
-
-        var str = this.value.substr(0, 2).padEnd(6, 0)
-        console.log(str);
-
-        var str1 = this.value.substr(0, 4).padEnd(6, 0)
-
-        console.log(str1);
-
-        var str3 = this.value.substr(0, 6).padEnd(6, 0)
-
-
-        console.log(str3);
-
-
-        var str4 = this.value.substr(6, 8);
-        console.log(str4);
-
-
-        //str.replace(regexp | substr, newSubstr | function)
-
-        /*
-        this.$1 = $1;
-        this.$2 = $2;
-        this.$3 = $3;
-        this.$4 = $4;
-        this.$5 = $5;
-
-        var region = {
-            "prov": this.prov,
-            "city": this.city,
-            "area": this.area,
-            "meta": this.meta,
-        ].join('/')
-        }
-        */
-
-
-        console.log(region);
-        return Promise.resolve(region)
-    }
-
-    promise() {
-        return this[this.callee]();
     }
 
     get time() { return Date.now(); }
 
-    locate(request) {
+    placer(value) {
+        return value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, [
+            '$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6'
+        ]).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) })
+    }
 
+    idcard(request) {
+        var [$1, $2, $3, $4, $5] = this.placer(request.value);
+        return Promise.resolve({
+            prov: global.gb2260.get($1),
+            city: global.gb2260.get($2),
+            area: global.gb2260.get($3),
+            sex: ($5 % 2 === 1) ? "男" : "女",
+            age: moment().diff($5, "years"),
+            birth: moment($5).locale('zh-tw').format('LL')
+        })
+    }
+
+    locate(request) {
         return $.ajax({
                 url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
                 dataType: "json",
@@ -205,10 +111,10 @@ class service {
             })
             .then((res) => {
                 var region = {};
-                if (res.status == 0) {
+                if(res.status == 0) {
                     var arr = res.data[0].location.split(' ');
                     var str = arr[0];
-                    if (str) {
+                    if(str) {
                         region.meta = arr[1];
                         str = str.replace(/(.+(省|自治区))/g, '');
                         region.prov = RegExp.$1;
@@ -228,7 +134,7 @@ class service {
         //return new Promise((resolve, reject) => {        })
         //new Map(evo.decoder(localStorage["gb2260"]));
     }
-    banker(request) {
+    banker2(request) {
 
     }
 
@@ -249,7 +155,7 @@ class service {
             }
         }).then((res) => {
             var region = {}
-            if (res.status == 0) {
+            if(res.status == 0) {
                 var d = res.data[0];
                 region = {
                     city: d.city,
@@ -264,31 +170,7 @@ class service {
 
 }
 
-/*
 
-https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/replace
-JavaScript Demo: String.raw()
-
-*/
-
-var filePath = String.raw `C:\Development\profile\aboutme.html`;
-
-console.log('The file was uploaded from: ' + filePath);
-
-
-function replacer(match, p1, p2, p3, offset, string) {
-
-    console.log(match, p1, p2, p3, offset, string);
-
-
-
-    // p1 is nondigits, p2 digits, and p3 non-alphanumerics
-    return [p1, p2, p3].join(' - ');
-}
-var newString = 'abc12345#$*%'.replace(/([^\d]*)(\d*)([^\w]*)/, replacer);
-
-
-console.log(newString); // abc - 12345 - #$*%
 
 //class apis extends service {
 class apis {
@@ -311,8 +193,8 @@ class apis {
     }
 
     getTokenInfo(token) {
-        console.log(token);
-        if (token) {
+        //console.log(token);
+        if(token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
@@ -337,21 +219,9 @@ class apis {
     onMessage(request, sender, sendResponse) {}
 
     onMessageExternal(request, sender, sendResponse) {
-
-        /*if (request.callee == "locate") {
-            eval(request.command).call(request, sender, sendResponse).then((s) => {
-                console.log(s);
-                return sendResponse(s)
-            })
-            return true
-        }
-        */
-        //if (request.command.includes("#")) {}
         request.command = request.command.replace("#", "...arguments");
-        console.log(request);
-
+        console.log(request.command);
         try {
-
             eval(request.command).then((s) => {
                 console.log(s);
                 return sendResponse(s)
@@ -369,7 +239,7 @@ class apis {
     get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
 
     download() {
-        if (window.localStorage.length < 5) {
+        if(window.localStorage.length < 5) {
             return Promise.all([
                 fetch(this.macros + '?commands=GMA').then(this.toJson),
                 fetch(this.macros + '?commands=GMB').then(this.toJson)
@@ -416,7 +286,7 @@ class apis {
         Object.entries(localStorage).forEach(([name, value]) => {
             //console.log(name);
             //console.log(this.decoder(value));
-            if (name) {
+            if(name) {
                 this.decoder(value, name)
             }
         })
@@ -428,11 +298,10 @@ class apis {
     }
 
     toLocalStorage(res) {
-        console.log(res);
-        if (typeof res)
-
-
+        //console.log(res);
+        if(typeof res) {
             return res.forEach(([name, value]) => { localStorage[name] = value; })
+        }
     }
 
     toJson(res) { return res.json() }
@@ -442,18 +311,20 @@ class apis {
     flat(arr) { return arr.flat(); }
 
     save(arr) {
-
         arr.forEach(([name, value]) => {
             localStorage[name] = value;
             global[name] = decoder(value);
         });
-        console.log(global);
+
+        global.gb2260 = new Map(global.gb2260)
+        //map.gb2260 = new Map(global.gb2260)
+        //console.log(global);
     }
 
 
     entries() {
         Object.entries(localStorage).forEach(([name, value]) => {
-            if (name) {
+            if(name) {
                 this.decoder(value, name)
             }
         })
@@ -501,13 +372,13 @@ console.log(api);
 
 
 
-
+/*
 class xmlHttp {
     getmodel() {
         console.log(this);
     }
 }
-
+*/
 
 
 
@@ -519,3 +390,65 @@ audience: angular.fromJson(localStorage.tokenInfo).audience,
 module: request.module,
 params: angular.toJson(request)
 */
+
+
+
+
+
+
+
+
+/*if (request.callee == "locate") {
+          eval(request.command).call(request, sender, sendResponse).then((s) => {
+              console.log(s);
+              return sendResponse(s)
+          })
+          return true
+      }
+      */
+//if (request.command.includes("#")) {}
+
+
+
+
+/*
+const getProfileUserInfo = function() {
+    return new Promise(function(resolve, reject) {
+        chrome.identity.getProfileUserInfo(resolve)
+    })
+}
+
+const getTokenInfo = function(token) {
+    return new Promise(function(resolve, reject) {
+        if(token) {
+            $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
+                access_token: token
+            }, function(tokenInfo) {
+                localStorage.tokenInfo = angular.toJson(tokenInfo, true)
+                window.tokenInfo = tokenInfo
+                resolve()
+            }).fail(reject)
+        } else {
+            throw "without token";
+        }
+    })
+}
+
+const getCertForOpenIdConnect = function() {
+    return new Promise(function(resolve, reject) {
+        $.get('https://www.googleapis.com/oauth2/v2/certs', resolve)
+    })
+}
+*/
+
+/*
+var c = chrome.identity.getRedirectURL()
+
+console.log(c);
+
+chrome.identity.getAuthToken({
+    "interactive": true
+}, (rs) => { console.log(rs); })
+*/
+
+console.log(chrome.identity);
