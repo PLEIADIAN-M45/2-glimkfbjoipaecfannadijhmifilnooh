@@ -41,7 +41,7 @@ function trim(value) { return value.toString().trim(); }
 
 function s(array) { console.log(array); }
 
-/*
+
 class IDCARD {
     constructor(value) {
         var [$1, $2, $3, $4, $5] = this.placer(value);
@@ -60,8 +60,36 @@ class IDCARD {
             return (isNaN(x)) ? x : Number(x)
         })
     }
-}*/
+    sex($7) {
+        return ($7 % 2 === 1) ? "男" : "女"
+    }
 
+    birth($5) {
+        return moment($5).locale('zh-tw').format('LL')
+    }
+
+    get abc() {
+        return 134
+    }
+
+    age($5) {
+        return moment().diff($5, "years")
+    }
+    static sex($4) {
+        return ($4 % 2 === 1) ? "男" : "女"
+    }
+    static age($5) {
+        return moment().diff($5, "years")
+    }
+    static birth($5) {
+        return moment($5).locale('zh-tw').format('LL')
+    }
+}
+
+
+
+
+//service.idcard.
 
 class service {
     constructor(request, sender, sendResponse) {
@@ -81,9 +109,37 @@ class service {
         ]).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) })
     }
 
+
+
+    time11() { return }
+    time111() { return }
     idcard(request) {
-        var [$1, $2, $3, $4, $5] = this.placer(request.value);
-        return Promise.resolve({ prov: global.gb2260.get($1), city: global.gb2260.get($2), area: global.gb2260.get($3), sex: ($5 % 2 === 1) ? "男" : "女", age: moment().diff($5, "years"), birth: moment($5).locale('zh-tw').format('LL') })
+        console.log(request);
+        console.log(this.placer(request.value));
+        console.log(request.value);
+
+
+
+
+        request.value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, [
+                '$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6'
+            ]).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) })
+            .map(([$1, $2, $3, $4, $5]) => {
+                console.log($4);
+            })
+
+
+        var [$1, $2, $3, $4, $5] = this.placer(request.value),
+            prov = global.gb2260.get($1),
+            city = global.gb2260.get($2),
+            area = global.gb2260.get($3),
+            sex = ($4 % 2 === 1) ? "男" : "女",
+            age = moment().diff($5, "years"),
+            birth = moment($5).locale('zh-tw').format('LL'),
+            meta = [birth, sex, age + '岁'].join('/');
+
+        console.log($1, $2, $3, $4, $5);
+        return Promise.resolve({ prov, city, area, sex, age, birth, meta })
     }
 
     locate(request) {
@@ -160,10 +216,27 @@ class service {
             return region;
         })
     }
-
 }
 
+console.log(service.prototype.idcard);
 
+service.prototype.idcard._age = function() {
+    return 26
+}
+
+//meta: [this.birth, this.sex, this.age + '岁'].join('/')
+
+/*service.prototype.idcard._age = function() {
+    return 26
+}*/
+/*
+service.idcard.prototype.time = function() {
+    return
+}
+service.idcard.prototype.time = function() {
+    return
+}
+*/
 
 //class apis extends service {
 class apis {
