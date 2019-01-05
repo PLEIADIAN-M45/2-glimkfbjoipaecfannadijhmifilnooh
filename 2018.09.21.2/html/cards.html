@@ -1,21 +1,22 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.alert}" ng-init="apiFunctions.region.call(me, this)">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apiFunctions.region.call(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{'loading':me.region.active}" ng-click="apiFunctions.region.call(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apiFunctions.region.call(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
             <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content result">
-            <div class="ui dimmer" ng-class="{'active': me.region.active }">
+            <div class="ui dimmer" ng-class="{ 'active': me.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
             <div class="header padded">
+                {{me.region.alarm}}
                 <!-- <b ng-if="me.alarm">{{me.status||me.alarm}}</b> -->
                 {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}}
             </div>
@@ -24,7 +25,6 @@
             </div>
         </div>
         <div class="extra content grid grid-2" ng-if="me.callee=='locate'" ng-init="getProtocolSet.call(me);">
-            
             <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>

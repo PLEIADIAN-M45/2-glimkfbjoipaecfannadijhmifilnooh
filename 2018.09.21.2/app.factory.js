@@ -37,14 +37,24 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var channel = localStorage.channel;
         var unique = [account, channel].join("-");
 
-        var $sendMessage = function(message) {
-            console.log(message.command);
+        var $sendMessage = function(message) {            
+            //onsole.log(message);
+            //console.log(this);
+
+            message.active = true;
+
             return new Promise((resolve, reject) => {
                 if ($extensionId && message) {
                     chrome.runtime.sendMessage($extensionId, message, (res) => {
                         //console.log(res);
-                        if (res) { res.active = false; }
+                        message.active = false;
+                        //setTimeout(function() { $scope.$apply() }, 2000)
+                        
+                        if (res) {}
+
                         try { resolve(res) } catch (ex) { reject(ex) }
+
+
                     })
                 } else {
                     console.error(this);

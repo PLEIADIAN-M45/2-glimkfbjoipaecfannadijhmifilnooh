@@ -8,6 +8,8 @@ define([], function() {
         function apply() {
             //$digest or $apply
             if (!$scope.$$phase) { $scope.$apply(); }
+
+            console.log($scope.user);
         };
 
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
@@ -23,23 +25,56 @@ define([], function() {
 
         //console.log($scope.list);
         $scope.apiFunctions = function() {}
+
         $scope.apiFunctions.region = function(e) {
-            return
+
+            /* Object.defineProperty($scope.user.banker[0], 'region', {
+                 writable: false
+             })*/
+            //console.log(e);
+
             //if (this.callee == "banker") { return };
-            if (this.callee == "author") { return };
-            //if (this.callee == "locate") { return };
-            if (this.callee == "idcard") { return };
-            if (this.callee == "mobile") { return };
-            if (this.callee == "banker") { return };
+            //if (this.callee != "author") { return };
+            //this.region = {}
+            //if (this.callee != "locate") { return };
+            //if (this.callee == "idcard") { return };
+            //if (this.callee != "mobile") { return };
+            //if (this.callee != "banker") { return };
             //console.log(this.callee);
-            if (this.region) { return };
+
+
+            if (this.active == undefined || e) {} else { return };
+
+            //console.log(this.region);
+            console.log("---------------------");
             /*--------------------------------------------------------------*/
+            try {
+
+                this.command = "new Service(#)"
+                //angular.extend(this, { command: "new Service(#)" });
+                //angular.extend(this, { command: "new Service(#)", region: { active: true } });
+
+            } catch (ex) {}
             //angular.extend(this, { command: "api." + this.callee + "(#)", region: { active: true } });
-            angular.extend(this, { command: "new Service(#)", region: { active: true } });
-            console.log(this);
+
+            // console.log(this);
+
+
+            //this.active = true;
+
+            //if (this.callee != "banker") {};
+
+            //this.region: { active: true }
+
             $sendMessage(this).then((res) => {
-                console.log(res);
-                angular.copy(res, this.region);
+
+                //console.log(res);
+                //console.log(this);
+                //this.active = false
+                this.region = res;
+
+                //angular.copy(res, this.region);
+
             }).then(apply);
         }
         $scope.apiFunctions.member = function($childScope, e) {
@@ -79,13 +114,13 @@ define([], function() {
             });
         }
 
-
-
         /***************************************/
         //$('#divCookie').hide();
         $scope.user.author.value = "王杰";
         $scope.user.author.value = "陈林";
         /***************************************/
+
+        console.log($scope.user);
         $scope.$apply();
         return
     }

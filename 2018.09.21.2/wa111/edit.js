@@ -4,7 +4,7 @@ define(["wa111/user"], function({ $defUser }) {
 
         $scope.$defUser = $defUser;
 
-        $scope.$delUser(1);
+        $scope.$delUser(0);
 
         $scope.$watch('user', $putUser, true);
 
@@ -62,7 +62,11 @@ define(["wa111/user"], function({ $defUser }) {
         };
 
 
-        $scope.$keydown(function(e) { if (e.key == "Delete") { $scope.$delUser(1) } });
+        $scope.$keydown(function(e) {
+            console.log(e.key);
+            if (e.key == "Delete") { $scope.$delUser(1) }
+            if (e.key == "-") { console.clear() }
+        });
         $scope.$apply();
 
         //console.clear();

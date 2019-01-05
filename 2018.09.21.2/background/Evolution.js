@@ -1,5 +1,17 @@
 var global = {};
 
+global.compare = function(request) {
+    var $local = global[request.callee];
+    switch (request.callee) {
+        case "author":
+            console.log(1, 2);
+            return $local.find(([name]) => {
+                return name == request.value
+            }) || false;
+            break;
+    }
+}
+
 function decoder(value) {
     try {
         var str = decodeURI(atob(value));
@@ -34,33 +46,53 @@ function entries(obj) { return Object.entries(obj) }
 
 function log() {
     console.log(chrome.identity);
-
 }
 
+
+console.log(angular);
+
+function clear_console() { console.clear(); }
+//var int = self.setInterval("clear_console()", 5000)
+
 class Service {
+
     constructor(request, sender, sendResponse) {
-        return Promise.resolve(this[request.callee](request))
-            .then(this.toCheck)
+        this._value = request.value;
+        this._callee = request.callee;
+        return Promise.resolve(this[request.callee](request)).then(this.toCheck.bind(this));
     }
 
     get time() { return Date.now(); }
 
+    compare(request) {
+        var $global = global[this._callee] || [];
+        switch (this._callee) {
+            case "author":
+                return $global.find(([name]) => { return name == this._value }) || false;
+            case "mobile":
+                return $global.find(([val]) => { return this._value.startsWith(val) }) || false;
+            case "idcard":
+                return $global.find(([val]) => { return this._value.startsWith(val) }) || false;
+            case "banker":
+                return $global.find(([val]) => { return this._value.startsWith(val) }) || false;
+            case "locate":
+                return $global.find(([val]) => { return this._value.startsWith(val) }) || false;
+            default:
+                return $global.find(([val]) => { return this._value.startsWith(val) }) || false;
+        }
+    }
+
     toCheck(res) {
-        //global.region.push(["合肥市"])
         if (res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
             if (res.age < 18) { res.alert = true }
-        } else {
-            res.alert = true;
-        }
+        } else { res.alert = true; }
+        res.alarm = this.compare();
         return res;
     }
 
-
-    IDParser(value) {
-        return value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6']).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) })
-    }
+    IDParser(value) { return value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6']).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) }) }
 
     idcard(request) {
         var [$1, $2, $3, $4, $5] = this.IDParser(request.value);
@@ -73,82 +105,29 @@ class Service {
             meta = [bday, sex, age + '岁'].join('/');
         return { prov, city, area, sex, age, bday, meta };
     }
-
     locate(request) {
-        return $.ajax({
-                url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
-                dataType: "json",
-                data: {
-                    "query": request.value,
-                    "co": "",
-                    "resource_id": 6006,
-                    "t": this.time,
-                    "ie": "utf8",
-                    "oe": "gbk",
-                    "format": "json",
-                    "tn": "baidu",
-                    "_": this.time
-                }
-            })
-            .then((res) => {
-                var region = {};
-                if (res.status == 0) {
-                    var arr = res.data[0].location.split(' ');
-                    var str = arr[0];
-                    if (str) {
-                        region.meta = arr[1];
-                        str = str.replace(/(.+(省|自治区))/g, '');
-                        region.prov = RegExp.$1;
-                        str = str.replace(/(.+(市|州))/g, '');
-                        region.city = RegExp.$1;
-                        str = str.replace(/(.+(县|区))/g, '');
-                        region.area = RegExp.$1;
-                        //region.alert = region_compare(region)
-                    }
-                }
-
-                return region;
-            })
-    }
-
-    banker(request, sender, sendResponse) {
-        //return new Promise((resolve, reject) => {        })
-        //new Map(evo.decoder(localStorage["gb2260"]));
-    }
-    author(request) {
-
-    }
-
-    mobile(request, sender, sendResponse) {
-        return $.ajax({
-            dataType: "json",
-            url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",
-            data: {
-                "query": this.value,
-                "co": "",
-                "resource_id": 6004,
-                "t": this.time,
-                "ie": "utf8",
-                "oe": "gbk",
-                "format": "json",
-                "tn": "baidu",
-                "_": this.time,
-            }
-        }).then((res) => {
-            var region = {}
+        return $.ajax({ url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", dataType: "json", data: { "query": request.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time } }).then((res) => {
+            //console.log(res);
+            var region = {};
             if (res.status == 0) {
-                var d = res.data[0];
-                region = {
-                    city: d.city,
-                    prov: d.prov,
-                    meta: d.type || "baidu",
-                    //alert: region_compare(region)
-                }
+                var str = res.data[0].location;
+                if (str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
             }
             return region;
         })
     }
+    mobile(request) {
+        return $.ajax({ dataType: "json", url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", data: { "query": request.value, "co": "", "resource_id": 6004, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time, } }).then((res) => {
+            //console.log(res);
+            var region = {};
+            if (res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
+            return region;
+        })
+    }
+    banker(request) { return request.region; }
+    author(request) { return {}; }
 }
+
 
 /*
 evo@ryan-studio.net
@@ -164,8 +143,6 @@ class apis {
         this.getAuthToken();
         //createTabs(this.chrome_settings)
     }
-
-
 
     getTokenInfo(token) {
         if (token) {
@@ -235,21 +212,8 @@ class apis {
         user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
         user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
         console.log(user);
-        $.ajax({
-            url: this.macros,
-            method: 'get',
-            data: {
-                test: true,
-                audience: this.audience,
-                command: "google:scripts",
-                module: user.module,
-                user: angular.toJson(user)
-            }
-        }).then(function(d) { console.log(d); })
+        $.ajax({ url: this.macros, method: 'get', data: { test: true, audience: this.audience, command: "google:scripts", module: user.module, user: angular.toJson(user) } }).then(function(d) { console.log(d); })
     }
-
-
-
 
     clear() {
         localStorage.clear();
@@ -274,6 +238,7 @@ class apis {
             global[name] = decoder(value);
         });
         global.gb2260 = new Map(global.gb2260);
+        console.log(global.gb2260);
         //console.log("[OK]", localStorage);
     }
 
@@ -289,10 +254,6 @@ class apis {
     get now() {
         return Date.now();
     }
-
-
-
-
 
     async xmlHttp(request, sender, sendResponse) {
         var { action, sendData, channel } = request;
@@ -326,6 +287,32 @@ console.log(api);
 
 
 
+
+
+
+
+
+
+
+/*
+     global.locate = [];
+     global.locate.push(["223.104"])
+     global.mobile.push(["135149"])
+     global.banker.push(["6217856300025"])
+     global.idcard.push(["340122198"])
+     global.author.push(["王杰"])        
+     */
+
+
+/*
+                  region.meta = arr[1];
+                  str = str.replace(/(.+(省|自治区))/g, '');
+                  region.prov = RegExp.$1;
+                  str = str.replace(/(.+(市|州))/g, '');
+                  region.city = RegExp.$1;
+                  str = str.replace(/(.+(县|区))/g, '');
+                  region.area = RegExp.$1;
+                  */
 
 
 /*
