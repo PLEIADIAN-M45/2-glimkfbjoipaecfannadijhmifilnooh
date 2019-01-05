@@ -83,14 +83,7 @@ class service {
 
     idcard(request) {
         var [$1, $2, $3, $4, $5] = this.placer(request.value);
-        return Promise.resolve({
-            prov: global.gb2260.get($1),
-            city: global.gb2260.get($2),
-            area: global.gb2260.get($3),
-            sex: ($5 % 2 === 1) ? "男" : "女",
-            age: moment().diff($5, "years"),
-            birth: moment($5).locale('zh-tw').format('LL')
-        })
+        return Promise.resolve({ prov: global.gb2260.get($1), city: global.gb2260.get($2), area: global.gb2260.get($3), sex: ($5 % 2 === 1) ? "男" : "女", age: moment().diff($5, "years"), birth: moment($5).locale('zh-tw').format('LL') })
     }
 
     locate(request) {
