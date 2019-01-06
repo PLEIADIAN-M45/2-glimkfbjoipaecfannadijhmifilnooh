@@ -9,18 +9,19 @@ define([], function() {
         this.channel = user.channel;
     }
 
-    var $sendMessage;
+
+
+
 
     class User {
-        constructor($scope) { return this.start($scope); }
+        constructor($scope) {
+            //super($scope);
+            return this.start($scope);
+        }
         getUserBasic({ server, origin, unique, channel, account, operator }) {
-            //var { $server, $origin, $unique, $channel, $account, $operator } = arguments[0];
-            //console.log(1);
             Object.assign(this, { server, origin, unique, channel, account, operator })
         }
-
         getUserModel({ $model }) {
-            //console.log(2);
             var m = $model;
             this.timing = [];
             this.equpmt = {};
@@ -38,12 +39,10 @@ define([], function() {
             ];
         }
         getUserState({ ctrl }) {
-            //console.log(3);
             this.status = [ctrl.ishow.value];
             this.permit = [ctrl.isOpenDeposit.value];
         }
         getUserStore({ $dexie, account }) {
-            //console.log(4);
             return $dexie.user.get(account)
                 .then((d) => {
                     this.sequel = d.f_id;
@@ -59,7 +58,6 @@ define([], function() {
                 });
         }
         getPhoneDate({ $ajax, account }) {
-            //console.log(5);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetMemberList.ashx",
                 data: "type=getPhoneDate&account=" + account
@@ -71,9 +69,7 @@ define([], function() {
                 this.equpmt.osInfo = d.f_osInfo;
             });
         }
-
         getSystemLog({ $ajax, account }) {
-            //console.log(6);
             return $ajax({
                 url: "/LoadData/AccountManagement/GetSystemLog.ashx",
                 method: "POST",
@@ -81,11 +77,10 @@ define([], function() {
                     account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
-
         start($scope) {
             return Promise.all([
                 this.getUserBasic($scope), this.getUserModel($scope),
@@ -95,18 +90,43 @@ define([], function() {
         }
     }
 
+    // await $scope.$getUser()
 
     async function $defUser($scope) {
         var user = await new User($scope);
         user.sendsms = new sendsms(user);
-        console.log("$defUser", user);
         return user;
-
     }
-
 
     return { $defUser };
 });
+
+
+
+
+// $scope.user.constructur
+class UserFunc {
+    constructor() {
+        //console.log($scope.unique);
+        //this.unique = $scope.unique;
+        //$sendMessage = $scope.$sendMessage;
+    }
+    get() {
+        //console.log(this);
+        return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: this.unique })
+            .then((x) => {
+                console.log(x);
+            })
+    }
+    put() {
+
+    }
+
+    delete() {
+
+    }
+
+}
 
 
 
@@ -143,7 +163,7 @@ define([], function() {
             this.channel = $channel;
             this.account = $account;
             this.operator = $operator;
-         
+
         //console.log("----------");
 
         */

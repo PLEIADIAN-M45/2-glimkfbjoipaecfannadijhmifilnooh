@@ -4,11 +4,11 @@ define(['@ku711/api'], function(apiFunction) {
 
 
     function setUser() {
-        
+
         $scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
 
         return Promise.all([
-            
+
             getModule('OldMemberBaseInfo'),
             getModule('OldMemberRisksInfo'),
             getSystemLog(),
@@ -41,8 +41,8 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     function toObj8(args) {
-        if (args.constructor.name == "Object") { return args } else
-        if (args.constructor.name == "Array") {
+        if(args.constructor.name == "Object") { return args } else
+        if(args.constructor.name == "Array") {
             try {
                 var obj = {};
                 args.forEach(({ BankCodeID, BankCodeName }) => { obj[BankCodeID] = BankCodeName });
@@ -64,7 +64,9 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     function getStatus() {
-        return Promise.all([getModule('UpdateEditMemberInfoManage.MemberStatus'), getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')]).then(([status, permit]) => {
+        return Promise.all([getModule('UpdateEditMemberInfoManage.MemberStatus'),
+            getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
+        ]).then(([status, permit]) => {
             $scope.user.status.push(status);
             $scope.user.permit.push(permit);
             return $scope.user;
@@ -72,7 +74,15 @@ define(['@ku711/api'], function(apiFunction) {
     }
 
     function getSystemLog() {
-        return apiFunction.getSystemLog().then((logs) => { return logs.filter(({ Content, OperateTime, Operator }) => { return Content.filter((obj) => { if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) { return evo.assign($scope.user, { timing: [OperateTime] }); } }) }) })
+        return apiFunction.getSystemLog().then((logs) => {
+            return logs.filter(({ Content, OperateTime, Operator }) => {
+                return Content.filter((obj) => {
+                    if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                        return evo.assign($scope.user, { timing: [OperateTime] });
+                    }
+                })
+            })
+        })
     }
 
 

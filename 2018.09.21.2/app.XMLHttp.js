@@ -36,6 +36,7 @@ define([], function() {
 
     function s(a) { console.log(a); }
 
+    console.log(1);
 
     try {
 
@@ -76,11 +77,12 @@ define([], function() {
 
 
         xmlSpider.load = function() {
+            console.log(this);
             //console.log(2);
             this.command = "api.xmlHttp(...arguments)";
             //this.command = "new xmlHttp(...arguments)";
-            this.extensionId = localStorage.$extensionId;
-            this.channel = localStorage.$channel;
+            this.extensionId = localStorage.extensionId;
+            this.channel = localStorage.channel;
             this.responseHeaders = $getAllResponseHeaders(this);
             this.hostname = $hostname();
             this.lastPath = $lastPath(this);
@@ -94,10 +96,20 @@ define([], function() {
             this.action = this.sendData.action;
             this.type = this.sendData.type;
 
+            this.$unique = window.$unique;
+
+            //console.log(window.$unique);
+
+
+            chrome.runtime.sendMessage(this.extensionId, this, (res) => {
+
+            })
+
             //console.log(this.$scope);
         }
 
         xmlSpider.loadend = function() {
+
             //console.log(3);
             //console.log(this);
             //console.log(this.extensionId);

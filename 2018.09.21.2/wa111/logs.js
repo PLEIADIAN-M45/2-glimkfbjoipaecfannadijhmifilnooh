@@ -6,24 +6,28 @@ define([], function() {
         function command(str) { return str + "(#)" }
         /***************************************/
         $('#divCookie').hide();
-        //$scope.user.author.value = "陈林";
-        //$scope.user.author.value = "王杰";
-        /***************************************/
+
         function apply() {
-            $scope.user.author.value = "王杰";
-            //$digest or $apply
-            if(!$scope.$$phase) { $scope.$apply(); }
-            console.log($scope.user);
+            if(!$scope.$$phase) {
+                $scope.$apply();
+                //$scope.$digest();
+            }
         };
 
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
         $scope.$watch('user', $scope.$putUser, true);
         $scope.user = await $getUser();
+
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].concat($scope.user.banker).map((x) => {
             if(x.callee == "locate") { return x };
             var params = { command: "apiFunctions.member", callee: x.callee, [x.callee]: x.value, index: 1 };
-            x.sites = [{ channel: "26", server: "wa111", ...params }, { channel: "35", server: "wa111", ...params }, { channel: "17", server: "wa111", ...params }, { channel: "16", server: "ku711", ...params }]
+            x.sites = x.sites || [
+                { channel: "26", server: "wa111", ...params },
+                { channel: "35", server: "wa111", ...params },
+                { channel: "17", server: "wa111", ...params },
+                { channel: "16", server: "ku711", ...params }
+            ]
             return x;
         });
 
@@ -31,28 +35,18 @@ define([], function() {
         $scope.apiFunctions = function() {}
 
         $scope.apiFunctions.region = function(e) {
-            return
             if(this.active == undefined || e) {} else { return };
             this.command = "new Service(#)";
             $sendMessage(this).then((res) => {
-                if(res) {
-                    angular.copy(res, this.region);
-                }
+                if(res) { this.region = res }
             }).then(apply);
         }
         $scope.apiFunctions.member = function($childScope, e) {
-
-            if(this.callee == "author" && this.channel == 16) {} else { return }
-            //if(this.callee == "author") {} else { return }
-
-            angular.extend(this, { command: "api.member(#)", active: true, rows: null });
-
+            if(this.on) {} else { return }
+            angular.extend(this, { command: "api.member(#)", active: true });
+            $scope.user.author.value = "王杰";
             $sendMessage(this).then((res) => {
-                console.log(res);
-                if(res) {
-                    Object.assign(this, res)
-                    //angular.copy(res, this);
-                }
+                if(res) { Object.assign(this, res) }
             }).then(apply);
         }
         $scope.openMemberModify = function({ origin, server }) {
@@ -85,6 +79,16 @@ define([], function() {
             this.rows = cells.map(({ children }) => { //检查黑名单 海南
                 return { IPAddress: children[7].outerText.trim(), IPLocation: children[9].outerText.trim() };
             });
+
+            $scope.user.region = this.rows.map((x) => {
+                return x.IPLocation;
+            })
+            console.log(1);
+            ///console.log(this.rows);
+        }
+
+        $scope.switcher = function(s, e) {
+            s.on = !s.on;
         }
 
 

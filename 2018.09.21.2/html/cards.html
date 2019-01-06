@@ -38,7 +38,8 @@
                 <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member.call(s, this, $event)" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="s.active"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+                    <div class="detail center" ng-hide="s.active" ng-click="switcher(s, $event)" ng-class="{ 'green': s.on }">
+                        <b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
                     <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member.call(s, this, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row, s)" ng-init="changeColor.call(row, this);" ng-class="[color]" id="{{$id}}">
@@ -84,39 +85,14 @@
         </tbody>
     </table>
 </div>
-<!-- <b>dqwweew</b>
-<table>
-    <caption></caption>
-    <thead>
-        <tr>
-            <th ng-repeat="h in dd">{{h}}</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr ng-repeat="d in dt">
-            <td>{{d.unique}}</td>
-            <td>{{d.agency}}</td>
-            <td>{{d.author}}</td>
-            <td>{{d.peril}}</td>
-            <td>{{d.blackie}}</td>
-            <td>{{d.protocol}}</td>
-        </tr>
-    </tbody>
-</table> -->
-<!--
-<aside ng-init="queryInputModel()"></aside>
-<aside ng-init="createIFrame(route.device)"></aside> -->
-<!-- <iframe src="{{route.device}}"></iframe> -->
-<!--
-<aside ng-include="views.cards.warning"></aside>
- <aside ng-include="views.channel"></aside>
-<aside ng-include="views.pagination"></aside>
-<aside ng-include="views.account"></aside> -->
-<!-- <p ng-bind-html="myHTML"></p> -->
 <style type="text/css">
 /*aside {
     display: inherit;
 }*/
+
+.detail.center.green {
+    background-color: #4caf50 !important;
+}
 
 #divCookie {
     display: grid;

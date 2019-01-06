@@ -16,20 +16,13 @@ define([], function() {
     Array.prototype.serialize = function() {
         try {
             var obj = {};
-            this.forEach(([name, value]) => { if (name && value) { obj[name] = value } });
+            this.forEach(([name, value]) => { if(name && value) { obj[name] = value } });
             return obj;
         } catch (ex) {}
     }
 
 
 
-    document.oncopy = function(e) {
-        var copyText = e.target.dataset.content;
-        if (window.getSelection().type === "Caret") {
-            e.preventDefault();
-            if (e.clipboardData) { e.clipboardData.setData("text/plain", copyText); } else if (window.clipboardData) { window.clipboardData.setData("Text", copyText); }
-        }
-    };
 
     function invoke($anchorScroll, $animate, $animateCss, $cacheFactory, $compile, $controller, $document, $exceptionHandler, $filter, $http, $httpBackend,
         $httpParamSerializer, $httpParamSerializerJQLike, $interpolate, $interval, $jsonpCallbacks, $locale, $location, $log, $parse, $q, $rootElement,

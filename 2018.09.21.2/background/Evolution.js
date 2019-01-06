@@ -172,8 +172,6 @@ class apis {
     */
 
 
-
-
     member(request) {
         Object.assign(this.__proto__, { banker: "", mobile: "", author: "", idcard: "" })
         Object.assign(this.__proto__, request);
@@ -229,19 +227,11 @@ class apis {
                         "hidevalue_totals": "",
                         "pageIndex": this.index,
                         "hidevalue_RecordCount": 0,
-                        "type": "getAllUser"
-                        //"_": this.time
+                        "type": "getAllUser",
+                        "_": this.time
                     }
                 }).then((res) => {
-                    console.log(res);
-                    /*
-                    res.rows.map((row) => {
-
-                        row.origin = this.url;
-                        row.host = this.host
-                        return row
-                    });
-                    */
+                    //console.log(res);
                     res.origin = this.requestUrl;
                     res.index = this.index;
                     res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
@@ -250,9 +240,8 @@ class apis {
                 })
 
                 break;
-            case "ku711":
 
-                console.log(this);
+            case "ku711":
 
                 return $.ajax({
                     "dataType": 'json',
@@ -298,45 +287,55 @@ class apis {
                     })
                 }).then(({ Data }) => {
 
-                    console.log(Data);
-
-                    return
-                    var res = { origin: this.requestUrl, "rows": Data.Data, "records": Data.Pager.PageCount, "total": Data.TotalItemCount, "index": this.index };
+                    var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
 
                     if(res.rows && res.rows.length) {
-                        /*
-                        res.rows.map((row) => {
-                            row.origin = this.url;
-                            row.host = this.host;
-                            return row
-                        })
-                        */
-                        return api.getMemberAlertInfoBackend(res.rows, this.url).then((d) => {
-                            res.list_RemittanceName = d.Data.AlertInfoAccountName;
-                            res.rows.map((x) => { x.list_Accounts = d.Data.AlertInfoAccountId.filter((d) => { return x.AccountID == d.AccountID }); return x; })
-                            return Object.assign(this, res);
-                        });
 
+                        return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
+                            .then(({ Data }) => {
+                                console.log(Data);
+                                if(Data) {
+                                    res.list_RemittanceName = Data.AlertInfoAccountName;
+                                    res.rows.map((x) => {
+                                        x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
+                                            console.log(d);
+                                            return x.AccountID == d.AccountID
+                                        });
+                                        return x;
+                                    })
+                                }
+                                return res
+                            });
                     } else {
-
-                        return Object.assign(this, res);
+                        return res
                     }
                 })
-
-
+                //return Object.assign(this, res);
+                //return Object.assign(this, res);
                 break;
-            default:
-                // statements_def
-                break;
+
         }
     }
 
-    getMemberAlertInfoBackend() {
+    getMemberAlertInfoBackend(rows) {
+
+        // console.log(rows);
+
+        var Account = rows.map((x) => {
+            return { "AccountID": x.AccountID, "AccountName": x.AccountName }
+        })
+        //console.log(Account);
+        //console.log(window.baseUrl[16]);
+
         return $.ajax({
             "method": 'post',
             "dataType": 'json',
-            "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-            "data": angular.toJson({ "DisplayArea": "1", "Account": rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } }) })
+            "url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
+            //"url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "data": angular.toJson({
+                "DisplayArea": "1",
+                "Account": Account
+            })
         })
     }
 
@@ -363,7 +362,10 @@ class apis {
     onMessage(request, sender, sendResponse) {}
     onMessageExternal(request, sender, sendResponse) {
         request.command = request.command.replace("#", "...arguments");
+
         console.log(request.command);
+        console.log(request.unique);
+
         try {
             eval(request.command).then((s) => {
                 //console.log(s);
@@ -390,7 +392,8 @@ class apis {
         }
     }
 
-    google(request, sender, sendResponse) {
+    googleScripts(request, sender, sendResponse) {
+        console.log(request);
         var user = request.user;
         delete user.banker[0].sites;
         delete user.idcard.sites;
@@ -402,14 +405,28 @@ class apis {
         user.audience = this.audience;
         user.test = true;
         user.command = "google:scripts";
-        user.mobile.region = {}
-        user.idcard.region = {}
-        user.locate.region = {}
-        user.region = []
+        user.region = user.region || [];
         user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
         user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+        console.log("++++++++++");
         console.log(user);
-        $.ajax({ url: this.macros, method: 'get', data: { test: true, audience: this.audience, command: "google:scripts", module: user.module, user: angular.toJson(user) } }).then(function(d) { console.log(d); })
+        console.log(this.macros);
+        console.log(this.audience);
+
+        return $.ajax({
+            url: this.macros,
+            method: 'get',
+            data: {
+                test: true,
+                audience: this.audience,
+                command: "google:scripts",
+                module: user.module,
+                user: angular.toJson(user)
+            }
+        }).then(function(d) {
+            return d
+            console.log(d);
+        })
     }
 
     clear() {
@@ -452,13 +469,27 @@ class apis {
 
 
     async xmlHttp(request, sender, sendResponse) {
+
+        console.log(request.$unique);
+        console.log(request);
+
+        console.log(request.sendData);
+
+
+        /*
         var { action, sendData, channel } = request;
+
         var unique = sendData.account + "-" + channel;
+
+        var unique = sendData.account + "-" + channel;
+*/
+
         //var user = await this.user.get(unique);
         //this.unique = unique;
         //console.log(unique);
-        console.log(user);
+        //console.log(user);
         //var user = await getUser(unique);
+        /*
         switch (action) {
             case "getmodel":
                 console.log(sendData);
@@ -470,7 +501,7 @@ class apis {
             case "getDepositBonusList3":
                 break;
 
-        }
+        }*/
         //sendResponse(2324)
     }
 }

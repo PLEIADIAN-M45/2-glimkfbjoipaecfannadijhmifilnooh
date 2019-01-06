@@ -1,7 +1,7 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
-        function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+        function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
 
         function _model_(elem) {
             switch (elem.localName) {
@@ -17,6 +17,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         }
         /*********************************************************/
 
+
+
         var $dexie = new Dexie('evo');
         $dexie.version(1).stores({ user: 'f_accounts' });
         var $searchParams = new URLSearchParams(window.location.search);
@@ -25,7 +27,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
         var elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         var $model = elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
-        var ctrl = elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
+        //var ctrl = elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
         var $ctrl = elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
         /*********************************************************/
         /*var account = $params.account || $params.member;
@@ -33,24 +35,28 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var unique = [account, channel].join("-");*/
         /*********************************************************/
 
-        var account = $params.account || $params.member;
-        var channel = localStorage.channel;
-        var unique = [account, channel].join("-");
+        var account = $account = $params.account || $params.member || $params.accountId;
+        var channel = $channel = localStorage.channel;
+        var unique = $unique = [$account, $channel].join("-");
 
-        var $sendMessage = function(message) {            
+        var $moment = function(timestr) {
+            return moment(timestr).format("YYYY-MM-DD HH:mm:ss");
+        }
+
+        var $sendMessage = function(message) {
             //onsole.log(message);
             //console.log(this);
 
             message.active = true;
 
             return new Promise((resolve, reject) => {
-                if ($extensionId && message) {
+                if($extensionId && message) {
                     chrome.runtime.sendMessage($extensionId, message, (res) => {
                         //console.log(res);
                         message.active = false;
                         //setTimeout(function() { $scope.$apply() }, 2000)
-                        
-                        if (res) {}
+
+                        if(res) {}
 
                         try { resolve(res) } catch (ex) { reject(ex) }
 
@@ -68,7 +74,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
 
         var $setUser = function(result) {
             //console.log(result);
-            if (!result) {
+            if(!result) {
                 $scope.$apply();
                 return
             }
@@ -80,19 +86,12 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         var _user;
 
         var $getUser = function() {
-            return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: unique })
-                .then((user) => {
-                    if (user) { return user } else {
-                        return $scope.$defUser($scope)
-                    }
-                    /*
-                                        console.log('getUser:', user);
-                                        _user = user;
-                                        return user;*/
-                })
+            console.log($unique);
+            return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
+            //.then((user) => { if(user) { return user } else { return $scope.$defUser($scope) } })
         }
         var $delUser = function(bool) {
-            if (!bool) { return }
+            if(!bool) { return }
             return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
                 .then((user) => {
                     return;
@@ -101,12 +100,14 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         }
 
         var $putUser = function(nv, ov) {
-            if (!nv) { return };
-            if (angular.equals(nv, ov)) { return };
-            if (angular.equals(_user, nv)) { return };
+            //console.log(nv, ov);
+            if(!nv) { return };
+            if(angular.equals(nv, ov)) { return };
+            //if(angular.equals(_user, nv)) { return };
             return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
                 .then((user) => {
-                    console.log('$putUser:', user);
+                    console.count("put.user", nv);
+                    //console.countReset("put.user")
                     return user;
                 })
         }
@@ -115,21 +116,23 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
         }
 
-        var createTab = function(_url) {
-            console.log(_url);
-            let redirectUrl = _url.replace('#1', this.channel).replace('#2', this.account)
-            //console.log(redirectUrl);
+        var $createTab = function(_url) {
+            //console.log(_url);
+            let redirectUrl = _url.replace('#1', $channel).replace('#2', $account)
+            console.log(redirectUrl);
             window.open(redirectUrl, "_blank");
+            //console.log(redirectUrl);
         }
 
-        var getModule = function(objPath) {
+
+        var $getModule = function(objPath) {
             return new Promise((resolve, reject) => {
-                var object = (objPath.includes('ctrl')) ? this : this.ctrl.model;
+                var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if (typeof alphaVal == "object") {
-                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if(typeof alphaVal == "object") {
+                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -137,32 +140,133 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
         }
 
         var $console = function() { console.log(...arguments); }
-        var $keydown = function(callback) { document.addEventListener('keydown', callback); }
+        var $keydown = function(callback) {
+            document.addEventListener('keydown', callback);
+        }
+
         var c = console.log;
 
+       // var clipboardData;
+
+
+        document.oncopy = function(e) {
+
+            // console.log(e);
+            //console.log(clipboardData);
+
+            if(window.getSelection().type === "Caret") {
+                e.preventDefault();
+                console.log(this);
+            }
+
+            console.log(e.clipboardData);
+
+            if(e.clipboardData) {
+
+                e.clipboardData.setData("text/plain", clipboardData);
+            } else {
+                console.log(12);
+                window.clipboardData.setData("Text", clipboardData);
+            }
+        }
+
+
+
+
+/*
+        function $clipboard(str) {
+            console.log(this);
+            window.clipboardData = str;
+            document.execCommand("copy");
+            //document.addEventListener('keydown', callback);
+        }*/
+
         /***************************************************/
+        /*account,
+        channel,
+        unique,
+        $model,
+        $ctrl,
+        */
+
+        var obj = {
+
+        }
+
+
+        //console.log($mdc.constructor.name);
+
+        //console.log($dexie.constructor.name);
+        /*
+                ;
+                [
+                    $mdc,
+                    $dexie,
+                    $xmlSpider,
+                    $sendMessage,
+                    $getUser,
+                    $delUser,
+                    $putUser,
+                    $setUser,
+                    $ajax,
+                    createTab,
+                    getModule,
+                    $console,
+                    $keydown
+                ].forEach((f) => {
+                    switch (typeof f) {
+                        case "object":
+                            console.log(f, f.name || f.constructor.name);
+                            break;
+                        case "function":
+                            //console.log(typeof f, f.name);
+                            break;
+                        default:
+                            // statements_def
+                            break;
+                    }
+                })*/
+
+
         //console.log(angular);
         var $rootScope;
         var $scope;
 
-        function Factory($rootScope) {
-            $scope = $rootScope;
-            angular.extend(this, Factory.prototype);
-            angular.extend($rootScope, this);
+        function Factory() {
 
-            $xmlSpider.$scope = $rootScope
+            $rootScope = this.$rootScope;
+            $scope = this.$scope;
+
+            // console.log(x);
+
+            angular.extend(this, Factory.prototype);
+
+            /*
+            this.$scope = $scope;
+            this.$rootScope = $rootScope;
+
+            angular.extend(this, Factory.prototype);*/
+
+            //angular.extend($rootScope, this);
+            //$xmlSpider.$scope = $rootScope
             //console.log($rootScope);
         }
 
         Factory.prototype = {
-            $mdc,
-            $dexie,
-            $xmlSpider,
-            $sendMessage,
-
             account,
             channel,
             unique,
+
+            $account,
+            $channel,
+            $unique,
+            $mdc,
+            $dexie,
+            $moment,
+
+            $xmlSpider,
+            $sendMessage,
+            //$clipboard,
 
             $getUser,
             $delUser,
@@ -171,16 +275,19 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             $ajax,
             $model,
             $ctrl,
-            ctrl,
-            createTab,
-            getModule,
+            $createTab,
+            $getModule,
             $console,
             c,
+            //ctrl,
+
             $keydown,
 
         }
 
-        return Factory;
+        return Factory
+
+        return new Factory();
         //$scope.$digest();
 
 
@@ -192,7 +299,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'
             //全局屏蔽键盘事件：
             window.onkeydown = function() {
                 console.log(window.event.keyCode)
-                if (window.event.keyCode == 49) {
+                if(window.event.keyCode == 49) {
                     event.returnValue = false;
                 }
             }

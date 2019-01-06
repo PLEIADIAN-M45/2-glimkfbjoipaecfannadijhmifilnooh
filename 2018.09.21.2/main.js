@@ -1,6 +1,6 @@
 //console.log(this.localStorage.server);
 
-var $server = window.localStorage.$server;
+var $server = window.localStorage.server;
 
 requirejs.config({
     packages: ["wa111", "ku711"],

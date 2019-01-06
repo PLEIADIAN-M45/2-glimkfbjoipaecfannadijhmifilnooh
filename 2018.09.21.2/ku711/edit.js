@@ -1,7 +1,9 @@
-define(["ku711/apiFunction"], function(apiFunction) {
+define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
 
-    console.log(apiFunction);
 
+    console.log(decode);
+    //console.log(apiFunction);
+    /*
     function setUser() {
 
         this.user = {
@@ -39,6 +41,7 @@ define(["ku711/apiFunction"], function(apiFunction) {
             }
             var { BirthDay: birthday, AgencyID: agency, RegistedTime: attach, IsBlackList: black } = c;
             assign($scope.user, { account, channel, host, origin, operator, birthday, agency, attach, black, region: [] }, property);
+
             $scope.user.sequel = c.MNO;
             $scope.user.unique = [account, channel].join('-');
             $scope.user.black = $Num($scope.user.black);
@@ -70,11 +73,16 @@ define(["ku711/apiFunction"], function(apiFunction) {
             getModule('EditBankInfoList').then(toObj8),
             getModule('CityInfoList').then(toObj8),
             getModule('ProvinceInfoListForMemberInfo').then(toObj8)
-        ]).then(([banker, meta, city, prov]) => { return $scope.user.banker = banker.filter((x) => x.IsSQL).map((c, i) => { return { title: c.PayeeAccountNoShow, value: c.PayeeAccountNo, region: { meta: meta[c.BankCodeID], prov: prov[c.BankProID], city: city[c.BankCityID] } } }) })
+        ]).then(([banker, meta, city, prov]) => {
+            return $scope.user.banker = banker.filter((x) => x.IsSQL).map((c, i) => { return { title: c.PayeeAccountNoShow, value: c.PayeeAccountNo, region: { meta: meta[c.BankCodeID], prov: prov[c.BankProID], city: city[c.BankCityID] } } })
+        })
     }
 
     function getStatus() {
-        return Promise.all([getModule('UpdateEditMemberInfoManage.MemberStatus'), getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')]).then(([status, permit]) => {
+        return Promise.all([
+            getModule('UpdateEditMemberInfoManage.MemberStatus'),
+            getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit')
+        ]).then(([status, permit]) => {
             $scope.user.status.push(status);
             $scope.user.permit.push(permit);
             return $scope.user;
@@ -89,69 +97,237 @@ define(["ku711/apiFunction"], function(apiFunction) {
     function getMemberBankAccsEnum() {
         return ['PayeeAccountNo0', 'PayeeAccountNo1', 'PayeeAccountNo2', 'PayeeAccountNo3', 'PayeeAccountNo4'].map(getElementById);
     }
+    */
+
+    function sendsms(user) {
+        if(!user) { return }
+        if(user.sendsms) { return }
+        this.callee = "sendsms"
+        this.command = 'apiFunctions.sendsms'
+        this.requestUrl = 'http://client.motosms.com/smsc/smssend';
+        this.mobile = '86' + user.mobile.value
+        this.status = user.status[0];
+        this.channel = user.channel;
+    }
+
+    class User {
+
+        constructor(fact) {
+            console.log("+");
+            this.status = [];
+            this.permit = [];
+            this.timing = [];
+            /*
+                        this.$$getModule('OldMemberBaseInfo')
+                        this.$$getModule('OldMemberRisksInfo')
+                        this.getSystemLog(fact)
+                        */
 
 
+            return this.start(fact);
+        }
 
+        getSystemLog({ $account, $moment }) {
+            return $.ajax({
+                url: "/member/api/Common/GetMemberInfoOperationLogByMultiAccountID",
+                method: "POST",
+                dataType: "json",
+                data: angular.toJson({
+                    "OperateType": 0,
+                    "OperatorList": [],
+                    "DataIDList": [],
+                    "PageIndex": 0,
+                    "PageSize": 5,
+                    "DataID": $account,
+                    "Operated": $account,
+                    "Platform": 0
+                })
+            }).then((d) => {
+                d.Data.Data.filter(({ Content, OperateTime, Operator }) => {
+                    Content.filter((obj) => {
+                        if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                            this.timing[0] = $moment(OperateTime);
+                        }
+                    })
+                })
+            })
+        }
 
-    return async function() {
+        OldMemberRisksInfo({ $getModule, $moment }) {
+            return $getModule('OldMemberRisksInfo').then((c) => {
+                this.locate = { value: c.RegistedIP, title: c.RegistedIP }
+                this.equpmt = { browser: c.BrowserType, osInfo: c.OSType }
+                this.agency = c.AgencyID;
+                this.attach = $moment(c.RegistedTime);
+                this.suspension = c.IsFSuspension;
+            })
+        }
 
-        //$scope.user = { sequel: "", unique: "", timing: [], status: [], permit: [], author: { title: null, value: null, }, locate: { title: null, value: null }, mobile: { title: null, value: null }, idcard: { title: null, value: null }, banker: [] }
+        OldMemberBaseInfo({ $getModule }) {
+            return $getModule('OldMemberBaseInfo').then((c) => {
+                console.log(':::::::::::::', c);
+                this.author = { value: c.AccountName, title: c.AccountNameShow }
+                this.mobile = { value: c.CellPhone, title: c.CellPhoneShow }
+                this.idcard = { value: c.IDNumber, title: c.IDNumberShow }
+                this.birthday = c.BirthDay;
+                this.black = c.IsBlackList;
+                this.sequel = c.MNO;
+                this.nickname = c.NickName;
+            })
+        }
 
+        getStatus({ $moment, $getModule }) {
+            //$getModule('OldMemberRisksInfo').then((c) => {})
+            return $getModule('UpdateEditMemberInfoManage.MemberStatus').then((x) => {
+                this.status[0] = Number(x)
+            })
+        }
+        getIsDeposit({ $getModule }) {
+            return $getModule('GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit').then((x) => {
+                this.permit[0] = Number(x)
+            })
+        }
+        getUserBasic({ server, origin, unique, channel, account, operator }) {
+            Object.assign(this, { server, origin, unique, channel, account, operator })
+        }
+        getBanker({ $getModule }) {
+            return $getModule('GetMemberWithdrawalBankInfoBackendByAccountIDOutput')
+                .then((banker) => {
+                    this.banker = banker.map((s) => {
+                        return {
+                            value: s.PayeeAccountNo,
+                            title: s.PayeeAccountNoShow,
+                            region: {
+                                meta: decode.code[s.BankCodeID],
+                                prov: decode.prov[s.BankProID],
+                                city: decode.city[s.BankCityID]
+                            }
+                        }
+                    }).filter((c) => {
+                        return c.value;
+                    });
+                })
+            console.log("+++");
+        }
 
-        this.setUser = function() {
-
-            this.user = { host: this.host, origin: this.origin, unique: this.unique, channel: this.channel, account: this.account, operator: this.operator };
-
+        start(fact) {
             return Promise.all([
+                this.OldMemberBaseInfo(fact),
+                this.OldMemberRisksInfo(fact),
+                this.getUserBasic(fact),
+                this.getBanker(fact),
+                this.getStatus(fact),
+                this.getIsDeposit(fact),
+                this.getSystemLog(fact),
+            ]).then(() => { return this; })
+        }
 
-                this.getModule('OldMemberBaseInfo'),
-                this.getModule('OldMemberRisksInfo'),
+    }
+
+    async function $defUser($scope) {
+        var user = await new User($scope);
+        user.sendsms = new sendsms(user);
+        return user;
+    }
+
+
+    return async function({ $clipboard, $getModule, $keydown, $xmlSpider, $createTab, $model, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
+
+
+        $delUser(0);
+
+        $scope.$watch('user', $putUser, true);
+
+        $scope.user = await $getUser() || await $defUser(this);
+
+        console.log($scope.user);
+
+
+        $scope.$router = $router;
+        $scope.$createTab = $createTab;
 
 
 
+        $scope.sendSms = function(e) {
+            e.preventDefault();
+            e.currentTarget.hide();
+            $scope.user.sendsms.status = -1;
+            $sendMessage($scope.user.sendsms).then((s) => { c(s) })
+                .then($setUser)
+        };
 
-            ]).then(this.putUser.bind(this));
+
+        $scope.setPermit = function(e) {
+            $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
+            $scope.ctrl.DepositChanged();
+            $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
+        };
+
+
+        $xmlSpider.loadend = function() {
+            console.log(this);
 
         };
 
 
 
 
-        this.model = this.ctrl.model;
 
 
-        this.getModule('OldMemberBaseInfo').then((x) => { console.log(x); })
+
+        $scope.$apply();
 
 
 
     }
-
-
-
 })
 
 
 
 
 
-/*
-apiFunction.getUserState.call(this.user),
-    apiFunction.getUserModel.call(this.user),
-    apiFunction.getPhoneDate.call(this.user),
-    apiFunction.getSystemLog.call(this.user),
-    apiFunction.getUserStore.call(this.user)
-*/
 
-// console.log(this.ctrl);
-//console.log(this.model.OldMemberBaseInfo);
-//getModule('OldMemberBaseInfo')
 
-//getModule.bind(this);
+function bbb() {
+    var _bank = {
+        code: {},
+        prov: {},
+        city: {},
+    }
 
-//console.log(this);
+    //console.log(this.$clipboard);
 
-//model
+    Promise.all([
+        $getModule("EditBankInfoList").then((arr) => {
+            arr.map((c) => {
+                _bank.code[c.BankCodeID] = c.BankCodeName
+            })
+        }),
+        $getModule("ProvinceInfoListForMemberInfo")
+        .then((arr) => {
+            arr.map((c) => {
+                _bank.prov[c.ProvincesID] = c.ProvincesName
+            })
+        }),
+        $getModule("CityInfoList").then((arr) => {
+            arr.map((c) => {
+                _bank.city[c.CityID] = c.CityName
+            })
+        })
+    ]).then((arr) => {
 
-//getModule('OldMemberBaseInfo')
+        localStorage.bank = angular.toJson(_bank);
+        console.log(angular.toJson(_bank));
+        //this.clipboardData = angular.toJson(_bank)
+        //document.execCommand("copy");
+    })
 
-//this.model.OldMemberBaseInfo
+}
+
+
+
+
+//var sel = $("select[ng-model='ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit']")
+//console.log(sel);
+//sel.val(true)
+//sel[0].value = "boolean:true"

@@ -12,25 +12,33 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
             this.origin = location.origin;
         }
 
-        get $window() { return window }
+        //get $window() { return window }
         get $module() { return this.$router[this.$locator]; }
         get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
         get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
 
         get $controller() { return angular.element("[ng-controller]"); }
         get $injector() { return this.$controller.injector(); }
-        //get $scope() { return this.$controller.scope(); }
-        //$rootScope
-        get $scope() { return angular.element('html').scope() }
+        get $scope() { return this.$controller.scope(); }
+        get $rootScope() { return angular.element('html').scope() }
+
+        //get $scope() { return angular.element('html').scope() }
         get $invoke() { return this.$injector.invoke; }
         get $compile() { return this.$injector.get('$compile'); }
         get $now() {
             //console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
             return moment().format('YYYY-MM-DD HH:mm:ss');
         }
+/*
+        get clipboardData() {
 
-        $bootstrap(app) {
+        }
+        set clipboardData(v) {
+            console.log(v);
+        }*/
 
+        $bootstrap() {
+            //console.log(this);
             if(this.$module == undefined) { return }
             //console.log('*****', this.$module);
             if(window.angular) { return this.$loadModule(); } else {
@@ -47,13 +55,28 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
         $loadModule() {
             //console.log(angular.element('html').scope(), var2);
             let MODULE_PATH = this.server + '/' + this.$module;
+            console.clear();
             console.log(MODULE_PATH);
-            requirejs(["app.Factory", MODULE_PATH], (Factory, module) => {
+
+            requirejs(["app.Factory", MODULE_PATH], (factory, modules) => {
+
                 try {
+
                     this.$injectStylesheet();
                     this.$injectComponents();
-                    this.$invoke(Factory, this);
-                    module.call(this, this);
+                    //this.$invoke(Factory, this);
+                    //console.log(this.$scope);
+                    //console.log(this.$rootScope);
+                    //Factory.call(this, this);
+                    //console.log(this);
+
+                    factory.call(this)
+                    modules.call(this, this);
+
+                    $('.collapse').show()
+
+                    //console.log(Factory);
+                    //module.call(this, this);
                     //console.log("[OK]", this.$module);
                     //this.$invoke(module, this);
                     //module.apply(self, [this])
@@ -99,13 +122,8 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
     Object.assign(App.prototype, window.localStorage);
     //Object.defineProperty(App.prototype, '$loadModule', { enumerable: true });
 
-
     return new App();
-
 });
-
-
-
 
 
 

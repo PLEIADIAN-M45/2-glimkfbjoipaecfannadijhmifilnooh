@@ -2,15 +2,13 @@ define(["wa111/user"], function({ $defUser }) {
 
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
-        //ctl00_ContentPlaceHolder1_txtRemittaceName.value = "王杰"
-
-        $scope.$defUser = $defUser;
-
         $scope.$delUser(0);
 
         $scope.$watch('user', $putUser, true);
 
         $scope.user = await $defUser(this);
+
+        console.log($scope.user);
 
         $scope.sendSms = function(e) {
             e.preventDefault();
@@ -19,47 +17,50 @@ define(["wa111/user"], function({ $defUser }) {
             $sendMessage($scope.user.sendsms).then((s) => { c(s) })
                 .then($setUser)
         };
+
         $scope.setPermit = function(e) {
-            e.currentTarget.hide();
+            //e.currentTarget.hide();
             $ctrl.isOpenDeposit.val(1);
             $ctrl.btnSaveInfo.click();
         };
-
-        $scope.setPermit2 = function(e) {
-            $sendMessage({
-                command: "api.google(...arguments)",
-                user: $scope.user
-            }).then((s) => { c(s) })
-        }
-
 
         $xmlSpider.loadend = function() {
 
             if(this.action == "getmodel") {
 
-                with(this.respData) {
-                    $scope.user.status.push(f_ishow);
-                    $scope.user.permit.push(f_depositStatus);
-                    $scope.user.timing.push($now);
-                    $scope.user.sendsms.status = 9;
+                $getUser().then((user) => {
 
-                    if($scope.user.status[0] == 3) {
-                        $scope.user.module = "authorize"
-                        //$scope.user.command = "google:scripts.authorize"
-                    } else {
-                        $scope.user.module = "suspended"
-                        //$scope.user.command = "google:scripts.suspended"
+                    $scope.user = user;
+                    //console.log(user);
+
+                    with(this.respData) {
+                        $scope.user.status.push(f_ishow);
+                        $scope.user.permit.push(f_depositStatus);
+                        $scope.user.timing.push($now);
+                        $scope.user.sendsms.status = 9;
+                        if($scope.user.status[0] == 3) {
+                            $scope.user.module = "authorize"
+                            //$scope.user.command = "google:scripts.authorize"
+                        } else {
+                            $scope.user.module = "suspended"
+                            //$scope.user.command = "google:scripts.suspended"
+                        }
+                        // $setUser();
                     }
 
-                    // $setUser();
+                    console.log($scope.user);
 
 
+                    $sendMessage({
+                        command: "api.googleScripts(#)",
+                        user: $scope.user
+                    }).then((s) => {
+                        console.log(s);
+                    })
 
+                })
 
-
-                }
-
-                //$sendMessage(this).then((s) => { c(s) }).then($setUser)
+                //.then($setUser)
             }
         };
 
@@ -72,8 +73,6 @@ define(["wa111/user"], function({ $defUser }) {
         $scope.$apply();
 
         //console.clear();
-
-        //console.log($scope.user);
         //console.log($now);
     }
 });
