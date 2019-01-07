@@ -10,6 +10,7 @@ define([], function() {
     }
 
     class User {
+        
         constructor($scope) {
             //super($scope);
             return this.start($scope);

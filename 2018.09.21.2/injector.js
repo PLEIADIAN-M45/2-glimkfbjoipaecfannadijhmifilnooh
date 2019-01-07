@@ -1,6 +1,8 @@
 var server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
 var rootUrl = chrome.runtime.getURL("/");
-var baseUrl = chrome.runtime.getURL(server);
+//var baseUrl = chrome.runtime.getURL(server);
+var baseUrl = chrome.runtime.getURL("app");
+
 var extensionId = chrome.runtime.id;
 
 
@@ -32,7 +34,9 @@ function injectScript(attrs) {
 
 injectScript({
     "src": chrome.runtime.getURL('lib/require/require.js'),
-    "data-main": chrome.runtime.getURL('main.js')
+    //"data-main": chrome.runtime.getURL('main.js')
+    "data-main": chrome.runtime.getURL('app/main.js')
+
 })
 
 

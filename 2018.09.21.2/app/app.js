@@ -1,53 +1,252 @@
-this.$server = localStorage.server;
-
-//console.log(this.$server);
+define(["app.router", "moment"], function(Router, moment) { /*  Router return $router  */
 
 
-if (this.$server == "wa111") {
+    class App extends Router {
+        constructor() {
+            super();
+            this.$name = "OBSApp";
+            this.$ctrlId = "View";
+            this.$isTest = (window.location.hostname == "127.0.0.1");
+            this.$locator = window.location.pathname.split('?')[0].split('.')[0].split('/').pop().toLowerCase();
+            this.$forms = document.forms;
+            this.$form = document.forms[0];
+            this.$referrer = document.referrer;
+            this.origin = location.origin;
+        }
 
-    define(["angular", "angular-sanitize", "angular-animate"], function(angular) {
-        $('html').attr('ng-app', 'OBSApp');
-        $('body').append('<div ng-controller="View" id="View"></div>');
-        var app = angular.module('OBSApp', ["ngSanitize", "ngAnimate"]);
+        //get $window() { return window }
+        get $module() { return this.$router[this.$locator]; }
 
-        function viewController($scope, $rootScope) {};
-        app.controller('View', viewController);
-        angular.bootstrap(document, ['OBSApp']);
-        return app;
-    });
+        get components() { return { "edit": ['edit', 'dialog'], "logs": ['cards'] } [this.$module]; }
+        get stylesheet() { return { "edit": ['edit'], "logs": ['logs', 'cards'] } [this.$module]; }
+        get $controller() { return angular.element("[ng-controller]"); }
+        get $injector() { return this.$controller.injector(); }
+        get $scope() { return this.$controller.scope(); }
+        get $rootScope() { return angular.element('html').scope() }
+        //get $scope() { return angular.element('html').scope() }
+        get $invoke() { return this.$injector.invoke; }
+        get $compile() { return this.$injector.get('$compile'); }
+        get $now() {
+            //console.log(moment().format('YYYY-MM-DD HH:mm:ss'));
+            return moment().format('YYYY-MM-DD HH:mm:ss');
+        }
+        /*
+                get clipboardData() {
 
+                }
+                set clipboardData(v) {
+                    console.log(v);
+                }*/
+
+        $bootstrap() {
+            //console.log(this);
+            if (this.$module == undefined) { return }
+            //console.log('*****', this.$module);
+            if (window.angular) {
+                return this.$loadModule();
+            } else {
+                requirejs(["angular", "angular-sanitize", "angular-animate"], (angular) => {
+                    $('html').attr('ng-app', this.$name);
+                    $("<div>", { "id": this.ctrlId, "ng-controller": this.$ctrlId }).appendTo("body");
+                    angular.module(this.$name, ["ngSanitize", "ngAnimate"]).controller(this.$ctrlId, function() {});
+                    angular.bootstrap(document, [this.$name]);
+                    return this.$loadModule();
+                })
+            }
+        }
+
+        $injectStylesheet() {
+            if (!this.stylesheet) { return false };
+            this.stylesheet.map((str) => { return this.rootUrl + "app/css/" + str + ".css"; }).map((src) => {
+                $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+            });
+        };
+
+        $injectComponents() {
+            return new Promise((resolve, reject) => {
+                if (this.components) {
+                    this.components.map((str) => { return this.rootUrl + "app/html/" + str + ".html"; }).map((src) => {
+                        fetch(src)
+                            .then((res) => { return res.text(); })
+                            .then((html) => {
+                                var template = angular.element(html);
+                                this.$controller.append(this.$compile(template)(this.$scope))
+                                this.$scope.$apply();
+                                resolve(1);
+                            });
+                    });
+                } else {
+                    resolve(0);
+                }
+            })
+        };
+
+        $loadModule() {
+
+            //console.log(this.baseUrl);
+            //console.log(this.$module);
+
+            //var main_module = ["main", this.$module].join("/");
+            // var vice_module = [this.server, this.$module].join("/");
+
+            var module = {
+                main: ["main", this.$module].join("/"),
+                vice: [this.server, this.$module].join("/")
+            }
+
+
+            requirejs(["app.factory", module.main, module.vice], (factory, main_module, vice_module) => {
+                try {
+
+                    this.$injectStylesheet();
+                    this.$injectComponents();
+                    factory.call(this, this);
+                    vice_module.call(this, this);
+                    main_module.call(this, this);
+
+                    //$('.collapse').show()
+
+
+                } catch (ex) {
+                    console.error(ex);
+                }
+            })
+            /*
+            window.page = page;
+            window.__main__
+            */
+
+
+
+            //console.log(main, page);
+
+
+            /*
+            console.log(main);
+            console.log(d);*/
+
+
+            /*
+                        requirejs.config({
+                            baseUrl: this.baseUrl,
+                            packages: ["home"]
+                        })
+
+
+                        requirejs(["home"])
+                        */
+
+            return
+            //console.log(angular.element('html').scope(), var2);
+
+            let MODULE_PATH = this.server + '/' + this.$module;
+
+            console.clear();
+
+            console.log(MODULE_PATH);
+
+            requirejs(["app.factory", MODULE_PATH], (factory, modules) => {
+
+                try {
+
+                    this.$injectStylesheet();
+                    this.$injectComponents();
+                    //this.$invoke(Factory, this);
+                    //console.log(this.$scope);
+                    //console.log(this.$rootScope);
+                    //Factory.call(this, this);
+                    //console.log(this);
+
+                    factory.call(this)
+                    modules.call(this, this);
+
+                    $('.collapse').show()
+
+                    //console.log(Factory);
+                    //module.call(this, this);
+                    //console.log("[OK]", this.$module);
+                    //this.$invoke(module, this);
+                    //module.apply(self, [this])
+
+                } catch (ex) {
+                    console.error(ex);
+                }
+            })
+        }
+
+
+    }
+
+
+    Object.assign(App.prototype, window.localStorage);
+    //Object.defineProperty(App.prototype, '$loadModule', { enumerable: true });
+
+    return new App();
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//this.$invoke(Factory, this.$scope);
+
+
+
+/*var target = this.$scope;
+for (var i = 0; i < 5; i++) {
+    if (target) {
+        //console.log(target.constructor.name);
+        Object.assign(this, target);
+        target = target.__proto__;
+    }
 }
 
-if (this.$server == "ku711") {
+//this.$invoke(Factory, this.$scope);
 
+this.$invoke(Factory, this);
 
+var target = this;
+for (var i = 0; i < 5; i++) {
+    if (target) {
+        //console.log(target.constructor.name);
+        Object.assign(this.$scope, target);
+        target = target.__proto__;
+    }
 }
+*/
 
 
 
+//this.$scope.$apply();
+
+
+//this.$requires = ["angular", "angular-sanitize", "angular-animate"];
+//this.$modules = ["ngSanitize", "ngAnimate"];
+//this.$router = $router;
 
 
 
-/*define(["app.router"], function(Router) {
-    var router = new Router();
-    if (router.service == undefined) { return false }
-    requirejs(['app.instance', 'app.factory', router.main], function(instance, factory, main) {
-        var $container               = $("[ng-controller]");
-        var $controller              = angular.element($container);
-        var $injector                = $controller.injector();
-        var $scope                   = $controller.scope();
-        $scope.__proto__.$container  = $container;
-        $scope.__proto__.$controller = $controller;
-        $scope.__proto__.$injector   = $injector;
-        $scope.__proto__.$invoke     = $injector.invoke;
-        $scope.__proto__.join        = function join() { Object.assign(this.__proto__, ...arguments); }
-        $scope.$invoke(Router, $scope);
-        $scope.$invoke(factory, $scope);
-        $scope.$loadModule();
-    })
-})*/
+//var injects = ['$anchorScroll', '$animate']
+
+//$controller_($scope, $rootScope) {}
 
 
+//Object.assign(App.prototype, window.location);
 
-//var main = ["module", localStorage.server, "main"].join("/");
-//console.log(main);
+
+//console.log(Factory.prototype);
+// var c = new Factory()
+
+//console.log(Factory.prototype);
+
+//Object.assign(App, Factory.prototype);

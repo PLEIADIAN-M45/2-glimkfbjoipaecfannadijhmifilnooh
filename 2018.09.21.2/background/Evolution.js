@@ -548,7 +548,6 @@ class apis {
                     if (user.module) { return }
                     if (user.status[0] == user.status[1]) { return }
                     user.module = (user.status[0] == 3) ? "authorize" : "suspended"
-
                     user.status.push(request.sendData.MemberStatus)
                     user.permit.push(request.sendData.IsDeposit)
                     user.timing.push(request.timeSpan)
@@ -556,11 +555,8 @@ class apis {
                     if (user.status[0] == 3 || user.status[1] == 1) {
                         user.sendSms = true;
                     }
-                    this.user.put(user);
-                    console.log(user);
                     break;
                 default:
-
                     // statements_def
                     break;
             }
@@ -589,7 +585,6 @@ class apis {
                             }
                         }
                     }
-                    //console.log(user);
                     break;
                 default:
 

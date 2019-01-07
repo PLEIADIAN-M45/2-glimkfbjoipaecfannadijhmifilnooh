@@ -1,22 +1,23 @@
 //console.log(this.localStorage.server);
 
-var $server = window.localStorage.server;
+var server = window.localStorage.server;
 
 requirejs.config({
-    packages: ["wa111", "ku711"],
+    //packages: ["wa111", "ku711"],
     paths: {
-        '$server': $server + "/main",
-
-        /*'app': 'app/app',
+        //'$server': $server + "/main",
+        //'User': $server + '/User',
+        'app': 'app/app',
         'app.router': 'app/app.router',
         'app.instance': 'app/app.instance',
         'app.factory': 'app/app.factory',
-        'app.sendSms': 'app/app.sendSms',
-        'app.service': 'app/app.service',
-        'app.xmlhttp': 'app/app.xmlhttp',
-        */
+        'app.spider': 'app/app.spider',
 
-        'User': $server + '/User',
+        //'app.sendSms': 'app/app.sendSms',
+        //'app.service': 'app/app.service',
+
+
+
         'angular': 'lib/angular/angular',
         'angular-animate': 'lib/angular/angular-animate.min',
         'angular-aria': 'lib/angular/angular-aria',
@@ -61,10 +62,9 @@ requirejs.config({
     }
 });
 
+
 var var2 = "";
-
 var c = console.log
-
 
 //console.log(12, 23);
 
@@ -323,7 +323,7 @@ function xxx() {
         this.module = this.paths[this.server][this.locator];
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
 
-        if(this.module) {
+        if (this.module) {
             requirejs([this.server], (app) => {
                 app.apply(this);
                 requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -348,12 +348,12 @@ function xxx() {
         // console.log(arguments);
         //console.log(last);
         //console.log(arguments[0]);
-        if(arguments[last] == true) {
+        if (arguments[last] == true) {
             var arg = arguments[0];
             return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $digest: this.$digest, $eval: this.$eval });
         }
 
-        if(this.$root) {
+        if (this.$root) {
             Object.assign(this, ...arguments)
         } else {
             Object.assign(this, ...arguments)

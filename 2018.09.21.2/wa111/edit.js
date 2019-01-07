@@ -1,17 +1,8 @@
 define(["wa111/user"], function({ $defUser }) {
 
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
-
        
-        $delUser(0);
-
-        $scope.$watch('user', $putUser, true);
-
-        $scope.user = await $getUser() || await $defUser(this);
-
-        $scope.$sendSms = this.$sendSms;
-
-
+       
         /*
         $scope.sendSms = function(e) {
             $scope.user.sendSms = false;

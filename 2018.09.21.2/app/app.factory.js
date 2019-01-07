@@ -1,4 +1,4 @@
-define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'],
+define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
         function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
@@ -18,7 +18,10 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
         /*********************************************************/
 
         //$digest 
-        function apply() { if (!$scope.$$phase) { $scope.$apply(); } }
+        function $apply() { if (!$scope.$$phase) { $scope.$apply(); } }
+        var apply = $apply;
+
+
 
 
         var $dexie = new Dexie('evo');
@@ -45,16 +48,14 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             return moment(timestr).format("YYYY-MM-DD HH:mm:ss");
         }
 
-        var $sendSms = function(user) {
-            //this == $scope;
+       /* var $sendSms = function(user) {
             this.user.sendSms = false;
             $sendMessage({
                 command: "api.sendSms(request.user)",
                 user: this.user
-            }).then((res) => { this.user.sendSms = res; }).then(apply)
-
+            }).then((res) => { this.user.sendSms = res; }).then($apply)
         };
-
+*/
 
         var $sendMessage = function(message) {
             //onsole.log(message);
@@ -81,28 +82,16 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
                 }
             })
         }
-        /*if(result.command) { var cc = result.command.split('.')[1];console.log(cc); }*/
-        //if(result) {}
-        //console.log(unique);
 
-        var $setUser = function(result) {
-            //console.log(result);
-            if (!result) {
-                $scope.$apply();
-                return
-            }
-            var source = (result.callee) ? $scope.user[result.callee] : $scope.user;
-            angular.copy(result, source);
-            $scope.$apply();
+        var $getUser = async function() {
+            //console.log(this.$unique);
+            $scope.user =
+                await this.$sendMessage({ command: 'api.store.user.get(request.unique)', unique: this.$unique }) ||
+                await this.$setUser();
+            this.$apply();
+            console.log($scope.user);
         }
 
-        var _user;
-
-        var $getUser = function() {
-            console.log($unique);
-            return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
-            //.then((user) => { if(user) { return user } else { return $scope.$defUser($scope) } })
-        }
         var $delUser = function(bool) {
             if (!bool) { return }
             return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
@@ -115,7 +104,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
         var $putUser = function(nv, ov) {
             //console.log(nv, ov);
             if (!nv) { return };
-            if (angular.equals(nv, ov)) { return };
+            //if (angular.equals(nv, ov)) { return };
             //if(angular.equals(_user, nv)) { return };
             return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
                 .then((user) => {
@@ -183,7 +172,116 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             }
         }
 
+        var $rootScope;
+        var $scope;
 
+
+
+        function Factory(app) {
+
+            $rootScope = this.$rootScope;
+            $scope = this.$scope;
+
+
+            angular.extend(this, app);
+            angular.extend(this, app.__proto__);
+            angular.extend(this, Factory.prototype);
+
+
+            //console.log(App);
+            //console.log(this);
+            //console.log(this);
+            //angular.extend(this, Factory.prototype);
+
+            //console.log(Object.getOwnPropertyDescriptors(this));
+
+            //  console.log(Object.create(this));
+
+
+            //angular.extend(this.$scope, Factory.prototype);
+            //angular.extend(this.$scope, Factory.prototype);
+
+
+
+
+            //Object.defineProperties(this.$scope, Object.getOwnPropertyDescriptors(this));
+            //Object.defineProperties(this.$scope, Object.create(this));
+
+
+
+            //Object.defineProperties(target2, Object.getOwnPropertyDescriptors(source));
+
+
+
+            //var a = Object.getOwnPropertyDescriptors(this)
+
+            //var c = Object.getOwnPropertyDescriptors(this)
+
+            //console.log(c);
+
+
+
+
+        }
+
+
+        function Factory2() {
+
+            console.log(this);
+            console.log(this.$scope);
+
+
+            /*
+            $rootScope = this.$rootScope;
+            $scope = this.$scope;
+            // console.log(x);
+            angular.extend(this, Factory.prototype);
+    */
+            /*
+            this.$scope = $scope;
+            this.$rootScope = $rootScope;
+
+            angular.extend(this, Factory.prototype);*/
+
+            //angular.extend($rootScope, this);
+            //$xmlSpider.$scope = $rootScope
+            //console.log($rootScope);
+        }
+
+        Factory.prototype = {
+            account,
+            channel,
+            unique,
+            $apply,
+            $account,
+            $channel,
+            $unique,
+            $mdc,
+            $dexie,
+            $moment,
+
+            $xmlSpider,
+            $sendMessage,
+            //$sendSms,
+            //$clipboard,
+
+            $getUser,
+            $delUser,
+            $putUser,
+            //$setUser,
+            $ajax,
+            $model,
+            $ctrl,
+            $createTab,
+            $getModule,
+            $console,
+            c,
+            //ctrl,
+            $keydown,
+
+        }
+
+        return Factory
 
 
         /*
@@ -242,63 +340,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
 
         //console.log(angular);
-        var $rootScope;
-        var $scope;
 
-        function Factory() {
-            //$rootScope = this.$rootScope;
-            //$scope = this.$scope;
-
-            // console.log(x);
-
-            angular.extend(this, Factory.prototype);
-
-            /*
-            this.$scope = $scope;
-            this.$rootScope = $rootScope;
-
-            angular.extend(this, Factory.prototype);*/
-
-            //angular.extend($rootScope, this);
-            //$xmlSpider.$scope = $rootScope
-            //console.log($rootScope);
-        }
-
-        Factory.prototype = {
-            account,
-            channel,
-            unique,
-
-            $account,
-            $channel,
-            $unique,
-            $mdc,
-            $dexie,
-            $moment,
-
-            $xmlSpider,
-            $sendMessage,
-            $sendSms,
-            //$clipboard,
-
-            $getUser,
-            $delUser,
-            $putUser,
-            $setUser,
-            $ajax,
-            $model,
-            $ctrl,
-            $createTab,
-            $getModule,
-            $console,
-            c,
-            //ctrl,
-
-            $keydown,
-
-        }
-
-        return Factory
 
         return new Factory();
         //$scope.$digest();
