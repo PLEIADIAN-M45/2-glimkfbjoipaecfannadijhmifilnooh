@@ -21,9 +21,6 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
         function $apply() { if (!$scope.$$phase) { $scope.$apply(); } }
         var apply = $apply;
 
-
-
-
         var $dexie = new Dexie('evo');
         $dexie.version(1).stores({ user: 'f_accounts' });
         var $searchParams = new URLSearchParams(window.location.search);
@@ -40,15 +37,17 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
         var unique = [account, channel].join("-");*/
         /*********************************************************/
 
-        var account = $account = $params.account || $params.member || $params.accountId;
-        var channel = $channel = localStorage.channel;
+        var account = $account = $params.account || $params.member || $params.accountId || $params.accounts;
+
+        var channel = $channel = localStorage.channel || $params.siteNumber;
+
         var unique = $unique = [$account, $channel].join("-");
 
         var $moment = function(timestr) {
             return moment(timestr).format("YYYY-MM-DD HH:mm:ss");
         }
 
-       /* var $sendSms = function(user) {
+        /* var $sendSms = function(user) {
             this.user.sendSms = false;
             $sendMessage({
                 command: "api.sendSms(request.user)",
@@ -69,12 +68,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
                         //console.log(res);
                         message.active = false;
                         //setTimeout(function() { $scope.$apply() }, 2000)
-
                         if (res) {}
-
                         try { resolve(res) } catch (ex) { reject(ex) }
-
-
                     })
                 } else {
                     console.error(this);
@@ -84,11 +79,11 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
         }
 
         var $getUser = async function() {
-            //console.log(this.$unique);
+            console.log($unique);
             $scope.user =
-                await this.$sendMessage({ command: 'api.store.user.get(request.unique)', unique: this.$unique }) ||
-                await this.$setUser();
-            this.$apply();
+                await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique }) ||
+                await $scope.$setUser();
+            $apply();
             console.log($scope.user);
         }
 
@@ -259,7 +254,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
             $mdc,
             $dexie,
             $moment,
-
+            $params,
             $xmlSpider,
             $sendMessage,
             //$sendSms,

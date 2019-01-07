@@ -1,5 +1,4 @@
 define([], function() {
-
     return function({ $dexie, $xmlSpider }) {
         $xmlSpider.loadend = function() {
             if (this.type == "getAllUser") {

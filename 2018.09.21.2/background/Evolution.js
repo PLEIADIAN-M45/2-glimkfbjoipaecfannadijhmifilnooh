@@ -298,7 +298,7 @@ class apis {
 
                         return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
                             .then(({ Data }) => {
-                                console.log(Data);
+                                //console.log(Data);
                                 if (Data) {
                                     res.list_RemittanceName = Data.AlertInfoAccountName;
                                     res.rows.map((x) => {
@@ -323,24 +323,16 @@ class apis {
     }
 
     getMemberAlertInfoBackend(rows) {
-
         // console.log(rows);
-
-        var Account = rows.map((x) => {
-            return { "AccountID": x.AccountID, "AccountName": x.AccountName }
-        })
+        var Account = rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
         //console.log(Account);
         //console.log(window.baseUrl[16]);
-
         return $.ajax({
             "method": 'post',
             "dataType": 'json',
-            "url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
-            //"url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-            "data": angular.toJson({
-                "DisplayArea": "1",
-                "Account": Account
-            })
+            //"url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
+            "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
         })
     }
 
@@ -396,42 +388,23 @@ class apis {
     }
 
     sendSms(request, sender, sendResponse) {
-        console.log(request);
-        console.log(global.sms);
-
+        //console.log(request);
+        //console.log(global.sms);
         var content = global.sms.get(request.channel);
         var mobile = "86" + request.mobile.value;
         var status = request.status;
-        var requestUrl = 'http://client.motosms.com/smsc/smssend';
-        //var content = decoder(localStorage.sms).toObj();
-        //this.content = content[this.channel];
         return $.ajax({
-            url: requestUrl,
+            url: 'http://client.motosms.com/smsc/smssend',
             dataType: "html",
             method: 'post',
-            data: {
-                sender: '',
-                phones: mobile,
-                smscontent: content,
-                taskType: 1,
-                taskTime: '',
-                batch: 1,
-                splittime: 0,
-                packid: ''
-            }
+            data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
         }).then((res, b, c) => {
-            //this.sms.content = this.message
             if (res.match(/(msg = '')/)) { status = 200; }
             if (res.match(/(會員登錄)/)) { status = 401; }
             if (res.match(/(msg = '101')/)) { status = 101; }
             if (res.match(/(msg = '102')/)) { status = 102; }
             return status;
-
-            return {
-                mobile,
-                content,
-                status
-            }
+            return { mobile, content, status }
             //sendResponse(status);
         });
 

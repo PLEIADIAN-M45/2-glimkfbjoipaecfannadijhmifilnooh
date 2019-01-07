@@ -1,6 +1,6 @@
 define([], function() {
 
-    return async function({ $ajax, $account, $dexie, $model, $ctrl }) {
+    return async function({ $ajax, $account, $dexie, $model, $ctrl, $scope, $getUser, $xmlSpider }) {
 
         var _user_ = {
             timing: [],
@@ -10,7 +10,10 @@ define([], function() {
             equpmt: {}
         };
 
-        function getUserBasic({ server, origin, unique, channel, account, operator }) {
+        var { account, server, origin, unique, channel, operator } = this;
+
+
+        function getUserBasic() {
             Object.assign(_user_, { server, origin, unique, channel, account, operator })
         }
 
@@ -72,7 +75,7 @@ define([], function() {
             });
         }
 
-        this.$setUser = function() {
+        $scope.$setUser = function() {
             console.log('+');
             return Promise.all([getUserBasic(this),
                     getUserModel(), getUserState(), getUserStore(),
@@ -85,5 +88,22 @@ define([], function() {
                     return _user_;
                 })
         }
+
+        $scope.setPermit = function(e) {
+            e.currentTarget.hide();
+            $ctrl.isOpenDeposit.val(1);
+            $ctrl.btnSaveInfo.click();
+        };
+
+
+
+
+        $xmlSpider.loadend = function() {
+            if (this.action == "getmodel") {
+                console.log($scope.user);
+                $getUser()
+            }
+        };
+
     }
 })

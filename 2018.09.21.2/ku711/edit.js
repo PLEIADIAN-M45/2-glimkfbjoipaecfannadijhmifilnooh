@@ -250,6 +250,7 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
     return async function({ $clipboard, $getModule, $keydown, $xmlSpider, $createTab, $model, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
         $delUser(1);
+        
         $scope.$router = $router;
         $scope.$createTab = $createTab
         $scope.$watch('user', $putUser, true);

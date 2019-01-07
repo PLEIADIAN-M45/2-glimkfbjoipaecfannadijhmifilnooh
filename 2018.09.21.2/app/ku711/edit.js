@@ -3,6 +3,9 @@ define(["ku711/decode"], function(decode) {
 
     return function({ $scope, $ajax, $account, $dexie, $model, $ctrl, $getModule }) {
 
+
+        var { account, server, origin, unique, channel, operator } = this;
+
         var _user_ = {
             timing: [],
             status: [],
@@ -47,7 +50,7 @@ define(["ku711/decode"], function(decode) {
 
         function OldMemberRisksInfo() {
             return $getModule('OldMemberRisksInfo').then((c) => {
-                _user_.locate = { value: c.RegistedIP, title: c.RegistedIP }
+                _user_.locate = { value: c.RegistedIP, title: c.RegistedIP, callee: 'locate' }
                 _user_.equpmt = { browser: c.BrowserType, osInfo: c.OSType }
                 _user_.agency = c.AgencyID;
                 _user_.attach = c.RegistedTime;
@@ -57,9 +60,9 @@ define(["ku711/decode"], function(decode) {
 
         function OldMemberBaseInfo() {
             return $getModule('OldMemberBaseInfo').then((c) => {
-                _user_.author = { value: c.AccountName, title: c.AccountNameShow }
-                _user_.mobile = { value: c.CellPhone, title: c.CellPhoneShow }
-                _user_.idcard = { value: c.IDNumber, title: c.IDNumberShow }
+                _user_.author = { value: c.AccountName, title: c.AccountNameShow, callee: 'author' }
+                _user_.mobile = { value: c.CellPhone, title: c.CellPhoneShow, callee: 'mobile' }
+                _user_.idcard = { value: c.IDNumber, title: c.IDNumberShow, callee: 'idcard' }
                 _user_.birthday = c.BirthDay;
                 _user_.black = c.IsBlackList;
                 _user_.sequel = c.MNO;
@@ -79,8 +82,8 @@ define(["ku711/decode"], function(decode) {
             })
         }
 
-        function getUserBasic({ server, origin, unique, channel, account, operator }) {
-            Object.assign(_user_, { server, origin, unique, channel, account, operator })
+        function getUserBasic() {
+            Object.assign(_user_, { account, server, origin, unique, channel, operator })
         }
 
         function getBanker() {
@@ -90,6 +93,7 @@ define(["ku711/decode"], function(decode) {
                         return {
                             value: s.PayeeAccountNo,
                             title: s.PayeeAccountNoShow,
+                            callee: 'banker',
                             region: {
                                 meta: decode.code[s.BankCodeID],
                                 prov: decode.prov[s.BankProID],
@@ -101,10 +105,12 @@ define(["ku711/decode"], function(decode) {
         }
 
 
-        this.$setUser = function() {
+
+        $scope.$setUser = function() {
             console.log('+');
             return Promise.all([
-                getUserBasic(this), OldMemberBaseInfo(),
+                getUserBasic(this),
+                OldMemberBaseInfo(),
                 OldMemberRisksInfo(), getBanker(),
                 getStatus(), getIsDeposit(), getSystemLog(),
             ]).then(() => {

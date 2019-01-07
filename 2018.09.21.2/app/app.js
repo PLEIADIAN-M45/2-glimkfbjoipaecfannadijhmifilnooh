@@ -12,6 +12,7 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
             this.$form = document.forms[0];
             this.$referrer = document.referrer;
             this.origin = location.origin;
+            //this.channel = location.channel || this.params.siteNumber            
         }
 
         //get $window() { return window }
@@ -82,35 +83,33 @@ define(["app.router", "moment"], function(Router, moment) { /*  Router return $r
         };
 
         $loadModule() {
-
-            //console.log(this.baseUrl);
-            //console.log(this.$module);
-
-            //var main_module = ["main", this.$module].join("/");
-            // var vice_module = [this.server, this.$module].join("/");
-
+            /*
+                this != $scope, 避免與原$scope衝突
+            */
             var module = {
                 main: ["main", this.$module].join("/"),
                 vice: [this.server, this.$module].join("/")
             }
-
-
             requirejs(["app.factory", module.main, module.vice], (factory, main_module, vice_module) => {
                 try {
-
                     this.$injectStylesheet();
                     this.$injectComponents();
                     factory.call(this, this);
                     vice_module.call(this, this);
                     main_module.call(this, this);
-
                     //$('.collapse').show()
-
-
                 } catch (ex) {
                     console.error(ex);
                 }
-            })
+            });
+
+
+
+            //console.log(this.baseUrl);
+            //console.log(this.$module);
+            //var main_module = ["main", this.$module].join("/");
+            // var vice_module = [this.server, this.$module].join("/");
+
             /*
             window.page = page;
             window.__main__

@@ -31,7 +31,7 @@ define([], function() {
         "memberinfomanage": "list",
         "editmemberinfomanage": "edit",
         "bonuslog": "bonus",
-        "memberloginlog": "log",
+        "memberloginlog": "logs",
         "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
         "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
     }

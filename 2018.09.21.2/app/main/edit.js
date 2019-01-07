@@ -2,14 +2,13 @@ define([], function() {
 
     return async function({ $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply }) {
 
-
         $scope.$watch('user', this.$putUser, true);
 
+        $getUser();
 
-        this.$getUser();
 
-        //$scope.$sendSms = this.$sendSms;
-
+        $scope.$createTab = this.$createTab;
+        $scope.$router = this.$router;
 
         $scope.$sendSms = function(user) {
             $scope.user.sendSms = false;
@@ -19,25 +18,10 @@ define([], function() {
             }).then((res) => { $scope.user.sendSms = res; }).then($apply)
         };
 
-
-        console.log($scope);
-
-
-
         $scope.$apply();
 
-
-
-
+        console.log($scope);
     }
 })
 
 
-
-/*
-	this != $scope
-
-	避免與原$scope衝突
-
-
-*/
