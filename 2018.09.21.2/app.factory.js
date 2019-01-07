@@ -1,7 +1,7 @@
 define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
-        function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+        function _sname_(elem) { if (elem.name) return elem.name.split("$").pop(); if (elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
 
         function _model_(elem) {
             switch (elem.localName) {
@@ -17,6 +17,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
         }
         /*********************************************************/
 
+        //$digest 
+        function apply() { if (!$scope.$$phase) { $scope.$apply(); } }
 
 
         var $dexie = new Dexie('evo');
@@ -43,6 +45,17 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             return moment(timestr).format("YYYY-MM-DD HH:mm:ss");
         }
 
+        var $sendSms = function(user) {
+            //this == $scope;
+            this.user.sendSms = false;
+            $sendMessage({
+                command: "api.sendSms(request.user)",
+                user: this.user
+            }).then((res) => { this.user.sendSms = res; }).then(apply)
+
+        };
+
+
         var $sendMessage = function(message) {
             //onsole.log(message);
             //console.log(this);
@@ -50,13 +63,13 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             message.active = true;
 
             return new Promise((resolve, reject) => {
-                if($extensionId && message) {
+                if ($extensionId && message) {
                     chrome.runtime.sendMessage($extensionId, message, (res) => {
                         //console.log(res);
                         message.active = false;
                         //setTimeout(function() { $scope.$apply() }, 2000)
 
-                        if(res) {}
+                        if (res) {}
 
                         try { resolve(res) } catch (ex) { reject(ex) }
 
@@ -74,7 +87,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
         var $setUser = function(result) {
             //console.log(result);
-            if(!result) {
+            if (!result) {
                 $scope.$apply();
                 return
             }
@@ -91,7 +104,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             //.then((user) => { if(user) { return user } else { return $scope.$defUser($scope) } })
         }
         var $delUser = function(bool) {
-            if(!bool) { return }
+            if (!bool) { return }
             return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
                 .then((user) => {
                     return;
@@ -101,8 +114,8 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
         var $putUser = function(nv, ov) {
             //console.log(nv, ov);
-            if(!nv) { return };
-            if(angular.equals(nv, ov)) { return };
+            if (!nv) { return };
+            if (angular.equals(nv, ov)) { return };
             //if(angular.equals(_user, nv)) { return };
             return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
                 .then((user) => {
@@ -130,9 +143,9 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
                 var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                 (function repeater(object) {
                     var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                    if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                        if (typeof alphaVal == "object") {
+                            if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                         } else { resolve(alphaVal); }
                     }
                 }(object));
@@ -146,7 +159,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
         var c = console.log;
 
-       // var clipboardData;
+        // var clipboardData;
 
 
         document.oncopy = function(e) {
@@ -154,14 +167,14 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             // console.log(e);
             //console.log(clipboardData);
 
-            if(window.getSelection().type === "Caret") {
+            if (window.getSelection().type === "Caret") {
                 e.preventDefault();
                 console.log(this);
             }
 
             console.log(e.clipboardData);
 
-            if(e.clipboardData) {
+            if (e.clipboardData) {
 
                 e.clipboardData.setData("text/plain", clipboardData);
             } else {
@@ -173,13 +186,13 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
 
 
-/*
-        function $clipboard(str) {
-            console.log(this);
-            window.clipboardData = str;
-            document.execCommand("copy");
-            //document.addEventListener('keydown', callback);
-        }*/
+        /*
+                function $clipboard(str) {
+                    console.log(this);
+                    window.clipboardData = str;
+                    document.execCommand("copy");
+                    //document.addEventListener('keydown', callback);
+                }*/
 
         /***************************************************/
         /*account,
@@ -266,6 +279,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
 
             $xmlSpider,
             $sendMessage,
+            $sendSms,
             //$clipboard,
 
             $getUser,
@@ -299,7 +313,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             //全局屏蔽键盘事件：
             window.onkeydown = function() {
                 console.log(window.event.keyCode)
-                if(window.event.keyCode == 49) {
+                if (window.event.keyCode == 49) {
                     event.returnValue = false;
                 }
             }

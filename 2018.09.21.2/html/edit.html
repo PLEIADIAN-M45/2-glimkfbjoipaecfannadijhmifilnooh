@@ -4,15 +4,16 @@
         <a class="item">{{user.unique}}</a>
         <a class="item" ng-click="$createTab($router.cookie)" style="margin-bottom: 50px;">
             <i class="bolt icon"></i>一机多登</a>
-
         <a class="item" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
             <i class="handshake outline icon"></i>开通</a>
-
-        <a class="item" ng-click="setPermit($event)"  status="{{user.status}}">
-            <i class="handshake outline icon"></i>开通-1</a>
-
-        <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.sendsms.status==9 || user.sendsms.status==401">
-            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a>
+        <!--  <a class="item" ng-click="setPermit($event)"  status="{{user.status}}">
+           <i class="handshake outline icon"></i>开通-1</a> -->
+        <!-- <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.sendsms.status==9 || user.sendsms.status==401">
+            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a> -->
+        <!-- <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.status[0]==3 || user.status[1]==1">
+            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a> -->
+        <a class="item" ng-click="$sendSms(user)" ng-if="user.sendSms==true || user.sendSms==401">
+        <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a>
     </div>
 </aside>
 <!--

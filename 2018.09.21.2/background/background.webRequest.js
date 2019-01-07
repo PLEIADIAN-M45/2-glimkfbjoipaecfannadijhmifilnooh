@@ -88,19 +88,25 @@ function http() {
 
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
-    console.log(lastPath, url);
+
+    //console.log(lastPath, url);
+
     var lastPath = lastPathOf(url);
-    if (initiator == location.origin) {
+    if (initiator == location.origin) {        
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
         return { requestHeaders: details.requestHeaders }
     } else {
         if (details.method == "POST") {
-            details.requestHeaders.filter(({ name, value }) => { if (name == "RequestVerificationToken") { localStorage[name] = value; } })
+            //console.log(details);
+            details.requestHeaders.filter(({ name, value }) => {
+                //console.log(value);
+                if (name == "RequestVerificationToken") { localStorage[name] = value; }
+            })
         }
     }
-}, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['requestHeaders', 'blocking']);
+}, { urls: ["*://*.ku711.net/*"], types: ["xmlhttprequest"] }, ['requestHeaders', 'blocking']);
 
 /**************************************************************************************************************/
 

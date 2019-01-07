@@ -73,7 +73,7 @@ define([], function() {
                     account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return this.timing[0] = f_time; }
                 });
             });
         }
@@ -94,7 +94,8 @@ define([], function() {
         user.mobile.region = {};
         user.locate.region = {};
         user.region = [];
-        user.sendsms = new sendsms(user);
+        //user.sendsms = 
+        //new sendsms(user);
         return user;
     }
 

@@ -2,78 +2,59 @@ define(["wa111/user"], function({ $defUser }) {
 
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
+       
         $delUser(0);
 
         $scope.$watch('user', $putUser, true);
 
         $scope.user = await $getUser() || await $defUser(this);
 
-        console.log($scope.user);
+        $scope.$sendSms = this.$sendSms;
 
+
+        /*
         $scope.sendSms = function(e) {
-
+            $scope.user.sendSms = false;
             e.preventDefault();
-            e.currentTarget.hide();
-            $scope.user.sendsms.status = -1;
-
-            $sendMessage($scope.user.sendsms).then((s) => { c(s) })
-                .then($setUser)
+            $sendMessage({
+                command: "api.sendSms(request.user)",
+                user: $scope.user
+            }).then((res) => {
+                console.log(res);
+                $scope.user.sendSms = res;
+                $scope.$apply();
+            })
         };
+        */
 
         $scope.setPermit = function(e) {
-            //e.currentTarget.hide();
+            e.currentTarget.hide();
             $ctrl.isOpenDeposit.val(1);
             $ctrl.btnSaveInfo.click();
         };
 
 
+
         $xmlSpider.loadend = function() {
-            return
-
-            if(this.action == "getmodel") {
-
+            if (this.action == "getmodel") {
+                //update User
                 $getUser().then((user) => {
-
                     $scope.user = user;
-                    //console.log(user);
-
-                    with(this.respData) {
-                        $scope.user.status.push(f_ishow);
-                        $scope.user.permit.push(f_depositStatus);
-                        $scope.user.timing.push($now);
-                        $scope.user.sendsms.status = 9;
-                        if($scope.user.status[0] == 3) {
-                            $scope.user.module = "authorize"
-                            //$scope.user.command = "google:scripts.authorize"
-                        } else {
-                            $scope.user.module = "suspended"
-                            //$scope.user.command = "google:scripts.suspended"
-                        }
-                        // $setUser();
-                    }
-
-                    console.log($scope.user);
-
-
-                    $sendMessage({
-                        command: "api.googleScripts(#)",
-                        user: $scope.user
-                    }).then((s) => {
-                        console.log(s);
-                    })
-
-                })
-
-                //.then($setUser)
+                }).then(apply)
             }
         };
 
-
         this.$keydown(function(e) {
             console.log(e.key);
-            if(e.key == "Delete") { $delUser(1) }
-            if(e.key == "-") { console.clear() }
+            if (e.key == "Delete") { $delUser(1) }
+            if (e.key == "-") { console.clear() }
         });
+
+
+
+        console.log($scope.user);
+
+
         $scope.$apply();
 
         //console.clear();

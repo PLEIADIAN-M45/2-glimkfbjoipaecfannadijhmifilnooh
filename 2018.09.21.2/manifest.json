@@ -11,9 +11,10 @@
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
 
-            "mock/mock.js",
+            /*"mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js",
+            */
 
             "background/Evolution.js",
             "background/background.webRequest.js",

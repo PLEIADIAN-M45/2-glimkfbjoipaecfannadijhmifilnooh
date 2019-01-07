@@ -36,7 +36,6 @@ define([], function() {
 
     function s(a) { console.log(a); }
 
-    console.log(1);
 
     try {
 
@@ -71,16 +70,13 @@ define([], function() {
         //console.log(moment);
 
 
-
-
         xmlSpider.loadstart = function() {
             /*cant catch respData yet.*/
 
         }
 
-
         xmlSpider.load = function() {
-            console.log(this);
+            //console.log(this);
             //console.log(2);
             this.command = "api.xmlHttp(...arguments)";
             //this.command = "new xmlHttp(...arguments)";

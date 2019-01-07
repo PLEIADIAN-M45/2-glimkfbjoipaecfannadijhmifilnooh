@@ -96,10 +96,10 @@ class Service {
     }
 
     toCheck(res) {
-        if(res) {
+        if (res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
-            if(res.age < 18) { res.alert = true }
+            if (res.age < 18) { res.alert = true }
         } else { res.alert = true; }
         res.alarm = this.compare();
         return res;
@@ -122,9 +122,9 @@ class Service {
         return $.ajax({ url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", dataType: "json", data: { "query": request.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time } }).then((res) => {
             //console.log(res);
             var region = {};
-            if(res.status == 0) {
+            if (res.status == 0) {
                 var str = res.data[0].location;
-                if(str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
+                if (str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
             }
             return region;
         })
@@ -133,7 +133,7 @@ class Service {
         return $.ajax({ dataType: "json", url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", data: { "query": request.value, "co": "", "resource_id": 6004, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time, } }).then((res) => {
             //console.log(res);
             var region = {};
-            if(res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
+            if (res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
             return region;
         })
     }
@@ -164,23 +164,15 @@ class apis {
         this.getAuthToken();
         //createTabs(this.chrome_settings)
     }
-
-
     get requestUrl() { return window.baseUrl[this.channel] }
-
-
     /*
     get banker() {
-
     }
     get mobile() {
-
     }
     get author() {
-
     }
     get idcard() {
-
     }
     */
 
@@ -302,12 +294,12 @@ class apis {
 
                     var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
 
-                    if(res.rows && res.rows.length) {
+                    if (res.rows && res.rows.length) {
 
                         return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
                             .then(({ Data }) => {
                                 console.log(Data);
-                                if(Data) {
+                                if (Data) {
                                     res.list_RemittanceName = Data.AlertInfoAccountName;
                                     res.rows.map((x) => {
                                         x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
@@ -353,7 +345,7 @@ class apis {
     }
 
     getTokenInfo(token) {
-        if(token) {
+        if (token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
@@ -375,10 +367,8 @@ class apis {
     onMessage(request, sender, sendResponse) {}
     onMessageExternal(request, sender, sendResponse) {
         request.command = request.command.replace("#", "...arguments");
-
-        console.log(request.command);
-        console.log(request.unique);
-
+        //console.log(request.command);
+        //console.log(request.unique);
         try {
             eval(request.command).then((s) => {
                 //console.log(s);
@@ -395,7 +385,7 @@ class apis {
     get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
 
     download() {
-        if(window.localStorage.length < 5) {
+        if (window.localStorage.length < 5) {
             return Promise.all([
                 fetch(this.macros + '?commands=GMA').then(this.toJson),
                 fetch(this.macros + '?commands=GMB').then(this.toJson)
@@ -403,6 +393,48 @@ class apis {
         } else {
             this.save(Object.entries(localStorage))
         }
+    }
+
+    sendSms(request, sender, sendResponse) {
+        console.log(request);
+        console.log(global.sms);
+
+        var content = global.sms.get(request.channel);
+        var mobile = "86" + request.mobile.value;
+        var status = request.status;
+        var requestUrl = 'http://client.motosms.com/smsc/smssend';
+        //var content = decoder(localStorage.sms).toObj();
+        //this.content = content[this.channel];
+        return $.ajax({
+            url: requestUrl,
+            dataType: "html",
+            method: 'post',
+            data: {
+                sender: '',
+                phones: mobile,
+                smscontent: content,
+                taskType: 1,
+                taskTime: '',
+                batch: 1,
+                splittime: 0,
+                packid: ''
+            }
+        }).then((res, b, c) => {
+            //this.sms.content = this.message
+            if (res.match(/(msg = '')/)) { status = 200; }
+            if (res.match(/(會員登錄)/)) { status = 401; }
+            if (res.match(/(msg = '101')/)) { status = 101; }
+            if (res.match(/(msg = '102')/)) { status = 102; }
+            return status;
+
+            return {
+                mobile,
+                content,
+                status
+            }
+            //sendResponse(status);
+        });
+
     }
 
     googleScripts(request, sender, sendResponse) {
@@ -421,7 +453,6 @@ class apis {
         //user.region = user.region || [];
         //user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
         //user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
-
         console.log("++++++++++");
         console.log(user);
         console.log(this.macros);
@@ -449,7 +480,7 @@ class apis {
 
     toLocalStorage(res) {
         //console.log(res);
-        if(typeof res) {
+        if (typeof res) {
             return res.forEach(([name, value]) => { localStorage[name] = value; })
         }
     }
@@ -465,14 +496,17 @@ class apis {
             localStorage[name] = value;
             global[name] = decoder(value);
         });
+
         global.gb2260 = new Map(global.gb2260);
-        console.log(global.gb2260);
+        global.sms = new Map(global.sms);
+
+        //console.log(global.gb2260);
         //console.log("[OK]", localStorage);
     }
 
     entries() {
         Object.entries(localStorage).forEach(([name, value]) => {
-            if(name) {
+            if (name) {
                 this.decoder(value, name)
             }
         })
@@ -504,78 +538,59 @@ class apis {
         //console.log(request.sendData);
         var ACTION = request.action;
         var SERVER = request.server;
-        if(SERVER == "ku711") {
+        if (SERVER == "ku711") {
             switch (ACTION) {
                 case "UpdateMemberRiskInfoAccountingBackend":
+                    console.log(request);
                     //console.log(request);
                     var unique = [request.sendData.AccountID, request.channel].toUnique();
                     var user = await this.user.get(unique);
-                    if(user.module) { return }
-                    if(user.status[0] == user.status[1]) { return }
+                    if (user.module) { return }
+                    if (user.status[0] == user.status[1]) { return }
                     user.module = (user.status[0] == 3) ? "authorize" : "suspended"
+
                     user.status.push(request.sendData.MemberStatus)
                     user.permit.push(request.sendData.IsDeposit)
                     user.timing.push(request.timeSpan)
                     user.timing.timeDiff();
-                    //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
-                    this.user.put(user);
-                    this.googleScripts(user);
-                    console.log(user);
-                    break;
-                default:
-
-                    // statements_def
-                    break;
-            }
-        }
-
-        if(SERVER == "wa111") {
-            switch (ACTION) {
-                case "getmodel--":
-                    console.log(request);
-
-                    var unique = [request.sendData.account, request.channel].toUnique();
-                    var user = await this.user.get(unique);
-
-                    if(user.module) { return }
-                    if(user.status[0] == user.status[1]) { return }
-                    user.module = (user.status[0] == 3) ? "authorize" : "suspended"
-                    user.status.push(request.respData.f_ishow)
-                    user.permit.push(request.respData.f_depositStatus)
-                    user.timing.push(request.timeSpan)
-                    user.timing.timeDiff();
-                    //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
-                    this.user.put(user);
-                    this.googleScripts(user);
-                    console.log(user);
-                    break;
-
-                case "btnUserSet":
-                    var unique = [request.sendData.account, request.channel].toUnique();
-                    var user = await this.user.get(unique);
-                    console.log(request);
-                    console.log(request.respData);
-                    console.log(user);
-                    if(request.respData == "u-ok") {
-                        if(user.module) { return }
-
-                        if(user.status[0] == user.status[1]) { return }
-                        user.module = (user.status[0] == 3) ? "authorize" : "suspended";
-                    //ishow
-                    //isOpenDeposit
-                        user.status.push(request.sendData.f_ishow)
-                        user.permit.push(request.sendData.f_depositStatus)
-                        user.timing.push(request.timeSpan)
-                        user.timing.timeDiff();
-                        //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
-                        this.user.put(user);
+                    if (user.status[0] == 3 || user.status[1] == 1) {
+                        user.sendSms = true;
                     }
-
-                    //console.log(user);
-
+                    this.user.put(user);
+                    console.log(user);
                     break;
+                default:
 
+                    // statements_def
+                    break;
+            }
+        }
 
+        if (SERVER == "wa111") {
+            switch (ACTION) {
+                case "btnUserSet":
+                    console.log(request);
+                    if (request.respData == "u-ok") {
+                        var unique = [request.sendData.account, request.channel].toUnique();
+                        var user = await this.user.get(unique);
+                        if (user.module) { return } else {
+                            if (user.permit[0] == request.sendData.isOpenDeposit) {
+                                return;
+                            } else {
+                                user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+                                if (request.sendData.ishow == 3 && request.sendData.isOpenDeposit == 1) { request.sendData.ishow = 1; }
+                                user.status.push(request.sendData.ishow)
+                                user.permit.push(request.sendData.isOpenDeposit)
+                                user.timing.push(request.timeSpan)
+                                user.timing.timeDiff();
+                                if (user.status[0] == 3 || user.status[1] == 1) {
+                                    user.sendSms = true;
+                                }
+                            }
+                        }
+                    }
+                    //console.log(user);
+                    break;
                 default:
 
                     // statements_def
@@ -585,9 +600,14 @@ class apis {
 
 
 
-
-
-
+        /***********************************/
+        if (user) {
+            this.user.put(user);
+            console.log(user, user.module);
+            //this.googleScripts(user);
+        }
+        //
+        /**********************************/
 
 
 

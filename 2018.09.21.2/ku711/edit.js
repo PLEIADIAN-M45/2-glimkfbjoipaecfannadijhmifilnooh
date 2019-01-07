@@ -100,8 +100,8 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
     */
 
     function sendsms(user) {
-        if(!user) { return }
-        if(user.sendsms) { return }
+        if (!user) { return }
+        if (user.sendsms) { return }
         this.callee = "sendsms"
         this.command = 'apiFunctions.sendsms'
         this.requestUrl = 'http://client.motosms.com/smsc/smssend';
@@ -128,25 +128,38 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
         }
 
         getSystemLog({ $account, $moment }) {
+            //timeing[0]: 用户状态 【靜止戶】 被修改为 【審核戶】
+            //timeing[1]: 用户状态 【審核戶】 被修改为 【正常户】 【停权户】
+            //用户状态 【正常户】 被修改为 【停权户】
+            console.log($account, "++++++++++++");
+
             return $.ajax({
                 url: "/member/api/Common/GetMemberInfoOperationLogByMultiAccountID",
                 method: "POST",
                 dataType: "json",
+                headers: {
+                    "content-type": "application/json;charset=UTF-8",
+                    "requestverificationtoken": localStorage.requestverificationtoken
+                },
                 data: angular.toJson({
-                    "OperateType": 0,
-                    "OperatorList": [],
-                    "DataIDList": [],
-                    "PageIndex": 0,
-                    "PageSize": 5,
                     "DataID": $account,
                     "Operated": $account,
+                    "DataIDList": [],
+                    "OperateType": 0,
+                    "OperatorList": [],
+                    "PageIndex": 0,
+                    "PageSize": 5,
                     "Platform": 0
+                    //ModifyContentType: 0
+                    //EndTime: "2019-01-07 23:59:59",
+                    //StartTime: "2018-12-03 00:00:00",
                 })
             }).then((d) => {
+                console.log(d);
                 d.Data.Data.filter(({ Content, OperateTime, Operator }) => {
                     Content.filter((obj) => {
-                        if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
-                            this.timing[0] = $moment(OperateTime);
+                        if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                            this.timing[0] = OperateTime;
                         }
                     })
                 })
@@ -158,7 +171,7 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
                 this.locate = { value: c.RegistedIP, title: c.RegistedIP }
                 this.equpmt = { browser: c.BrowserType, osInfo: c.OSType }
                 this.agency = c.AgencyID;
-                this.attach = $moment(c.RegistedTime);
+                this.attach = c.RegistedTime;
                 this.suspension = c.IsFSuspension;
             })
         }
@@ -236,21 +249,15 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
 
     return async function({ $clipboard, $getModule, $keydown, $xmlSpider, $createTab, $model, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
+        $delUser(1);
 
-        $delUser(0);
-
+        $scope.$router = $router;
+        $scope.$createTab = $createTab
         $scope.$watch('user', $putUser, true);
 
         $scope.user = await $getUser() || await $defUser(this);
 
-        console.log($scope.user);
-
-
-        $scope.$router = $router;
-        $scope.$createTab = $createTab;
-
-
-
+        /*
         $scope.sendSms = function(e) {
             e.preventDefault();
             e.currentTarget.hide();
@@ -258,6 +265,9 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
             $sendMessage($scope.user.sendsms).then((s) => { c(s) })
                 .then($setUser)
         };
+        */
+
+
 
 
         $scope.setPermit = function(e) {
@@ -267,16 +277,22 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
         };
 
 
+        console.log($xmlSpider);
+
         $xmlSpider.loadend = function() {
             console.log(this);
 
+            if (this.action == "getmodel") {
+                console.log($scope.user);
+            }
+
+            //console.log(this);
         };
 
 
 
 
-
-
+        console.log($scope.user);
 
         $scope.$apply();
 
