@@ -1,3 +1,16 @@
+Array.prototype.toUnique = function() {
+    return this.join("-")
+}
+
+Array.prototype.timeDiff = function(unit) {
+    this[0] = moment(this[0]).format("YYYY-MM-DD HH:mm:ss")
+    this[1] = moment(this[1]).format("YYYY-MM-DD HH:mm:ss")
+    this[2] = moment(this[1]).diff(moment(this[0]), "minutes", true);
+    return this;
+}
+
+
+
 var global = {};
 
 global.compare = function(request) {
@@ -394,7 +407,7 @@ class apis {
 
     googleScripts(request, sender, sendResponse) {
         console.log(request);
-        var user = request.user;
+        var user = request.user || request;
         delete user.banker[0].sites;
         delete user.idcard.sites;
         delete user.locate.sites;
@@ -402,12 +415,13 @@ class apis {
         delete user.author.sites;
         delete user.sendsms;
         /*-------------------------------------*/
-        user.audience = this.audience;
-        user.test = true;
-        user.command = "google:scripts";
-        user.region = user.region || [];
-        user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
-        user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+        //user.audience = this.audience;
+        //user.test = true;
+        //user.command = "google:scripts";
+        //user.region = user.region || [];
+        //user.timing[2] = timeDiff(user.timing[0], user.timing[1], 'minute')
+        //user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+
         console.log("++++++++++");
         console.log(user);
         console.log(this.macros);
@@ -468,12 +482,113 @@ class apis {
     get time() { return Date.now(); }
 
 
+    get user() {
+        var _store = this.store;
+        return {
+            get(unique) {
+                return _store.user.get(unique)
+            },
+            put(obj) {
+                return _store.user.put(obj)
+            },
+
+        }
+    }
+
+    timeDiff() {
+
+    }
+
     async xmlHttp(request, sender, sendResponse) {
+        //console.log(request.$unique);
+        //console.log(request.sendData);
+        var ACTION = request.action;
+        var SERVER = request.server;
+        if(SERVER == "ku711") {
+            switch (ACTION) {
+                case "UpdateMemberRiskInfoAccountingBackend":
+                    //console.log(request);
+                    var unique = [request.sendData.AccountID, request.channel].toUnique();
+                    var user = await this.user.get(unique);
+                    if(user.module) { return }
+                    if(user.status[0] == user.status[1]) { return }
+                    user.module = (user.status[0] == 3) ? "authorize" : "suspended"
+                    user.status.push(request.sendData.MemberStatus)
+                    user.permit.push(request.sendData.IsDeposit)
+                    user.timing.push(request.timeSpan)
+                    user.timing.timeDiff();
+                    //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
+                    this.user.put(user);
+                    this.googleScripts(user);
+                    console.log(user);
+                    break;
+                default:
 
-        console.log(request.$unique);
-        console.log(request);
+                    // statements_def
+                    break;
+            }
+        }
 
-        console.log(request.sendData);
+        if(SERVER == "wa111") {
+            switch (ACTION) {
+                case "getmodel--":
+                    console.log(request);
+
+                    var unique = [request.sendData.account, request.channel].toUnique();
+                    var user = await this.user.get(unique);
+
+                    if(user.module) { return }
+                    if(user.status[0] == user.status[1]) { return }
+                    user.module = (user.status[0] == 3) ? "authorize" : "suspended"
+                    user.status.push(request.respData.f_ishow)
+                    user.permit.push(request.respData.f_depositStatus)
+                    user.timing.push(request.timeSpan)
+                    user.timing.timeDiff();
+                    //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
+                    this.user.put(user);
+                    this.googleScripts(user);
+                    console.log(user);
+                    break;
+
+                case "btnUserSet":
+                    var unique = [request.sendData.account, request.channel].toUnique();
+                    var user = await this.user.get(unique);
+                    console.log(request);
+                    console.log(request.respData);
+                    console.log(user);
+                    if(request.respData == "u-ok") {
+                        if(user.module) { return }
+
+                        if(user.status[0] == user.status[1]) { return }
+                        user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+                    //ishow
+                    //isOpenDeposit
+                        user.status.push(request.sendData.f_ishow)
+                        user.permit.push(request.sendData.f_depositStatus)
+                        user.timing.push(request.timeSpan)
+                        user.timing.timeDiff();
+                        //if(user.status[0] == 3) { user.module = "authorize"; } else { user.module = "suspended"; }
+                        this.user.put(user);
+                    }
+
+                    //console.log(user);
+
+                    break;
+
+
+                default:
+
+                    // statements_def
+                    break;
+            }
+        }
+
+
+
+
+
+
+
 
 
         /*

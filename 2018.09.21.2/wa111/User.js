@@ -9,10 +9,6 @@ define([], function() {
         this.channel = user.channel;
     }
 
-
-
-
-
     class User {
         constructor($scope) {
             //super($scope);
@@ -38,9 +34,9 @@ define([], function() {
                 { callee: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
             ];
         }
-        getUserState({ ctrl }) {
-            this.status = [ctrl.ishow.value];
-            this.permit = [ctrl.isOpenDeposit.value];
+        getUserState({ $ctrl }) {
+            this.status = [$ctrl.ishow[0].value];
+            this.permit = [$ctrl.isOpenDeposit[0].value];
         }
         getUserStore({ $dexie, account }) {
             return $dexie.user.get(account)
@@ -94,6 +90,10 @@ define([], function() {
 
     async function $defUser($scope) {
         var user = await new User($scope);
+        user.idcard.region = {};
+        user.mobile.region = {};
+        user.locate.region = {};
+        user.region = [];
         user.sendsms = new sendsms(user);
         return user;
     }

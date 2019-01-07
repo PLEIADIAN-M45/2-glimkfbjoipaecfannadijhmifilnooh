@@ -221,11 +221,14 @@ define(["ku711/apiFunction", "ku711/decode"], function(apiFunction, decode) {
                 this.getSystemLog(fact),
             ]).then(() => { return this; })
         }
-
     }
 
     async function $defUser($scope) {
         var user = await new User($scope);
+        user.idcard.region = {};
+        user.mobile.region = {};
+        user.locate.region = {};
+        user.region = [];
         user.sendsms = new sendsms(user);
         return user;
     }

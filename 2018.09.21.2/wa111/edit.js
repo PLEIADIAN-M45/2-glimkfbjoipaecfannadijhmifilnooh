@@ -2,18 +2,20 @@ define(["wa111/user"], function({ $defUser }) {
 
     return async function({ $xmlSpider, $now, $scope, $ctrl, $sendMessage, $getUser, $setUser, $putUser, $delUser, $account, $console, $router }) {
 
-        $scope.$delUser(0);
+        $delUser(0);
 
         $scope.$watch('user', $putUser, true);
 
-        $scope.user = await $defUser(this);
+        $scope.user = await $getUser() || await $defUser(this);
 
         console.log($scope.user);
 
         $scope.sendSms = function(e) {
+
             e.preventDefault();
             e.currentTarget.hide();
             $scope.user.sendsms.status = -1;
+
             $sendMessage($scope.user.sendsms).then((s) => { c(s) })
                 .then($setUser)
         };
@@ -24,7 +26,9 @@ define(["wa111/user"], function({ $defUser }) {
             $ctrl.btnSaveInfo.click();
         };
 
+
         $xmlSpider.loadend = function() {
+            return
 
             if(this.action == "getmodel") {
 
@@ -65,9 +69,9 @@ define(["wa111/user"], function({ $defUser }) {
         };
 
 
-        $scope.$keydown(function(e) {
+        this.$keydown(function(e) {
             console.log(e.key);
-            if(e.key == "Delete") { $scope.$delUser(1) }
+            if(e.key == "Delete") { $delUser(1) }
             if(e.key == "-") { console.clear() }
         });
         $scope.$apply();

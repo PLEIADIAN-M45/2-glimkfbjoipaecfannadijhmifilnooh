@@ -68,6 +68,9 @@ define([], function() {
         //onloadstart
         //onload
         //onloadend
+        //console.log(moment);
+
+
 
 
         xmlSpider.loadstart = function() {
@@ -83,20 +86,29 @@ define([], function() {
             //this.command = "new xmlHttp(...arguments)";
             this.extensionId = localStorage.extensionId;
             this.channel = localStorage.channel;
+            this.server = localStorage.server;
             this.responseHeaders = $getAllResponseHeaders(this);
-            this.hostname = $hostname();
+            //this.hostname = $hostname();
             this.lastPath = $lastPath(this);
             this.sendData = $serialize(this);
             this.mimeType = $mimeType(this);
             this.respData = $tryJson(this);
             this.dataRows = $dataRows(this);
-            this.timespan = Date.now();
+
+            this.timeSpan = Date.now();
+
             this.time = Date.now() - this.startedDateTime;
+
             if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
-            this.action = this.sendData.action;
+
             this.type = this.sendData.type;
 
+            this.action = this.sendData.action || this.sendData.type || this.lastPath;
+
+            //this.moment = Date.now();
+
             this.$unique = window.$unique;
+            //moment().format("YYYY-MM-DD HH:mm:ss")
 
             //console.log(window.$unique);
 

@@ -1,4 +1,4 @@
-define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlhttp'],
+define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpider'],
     function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
 
         function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
