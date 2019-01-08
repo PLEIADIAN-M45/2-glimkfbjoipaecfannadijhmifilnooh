@@ -1,25 +1,5 @@
-//console.log(this.localStorage.server);
-
-var server = window.localStorage.server;
-
-
-
 requirejs.config({
-    //packages: ["wa111", "ku711"],
     paths: {
-        //'$server': $server + "/main",
-        //'User': $server + '/User',
-        /*'app': 'app/app',
-        'app.router': 'app/app.router',
-        'app.instance': 'app/app.instance',
-        'app.factory': 'app/app.factory',
-        'app.spider': 'app/app.spider',*/
-
-        //'app.sendSms': 'app/app.sendSms',
-        //'app.service': 'app/app.service',
-
-
-
         'angular': '../lib/angular/angular',
         'angular-animate': '../lib/angular/angular-animate.min',
         'angular-aria': '../lib/angular/angular-aria',
@@ -37,7 +17,6 @@ requirejs.config({
         'require': '../lib/require/require',
         'jquery2': '../lib/jquery/jquery-3.2.1.min',
         'jquery': '../lib/jquery/jquery-3.3.1',
-
         'js-url': '../lib/jquery/url.min',
         'moment': '../lib/jquery/moment-with-locales.min',
         'dexie': '../lib/jquery/dexie',
@@ -65,24 +44,95 @@ requirejs.config({
 });
 
 
-var var2 = "";
-var c = console.log
+/*
+class Router {
+    constructor() {
+        this.$router = { wa111, ku711 } [this.server];
+    }
+    get server() {
+        return (location.port) ? { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111" } [location.port] : location.host.split('.')[1]
+    }
+    get wa111() {
+        return {
+            "login": "login",
+            "index": "home",
+            "memberlist": "list",
+            "membermodify": "edit",
+            "depositbonus": "bonus",
+            "igetmemberinfo": "logs",
+            "samebrowserlist": "logs",
+            "deltabank": "cash",
+            "deltaonline": "cash",
+            "deltawechat": "cash",
+            "deltaalipay": "cash",
+            "withdrawalsbank": "cash",
+            "astropaywithdrawals": "cash",
+            "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+            "device": "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+        }
+    }
+    get ku711() {
+        return {
+            "signin": "login",
+            "member": "home",
+            "memberinfomanage": "list",
+            "editmemberinfomanage": "edit",
+            "bonuslog": "bonus",
+            "memberloginlog": "logs",
+            "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+            "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+        }
+    }
+}*/
 
-//console.log(12, 23);
 
+
+
+requirejs(["app.router"], function(router) {
+
+    console.log(router);
+
+    //console.log(app);
+    //app.$bootstrap();
+});
+
+
+/*
 requirejs(["app"], function(app) {
     //console.log(app);
     app.$bootstrap();
 });
+*/
 
 
 
 
 
 
+
+
+
+
+
+
+
+
+//console.log(this.localStorage.server);
+//var server = window.localStorage.server;
+//packages: ["wa111", "ku711"],
+//'$server': $server + "/main",
+//'User': $server + '/User',
+/*'app': 'app/app',
+'app.router': 'app/app.router',
+'app.instance': 'app/app.instance',
+'app.factory': 'app/app.factory',
+'app.spider': 'app/app.spider',*/
+//'app.sendSms': 'app/app.sendSms',
+//'app.service': 'app/app.service',
 
 
 /*
+
 var modules = [
     function $ajax({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) {
         return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows })
@@ -325,7 +375,7 @@ function xxx() {
         this.module = this.paths[this.server][this.locator];
         this.isTest = (this.hostname == "127.0.0.1") ? true : false;
 
-        if (this.module) {
+        if(this.module) {
             requirejs([this.server], (app) => {
                 app.apply(this);
                 requirejs(['app.instance', 'app.factory'], (instance, factory) => {
@@ -350,12 +400,12 @@ function xxx() {
         // console.log(arguments);
         //console.log(last);
         //console.log(arguments[0]);
-        if (arguments[last] == true) {
+        if(arguments[last] == true) {
             var arg = arguments[0];
             return Object.assign(arguments[0].__proto__, this, { $apply: this.$apply, $digest: this.$digest, $eval: this.$eval });
         }
 
-        if (this.$root) {
+        if(this.$root) {
             Object.assign(this, ...arguments)
         } else {
             Object.assign(this, ...arguments)

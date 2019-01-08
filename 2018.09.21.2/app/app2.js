@@ -1,9 +1,7 @@
 define(["app.router", "moment"], function(Router, moment) { /*  Router return $router  */
 
 
-    class App {
 
-    }
 
 
 

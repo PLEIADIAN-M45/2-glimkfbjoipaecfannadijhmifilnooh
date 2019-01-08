@@ -2,11 +2,9 @@ define([], function() {
 
     return async function({ $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply }) {
 
+
         $scope.$watch('user', this.$putUser, true);
-
         $getUser();
-
-
         $scope.$createTab = this.$createTab;
         $scope.$router = this.$router;
 
@@ -20,8 +18,9 @@ define([], function() {
 
         $scope.$apply();
 
-        console.log($scope);
+
+
+        //console.table($scope.user)
+        // console.log($scope);
     }
 })
-
-

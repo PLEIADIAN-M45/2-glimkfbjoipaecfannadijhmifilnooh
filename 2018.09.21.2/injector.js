@@ -1,43 +1,72 @@
-var server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
-var rootUrl = chrome.runtime.getURL("/");
-//var baseUrl = chrome.runtime.getURL(server);
-var baseUrl = chrome.runtime.getURL("app");
-
-var extensionId = chrome.runtime.id;
-
-
-localStorage.extensionId = extensionId;
-localStorage.server = server;
-localStorage.rootUrl = rootUrl;
-localStorage.baseUrl = baseUrl;
-
-
-//localStorage.baseUrl = chrome.runtime.getURL('/module/' + host);
-
-
 function injectScript(attrs) {
     var script = document.createElement('script');
-    script.async = 1;
-    script.onload = function() {
-        this.id = chrome.runtime.id;
-        //console.log(this);
-        //this.remove();
-    };
     Object.entries(attrs).forEach(([name, value]) => { script.setAttribute(name, value); });
+    document.head.appendChild(script);
+};
 
-    (document.head || document.documentElement).appendChild(script);
-}
+function __set(key, value, json) { localStorage[key] = value };
+__set("extensionId", chrome.runtime.id);
+__set("rootUrl", chrome.runtime.getURL("/"));
+__set("baseUrl", chrome.runtime.getURL("app"));
+__set("server", (location.port) ? { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711" } [location.port] : location.host.split('.')[1]);
+__set("pathname", location.pathname.split(".")[0].split("/").pop());
+injectScript({ "src": chrome.runtime.getURL('lib/require/require.js'), "data-main": chrome.runtime.getURL('app/main.js') })
 
 
 
 
 
-injectScript({
-    "src": chrome.runtime.getURL('lib/require/require.js'),
-    //"data-main": chrome.runtime.getURL('main.js')
-    "data-main": chrome.runtime.getURL('app/main.js')
 
-})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /*
@@ -49,6 +78,18 @@ NEWS
 //injectScript({ src: chrome.runtime.getURL(server + "/main.js"), })
 
 
+/*
+function injectScript(attrs) {
+    var script = document.createElement('script');
+    script.async = 1;
+    script.onload = function() {
+        //this.id = chrome.runtime.id;
+        //console.log(this);
+        //this.remove();
+    };
+    Object.entries(attrs).forEach(([name, value]) => { script.__setAttribute(name, value); });
+    (document.head || document.documentElement).appendChild(script);
+}*/
 
 
 
@@ -74,6 +115,34 @@ $("head").append('<script src="module" src="./foo.js"></script>');
 //["chrome-extension://glimkfbjoipaecfannadijhmifilnooh/"]
 //var c = ["chrome-extension:/", extensionId, "module", server].join("/");
 //console.log(c);
+
+
+
+
+//var server = { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+/*
+var rootUrl = chrome.runtime.getURL("/");
+//var baseUrl = chrome.runtime.getURL(server);
+var baseUrl = chrome.runtime.getURL("app");
+
+var extensionId = chrome.runtime.id;
+
+
+localStorage.extensionId = extensionId;
+localStorage.server = server;
+localStorage.rootUrl = rootUrl;
+localStorage.baseUrl = baseUrl;
+*/
+//localStorage.baseUrl = chrome.runtime.getURL('/module/' + host);
+/*
+
+var pathname = location.pathname.split(".")[0].split("/").pop();
+var server =
+
+    { "6326": "wa111", "6335": "wa111", "6317": "wa111", "6302": "wa111", "8876": "wa111", "26": "wa111", "16": "ku711", "": location.host.split('.')[1] } [location.port];
+
+
+*/
 
 
 
@@ -158,7 +227,7 @@ head.appendChild(script);
 */
 
 
-//<!-- advanced setup: using public CDN with local file fallback -->
+//<!-- advanced __setup: using public CDN with local file fallback -->
 /*
 <script data-main="main" src="http://requirejs.org/docs/release/2.1.14/minified/require.js"></script>
 <script>window.require || document.write('<script data-main="main" src="local/path/require.js"></script>')</script>

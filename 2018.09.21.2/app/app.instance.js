@@ -31,6 +31,20 @@ define([], function() {
 
 })
 
+function _sname_(elem) { if(elem.name) return elem.name.split("$").pop(); if(elem.id) { return elem.id.replace('ctl00_ContentPlaceHolder1_', ''); } else { return "" } }
+
+function _model_(elem) {
+    switch (elem.localName) {
+        case 'input':
+            return elem.value;
+        case 'select':
+            return elem.selectedOptions[0].label
+        case 'button':
+            return elem.title;
+        case 'span':
+            return elem.outerText;
+    }
+}
 
 
 
