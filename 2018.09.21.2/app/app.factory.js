@@ -2,17 +2,9 @@ define(["app.instance", "app.router", 'dexie', 'moment', 'material', 'semantic',
 
     function(instance, Router, Dexie, moment, $mdc, semantic, $xmlSpider) {
         //$digest
-
-
         var $router = new Router()
-
-
         console.log($router);
-
-
-        var { $server, $locate, $module } = $router
-
-
+        var { $server, $locate, $module } = $router;
 
         var $rootScope = angular.element('html').scope(),
             $controller = angular.element("[ng-controller]"),
@@ -200,6 +192,7 @@ define(["app.instance", "app.router", 'dexie', 'moment', 'material', 'semantic',
             $createTab,
             $getModule,
             $console,
+            $scope,
             c,
             //ctrl,
             $keydown,

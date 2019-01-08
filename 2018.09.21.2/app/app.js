@@ -85,9 +85,12 @@ define(["app.router"], function(Router) { /*  Router return $router  */
                         })
                     };
 
+                    vice_module.call(factory, factory);
+                    main_module.call(factory, factory);
+
                     //Object.assign(factory, $router)
 
-                    console.log(factory);
+                    //console.log(factory);
 
                     //factory({ $router, $components, $stylesheet })
 
@@ -98,8 +101,7 @@ define(["app.router"], function(Router) { /*  Router return $router  */
 
                     //console.log(factory);
                     //factory.call(app, app);
-                    // vice_module.call(this, this);
-                    // main_module.call(this, this);
+
                     //$('.collapse').show()
                 } catch (ex) {
                     console.error(ex);
