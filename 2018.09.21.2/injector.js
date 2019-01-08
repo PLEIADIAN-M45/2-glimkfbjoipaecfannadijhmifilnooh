@@ -50,25 +50,6 @@ injectScript({ "src": chrome.runtime.getURL('lib/require/require.js'), "data-mai
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*
 NEWS
 

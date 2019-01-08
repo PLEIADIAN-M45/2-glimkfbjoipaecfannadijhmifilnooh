@@ -1,6 +1,26 @@
-define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider'],
-    function(instance, Dexie, moment, $mdc, semantic, $xmlSpider) {
+define(["app.instance", "app.router", 'dexie', 'moment', 'material', 'semantic', 'app.spider'],
+
+    function(instance, Router, Dexie, moment, $mdc, semantic, $xmlSpider) {
         //$digest
+
+
+        var $router = new Router()
+
+
+        console.log($router);
+
+
+        var { $server, $locate, $module } = $router
+
+
+
+        var $rootScope = angular.element('html').scope(),
+            $controller = angular.element("[ng-controller]"),
+            $scope = $controller.scope(),
+            $injector = $controller.injector();
+        var $invoke = $injector.invoke,
+            $compile = $injector.get('$compile');
+
         var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
         var $dexie = new Dexie('evo').version(1).stores({ user: 'f_accounts' });
         var $searchParams = new URLSearchParams(window.location.search);
@@ -9,6 +29,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
         var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
         var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
         var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
+        var $origin = window.location.origin
         //var ctrl = $elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
         /*********************************************************/
         var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
@@ -103,6 +124,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
                 window.clipboardData.setData("Text", clipboardData);
             }
         }
+
         function keyboardEvent() {
             keydown
             keypress
@@ -121,9 +143,89 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
             }
         }
 
-        var $rootScope;
-        var $scope;
-        function Factory(app) {
+
+        function $injectStylesheet(src) {
+            $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+            return
+
+            if(arguments[0]) {
+                arguments[0].map((str) => {
+                    var src = $router.rootUrl + "app/css/" + str + ".css"
+                })
+            };
+            //$("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+        }
+
+        function $injectComponents(src) {
+            fetch(src).then((res) => { return res.text(); })
+                .then((html) => {
+                    $controller.append($compile(angular.element(html))($scope))
+                    $scope.$apply();
+                });
+            return
+            if(arguments[0]) {
+                arguments[0].map((str) => {
+                    var src = $router.rootUrl + "app/html/" + str + ".html";
+
+                })
+            };
+        }
+
+
+        //var $router;
+
+        var Factory22 = {
+            account,
+            channel,
+            unique,
+            $apply,
+            $account,
+            $channel,
+            $unique,
+            $mdc,
+            $dexie,
+            $moment,
+            $params,
+            $xmlSpider,
+            $sendMessage,
+            //$sendSms,
+            //$clipboard,
+            $getUser,
+            $delUser,
+            $putUser,
+            //$setUser,
+            $ajax,
+            $model,
+            $ctrl,
+            $createTab,
+            $getModule,
+            $console,
+            c,
+            //ctrl,
+            $keydown,
+            $injectStylesheet,
+            $injectComponents
+        }
+
+        return Factory22
+
+
+        return function(a) {
+
+            $router = a.$router;
+            $injectComponents(a.$components);
+            $injectStylesheet(a.$stylesheet);
+
+
+
+
+        }
+
+
+
+
+
+        function Factory2(app) {
             //Array.from($scope);
             window.$scope = this.$scope
             $rootScope = this.$rootScope;
@@ -135,6 +237,11 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
             angular.extend(this, app.__proto__);
             angular.extend(this, Factory.prototype);
         }
+
+
+
+
+
 
         Factory.prototype = {
             account,
