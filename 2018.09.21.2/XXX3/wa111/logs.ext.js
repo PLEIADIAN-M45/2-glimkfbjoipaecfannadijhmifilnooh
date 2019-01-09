@@ -172,8 +172,6 @@ this.list = [this.user.author, this.user.locate, this.user.mobile, this.user.idc
 
 this.$apply();
 
-
-
   /*
     this.createElement = function createElement(value) {
         return $('<b>').text(value[0])
@@ -182,7 +180,6 @@ this.$apply();
             .click(this.copy)
             .attr('data-content', value.reverse().join('-'))
     };
-
     this.addChannelToAccountsId = addChannelToAccountsId;
     this.addHighlightAccountsId = addHighlightAccountsId;
 */

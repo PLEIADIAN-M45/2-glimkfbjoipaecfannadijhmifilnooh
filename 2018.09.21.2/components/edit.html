@@ -9,6 +9,9 @@
         <a class="item" ng-click="apis.sendSms($event)" ng-if="user.sendSms==true || user.sendSms==401">
             <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}
         </a>
+        <a class="item" ng-click="apis.delUser();">
+            <i class="trash icon"></i>刪除<br>
+        </a>
     </div>
 </aside>
 <!--

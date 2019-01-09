@@ -96,8 +96,11 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
     var lastPath = lastPathOf(url);
     //console.log(lastPath, url);
+    console.log(123, 456);
     if (initiator == location.origin) {
-        //console.log(requestHeaders);
+
+        console.log(requestHeaders);
+
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
@@ -142,7 +145,7 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
-console.log(window.baseUrl);
+//console.log(window.baseUrl);
 
 /**************************************************************************************************************/
 

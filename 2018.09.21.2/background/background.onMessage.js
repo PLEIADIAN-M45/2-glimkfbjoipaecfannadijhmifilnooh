@@ -1,7 +1,12 @@
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
+
+    if(sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
+
     //var ___name = apis[request.command].name;
     /*************************************************************************************/
     //console.log(request.params[0], typeof request.params[0]);
+    console.log(request);
+
     apis[request.caller](...request.params).then((res) => {
         //apis[request.caller].call(...request.params).then((res) => {
         //console.log(request.caller, ":::", res);
@@ -19,6 +24,10 @@ dexie.version(5).stores({ user: 'unique', GB2260: 'code' });
 
 
 var apis = {};
+
+apis.getLocalStorage = function(params) {
+    return Promise.resolve(window.localStorage);
+};
 
 apis.getUser = function(params) {
     return dexie.user.get(params);
@@ -40,25 +49,33 @@ apis.sendSms = function(params) {
         data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
     }).then((res, b, c) => {
         var status;
-        if (res.match(/(msg = '')/)) { status = 200; }
-        if (res.match(/(會員登錄)/)) { status = 401; }
-        if (res.match(/(msg = '101')/)) { status = 101; }
-        if (res.match(/(msg = '102')/)) { status = 102; }
+        if(res.match(/(msg = '')/)) { status = 200; }
+        if(res.match(/(會員登錄)/)) { status = 401; }
+        if(res.match(/(msg = '101')/)) { status = 101; }
+        if(res.match(/(msg = '102')/)) { status = 102; }
         params.sendSms = status;
         return apis.putUser(params);
     });
 };
 
 apis.region = function(params) {
-    global["banker"].push(["6217856300"])
-    global.region.push(["合肥"])
-    global.author.push(["贾波"])
+    //console.log(params);
+    //global["banker"].push(["6217856300"])
+    //global.locate.push(["223.104.33.115"])
+    //global.region.push(["合肥"])
+    //global.author.push(["贾波"])
+
     //params.time = Date.now();
     return apis.region[params.caller].call(params)
         //.then(apis.region.check)
-        .then((res) => {
-            res.alarm = apis.blacklist.call(params)
-            return apis.region.check.call(res);
+        .then((region) => {
+            //console.log(region);
+            region.alarm = apis.blacklist.call(params)
+            region.alert = apis.region.check(region)
+            return { region }
+
+            //
+            //return apis.region.check.call(res);
         })
 };
 
@@ -75,29 +92,47 @@ apis.blacklist = function() {
         case "banker":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "locate":
+            console.log($global);
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         default:
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
     }
 }
 
-apis.region.check = function() {
-    if (this) {
+apis.region.check = function(region) {
+
+    if(region) {
+        return global.region.find(([elem]) => {
+            return Object.values(region).toString().includes(elem);
+        }) || false;
+
+        //if(this.age < 18) { this.alert = true }
+    } else {
+        return true;
+    }
+
+    /*
+    return true;
+
+
+    if(this) {
         this.alert = global.region.find(([elem]) => {
             return Object.values(this).toString().includes(elem);
         }) || false;
-        if (this.age < 18) { this.alert = true }
+        if(this.age < 18) { this.alert = true }
     } else {
         this.alert = true;
     }
     //res.alarm = this.compare();
-    return this;
+    return this;*/
 }
 
 
 
 apis.member = function(request) {
-    if (!window.baseUrl) {
+
+    if(!window.baseUrl) {
+
         window.baseUrl = {
             "0": "http://chrome.evo.net",
             "26": "http://host26.wa111.net",
@@ -107,18 +142,21 @@ apis.member = function(request) {
         }
     }
 
+    // console.log(window.baseUrl);
+
+    var { banker = "", mobile = "", idcard = "", author = "" } = request;
+
+    Object.assign(request, { banker, mobile, idcard, author });
 
     request.requestUrl = window.baseUrl[request.channel];
 
-    console.log(request.requestUrl);
+    //console.log(request.requestUrl);
 
     return apis.member[request.server].call(request)
 }
 
 apis.member.wa111 = function() {
-    //this.requestUrl = window.baseUrl[this.channel];
-    //this.author = "王杰";
-    //this.mobile = "18244411474"
+
     return $.ajax({
         "dataType": 'json',
         "url": this.requestUrl + '/LoadData/AccountManagement/GetMemberList.ashx',
@@ -151,7 +189,7 @@ apis.member.wa111 = function() {
             "_": Date.now()
         }
     }).then((res) => {
-        console.log(res);
+        //console.log(res);
         res.origin = this.requestUrl;
         res.index = this.index;
         res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
@@ -161,21 +199,8 @@ apis.member.wa111 = function() {
 }
 
 
-apis.getMemberAlertInfoBackend = function(rows, baseUrl) {
-    var Account = rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
-    console.log(Account);
-    return $.ajax({
-        "method": 'post',
-        "dataType": 'json',
-        //"url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
-        "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-        "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
-    })
-}
-
 
 apis.member.ku711 = function() {
-    //this.author = "王杰";
     return $.ajax({
         "dataType": 'json',
         "method": 'post',
@@ -219,40 +244,44 @@ apis.member.ku711 = function() {
             "NickName": ""
         })
     }).then(({ Data }) => {
-        var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
-        return res;
-    }).then((res) => {
-        if (res.rows && res.rows.length) {
-            return apis.getMemberAlertInfoBackend(res.rows, this.requestUrl)
-                .then(({ Data }) => {
-                    console.log(Data);
-                    if (Data) {
-                        res.list_RemittanceName = Data.AlertInfoAccountName;
-                        res.rows.map((x) => {
-                            x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
-                                //console.log(d);
-                                return x.AccountID == d.AccountID
-                            });
-                            return x;
-                        })
-                    }
-                    return res
-                });
-        } else {
-            return res
-        }
-        console.log(res);
-    })
+        return {
+            origin: this.requestUrl,
+            index: this.index,
+            rows: Data.Data,
+            records: Data.Pager.PageCount,
+            total: Data.TotalItemCount
+        };
+    }).then(apis.getMemberAlertInfoBackend)
 }
-//this.author = "张凯";
-//Object.assign(this, { banker: "", mobile: "", author: "", idcard: "" })
-//this.author = "王杰";
-//console.log(this);
-//console.log(this.requestUrl);
-/*headers: {
-       "content-type": "application/json;charset=UTF-8",
-       "requestverificationtoken": localStorage.requestverificationtoken
-   },*/
+
+apis.getMemberAlertInfoBackend = function(res) {
+    if(res.rows && res.rows.length) {
+        var baseUrl = (window.isLocal) ? chrome.runtime.getURL("/") : window.baseUrl[16];
+        var Account = res.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
+        return $.ajax({
+            "method": 'post',
+            "dataType": 'json',
+            "url": baseUrl + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
+        }).then(({ Data }) => {
+            //console.log(Data);
+            if(Data) {
+                res.list_RemittanceName = Data.AlertInfoAccountName;
+                res.rows.map((x) => {
+                    x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
+                        //console.log(d);
+                        return x.AccountID == d.AccountID
+                    });
+                    return x;
+                })
+            }
+            return res;
+        });
+    } else {
+        return res;
+    }
+}
+
 
 
 apis.region.locate = function() {
@@ -273,13 +302,13 @@ apis.region.locate = function() {
     }).then((res) => {
         console.log(res);
         //var region = {};
-        if (res.status == 0) {
+        if(res.status == 0) {
             var str = res.data[0].location;
             console.log(str);
-            if (str) {
+            if(str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if (!prov && !city && !area) {
+                        if(!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -327,7 +356,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if (res.status == 0) {
+        if(res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,
@@ -340,35 +369,27 @@ apis.region.mobile = function() {
 }
 
 
-
-
-
-
-apis.xmlSpider = function() {
+apis.xmlSpider = function(params) {
     // console.log(params);
-    return xmlSpider[this.action].call(this)
+    console.log(params.action);
+    return xmlSpider[params.action].call(params)
 };
 
 var xmlSpider = {};
-
 xmlSpider.btnUserSet = async function() {
-
-    // console.log(this);
-    //console.log(this.user);
-
     /**********************************************************************/
-    if (this.user == undefined) { return Promise.resolve(1) }
-    if (this.user.module) { return Promise.resolve(1) }
-    if (this.user.permit[0] == this.sendData.isOpenDeposit) { return Promise.resolve(1) }
-    if (this.respData != "u-ok") { return Promise.resolve(1) }
+    if(this.user == undefined) { return Promise.resolve(1) }
+    if(this.user.module) { return Promise.resolve(1) }
+    if(this.user.permit[0] == this.sendData.isOpenDeposit) { return Promise.resolve(1) }
+    if(this.respData != "u-ok") { return Promise.resolve(1) }
     /**********************************************************************/
     this.user.module = (this.user.status[0] == 3) ? "authorize" : "suspended";
-    if (this.sendData.ishow == 3 && this.sendData.isOpenDeposit == 1) { this.sendData.ishow = 1; }
+    if(this.sendData.ishow == 3 && this.sendData.isOpenDeposit == 1) { this.sendData.ishow = 1; }
     this.user.status.push(this.sendData.ishow)
     this.user.permit.push(this.sendData.isOpenDeposit)
     this.user.timing.push(this.timeSpan)
     this.user.timing.timeDiff();
-    if (this.user.status[0] == 3 || this.user.status[1] == 1) { this.user.sendSms = true; }
+    if(this.user.status[0] == 3 || this.user.status[1] == 1) { this.user.sendSms = true; }
     return apis.putUser(this.user);
 }
 

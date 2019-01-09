@@ -44,6 +44,11 @@ requirejs.config({
 });
 
 
+
+
+requirejs(["app"], function(app) {});
+
+
 /*
 class APP {
     constructor() {
@@ -54,53 +59,54 @@ class APP {
 
 
 
+
+
+
+
+
+//console.log(app);
+//console.log(app.baseUrl);
+//if(app.$module) {
+// console.log(Router.$module);
+/*var d = new Router2()
+console.log(d);
+console.log(d.$module);
+console.log(d.$locate);*/
+//var d1 = new Router()
+//console.log(d1);
+/*
 requirejs(["app"], function(app) {
-    
     //console.log(app);
-    //console.log(app.baseUrl);
-    //if(app.$module) {
-    // console.log(Router.$module);
-    /*var d = new Router2()
-    console.log(d);
-    console.log(d.$module);
-    console.log(d.$locate);*/
-    //var d1 = new Router()
-    //console.log(d1);
-    /*
+    app.$bootstrap();
+});*/
+//}
+
+/*
+class MyClass extends Router {
+    constructor() {
+        super()
+        //console.log(super.constructor.$module);
+
+        //console.log(super.constructor.$module);
+    }
+}
+
+
+
+
+var d = new MyClass()
+console.log(d);*/
+
+/*
+if(router.$module) {
+    console.log(router.$module);
     requirejs(["app"], function(app) {
         //console.log(app);
         app.$bootstrap();
-    });*/
-    //}
+    });
+}*/
 
-    /*
-    class MyClass extends Router {
-        constructor() {
-            super()
-            //console.log(super.constructor.$module);
-
-            //console.log(super.constructor.$module);
-        }
-    }
-
-
-
-
-    var d = new MyClass()
-    console.log(d);*/
-
-    /*
-    if(router.$module) {
-        console.log(router.$module);
-        requirejs(["app"], function(app) {
-            //console.log(app);
-            app.$bootstrap();
-        });
-    }*/
-});
-
-
-
+/*
 var Class = new function(options) {
     var self = this;
     var construtor = function() {}
@@ -117,7 +123,7 @@ var Class = (function(options) {
 })();
 
 Class.render();
-
+*/
 
 
 

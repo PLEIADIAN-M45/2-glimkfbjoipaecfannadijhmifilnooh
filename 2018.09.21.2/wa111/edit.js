@@ -73,9 +73,9 @@ define([], function() {
             console.log('+');
             return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()])
                 .then(() => {
-                    _user_.idcard.region = {};
-                    _user_.mobile.region = {};
-                    _user_.locate.region = {};
+                    //_user_.idcard.region = {};
+                    //_user_.mobile.region = {};
+                    //_user_.locate.region = {};
                     return _user_;
                 })
         }

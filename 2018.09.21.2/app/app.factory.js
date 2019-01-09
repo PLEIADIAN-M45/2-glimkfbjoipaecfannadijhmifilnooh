@@ -24,7 +24,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
 
-            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
             var $searchParams = new URLSearchParams(window.location.search);
             var $params = Array.from($searchParams).serialize();
 
@@ -40,9 +40,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -60,72 +60,67 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var origin = $origin = window.location.origin;
 
             /*********************************************************/
-            /*
-            var $sendMessage2 = function(params1, params2) {
-
-                console.log(arguments.callee.caller.name);
-
-
-                return new Promise((resolve, reject) => {
-
-                    chrome.runtime.sendMessage($extensionId, {
-                        //command: command,
-                        command: arguments.callee.caller.name,
-                        params1: params1,
-                        params2: params2
-                    }, resolve)
-
-                    (res) => {
-                        console.log(res);
-                        resolve(res)
-                    })
-                })
-
-            }
-            */
-
 
             var apis = {};
-
-            apis.sendMessage = function() {
-                //console.log(arguments.callee.caller._name);
-                //console.log(arguments.callee.caller.name);
+            apis.sendMessage = function(p) {
+                //console.log(p);
+                //this.active = true
                 var _name_ = arguments.callee.caller.name;
-                //console.log(_name_);
                 return new Promise((resolve, reject) => {
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
                         params: [...arguments],
                     }, (res) => {
-                        //console.log("caller:::", _name_, res);
-                        resolve(res)
+                        resolve(res);
                         //this.active = false;
                     })
                 })
             }
-
 
             apis.watch = function(name, callback) {
                 $scope.$watch(name, apis[callback], true);
             }
 
             apis.getUser = async function getUser() {
+
+                apis.watch('user', 'putUser');
+
                 $scope.user =
                     await apis.sendMessage(unique) ||
                     await apis.setUser();
                 $scope.$apply();
+
+
                 console.log("-------");
             }
 
             apis.delUser = async function delUser() {
+                //console.log(unique);
+                //delete $scope.user;
                 await apis.sendMessage(unique);
+                await apis.getUser();
+                //$scope.$apply();
             }
 
             apis.putUser = async function putUser(nv, ov) {
-                if (!nv) { return };
-                console.log("putUser");
+                if(!nv) { return };
+                //console.log("putUser");
                 return apis.sendMessage($scope.user);
             }
+
+            apis.global = {};
+
+            apis.getLocalStorage = async function getLocalStorage() {
+                var object = await apis.sendMessage();
+                Object.entries(object).map(([name, value]) => {
+                    try { apis.global[name] = angular.fromJson(decodeURI(atob(value))).map((arr) => { return arr[0] }); } catch (e) {}
+                    return value
+                })
+            }
+
+            apis.getLocalStorage()
+
+            //value = angular.fromJson(decodeURI(atob(value))).map((arr) => { return arr[0] })
 
 
             apis.sendSms = async function sendSms(e) {
@@ -144,34 +139,34 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             };
 
 
-            Object.entries(apis).map(([name, fnuc]) => {
-                apis[name]._name = name;
-            })
-
 
 
 
 
             var c = console.log;
-            // var clipboardData;
+
+
+            var clipboardData;
+            apis.copy = function(e) {
+                clipboardData = e.currentTarget.dataset.content;
+                document.execCommand("copy", clipboardData);
+            }
+
             document.oncopy = function(e) {
-                // console.log(e);
-                //console.log(clipboardData);
-                if (window.getSelection().type === "Caret") {
-                    e.preventDefault();
-                    console.log(this);
-                }
-                console.log(e.clipboardData);
-                if (e.clipboardData) {
-                    e.clipboardData.setData("text/plain", clipboardData);
-                } else {
-                    console.log(12);
+                if(window.getSelection().type === "Caret") { e.preventDefault(); }
+                if(e.clipboardData) { e.clipboardData.setData("text/plain", clipboardData); } else {
                     window.clipboardData.setData("Text", clipboardData);
                 }
             }
 
+
+            Object.entries(apis).map(([name, fnuc]) => {
+                apis[name]._name = name;
+            })
+
+
             function $injectStylesheet(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -180,7 +175,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectComponents(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -191,7 +186,6 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     })
                 };
             }
-
 
 
 
@@ -218,12 +212,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             var $isTest = window.location.hostname == "127.0.0.1";
-            if ($isTest && $server == "wa111") {
+            if($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
-                $('#divCookie').hide();
+                //$('#divCookie').hide();
             }
-            if ($isTest && $server == "ku711") {
+            if($isTest && $server == "ku711") {
                 $('.collapse').show()
             }
 
@@ -252,7 +246,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $params,
                 $xmlSpider,
                 //$sendSms,
-                //$clipboard,                
+                //$clipboard,
                 $ajax,
                 $model,
                 $ctrl,
@@ -260,7 +254,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $getModule,
                 $console,
                 $scope,
-                $keydown
+                $keydown,
+                $extensionId
             }
 
 
@@ -307,7 +302,7 @@ function keyboardEvent() {
     //全局屏蔽键盘事件：
     window.onkeydown = function() {
         console.log(window.event.keyCode)
-        if (window.event.keyCode == 49) {
+        if(window.event.keyCode == 49) {
             event.returnValue = false;
         }
     }

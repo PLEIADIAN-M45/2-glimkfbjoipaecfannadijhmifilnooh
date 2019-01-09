@@ -1,85 +1,45 @@
 define([], function() {
 
-    return async function({ apis, $getUser, $putUser, $scope, $sendMessage, $apply }) {
-
-        await apis.getUser();
+    return async function({ apis, $getUser, $putUser, $scope, $sendMessage, $apply, $extensionId }) {
 
 
-        if ($scope.user.banker && $scope.user.banker.length > 0) {
-            Object.defineProperty($scope.user.banker[0], "region", {
-                writable: false
-            })
-        }
-
-
-        /*********************/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
-        $scope.list = [
-                $scope.user.author,
-                $scope.user.locate,
-                $scope.user.mobile,
-                $scope.user.idcard
-            ].concat($scope.user.banker)
+        await apis.getUser();
 
-            .map((x) => {
-
-                //if (!x.value) { return }
-
-                if (x.caller == "locate") { return x };
-
-                var params = {
-                    value: x.value,
-                    caller: x.caller,
-                    [x.caller]: x.value,
-                    index: 1,
-                };
-                x.sites =
-                    // x.sites || 
-                    [
-                        { channel: "26", server: "wa111", ...params },
-                        { channel: "35", server: "wa111", ...params },
-                        { channel: "17", server: "wa111", ...params },
-                        { channel: "16", server: "ku711", ...params }
-                    ]
-
-                return x;
-            });
+        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
+            obj.region = obj.region || {};
+            with(obj) {
+                if(caller == "locate") {
+                    obj.protocol = apis.protocol;
+                    $scope.user.region = apis.protocol.map((x) => { return x.IPLocation; })
+                } else {
+                    obj.sites = [
+                        { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
+                    ];
+                }
+            }
+            return obj;
+        });
 
 
-        apis.region = function region(e) {
-            if (!this.value) { return }
-            console.log(e);
-            console.log(this);
-            this.region = null;
-
-
-            return
-            //if (this.active == undefined || e) {} else { return };
-            this.active = !this.active;
-            apis.sendMessage(this).then((region) => {
-                this.region = region;
-                this.active = !this.active;
-                //console.log(this);
-            }).then($apply)
+        function extend(res) {
+            this.active = false;
+            angular.extend(this, res);
+            $scope.$apply();
         }
 
+        apis.region = function region(e) {
+            if(this.active == undefined || e) {
+                this.active = true;
+                apis.sendMessage(this).then(extend.bind(this));
+            }
+        }
         apis.member = function member(e) {
-            return
-            if (!this.value) { return }
-            if (this.value.includes("*")) { return }
-            if (this.caller != "author") { return }
-            //if (this.channel != "26") { return }
-
-
-            this.active = !this.active;
-
-            apis.sendMessage(this).then((res) => {
-                //console.log(res);
-                angular.extend(this, res)
-                this.active = !this.active;
-            }).then($apply)
+            if(this.value == undefined || this.value.includes("*")) { return }
+            this.active = true;
+            apis.sendMessage(this).then(extend.bind(this));
         }
 
         $scope.openMemberModify = function({ origin, server }) {
@@ -93,12 +53,12 @@ define([], function() {
         }
         $scope.changeColor = function($childScope) {
             var $sequel = $scope.user.sequel;
-            if (this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
-            if (this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
-            if (this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
+            if(this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
+            if(this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
+            if(this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
         };
         $scope.setPopup = function($childScope) {
-            if (this.list_Accounts && this.list_Accounts.length) {
+            if(this.list_Accounts && this.list_Accounts.length) {
                 setTimeout(($id) => { $($id).popup({ html: $($id).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, "#" + $childScope.$id);
             };
         }
@@ -113,13 +73,35 @@ define([], function() {
         }
 
 
+        $scope.createIFrame = function(_src) {
+            $('<div>').addClass('ui horizontal divider').text('AND').appendTo($projElement);
+            $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($projElement);
+        }
 
         console.log($scope.user);
 
-        apis.watch('user', 'putUser');
-        //$scope.apis = apis;        
+        //$scope.apis = apis;
         $scope.$apply();
 
 
     }
-})
+});
+
+
+
+
+
+
+/*
+if($scope.user.banker && $scope.user.banker.length > 0) {
+    $scope.user.banker.forEach((self, i, arr) => {
+        Object.defineProperty(self, "region", { writable: false });
+    });
+}*/
+
+
+/*
+          apis.sendMessage(this).then((res) => {
+              this.active = false;
+              angular.extend(this, res)
+          }).then($apply)*/

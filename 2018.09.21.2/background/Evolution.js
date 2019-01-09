@@ -181,7 +181,7 @@ class apis2 {
 
 
     member(request) {
-        
+
         Object.assign(this.__proto__, { banker: "", mobile: "", author: "", idcard: "" })
         Object.assign(this.__proto__, request);
 
@@ -478,6 +478,8 @@ class apis2 {
         arr.forEach(([name, value]) => {
             localStorage[name] = value;
             global[name] = decoder(value);
+
+            console.log(global);
         });
 
         global.gb2260 = new Map(global.gb2260);

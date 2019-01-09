@@ -1,14 +1,9 @@
 define(["app.router"], function($router) {
-
     if ($router == undefined) { return }
-
-    //console.log($router);
-
 
     let $name = "OBSApp",
         $ctrlId = "View",
         $bootstrap = function() {
-            //requirejs([$main])
             if (!window.angular) {
                 requirejs(["angular", "angular-sanitize", "angular-animate"], (angular) => {
                     $('html').attr('ng-app', $name);
@@ -27,14 +22,6 @@ define(["app.router"], function($router) {
 
 
     $bootstrap();
-
-
-
-
-
-
-
-
 
     return;
 

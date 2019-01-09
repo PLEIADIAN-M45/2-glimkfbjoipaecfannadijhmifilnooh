@@ -1,7 +1,8 @@
 define([], function() {
-    return async function({ apis }) {
-        apis.watch('user', 'putUser');
-        apis.getUser();
+    return async function({ apis, $scope }) {
+        //apis.watch('user', 'putUser');
+        await apis.getUser();
+        console.log($scope.user);
     }
 });
 
@@ -14,7 +15,7 @@ define([], function() {
 
 
 
-// unique, $unique, $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply 
+// unique, $unique, $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply
 
 /*
        $scope.sendSms = function sendSms(e) {

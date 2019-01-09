@@ -2,10 +2,10 @@
     <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
-                <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
+                <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
@@ -15,7 +15,7 @@
             <div class="ui dimmer" ng-class="{ 'active': me.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
-            <div class="header padded">                
+            <div class="header padded">
                 <!-- <b ng-if="me.alarm">{{me.status||me.alarm}}</b> -->
                 {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}}
             </div>
@@ -23,13 +23,14 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <div class="extra content grid grid-2" ng-if="me.callee=='locate'" ng-init="getProtocolSet.call(me);">
-            <div class="ui image label green protocol center" ng-repeat="row in me.rows" ng-class="{'pink':row.danger}">
+        <!--  ng-init="getProtocolSet.call(me);" -->
+        <div class="extra content grid grid-2" ng-if="me.caller=='locate'">
+            <div class="ui image label green protocol center" ng-repeat="row in me.protocol" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>
         </div>
-        <div class="extra content grid grid-4" ng-if="me.callee!='locate'">
+        <div class="extra content grid grid-4" ng-if="me.caller!='locate'">
             <div ng-repeat="s in me.sites" ng-init="apis.member.call(s, this)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
