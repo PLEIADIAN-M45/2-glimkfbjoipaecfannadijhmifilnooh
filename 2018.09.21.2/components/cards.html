@@ -1,22 +1,21 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apiFunctions.region.call(me)">
+    <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apiFunctions.region.call(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
-            <div class="header">{{me.value||"------"}}</div>
+            <div class="header">{{me.value||"------"}}/<small>{{me.region.alarm}}</small></div>
         </div>
         <div class="content result">
             <div class="ui dimmer" ng-class="{ 'active': me.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
-            <div class="header padded">
-                {{me.region.alarm}}
+            <div class="header padded">                
                 <!-- <b ng-if="me.alarm">{{me.status||me.alarm}}</b> -->
                 {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}}
             </div>
@@ -31,16 +30,16 @@
             </div>
         </div>
         <div class="extra content grid grid-4" ng-if="me.callee!='locate'">
-            <div ng-repeat="s in me.sites" ng-init="apiFunctions.member.call(s, this)">
+            <div ng-repeat="s in me.sites" ng-init="apis.member.call(s, this)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apiFunctions.member.call(s, this, $event)" ng-disabled="s.index==1 || s.active"></i>
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || s.active"></i>
                     <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
                     <div class="detail center" ng-hide="s.active" ng-click="switcher(s, $event)" ng-class="{ 'green': s.on }">
                         <b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apiFunctions.member.call(s, this, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apis.member.call(s, this, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
                 </div>
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row, s)" ng-init="changeColor.call(row, this);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>

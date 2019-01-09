@@ -94,9 +94,11 @@ class Service {
     }
 
     toCheck(res) {
+
         if(res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
+
             if(res.age < 18) { res.alert = true }
         } else { res.alert = true; }
         res.alarm = this.compare();
@@ -155,13 +157,13 @@ window.baseUrl = {
 
 
 
-class apis {
+class apis2 {
     constructor() {
         //super();
-        this.store = new Dexie('evo');
-        this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
+        //this.store = new Dexie('evo');
+        //this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
         this.download();
-        this.addListener();
+        //this.addListener();
         this.getAuthToken();
         //createTabs(this.chrome_settings)
     }
@@ -179,6 +181,7 @@ class apis {
 
 
     member(request) {
+        
         Object.assign(this.__proto__, { banker: "", mobile: "", author: "", idcard: "" })
         Object.assign(this.__proto__, request);
 
@@ -620,7 +623,7 @@ class apis {
 
 
 
-var api = new apis();
+var api = new apis2();
 console.log(api);
 
 
