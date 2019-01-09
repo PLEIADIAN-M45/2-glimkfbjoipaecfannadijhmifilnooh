@@ -31,8 +31,6 @@ apis.delUser = function(params) {
     return dexie.user.delete(params);
 };
 
-
-
 apis.sendSms = function(params) {
     var content = global.sms.get(Number(params.channel)) || global.sms.get(params.channel);
     var mobile = "86" + params.mobile.value;
@@ -52,7 +50,6 @@ apis.sendSms = function(params) {
     });
 };
 
-
 apis.region = function(params) {
     global["banker"].push(["6217856300"])
     global.region.push(["合肥"])
@@ -65,8 +62,6 @@ apis.region = function(params) {
             return apis.region.check.call(res);
         })
 };
-
-
 
 apis.blacklist = function() {
     var $global = global[this.caller] || [];
@@ -115,12 +110,9 @@ apis.member = function(request) {
 }
 
 apis.member.wa111 = function() {
-
     console.log(this);
-
     this.requestUrl = window.baseUrl[this.channel];
-    this.author = "王杰"
-
+    this.author = "王杰";
     return $.ajax({
         "dataType": 'json',
         "url": this.requestUrl + '/LoadData/AccountManagement/GetMemberList.ashx',
@@ -160,7 +152,6 @@ apis.member.wa111 = function() {
         return res;
         //Object.assign(this, res);
     })
-
 }
 
 apis.member.ku711 = function() {
