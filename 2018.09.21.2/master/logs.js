@@ -6,21 +6,36 @@ define([], function() {
         /*********************/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
+
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].concat($scope.user.banker).map((x) => {
+
             x.caller = x.callee;
+
             if (x.callee == "locate") { return x };
-            var params = { command: "apiFunctions.member", callee: x.callee, [x.callee]: x.value, index: 1 };
-            x.sites = x.sites || [
-                { channel: "26", server: "wa111", ...params },
-                { channel: "35", server: "wa111", ...params },
-                { channel: "17", server: "wa111", ...params },
-                { channel: "16", server: "ku711", ...params }
-            ]
+
+            var params = {
+                value: x.value,
+                /*command: "apiFunctions.member",*/
+                caller: x.callee,
+                [x.callee]: x.value,
+                index: 1,
+            };
+
+            x.sites =
+                // x.sites || 
+                [
+                    { channel: "26", server: "wa111", ...params },
+                    { channel: "35", server: "wa111", ...params },
+                    { channel: "17", server: "wa111", ...params },
+                    { channel: "16", server: "ku711", ...params }
+                ]
+
             return x;
         });
 
 
         apis.region = function region(e) {
+            return
             //if (this.active == undefined || e) {} else { return };
             this.active = true;
             apis.sendMessage(this).then((region) => {
@@ -30,40 +45,16 @@ define([], function() {
             }).then($apply)
         }
 
-        //console.log(res);
-        //angular.copy(res, this);
-        //console.log($scope.list);
-        $scope.apiFunctions = function() {}
-        $scope.apiFunctions.region = function(e) {
-
-
-            /*this.command = "new Service(#)";
-            $sendMessage(this).then((res) => {
-                if(res) { this.region = res }
-            }).then($apply);
-        */
-        }
-
-        $scope.apiFunctions.member = function($childScope, e) {
-            return
-            //if (this.on) {} else { return }
-            /*if(this.callee !== "author") { return } else {
-                this.author = "王杰";
-            }
-            if (this.channel !== "16") { return }
-                */
-
-            //console.log(this[this.callee]);
-
-            this.value = this[this.callee];
-
+        apis.member = function member(e) {
             if (this.value.includes("*")) { return }
-            angular.extend(this, { command: "api.member(#)", active: true });
-            //console.log(this);
-            $sendMessage(this).then((res) => {
+            if (this.caller != "author") { return }
+            //if (this.channel != "26") { return }
+            this.active = !this.active;
+            apis.sendMessage(this).then((res) => {
                 //console.log(res);
-                if (res) { Object.assign(this, res) }
-            }).then($apply);
+                angular.extend(this, res)
+                this.active = !this.active;
+            }).then($apply)
         }
 
         $scope.openMemberModify = function({ origin, server }) {

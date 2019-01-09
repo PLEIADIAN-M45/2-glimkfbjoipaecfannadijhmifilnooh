@@ -101,6 +101,145 @@ apis.region.check = function() {
 }
 
 
+window.baseUrl = {
+    "0": "http://chrome.evo.net",
+    "26": "http://host26.wa111.net",
+    "35": "http://host35.wa111.net",
+    "17": "http://host17.wa111.net",
+    "16": "https://bk.ku711.net"
+}
+
+apis.member = function(request) {
+    console.log(request);
+    return apis.member[request.server].call(request)
+}
+
+apis.member.wa111 = function() {
+
+    console.log(this);
+
+    this.requestUrl = window.baseUrl[this.channel];
+    this.author = "王杰"
+
+    return $.ajax({
+        "dataType": 'json',
+        "url": this.requestUrl + '/LoadData/AccountManagement/GetMemberList.ashx',
+        "data": {
+            "f_BankAccount": this.banker || "",
+            "txtPhoto": this.mobile || "",
+            "txtIdCard": this.idcard || "",
+            "f_RemittanceName": this.author || "",
+            "f_Account": "",
+            "txtAlipayAccount": "",
+            "txtEmail": "",
+            "txtPickName": "",
+            "txtChat": "",
+            "ddlBankInfo": "",
+            "zwrq": "",
+            "zwrq2": "",
+            "selSurplus": "",
+            "selShow": "",
+            "selIsDeposit": "",
+            "selLevel": "",
+            "selBank": "",
+            "selMutualStatus": "",
+            "ddlAliPay": "",
+            "ddlWeChat": "",
+            "ddlWarn": 0,
+            "hidevalue_totals": "",
+            "pageIndex": this.index,
+            "hidevalue_RecordCount": 0,
+            "type": "getAllUser",
+            "_": Date.now()
+        }
+    }).then((res) => {
+        console.log(res);
+        res.origin = this.requestUrl;
+        res.index = this.index;
+        res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
+        return res;
+        //Object.assign(this, res);
+    })
+
+}
+
+apis.member.ku711 = function() {
+    return $.ajax({
+        "dataType": 'json',
+        "method": 'post',
+        "url": this.requestUrl + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
+        "data": JSON.stringify({
+            "AccountID": "",
+            "IDNumber": this.idcard,
+            "RigistedIP": "",
+            "TotalDepositAmount": null,
+            "AccountNumber": "",
+            "AccountName": this.author,
+            "Email": "",
+            "PhoneVerified": null,
+            "IDVerified": null,
+            "MinDeposit": null,
+            "MaxDeposit": null,
+            "StartRegistedTime": "",
+            "EndRegistedTime": "",
+            "PageNumber": this.index - 1,
+            "RecordCounts": 20,
+            "OrderField": "",
+            "Desc": "true",
+            "TotalDepositBonus": null,
+            "AccountBookLevel": "",
+            "AliPayLevel": "",
+            "WeChatLevel": "",
+            "CellPhone": this.mobile,
+            "IsBlackList": null,
+            "LevelType": null,
+            "MemberStatus": null,
+            "IsFisrstDeposit": null,
+            "MemberMemoType": null,
+            "TransferOutStatus": null,
+            "IsLogIn": null,
+            "AgencyID": "",
+            "TestType": null,
+            "PayeeAccountNo": this.banker,
+            "LineType": "",
+            "AccountingType": null,
+            "ManageAccountID": "",
+            "NickName": ""
+        })
+    }).then(({ Data }) => {
+
+        var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
+
+        return res
+
+        if (res.rows && res.rows.length) {
+
+            console.log(res);
+
+
+            return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
+
+                .then(({ Data }) => {
+                    console.log(Data);
+                    if (Data) {
+                        res.list_RemittanceName = Data.AlertInfoAccountName;
+                        res.rows.map((x) => {
+                            x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
+                                console.log(d);
+                                return x.AccountID == d.AccountID
+                            });
+                            return x;
+                        })
+                    }
+                    return res
+                });
+        } else {
+            return res
+        }
+    })
+}
+
+
 apis.region.locate = function() {
     return $.ajax({
         url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php",

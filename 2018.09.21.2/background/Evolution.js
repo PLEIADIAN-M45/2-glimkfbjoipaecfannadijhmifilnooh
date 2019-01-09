@@ -94,9 +94,11 @@ class Service {
     }
 
     toCheck(res) {
+        
         if(res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
+
             if(res.age < 18) { res.alert = true }
         } else { res.alert = true; }
         res.alarm = this.compare();
