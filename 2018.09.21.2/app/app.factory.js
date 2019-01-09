@@ -2,8 +2,6 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
         //$digest
 
-
-
         var $dexie = new Dexie('evo');
         $dexie.version(1).stores({ user: 'f_accounts' });
 
@@ -13,12 +11,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
         var $forms = document.forms,
             $form = document.forms[0],
             $referrer = document.referrer;
+        /*----------------------------------------------------------------------*/
 
         return function($router) {
 
-            var { $server, $locate, $module } = $router;
+            var { $server, $module, $extensionId, $rootUrl, $channel } = $router;
 
-            //console.log($router.$server);
             var $rootScope = angular.element('html').scope(),
                 $controller = angular.element("[ng-controller]"),
                 $scope = $controller.scope(),
@@ -26,7 +24,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
 
-            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
             var $searchParams = new URLSearchParams(window.location.search);
             var $params = Array.from($searchParams).serialize();
 
@@ -42,9 +40,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if(typeof alphaVal == "object") {
-                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if (typeof alphaVal == "object") {
+                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -62,7 +60,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var origin = $origin = window.location.origin;
 
             /*********************************************************/
-
+            /*
             var $sendMessage2 = function(params1, params2) {
 
                 console.log(arguments.callee.caller.name);
@@ -77,62 +75,77 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                         params2: params2
                     }, resolve)
 
-                    /*(res) => {
+                    (res) => {
                         console.log(res);
                         resolve(res)
-                    })*/
+                    })
                 })
 
             }
+            */
 
 
             var apis = {};
-            apis.sendMessage = function(params1, params2) {
-                console.log(arguments.callee.caller.name);
+
+            apis.sendMessage = function() {
+                //console.log(arguments.callee.caller._name);
+                //console.log(arguments.callee.caller.name);
+                var _name_ = arguments.callee.caller.name;
+                console.log(_name_);
+
                 return new Promise((resolve, reject) => {
 
                     chrome.runtime.sendMessage($extensionId, {
-                        //command: command,
-                        command: arguments.callee.caller.name || params1.command,
-                        params1: params1,
-                        params2: params2
-                    }, resolve)
-
-                    /*(res) => {
-                        console.log(res);
+                        caller: arguments.callee.caller.name,
+                        params: [...arguments],
+                    }, (res) => {
+                        console.log("caller:::", _name_, res);
                         resolve(res)
-                    })*/
+                    })
                 })
             }
 
 
+            apis.watch = function(name, callback) {
+                $scope.$watch(name, apis[callback], true);
+            }
 
             apis.getUser = async function getUser() {
-                $scope.user =
-                    await apis.sendMessage(unique) ||
+                $scope.user = await apis.sendMessage(unique) ||
                     await apis.setUser();
-                console.log($scope.user);
-                $scope.$apply()
+                $scope.$apply();
+            }
+
+            apis.delUser = async function delUser() {
+                await apis.sendMessage(unique);
             }
 
             apis.putUser = async function putUser(nv, ov) {
-
-                console.log(nv);
-
-                if(!nv) { return };
-                //if (angular.equals(nv, ov)) { return };
-                //if(angular.equals(_user, nv)) { return };
+                if (!nv) { return };
+                console.log("putUser");
                 return apis.sendMessage($scope.user);
-
-                $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
-                    .then((user) => {
-                        console.count("put.user", nv);
-                        //console.countReset("put.user")
-                        return user;
-                    })
-
-
             }
+
+
+            apis.sendSms = async function sendSms(e) {
+                var $currentTarget = $(e.currentTarget)
+                $currentTarget.hide();
+                await apis.sendMessage($scope.user);
+                await apis.getUser();
+                $currentTarget.show();
+
+                /*
+                apis.sendMessage($scope.user).then((res) => {
+                    //console.log(res);
+                    apis.getUser();
+                })
+                */
+            };
+
+
+            Object.entries(apis).map(([name, fnuc]) => {
+                apis[name]._name = name;
+            })
 
 
 
@@ -198,11 +211,11 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 console.log(message.command);
 
                 return new Promise((resolve, reject) => {
-                    if($extensionId && message) {
+                    if ($extensionId && message) {
                         chrome.runtime.sendMessage($extensionId, message, (res) => {
                             //console.log(res);
                             message.active = false;
-                            if(res) {}
+                            if (res) {}
                             try { resolve(res) } catch (ex) { reject(ex) }
                         })
                     } else {
@@ -231,7 +244,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             var $delUser = function(bool) {
-                if(!bool) { return }
+                if (!bool) { return }
                 return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
                     .then((user) => {
                         return;
@@ -241,7 +254,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             var $putUser = function(nv, ov) {
                 //console.log(nv, ov);
-                if(!nv) { return };
+                if (!nv) { return };
                 //if (angular.equals(nv, ov)) { return };
                 //if(angular.equals(_user, nv)) { return };
                 return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
@@ -256,12 +269,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             document.oncopy = function(e) {
                 // console.log(e);
                 //console.log(clipboardData);
-                if(window.getSelection().type === "Caret") {
+                if (window.getSelection().type === "Caret") {
                     e.preventDefault();
                     console.log(this);
                 }
                 console.log(e.clipboardData);
-                if(e.clipboardData) {
+                if (e.clipboardData) {
                     e.clipboardData.setData("text/plain", clipboardData);
                 } else {
                     console.log(12);
@@ -270,7 +283,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectStylesheet(abc) {
-                if(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -279,7 +292,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectComponents(abc) {
-                if(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -295,6 +308,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             /************************************************************/
+
             var $createTab = function(hyperlink) {
                 //console.log($channel, $account);
                 let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account)
@@ -314,13 +328,14 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-            if(window.location.hostname == "127.0.0.1" && $server == "wa111") {
+
+            var $isTest = window.location.hostname == "127.0.0.1";
+            if ($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
-
                 $('#divCookie').hide();
             }
-            if(window.location.hostname == "127.0.0.1" && $server == "ku711") {
+            if ($isTest && $server == "ku711") {
                 $('.collapse').show()
             }
 
@@ -366,20 +381,35 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
 
-            Object.assign(factory, $router)
-            Object.assign(factory, window.localStorage)
+            //Object.assign(factory, $router)
+            /*
+                        console.log($router.operator);
+                        console.log($router.$operator);
+                        console.log(factory);
+                        */
+
+            //Object.assign(factory, window.localStorage)
             //console.log(Object.getOwnPropertyDescriptors(factory));
+
+            //Object.assign($scope, apis);
+
 
 
             requirejs([
-                $router.$main_module,
-                $router.$vice_module
-            ], (main_module, vice_module) => {
+                $router.$master,
+                $router.$branch
+            ], ($$master, $$branch) => {
+
                 $injectComponents($router.$components);
                 $injectStylesheet($router.$stylesheet);
-                vice_module.call(factory, factory);
-                main_module.call(factory, factory);
+
+                $$branch.call(factory, factory);
+                $$master.call(factory, factory);
+
+                $scope.apis = apis;
+
             });
+
 
 
             return factory;
@@ -394,7 +424,7 @@ function keyboardEvent() {
     //全局屏蔽键盘事件：
     window.onkeydown = function() {
         console.log(window.event.keyCode)
-        if(window.event.keyCode == 49) {
+        if (window.event.keyCode == 49) {
             event.returnValue = false;
         }
     }

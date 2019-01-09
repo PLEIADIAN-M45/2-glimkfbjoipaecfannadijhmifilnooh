@@ -1,13 +1,15 @@
-define(["app.router"], function($router) { /*  Router return $router  */
+define(["app.router"], function($router) {
 
-    if($router == undefined) { return }
+    if ($router == undefined) { return }
+
+    //console.log($router);
+
 
     let $name = "OBSApp",
         $ctrlId = "View",
-        $isTest = window.location.hostname == "127.0.0.1",
         $bootstrap = function() {
             //requirejs([$main])
-            if(!window.angular) {
+            if (!window.angular) {
                 requirejs(["angular", "angular-sanitize", "angular-animate"], (angular) => {
                     $('html').attr('ng-app', $name);
                     $("<div>", { "id": $ctrlId, "ng-controller": $ctrlId }).appendTo("body");
@@ -20,14 +22,8 @@ define(["app.router"], function($router) { /*  Router return $router  */
             }
         },
         $loadModule = function() {
-            requirejs(["app.factory"], (factory) => {
-                factory($router)
-            });
+            requirejs(["app.factory"], (factory) => { factory($router) });
         };
-
-
-    //console.log(app);
-
 
 
     $bootstrap();
@@ -98,9 +94,9 @@ define(["app.router"], function($router) { /*  Router return $router  */
 
             return
 
-            if(this.$module == undefined) { return }
+            if (this.$module == undefined) { return }
             //console.log('*****', this.$module);
-            if(window.angular) {
+            if (window.angular) {
                 //return this.$loadModule();
             } else {
 
@@ -115,7 +111,7 @@ define(["app.router"], function($router) { /*  Router return $router  */
         }
 
         $injectStylesheet() {
-            if(!this.stylesheet) { return false };
+            if (!this.stylesheet) { return false };
             this.stylesheet.map((str) => { return this.rootUrl + "app/css/" + str + ".css"; }).map((src) => {
                 $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
             });
@@ -123,7 +119,7 @@ define(["app.router"], function($router) { /*  Router return $router  */
 
         $injectComponents() {
             return new Promise((resolve, reject) => {
-                if(this.components) {
+                if (this.components) {
                     this.components.map((str) => { return this.rootUrl + "app/html/" + str + ".html"; }).map((src) => {
                         fetch(src)
                             .then((res) => { return res.text(); })

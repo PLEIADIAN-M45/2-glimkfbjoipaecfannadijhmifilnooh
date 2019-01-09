@@ -155,13 +155,13 @@ window.baseUrl = {
 
 
 
-class apis {
+class apis2 {
     constructor() {
         //super();
-        this.store = new Dexie('evo');
-        this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
+        //this.store = new Dexie('evo');
+        //this.store.version(5).stores({ user: 'unique', GB2260: 'code' });
         this.download();
-        this.addListener();
+        //this.addListener();
         this.getAuthToken();
         //createTabs(this.chrome_settings)
     }
@@ -620,7 +620,7 @@ class apis {
 
 
 
-var api = new apis();
+var api = new apis2();
 console.log(api);
 
 

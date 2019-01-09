@@ -55,28 +55,17 @@ class APP {
 
 
 requirejs(["app"], function(app) {
-
-
-
-
+    
     //console.log(app);
-
     //console.log(app.baseUrl);
-
-
-
     //if(app.$module) {
     // console.log(Router.$module);
     /*var d = new Router2()
     console.log(d);
     console.log(d.$module);
     console.log(d.$locate);*/
-
-
-
     //var d1 = new Router()
     //console.log(d1);
-
     /*
     requirejs(["app"], function(app) {
         //console.log(app);

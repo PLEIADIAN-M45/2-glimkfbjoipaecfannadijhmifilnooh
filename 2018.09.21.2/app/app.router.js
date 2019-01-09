@@ -1,27 +1,27 @@
 define(["router.wa111", "router.ku711"], function(wa111, ku711) {
-
-    var $server = localStorage.server,
-        $baseUrl = localStorage.baseUrl,
-        $rootUrl = localStorage.rootUrl,
-        $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase(),
-        $module = { wa111, ku711 } [$server][$locate];
-
-    if($module) {
-
-        var $main = $server + "/main",
-            $main_module = "main/" + $module,
-            $vice_module = $server + "/" + $module;
-
-        var $components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] } [$module];
-        var $stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] } [$module];
-
-    } else { return undefined; }
+    //console.log(chrome.runtime);
 
     class Router {};
-    //Object.assign(Router.prototype, window.localStorage);
-    Object.assign(Router.prototype, { $server, $locate, $module, $rootUrl, $components, $stylesheet });
-    Object.assign(Router.prototype, { $main, $main_module, $vice_module });
-    return new Router();
+    Object.entries(window.localStorage).forEach(([name, value]) => {
+        Router.prototype["$" + name] = value;
+    });
+
+    with(Router.prototype) {
+        var $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase();
+        var $master = "master";
+        var $module = { wa111, ku711 } [$server][$locate];
+        if ($module) {
+            Router.prototype.$module = $module;
+            Router.prototype.$master = "../" + $master + "/" + $module;
+            Router.prototype.$branch = "../" + $server + "/" + $module;
+
+            Router.prototype.$components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] } [$module];
+            Router.prototype.$stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] } [$module];
+            return new Router();
+        } else {
+            return undefined;
+        }
+    }
 });
 
 
@@ -29,14 +29,70 @@ define(["router.wa111", "router.ku711"], function(wa111, ku711) {
 
 
 
+/* var $components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] } [$module];
+ var $stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] } [$module];*/
+
+
+/*
+            //Router.prototype.$loader = $loader;
+
+ //$loader.$master = "../" + $master + "/" + $module;
+            //$loader.$server = "../" + $server + "/" + $module;
+  //var $common = "common";
+        //var $loader = {};
+   with(window.localStorage) {
+       Router.prototype.$server = server;
+       Router.prototype.$rootUrl = rootUrl;
+       Router.prototype.$baseUrl = baseUrl;
+       Router.prototype.$extensionId = extensionId;
+   }
+   */
+
+/*
+
+Object.entries(localStorage).forEach(([name, value]) => {
+    //Router.prototype[name] = value
+    Router.prototype["$" + name] = value
+});
+
+*/
+
+
+
+/*
+
+*/
+
+/*
+var $server = localStorage.server,
+    $baseUrl = localStorage.baseUrl,
+    $rootUrl = localStorage.rootUrl,
+    $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase(),
+    $module = { wa111, ku711 } [$server][$locate];
+    */
 
 
 
 
+/*
+//var $module = { wa111, ku711 } [$server][$locate];
+    //console.log($module);
 
+        Router.prototype["$loader"] = {
+            $master: $master + "/" + $module,
+            $server: $server + "/" + $module
+        }
 
+if ($module) {
+    var $main = $server + "/main",
+        $main_module = "main/" + $module,
+        $vice_module = $server + "/" + $module;
+} else { return undefined; }
+*/
 
-
+//Object.assign(Router.prototype, window.localStorage);
+//Object.assign(Router.prototype, { $server, $locate, $module, $rootUrl });
+//Object.assign(Router.prototype, { $main, $main_module, $vice_module });
 
 
 

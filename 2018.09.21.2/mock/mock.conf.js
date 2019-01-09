@@ -11,11 +11,11 @@ if(window.MockType == true) {
     }
 
 
-    console.log(window.baseUrl);
+    //console.log(window.baseUrl);
 
     var _entries = d.log.entries;
 
-    console.log(_entries);
+    //console.log(_entries);
 
     Mock.setup({ timeout: '200-800' })
 

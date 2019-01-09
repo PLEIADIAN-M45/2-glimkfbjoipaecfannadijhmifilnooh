@@ -99,7 +99,8 @@ define([], function() {
             this.type = this.sendData.type;
 
             this.action = this.sendData.action || this.sendData.type || this.lastPath;
-            this.command = "xmlSpider"
+            
+            this.caller = "xmlSpider"
             //this.moment = Date.now();
             //this.$unique = window.$unique;
             //moment().format("YYYY-MM-DD HH:mm:ss")
