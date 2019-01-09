@@ -42,7 +42,7 @@ function http() {
     var xmlhttp = {};
     chrome.webRequest.onBeforeRequest.addListener(function(details) {
 
-        //console.log(details);
+        console.log(details.requestBody);
         /*
         var { url, method, type, requestBody, initiator } = details;
         var lastPath = lastPathOf(url);
@@ -84,18 +84,26 @@ function http() {
 
 
 
+chrome.webRequest.onBeforeRequest.addListener(function(details) {
+   // console.log(details.requestBody);
+}, {
+    urls: ["*://bk.ku711.net/*"],
+    types: ["xmlhttprequest"]
+}, ['requestBody', 'blocking'])
 
 
 chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
-
-    //console.log(lastPath, url);
-
     var lastPath = lastPathOf(url);
-    if (initiator == location.origin) {        
+    //console.log(lastPath, url);
+    if (initiator == location.origin) {
+        //console.log(requestHeaders);
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });
         requestHeaders.push({ name: 'requestverificationtoken', value: localStorage['RequestVerificationToken'] });
+
+        //console.log("**************", requestHeaders);
+
         return { requestHeaders: details.requestHeaders }
     } else {
         if (details.method == "POST") {
@@ -111,17 +119,19 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 /**************************************************************************************************************/
 
 
-//window.baseUrl = {};
+window.baseUrl = {};
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     window.baseUrl["16"] = details.initiator;
+    //console.log(window.baseUrl);
 }, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     var port = details.initiator.replace('http://host', '').replace('http://admin', '').replace('-2.wa111.net', '').replace('.wa111.net', '').padStart(2, '0');
     window.baseUrl[port] = details.initiator;
+    //console.log(window.baseUrl);
 }, { urls: ["*://*.wa111.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
@@ -132,7 +142,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 }, { urls: ["*://q51.tp33.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 
 
-//console.log(window.baseUrl);
+console.log(window.baseUrl);
+
 /**************************************************************************************************************/
 
 

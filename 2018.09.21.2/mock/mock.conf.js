@@ -48,8 +48,9 @@ if(window.MockType == true) {
 
     });
 
+
     Mock.mock(/(ku711\.net)/, 'post', function(req) {
-        //console.log(req);
+        console.log(req);
         for(let x of _entries) {
             if(x.request.url == req.url) {
                 //console.log(x.request.postData.text, req.body);

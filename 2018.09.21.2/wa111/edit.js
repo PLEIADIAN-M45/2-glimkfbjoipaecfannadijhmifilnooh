@@ -11,16 +11,16 @@ define([], function() {
 
         function getUserModel(m) {
             _user_.birthday = m.birthday;
-            _user_.author = { callee: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
-            _user_.locate = { callee: 'locate', title: m.lblIp, value: m.lblIp };
-            _user_.mobile = { callee: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
-            _user_.idcard = { callee: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
+            _user_.author = { caller: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
+            _user_.locate = { caller: 'locate', title: m.lblIp, value: m.lblIp };
+            _user_.mobile = { caller: 'mobile', title: m.txtPhoto, value: m.txtPhoto };
+            _user_.idcard = { caller: 'idcard', title: m.txtIdCard, value: m.txtIdCard };
             _user_.banker = [
-                { callee: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111, city: m.ddlCityArea, prov: m.ddlCity } },
-                { callee: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2, city: m.ddlCityArea2, prov: m.ddlCity2 } },
-                { callee: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3, city: m.ddlCityArea3, prov: m.ddlCity3 } },
-                { callee: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4, city: m.ddlCityArea4, prov: m.ddlCity4 } },
-                { callee: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
+                { caller: 'banker', title: m.txtRemittanceAccount111, value: m.txtRemittanceAccount111, region: { meta: m.BankCode111, city: m.ddlCityArea, prov: m.ddlCity } },
+                { caller: 'banker', title: m.txtRemittanceAccount111_2, value: m.txtRemittanceAccount111_2, region: { meta: m.BankCode111_2, city: m.ddlCityArea2, prov: m.ddlCity2 } },
+                { caller: 'banker', title: m.txtRemittanceAccount111_3, value: m.txtRemittanceAccount111_3, region: { meta: m.BankCode111_3, city: m.ddlCityArea3, prov: m.ddlCity3 } },
+                { caller: 'banker', title: m.txtRemittanceAccount111_4, value: m.txtRemittanceAccount111_4, region: { meta: m.BankCode111_4, city: m.ddlCityArea4, prov: m.ddlCity4 } },
+                { caller: 'banker', title: m.txtRemittanceAccount111_5, value: m.txtRemittanceAccount111_5, region: { meta: m.BankCode111_5, city: m.ddlCityArea5, prov: m.ddlCity5 } }
             ];
         }
 

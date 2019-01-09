@@ -5,8 +5,7 @@ chrome.runtime.onMessageExternal.addListener(function(request, sender, sendRespo
     apis[request.caller](...request.params).then((res) => {
         //apis[request.caller].call(...request.params).then((res) => {
         //console.log(request.caller, ":::", res);
-        console.log(request.caller, ":::");
-
+        //console.log(request.caller, ":::");
         sendResponse(res);
     });
 
@@ -96,31 +95,38 @@ apis.region.check = function() {
 }
 
 
-window.baseUrl = {
-    "0": "http://chrome.evo.net",
-    "26": "http://host26.wa111.net",
-    "35": "http://host35.wa111.net",
-    "17": "http://host17.wa111.net",
-    "16": "https://bk.ku711.net"
-}
 
 apis.member = function(request) {
-    console.log(request);
+    if (!window.baseUrl) {
+        window.baseUrl = {
+            "0": "http://chrome.evo.net",
+            "26": "http://host26.wa111.net",
+            "35": "http://host35.wa111.net",
+            "17": "http://host17.wa111.net",
+            "16": "https://bk.ku711.net"
+        }
+    }
+
+
+    request.requestUrl = window.baseUrl[request.channel];
+
+    console.log(request.requestUrl);
+
     return apis.member[request.server].call(request)
 }
 
 apis.member.wa111 = function() {
-    console.log(this);
-    this.requestUrl = window.baseUrl[this.channel];
-    this.author = "王杰";
+    //this.requestUrl = window.baseUrl[this.channel];
+    //this.author = "王杰";
+    //this.mobile = "18244411474"
     return $.ajax({
         "dataType": 'json',
         "url": this.requestUrl + '/LoadData/AccountManagement/GetMemberList.ashx',
         "data": {
-            "f_BankAccount": this.banker || "",
-            "txtPhoto": this.mobile || "",
-            "txtIdCard": this.idcard || "",
-            "f_RemittanceName": this.author || "",
+            "f_BankAccount": this.banker,
+            "txtPhoto": this.mobile,
+            "txtIdCard": this.idcard,
+            "f_RemittanceName": this.author,
             "f_Account": "",
             "txtAlipayAccount": "",
             "txtEmail": "",
@@ -154,12 +160,27 @@ apis.member.wa111 = function() {
     })
 }
 
+
+apis.getMemberAlertInfoBackend = function(rows, baseUrl) {
+    var Account = rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
+    console.log(Account);
+    return $.ajax({
+        "method": 'post',
+        "dataType": 'json',
+        //"url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
+        "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+        "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
+    })
+}
+
+
 apis.member.ku711 = function() {
+    //this.author = "王杰";
     return $.ajax({
         "dataType": 'json',
         "method": 'post',
         "url": this.requestUrl + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
-        "data": JSON.stringify({
+        "data": angular.toJson({
             "AccountID": "",
             "IDNumber": this.idcard,
             "RigistedIP": "",
@@ -198,25 +219,18 @@ apis.member.ku711 = function() {
             "NickName": ""
         })
     }).then(({ Data }) => {
-
         var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
-
-        return res
-
+        return res;
+    }).then((res) => {
         if (res.rows && res.rows.length) {
-
-            console.log(res);
-
-
-            return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
-
+            return apis.getMemberAlertInfoBackend(res.rows, this.requestUrl)
                 .then(({ Data }) => {
                     console.log(Data);
                     if (Data) {
                         res.list_RemittanceName = Data.AlertInfoAccountName;
                         res.rows.map((x) => {
                             x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
-                                console.log(d);
+                                //console.log(d);
                                 return x.AccountID == d.AccountID
                             });
                             return x;
@@ -227,8 +241,18 @@ apis.member.ku711 = function() {
         } else {
             return res
         }
+        console.log(res);
     })
 }
+//this.author = "张凯";
+//Object.assign(this, { banker: "", mobile: "", author: "", idcard: "" })
+//this.author = "王杰";
+//console.log(this);
+//console.log(this.requestUrl);
+/*headers: {
+       "content-type": "application/json;charset=UTF-8",
+       "requestverificationtoken": localStorage.requestverificationtoken
+   },*/
 
 
 apis.region.locate = function() {
@@ -255,7 +279,11 @@ apis.region.locate = function() {
             if (str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        this.region = { prov, city, area, meta }
+                        if (!prov && !city && !area) {
+                            this.region = { prov: meta }
+                        } else {
+                            this.region = { prov, city, area, meta }
+                        }
                     });
             }
         }

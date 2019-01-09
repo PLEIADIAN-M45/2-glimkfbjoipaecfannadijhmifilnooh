@@ -3,53 +3,78 @@ define([], function() {
     return async function({ apis, $getUser, $putUser, $scope, $sendMessage, $apply }) {
 
         await apis.getUser();
+
+
+        if ($scope.user.banker && $scope.user.banker.length > 0) {
+            Object.defineProperty($scope.user.banker[0], "region", {
+                writable: false
+            })
+        }
+
+
         /*********************/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
-        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].concat($scope.user.banker).map((x) => {
+        $scope.list = [
+                $scope.user.author,
+                $scope.user.locate,
+                $scope.user.mobile,
+                $scope.user.idcard
+            ].concat($scope.user.banker)
 
-            x.caller = x.callee;
+            .map((x) => {
 
-            if (x.callee == "locate") { return x };
+                //if (!x.value) { return }
 
-            var params = {
-                value: x.value,
-                /*command: "apiFunctions.member",*/
-                caller: x.callee,
-                [x.callee]: x.value,
-                index: 1,
-            };
+                if (x.caller == "locate") { return x };
 
-            x.sites =
-                // x.sites || 
-                [
-                    { channel: "26", server: "wa111", ...params },
-                    { channel: "35", server: "wa111", ...params },
-                    { channel: "17", server: "wa111", ...params },
-                    { channel: "16", server: "ku711", ...params }
-                ]
+                var params = {
+                    value: x.value,
+                    caller: x.caller,
+                    [x.caller]: x.value,
+                    index: 1,
+                };
+                x.sites =
+                    // x.sites || 
+                    [
+                        { channel: "26", server: "wa111", ...params },
+                        { channel: "35", server: "wa111", ...params },
+                        { channel: "17", server: "wa111", ...params },
+                        { channel: "16", server: "ku711", ...params }
+                    ]
 
-            return x;
-        });
+                return x;
+            });
 
 
         apis.region = function region(e) {
+            if (!this.value) { return }
+            console.log(e);
+            console.log(this);
+            this.region = null;
+
+
             return
             //if (this.active == undefined || e) {} else { return };
-            this.active = true;
+            this.active = !this.active;
             apis.sendMessage(this).then((region) => {
                 this.region = region;
-                this.active = false;
-                console.log(this);
+                this.active = !this.active;
+                //console.log(this);
             }).then($apply)
         }
 
         apis.member = function member(e) {
+            return
+            if (!this.value) { return }
             if (this.value.includes("*")) { return }
             if (this.caller != "author") { return }
             //if (this.channel != "26") { return }
+
+
             this.active = !this.active;
+
             apis.sendMessage(this).then((res) => {
                 //console.log(res);
                 angular.extend(this, res)

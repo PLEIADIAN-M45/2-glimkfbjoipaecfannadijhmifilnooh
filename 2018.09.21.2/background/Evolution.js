@@ -94,7 +94,7 @@ class Service {
     }
 
     toCheck(res) {
-        
+
         if(res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
@@ -181,6 +181,7 @@ class apis2 {
 
 
     member(request) {
+        
         Object.assign(this.__proto__, { banker: "", mobile: "", author: "", idcard: "" })
         Object.assign(this.__proto__, request);
 

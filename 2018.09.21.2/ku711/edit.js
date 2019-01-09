@@ -50,7 +50,7 @@ define(["ku711/decode"], function(decode) {
 
         function OldMemberRisksInfo() {
             return $getModule('OldMemberRisksInfo').then((c) => {
-                _user_.locate = { value: c.RegistedIP, title: c.RegistedIP, callee: 'locate' }
+                _user_.locate = { value: c.RegistedIP, title: c.RegistedIP, caller: 'locate' }
                 _user_.equpmt = { browser: c.BrowserType, osInfo: c.OSType }
                 _user_.agency = c.AgencyID;
                 _user_.attach = c.RegistedTime;
@@ -60,9 +60,9 @@ define(["ku711/decode"], function(decode) {
 
         function OldMemberBaseInfo() {
             return $getModule('OldMemberBaseInfo').then((c) => {
-                _user_.author = { value: c.AccountName, title: c.AccountNameShow, callee: 'author' }
-                _user_.mobile = { value: c.CellPhone, title: c.CellPhoneShow, callee: 'mobile' }
-                _user_.idcard = { value: c.IDNumber, title: c.IDNumberShow, callee: 'idcard' }
+                _user_.author = { value: c.AccountName, title: c.AccountNameShow, caller: 'author' }
+                _user_.mobile = { value: c.CellPhone, title: c.CellPhoneShow, caller: 'mobile' }
+                _user_.idcard = { value: c.IDNumber, title: c.IDNumberShow, caller: 'idcard' }
                 _user_.birthday = c.BirthDay;
                 _user_.black = c.IsBlackList;
                 _user_.sequel = c.MNO;
@@ -93,7 +93,7 @@ define(["ku711/decode"], function(decode) {
                         return {
                             value: s.PayeeAccountNo,
                             title: s.PayeeAccountNoShow,
-                            callee: 'banker',
+                            caller: 'banker',
                             region: {
                                 meta: decode.code[s.BankCodeID],
                                 prov: decode.prov[s.BankProID],
