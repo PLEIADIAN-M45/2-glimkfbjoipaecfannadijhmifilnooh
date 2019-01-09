@@ -105,6 +105,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
                 window.clipboardData.setData("Text", clipboardData);
             }
         }
+
         function keyboardEvent() {
             keydown
             keypress
@@ -125,6 +126,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
 
         var $rootScope;
         var $scope;
+
         function Factory(app) {
             //Array.from($scope);
             window.$scope = this.$scope
@@ -175,3 +177,113 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.spider']
 
 
 /*********************************************************/
+
+
+
+//var $router;
+
+var Factory22 = {
+    account,
+    channel,
+    unique,
+    $apply,
+    $account,
+    $channel,
+    $unique,
+    $mdc,
+    $dexie,
+    $moment,
+    $params,
+    $xmlSpider,
+    $sendMessage,
+    //$sendSms,
+    //$clipboard,
+    $getUser,
+    $delUser,
+    $putUser,
+    //$setUser,
+    $ajax,
+    $model,
+    $ctrl,
+    $createTab,
+    $getModule,
+    $console,
+    $scope,
+    c,
+    //ctrl,
+    $keydown,
+    $injectStylesheet,
+    $injectComponents
+}
+
+
+
+
+
+
+/*
+$router = a.$router;
+$injectComponents(a.$components);
+$injectStylesheet(a.$stylesheet);
+*/
+
+
+
+
+
+return Factory22
+
+
+
+
+
+function Factory2(app) {
+    //Array.from($scope);
+    window.$scope = this.$scope
+    $rootScope = this.$rootScope;
+    $scope = this.$scope;
+    var ck = $scope.hasOwnProperty('isSubmit')
+    console.log(ck);
+    console.log($scope);
+    angular.extend(this, app);
+    angular.extend(this, app.__proto__);
+    angular.extend(this, Factory.prototype);
+}
+
+
+
+
+
+
+Factory.prototype = {
+    account,
+    channel,
+    unique,
+    $apply,
+    $account,
+    $channel,
+    $unique,
+    $mdc,
+    $dexie,
+    $moment,
+    $params,
+    $xmlSpider,
+    $sendMessage,
+    //$sendSms,
+    //$clipboard,
+    $getUser,
+    $delUser,
+    $putUser,
+    //$setUser,
+    $ajax,
+    $model,
+    $ctrl,
+    $createTab,
+    $getModule,
+    $console,
+    c,
+    //ctrl,
+    $keydown
+}
+
+return Factory;

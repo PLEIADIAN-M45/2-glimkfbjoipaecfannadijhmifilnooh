@@ -1,3 +1,80 @@
+
+
+
+
+    return Router;
+    // var $router = { $server, $locate, $module, $main, $main_module, $vice_module }
+    //return { $server, $locate, $module, $main, $main_module, $vice_module }
+    var $router = { $server, $locate, $module, $main_module, $vice_module, $origin, $isTest, $forms, $referrer }
+    return new App();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+        var $server = localStorage.server;
+        var $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase();
+        var $router = { wa111, ku711 } [$server];
+        var $origin = window.location.origin;
+        var $isTest = window.location.hostname == "127.0.0.1";
+        var $forms = document.forms;
+        //var $form = document.forms[0];
+        var $referrer = document.referrer;
+        */
+    /*
+    APP.prototype = {
+        $server: localStorage.server,
+        $locate: location.pathname.split(".")[0].split("/").pop().toLowerCase(),
+        $module: { wa111, ku711 } [$server],
+        $origin: window.location.origin,
+        $isTest: window.location.hostname == "127.0.0.1",
+        $forms: document.forms,
+        $referrer: document.referrer
+    }*/
+
+
+    //return Router;
+
+
+
+
+
+
+    /*
+        class Router {
+            constructor() {
+                this.$server = $server;
+                this.$locate = $locate;
+                this.$module = $module;
+                this.$origin = window.location.origin;
+                this.$isTest = window.location.hostname == "127.0.0.1";
+                this.$forms = document.forms;
+                this.$form = document.forms[0];
+                this.$referrer = document.referrer;
+            }
+        }*/
+
+
+
  class Router {
 
      constructor(x) {

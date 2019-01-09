@@ -17,7 +17,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
         }
         /*********************************************************/
 
-        //$digest 
+        //$digest
         function apply() { if (!$scope.$$phase) { $scope.$apply(); } }
 
 
@@ -84,7 +84,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
         /*if(result.command) { var cc = result.command.split('.')[1];console.log(cc); }*/
         //if(result) {}
         //console.log(unique);
-
+        /*
         var $setUser = function(result) {
             //console.log(result);
             if (!result) {
@@ -94,15 +94,17 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             var source = (result.callee) ? $scope.user[result.callee] : $scope.user;
             angular.copy(result, source);
             $scope.$apply();
-        }
+        }*/
 
-        var _user;
+
+        //var _user;
 
         var $getUser = function() {
             console.log($unique);
             return $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
             //.then((user) => { if(user) { return user } else { return $scope.$defUser($scope) } })
         }
+
         var $delUser = function(bool) {
             if (!bool) { return }
             return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
@@ -284,7 +286,7 @@ define(["app.instance", 'dexie', 'moment', 'material', 'semantic', 'app.xmlSpide
             $getUser,
             $delUser,
             $putUser,
-            $setUser,
+            //$setUser,
             $ajax,
             $model,
             $ctrl,

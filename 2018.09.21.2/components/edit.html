@@ -1,0 +1,105 @@
+<aside>
+    <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
+        <a class="item">{{user.author.value}}</a>
+        <a class="item">{{user.unique}}</a>
+        <a class="item" ng-click="$createTab($hyperlink.cookie)" style="margin-bottom: 50px;">
+            <i class="bolt icon"></i>一机多登</a>
+        <a class="item" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
+            <i class="handshake outline icon"></i>开通</a>
+        <!--  <a class="item" ng-click="setPermit($event)"  status="{{user.status}}">
+           <i class="handshake outline icon"></i>开通-1</a> -->
+        <!-- <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.sendsms.status==9 || user.sendsms.status==401">
+            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a> -->
+        <!-- <a class="item"  ng-click="sendSms($event)" status="{{user.sendsms.status}}" ng-if="user.status[0]==3 || user.status[1]==1">
+            <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a> -->
+        <a class="item" ng-click="$sendSms(user)" ng-if="user.sendSms==true || user.sendSms==401">
+        <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}</a>
+    </div>
+</aside>
+<!--
+    ng-click="setPermit()"
+https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+-->
+<style type="text/css">
+.item.pink {
+    background-color: red !important;
+    color: #fff !important;
+}
+
+.disabled {
+    pointer-events: none;
+}
+
+.ui.inverted.menu.danger {
+    background-color: #d2115a !important;
+}
+
+.w140 {
+    display: inline-block;
+    min-width: 150px !important;
+}
+
+.m {
+    display: inline-block;
+    margin-right: 20px;
+    font-weight: bold;
+}
+
+.ui.labeled.icon.menu {
+    position: fixed !important;
+    top: 0px !important;
+    right: 0px !important;
+    z-index: 99999 !important;
+}
+
+.ui.popup,
+.ui.popup::before {
+    background-color: #333 !important;
+    color: #fff !important;
+}
+
+.ui.popup>.content {
+    text-align: left;
+    font-family: Roboto, Microsoft Yahei;
+    font-weight: bold;
+}
+
+.success {
+    color: green !important;
+}
+
+.isBlack,
+.error {
+    color: red;
+}
+
+.mdl-dialog {
+    width: 350px;
+}
+
+.mdl-dialog__title {
+    line-height: 1.28571em !important;
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    font-family: Roboto, Microsoft JhengHei;
+}
+
+.mdl-dialog__content {
+    font-family: Roboto, Microsoft JhengHei !important;
+}
+
+.material-icons {
+    margin-right: 10px;
+    line-height: inherit !important;
+}
+
+._mobile {
+    font-family: Roboto;
+    font-weight: bold;
+}
+</style>
+<!--
+https://fonts.google.com/#_ga=2.82489438.937538001.1545233657-1452016429.1545233657
+ -->
+<!-- <a class="item" ng-click="sendsms.send()" ng-show="sendsms.status==3 && user.status[0]==1"><i class="envelope outline icon"></i><b>简讯<br>开通</b></a> -->

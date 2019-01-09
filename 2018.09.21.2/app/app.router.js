@@ -1,117 +1,27 @@
 define(["router.wa111", "router.ku711"], function(wa111, ku711) {
 
     var $server = localStorage.server,
+        $baseUrl = localStorage.baseUrl,
+        $rootUrl = localStorage.rootUrl,
         $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase(),
         $module = { wa111, ku711 } [$server][$locate];
 
     if($module) {
+
         var $main = $server + "/main",
             $main_module = "main/" + $module,
             $vice_module = $server + "/" + $module;
+
+        var $components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] } [$module];
+        var $stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] } [$module];
+
     } else { return undefined; }
 
     class Router {};
-    Object.assign(Router.prototype, window.localStorage);
-    Object.assign(Router.prototype, { $server, $locate, $module });
+    //Object.assign(Router.prototype, window.localStorage);
+    Object.assign(Router.prototype, { $server, $locate, $module, $rootUrl, $components, $stylesheet });
     Object.assign(Router.prototype, { $main, $main_module, $vice_module });
-    return Router;
-
-
-
-
-
-
-
-
-
-
-    // var $router = { $server, $locate, $module, $main, $main_module, $vice_module }
-    //return { $server, $locate, $module, $main, $main_module, $vice_module }
-
-    var $router = { $server, $locate, $module, $main_module, $vice_module, $origin, $isTest, $forms, $referrer }
-
-
-
-    return new App();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    /*
-        var $server = localStorage.server;
-        var $locate = location.pathname.split(".")[0].split("/").pop().toLowerCase();
-        var $router = { wa111, ku711 } [$server];
-        var $origin = window.location.origin;
-        var $isTest = window.location.hostname == "127.0.0.1";
-        var $forms = document.forms;
-        //var $form = document.forms[0];
-        var $referrer = document.referrer;
-        */
-    /*
-    APP.prototype = {
-        $server: localStorage.server,
-        $locate: location.pathname.split(".")[0].split("/").pop().toLowerCase(),
-        $module: { wa111, ku711 } [$server],
-        $origin: window.location.origin,
-        $isTest: window.location.hostname == "127.0.0.1",
-        $forms: document.forms,
-        $referrer: document.referrer
-    }*/
-
-
-    //return Router;
-
-
-
-
-
-
-    /*
-        class Router {
-            constructor() {
-                this.$server = $server;
-                this.$locate = $locate;
-                this.$module = $module;
-                this.$origin = window.location.origin;
-                this.$isTest = window.location.hostname == "127.0.0.1";
-                this.$forms = document.forms;
-                this.$form = document.forms[0];
-                this.$referrer = document.referrer;
-            }
-        }*/
-
-
-
-
-    var hyperlink = {
-        "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
-        "device": "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
-        "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
-        "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
-    }
-    if(window.location.hostname == "127.0.0.1") {
-        wa111.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
-        wa111.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
-    }
+    return new Router();
 });
 
 

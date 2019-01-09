@@ -9,8 +9,6 @@ Array.prototype.timeDiff = function(unit) {
     return this;
 }
 
-
-
 var global = {};
 
 global.compare = function(request) {
@@ -96,10 +94,10 @@ class Service {
     }
 
     toCheck(res) {
-        if (res) {
+        if(res) {
             let string = Object.values(res).toString();
             res.alert = global.region.find(([elem]) => { return string.includes(elem); }) || false;
-            if (res.age < 18) { res.alert = true }
+            if(res.age < 18) { res.alert = true }
         } else { res.alert = true; }
         res.alarm = this.compare();
         return res;
@@ -122,9 +120,9 @@ class Service {
         return $.ajax({ url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", dataType: "json", data: { "query": request.value, "co": "", "resource_id": 6006, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time } }).then((res) => {
             //console.log(res);
             var region = {};
-            if (res.status == 0) {
+            if(res.status == 0) {
                 var str = res.data[0].location;
-                if (str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
+                if(str) { str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/, function(match, prov, city, area, meta, offset, string) { region = { prov, city, area, meta } }); }
             }
             return region;
         })
@@ -133,7 +131,7 @@ class Service {
         return $.ajax({ dataType: "json", url: "https://sp0.baidu.com/8aQDcjqpAAV3otqbppnN2DJv/api.php", data: { "query": request.value, "co": "", "resource_id": 6004, "t": this.time, "ie": "utf8", "oe": "gbk", "format": "json", "tn": "baidu", "_": this.time, } }).then((res) => {
             //console.log(res);
             var region = {};
-            if (res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
+            if(res.status == 0) { var d = res.data[0]; return { city: d.city, prov: d.prov, meta: d.type || "baidu" }; }
             return region;
         })
     }
@@ -153,6 +151,9 @@ window.baseUrl = {
     "17": "http://host17.wa111.net",
     "16": "https://bk.ku711.net"
 }
+
+
+
 
 class apis {
     constructor() {
@@ -247,7 +248,6 @@ class apis {
                 break;
 
             case "ku711":
-
                 return $.ajax({
                     "dataType": 'json',
                     "method": 'post',
@@ -294,12 +294,15 @@ class apis {
 
                     var res = { origin: this.requestUrl, index: this.index, rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount };
 
-                    if (res.rows && res.rows.length) {
+                    if(res.rows && res.rows.length) {
+
+                        console.log(res);
 
                         return api.getMemberAlertInfoBackend(res.rows, this.requestUrl)
+
                             .then(({ Data }) => {
-                                //console.log(Data);
-                                if (Data) {
+                                console.log(Data);
+                                if(Data) {
                                     res.list_RemittanceName = Data.AlertInfoAccountName;
                                     res.rows.map((x) => {
                                         x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
@@ -323,21 +326,23 @@ class apis {
     }
 
     getMemberAlertInfoBackend(rows) {
+
+        console.log(window.baseUrl[16]);
         // console.log(rows);
         var Account = rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
-        //console.log(Account);
+        console.log(Account);
         //console.log(window.baseUrl[16]);
         return $.ajax({
             "method": 'post',
             "dataType": 'json',
-            //"url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
-            "url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+            "url": chrome.runtime.getURL("/member/api/AlertInfoManage/GetMemberAlertInfoBackend"),
+            //"url": window.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
             "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
         })
     }
 
     getTokenInfo(token) {
-        if (token) {
+        if(token) {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
@@ -355,7 +360,9 @@ class apis {
         /*return new Promise((resolve, reject) => {        })*/
     }
 
-    addListener() { chrome.runtime.onMessageExternal.addListener(this.onMessageExternal) }
+    addListener() {
+        chrome.runtime.onMessageExternal.addListener(this.onMessageExternal)
+    }
     onMessage(request, sender, sendResponse) {}
     onMessageExternal(request, sender, sendResponse) {
         request.command = request.command.replace("#", "...arguments");
@@ -377,7 +384,7 @@ class apis {
     get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
 
     download() {
-        if (window.localStorage.length < 5) {
+        if(window.localStorage.length < 5) {
             return Promise.all([
                 fetch(this.macros + '?commands=GMA').then(this.toJson),
                 fetch(this.macros + '?commands=GMB').then(this.toJson)
@@ -399,10 +406,10 @@ class apis {
             method: 'post',
             data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
         }).then((res, b, c) => {
-            if (res.match(/(msg = '')/)) { status = 200; }
-            if (res.match(/(會員登錄)/)) { status = 401; }
-            if (res.match(/(msg = '101')/)) { status = 101; }
-            if (res.match(/(msg = '102')/)) { status = 102; }
+            if(res.match(/(msg = '')/)) { status = 200; }
+            if(res.match(/(會員登錄)/)) { status = 401; }
+            if(res.match(/(msg = '101')/)) { status = 101; }
+            if(res.match(/(msg = '102')/)) { status = 102; }
             return status;
             return { mobile, content, status }
             //sendResponse(status);
@@ -453,7 +460,7 @@ class apis {
 
     toLocalStorage(res) {
         //console.log(res);
-        if (typeof res) {
+        if(typeof res) {
             return res.forEach(([name, value]) => { localStorage[name] = value; })
         }
     }
@@ -479,7 +486,7 @@ class apis {
 
     entries() {
         Object.entries(localStorage).forEach(([name, value]) => {
-            if (name) {
+            if(name) {
                 this.decoder(value, name)
             }
         })
@@ -511,21 +518,22 @@ class apis {
         //console.log(request.sendData);
         var ACTION = request.action;
         var SERVER = request.server;
-        if (SERVER == "ku711") {
+
+        if(SERVER == "ku711") {
             switch (ACTION) {
                 case "UpdateMemberRiskInfoAccountingBackend":
                     console.log(request);
                     //console.log(request);
                     var unique = [request.sendData.AccountID, request.channel].toUnique();
                     var user = await this.user.get(unique);
-                    if (user.module) { return }
-                    if (user.status[0] == user.status[1]) { return }
+                    if(user.module) { return }
+                    if(user.status[0] == user.status[1]) { return }
                     user.module = (user.status[0] == 3) ? "authorize" : "suspended"
                     user.status.push(request.sendData.MemberStatus)
                     user.permit.push(request.sendData.IsDeposit)
                     user.timing.push(request.timeSpan)
                     user.timing.timeDiff();
-                    if (user.status[0] == 3 || user.status[1] == 1) {
+                    if(user.status[0] == 3 || user.status[1] == 1) {
                         user.sendSms = true;
                     }
                     break;
@@ -535,24 +543,24 @@ class apis {
             }
         }
 
-        if (SERVER == "wa111") {
+        if(SERVER == "wa111") {
             switch (ACTION) {
                 case "btnUserSet":
                     console.log(request);
-                    if (request.respData == "u-ok") {
+                    if(request.respData == "u-ok") {
                         var unique = [request.sendData.account, request.channel].toUnique();
                         var user = await this.user.get(unique);
-                        if (user.module) { return } else {
-                            if (user.permit[0] == request.sendData.isOpenDeposit) {
+                        if(user.module) { return } else {
+                            if(user.permit[0] == request.sendData.isOpenDeposit) {
                                 return;
                             } else {
                                 user.module = (user.status[0] == 3) ? "authorize" : "suspended";
-                                if (request.sendData.ishow == 3 && request.sendData.isOpenDeposit == 1) { request.sendData.ishow = 1; }
+                                if(request.sendData.ishow == 3 && request.sendData.isOpenDeposit == 1) { request.sendData.ishow = 1; }
                                 user.status.push(request.sendData.ishow)
                                 user.permit.push(request.sendData.isOpenDeposit)
                                 user.timing.push(request.timeSpan)
                                 user.timing.timeDiff();
-                                if (user.status[0] == 3 || user.status[1] == 1) {
+                                if(user.status[0] == 3 || user.status[1] == 1) {
                                     user.sendSms = true;
                                 }
                             }
@@ -569,7 +577,7 @@ class apis {
 
 
         /***********************************/
-        if (user) {
+        if(user) {
             this.user.put(user);
             console.log(user, user.module);
             //this.googleScripts(user);

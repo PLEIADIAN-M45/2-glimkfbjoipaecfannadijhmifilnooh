@@ -1,274 +1,410 @@
-define(["app.instance", "app.router", 'dexie', 'moment', 'material', 'semantic', 'app.spider'],
-
-    function(instance, Router, Dexie, moment, $mdc, semantic, $xmlSpider) {
+define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
+    function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
         //$digest
-        var $router = new Router()
-        console.log($router);
-        var { $server, $locate, $module } = $router;
 
-        var $rootScope = angular.element('html').scope(),
-            $controller = angular.element("[ng-controller]"),
-            $scope = $controller.scope(),
-            $injector = $controller.injector();
-        var $invoke = $injector.invoke,
-            $compile = $injector.get('$compile');
 
-        var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
-        var $dexie = new Dexie('evo').version(1).stores({ user: 'f_accounts' });
-        var $searchParams = new URLSearchParams(window.location.search);
-        var $params = Array.from($searchParams).serialize();
-        var $extensionId = localStorage.extensionId;
-        var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
-        var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
-        var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
-        var $origin = window.location.origin
-        //var ctrl = $elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
-        /*********************************************************/
-        var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
-        var $createTab = function(_url) {
-            //console.log(_url);
-            let redirectUrl = _url.replace('#1', $channel).replace('#2', $account)
-            console.log(redirectUrl);
-            window.open(redirectUrl, "_blank");
-            //console.log(redirectUrl);
-        }
-        var $getModule = function(objPath) {
-            return new Promise((resolve, reject) => {
-                var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
-                (function repeater(object) {
-                    var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                    if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                        if(typeof alphaVal == "object") {
-                            if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
-                        } else { resolve(alphaVal); }
-                    }
-                }(object));
-            });
-        }
-        var $console = function() { console.log(...arguments); }
-        var $keydown = function(callback) {
-            document.addEventListener('keydown', callback);
-        }
-        /*********************************************************/
-        var account = $account = $params.account || $params.member || $params.accountId || $params.accounts;
-        var channel = $channel = localStorage.channel || $params.siteNumber;
-        var unique = $unique = [$account, $channel].join("-");
-        /*********************************************************/
+
+        var $dexie = new Dexie('evo');
+        $dexie.version(1).stores({ user: 'f_accounts' });
+
         var $moment = function(timestr) { return moment(timestr).format("YYYY-MM-DD HH:mm:ss"); }
-        var $sendMessage = function(message) {
-            message.active = true;
-            return new Promise((resolve, reject) => {
-                if($extensionId && message) {
-                    chrome.runtime.sendMessage($extensionId, message, (res) => {
-                        //console.log(res);
-                        message.active = false;
-                        if(res) {}
-                        try { resolve(res) } catch (ex) { reject(ex) }
+
+        var $extensionId = localStorage.extensionId;
+        var $forms = document.forms,
+            $form = document.forms[0],
+            $referrer = document.referrer;
+
+        return function($router) {
+
+            var { $server, $locate, $module } = $router;
+
+            //console.log($router.$server);
+            var $rootScope = angular.element('html').scope(),
+                $controller = angular.element("[ng-controller]"),
+                $scope = $controller.scope(),
+                $injector = $controller.injector();
+            var $invoke = $injector.invoke,
+                $compile = $injector.get('$compile');
+
+            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
+            var $searchParams = new URLSearchParams(window.location.search);
+            var $params = Array.from($searchParams).serialize();
+
+            var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
+            var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
+            var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
+            //var ctrl = $elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
+            /*********************************************************/
+            var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
+
+            var $getModule = function(objPath) {
+                return new Promise((resolve, reject) => {
+                    var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
+                    (function repeater(object) {
+                        var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                            } else { resolve(alphaVal); }
+                        }
+                    }(object));
+                });
+            }
+
+            var $console = function() { console.log(...arguments); }
+            var $keydown = function(callback) {
+                document.addEventListener('keydown', callback);
+            }
+            /*********************************************************/
+            var account = $account = $params.account || $params.member || $params.accountId || $params.accounts;
+            var channel = $channel = localStorage.channel || $params.siteNumber;
+            var unique = $unique = [$account, $channel].join("-");
+            var origin = $origin = window.location.origin;
+
+            /*********************************************************/
+
+            var $sendMessage2 = function(params1, params2) {
+
+                console.log(arguments.callee.caller.name);
+
+
+                return new Promise((resolve, reject) => {
+
+                    chrome.runtime.sendMessage($extensionId, {
+                        //command: command,
+                        command: arguments.callee.caller.name,
+                        params1: params1,
+                        params2: params2
+                    }, resolve)
+
+                    /*(res) => {
+                        console.log(res);
+                        resolve(res)
+                    })*/
+                })
+
+            }
+
+
+            var apis = {};
+            apis.sendMessage = function(params1, params2) {
+                console.log(arguments.callee.caller.name);
+                return new Promise((resolve, reject) => {
+
+                    chrome.runtime.sendMessage($extensionId, {
+                        //command: command,
+                        command: arguments.callee.caller.name || params1.command,
+                        params1: params1,
+                        params2: params2
+                    }, resolve)
+
+                    /*(res) => {
+                        console.log(res);
+                        resolve(res)
+                    })*/
+                })
+            }
+
+
+
+            apis.getUser = async function getUser() {
+                $scope.user =
+                    await apis.sendMessage(unique) ||
+                    await apis.setUser();
+                console.log($scope.user);
+                $scope.$apply()
+            }
+
+            apis.putUser = async function putUser(nv, ov) {
+
+                console.log(nv);
+
+                if(!nv) { return };
+                //if (angular.equals(nv, ov)) { return };
+                //if(angular.equals(_user, nv)) { return };
+                return apis.sendMessage($scope.user);
+
+                $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
+                    .then((user) => {
+                        console.count("put.user", nv);
+                        //console.countReset("put.user")
+                        return user;
                     })
-                } else {
-                    console.error(this);
-                    reject(101)
+
+
+            }
+
+
+
+
+            var _apis = [];
+            /*_apis[0] = "getUser"
+            _apis[1] = "putUser"
+            _apis[2] = "delUser"
+            _apis[21] = "btnUserSet"
+            */
+
+            //_apis[0] =
+
+            /*[
+                "getUser",
+                "putUser",
+                "delUser",
+
+
+
+
+
+            ]*/
+
+
+            _apis.forEach((name, index) => {
+
+                apis[name] = function(params) {
+
+                    return new Promise((resolve, reject) => {
+
+                        console.log(name);
+
+                        chrome.runtime.sendMessage($extensionId, {
+                            index: index,
+                            params: params,
+                            params2: arguments[1]
+                        }, resolve)
+
+                        /*(res) => {
+                            console.log(res);
+                            resolve(res)
+                        })*/
+                    })
+
+
+
                 }
             })
-        }
-        var $getUser = async function() {
-            console.log($unique);
-            $scope.user =
-                await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique }) ||
-                await $scope.$setUser();
-            $scope.$apply();
-            console.log($scope.user);
-        }
-        var $delUser = function(bool) {
-            if(!bool) { return }
-            return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
-                .then((user) => {
-                    return;
-                    console.log('delUser:', unique);
-                })
-        }
-        var $putUser = function(nv, ov) {
-            //console.log(nv, ov);
-            if(!nv) { return };
-            //if (angular.equals(nv, ov)) { return };
-            //if(angular.equals(_user, nv)) { return };
-            return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
-                .then((user) => {
-                    console.count("put.user", nv);
-                    //console.countReset("put.user")
-                    return user;
-                })
-        }
-        var c = console.log;
-        // var clipboardData;
-        document.oncopy = function(e) {
-            // console.log(e);
-            //console.log(clipboardData);
-            if(window.getSelection().type === "Caret") {
-                e.preventDefault();
-                console.log(this);
-            }
-            console.log(e.clipboardData);
-            if(e.clipboardData) {
-                e.clipboardData.setData("text/plain", clipboardData);
-            } else {
-                console.log(12);
-                window.clipboardData.setData("Text", clipboardData);
-            }
-        }
 
-        function keyboardEvent() {
-            keydown
-            keypress
-            keyup
-            //全局屏蔽键盘事件：
-            window.onkeydown = function() {
-                console.log(window.event.keyCode)
-                if(window.event.keyCode == 49) {
-                    event.returnValue = false;
+
+
+
+            //apis.getUser =
+
+            var $sendMessage = function(message) {
+
+                console.log(message);
+
+                return
+                message.active = true;
+
+                console.log(message.command);
+
+                return new Promise((resolve, reject) => {
+                    if($extensionId && message) {
+                        chrome.runtime.sendMessage($extensionId, message, (res) => {
+                            //console.log(res);
+                            message.active = false;
+                            if(res) {}
+                            try { resolve(res) } catch (ex) { reject(ex) }
+                        })
+                    } else {
+                        console.error(this);
+                        reject(101)
+                    }
+                })
+            }
+
+
+
+
+
+            var $getUser = async function() {
+                //console.log($unique);
+
+                $scope.user =
+                    await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
+
+                return;
+                $scope.user =
+                    await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique }) ||
+                    await $scope.$setUser();
+                console.log($scope.user);
+                $scope.$apply();
+            }
+
+            var $delUser = function(bool) {
+                if(!bool) { return }
+                return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
+                    .then((user) => {
+                        return;
+                        console.log('delUser:', unique);
+                    })
+            }
+
+            var $putUser = function(nv, ov) {
+                //console.log(nv, ov);
+                if(!nv) { return };
+                //if (angular.equals(nv, ov)) { return };
+                //if(angular.equals(_user, nv)) { return };
+                return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
+                    .then((user) => {
+                        console.count("put.user", nv);
+                        //console.countReset("put.user")
+                        return user;
+                    })
+            }
+            var c = console.log;
+            // var clipboardData;
+            document.oncopy = function(e) {
+                // console.log(e);
+                //console.log(clipboardData);
+                if(window.getSelection().type === "Caret") {
+                    e.preventDefault();
+                    console.log(this);
+                }
+                console.log(e.clipboardData);
+                if(e.clipboardData) {
+                    e.clipboardData.setData("text/plain", clipboardData);
+                } else {
+                    console.log(12);
+                    window.clipboardData.setData("Text", clipboardData);
                 }
             }
-            //全局屏蔽鼠标右键：
-            window.oncontextmenu = function() {
-                console.log('点击了鼠标右键')
-                event.returnValue = false;
+
+            function $injectStylesheet(abc) {
+                if(abc) {
+                    abc.map((str) => {
+                        var src = $router.$rootUrl + 'stylesheet/' + str;
+                        $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+                    });
+                }
             }
+
+            function $injectComponents(abc) {
+                if(abc) {
+                    abc.map((str) => {
+                        var src = $router.$rootUrl + 'components/' + str;
+                        fetch(src).then((res) => { return res.text(); })
+                            .then((html) => {
+                                $controller.append($compile(angular.element(html))($scope))
+                                $scope.$apply();
+                            });
+                    })
+                };
+            }
+
+
+
+
+            /************************************************************/
+            var $createTab = function(hyperlink) {
+                //console.log($channel, $account);
+                let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account)
+                console.log(redirectUrl);
+                window.open(redirectUrl, "_blank");
+                //console.log(redirectUrl);
+            }
+
+            var $hyperlink = {
+                "wa111": {
+                    "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
+                    "device": "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
+                },
+                "ku711": {
+                    "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
+                    "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
+                }
+            } [$server];
+
+            if(window.location.hostname == "127.0.0.1" && $server == "wa111") {
+                $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
+                $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
+
+                $('#divCookie').hide();
+            }
+            if(window.location.hostname == "127.0.0.1" && $server == "ku711") {
+                $('.collapse').show()
+            }
+
+            $scope.$hyperlink = $hyperlink;
+            $scope.$createTab = $createTab;
+
+            /************************************************************/
+
+
+
+
+            var factory = {
+                apis,
+                account,
+                channel,
+                unique,
+                $origin,
+                origin,
+                $apply,
+                $account,
+                $channel,
+                $unique,
+                $mdc,
+                $dexie,
+                $moment,
+                $params,
+                $xmlSpider,
+                $sendMessage,
+                //$sendSms,
+                //$clipboard,
+                $getUser,
+                $delUser,
+                $putUser,
+                //$setUser,
+                $ajax,
+                $model,
+                $ctrl,
+                $createTab,
+                $getModule,
+                $console,
+                $scope,
+                $keydown
+            }
+
+
+            Object.assign(factory, $router)
+            Object.assign(factory, window.localStorage)
+            //console.log(Object.getOwnPropertyDescriptors(factory));
+
+
+            requirejs([
+                $router.$main_module,
+                $router.$vice_module
+            ], (main_module, vice_module) => {
+                $injectComponents($router.$components);
+                $injectStylesheet($router.$stylesheet);
+                vice_module.call(factory, factory);
+                main_module.call(factory, factory);
+            });
+
+
+            return factory;
         }
+    });
 
 
-        function $injectStylesheet(src) {
-            $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
-            return
-
-            if(arguments[0]) {
-                arguments[0].map((str) => {
-                    var src = $router.rootUrl + "app/css/" + str + ".css"
-                })
-            };
-            //$("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+function keyboardEvent() {
+    keydown
+    keypress
+    keyup
+    //全局屏蔽键盘事件：
+    window.onkeydown = function() {
+        console.log(window.event.keyCode)
+        if(window.event.keyCode == 49) {
+            event.returnValue = false;
         }
+    }
+    //全局屏蔽鼠标右键：
+    window.oncontextmenu = function() {
+        console.log('点击了鼠标右键')
+        event.returnValue = false;
+    }
+}
 
-        function $injectComponents(src) {
-            fetch(src).then((res) => { return res.text(); })
-                .then((html) => {
-                    $controller.append($compile(angular.element(html))($scope))
-                    $scope.$apply();
-                });
-            return
-            if(arguments[0]) {
-                arguments[0].map((str) => {
-                    var src = $router.rootUrl + "app/html/" + str + ".html";
-
-                })
-            };
-        }
-
-
-        //var $router;
-
-        var Factory22 = {
-            account,
-            channel,
-            unique,
-            $apply,
-            $account,
-            $channel,
-            $unique,
-            $mdc,
-            $dexie,
-            $moment,
-            $params,
-            $xmlSpider,
-            $sendMessage,
-            //$sendSms,
-            //$clipboard,
-            $getUser,
-            $delUser,
-            $putUser,
-            //$setUser,
-            $ajax,
-            $model,
-            $ctrl,
-            $createTab,
-            $getModule,
-            $console,
-            $scope,
-            c,
-            //ctrl,
-            $keydown,
-            $injectStylesheet,
-            $injectComponents
-        }
-
-        return Factory22
-
-
-        return function(a) {
-
-            $router = a.$router;
-            $injectComponents(a.$components);
-            $injectStylesheet(a.$stylesheet);
-
-
-
-
-        }
-
-
-
-
-
-        function Factory2(app) {
-            //Array.from($scope);
-            window.$scope = this.$scope
-            $rootScope = this.$rootScope;
-            $scope = this.$scope;
-            var ck = $scope.hasOwnProperty('isSubmit')
-            console.log(ck);
-            console.log($scope);
-            angular.extend(this, app);
-            angular.extend(this, app.__proto__);
-            angular.extend(this, Factory.prototype);
-        }
-
-
-
-
-
-
-        Factory.prototype = {
-            account,
-            channel,
-            unique,
-            $apply,
-            $account,
-            $channel,
-            $unique,
-            $mdc,
-            $dexie,
-            $moment,
-            $params,
-            $xmlSpider,
-            $sendMessage,
-            //$sendSms,
-            //$clipboard,
-            $getUser,
-            $delUser,
-            $putUser,
-            //$setUser,
-            $ajax,
-            $model,
-            $ctrl,
-            $createTab,
-            $getModule,
-            $console,
-            c,
-            //ctrl,
-            $keydown
-        }
-
-        return Factory;
-    })
 
 
 

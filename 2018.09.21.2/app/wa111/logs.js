@@ -1,22 +1,6 @@
 define([], function() {
     return async function({ $scope, $model, $getUser, $sendMessage, $apply }) {
 
-        //this.channel = this.$params.siteNumber;
-        //console.log(this.channel);
-
-        $('#divCookie').hide();
-
-        /*****************/
-
-
-
-        //$scope.user = await $getUser();
-
-        /*****************/
-
-        //function command(str) { return str + "(#)" }
-        /***************************************/
-
         $scope.getProtocolSet = function() {
             //delete this.sites;
             let cells = $('#divCookie > ul:not(.TrHead):not(.TrHead2)').filter((i, { firstElementChild, children }) => {
@@ -31,11 +15,9 @@ define([], function() {
             $scope.user.region = this.rows.map((x) => {
                 return x.IPLocation;
             })
-            console.log(1);
+
             ///console.log(this.rows);
         }
 
-
-     
     }
 })

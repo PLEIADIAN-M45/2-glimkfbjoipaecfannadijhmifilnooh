@@ -1,24 +1,15 @@
 define([], function() {
+    var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
 
-    return async function({ $ajax, $account, $dexie, $model, $ctrl, $scope, $getUser, $xmlSpider }) {
+    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $getUser, $xmlSpider }) {
 
-        var _user_ = {
-            timing: [],
-            status: [],
-            permit: [],
-            region: [],
-            equpmt: {}
-        };
-
-        var { account, server, origin, unique, channel, operator } = this;
-
+        var { server, origin, unique, channel, account, operator } = arguments[0];
 
         function getUserBasic() {
-            Object.assign(_user_, { server, origin, unique, channel, account, operator })
+            Object.assign(_user_, { server, origin, unique, channel, account, operator });
         }
 
-        function getUserModel() {
-            var m = $model;
+        function getUserModel(m) {
             _user_.birthday = m.birthday;
             _user_.author = { callee: 'author', title: m.txtRemittaceName, value: m.txtRemittaceName };
             _user_.locate = { callee: 'locate', title: m.lblIp, value: m.lblIp };
@@ -70,17 +61,14 @@ define([], function() {
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return _user_.timing[0] = f_time; }
+                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return _user_.timing[0] = f_time; }
                 });
             });
         }
 
-        $scope.$setUser = function() {
+        apis.setUser = function() {
             console.log('+');
-            return Promise.all([getUserBasic(this),
-                    getUserModel(), getUserState(), getUserStore(),
-                    getPhoneDate(), getSystemLog()
-                ])
+            return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()])
                 .then(() => {
                     _user_.idcard.region = {};
                     _user_.mobile.region = {};
@@ -95,15 +83,13 @@ define([], function() {
             $ctrl.btnSaveInfo.click();
         };
 
-
-
-
         $xmlSpider.loadend = function() {
-            if (this.action == "getmodel") {
-                console.log($scope.user);
-                $getUser()
+            if(this.action == "btnUserSet") {
+                apis.sendMessage(this, $scope.user);
+            }
+            if(this.action == "getmodel") {
+                apis.getUser(unique)
             }
         };
-
     }
 })

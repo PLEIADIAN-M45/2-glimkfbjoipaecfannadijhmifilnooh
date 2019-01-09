@@ -1,34 +1,10 @@
-define(["app.router"], function(Router) { /*  Router return $router  */
+define(["app.router"], function($router) { /*  Router return $router  */
 
-    if(Router == undefined) { return }
-
-    var $router = new Router();
-
-    var { $server, $locate, $module, $main, $main_module, $vice_module, extensionId, baseUrl, server, rootUrl } = $router;
-
-    console.log($module);
-
-    //get $controller() { return angular.element("[ng-controller]"); }
-    //get $injector() { return this.$controller.injector(); }
-    //get $scope() { return this.$controller.scope(); }
-    //get $rootScope() { return angular.element('html').scope() }
-    //get $scope() { return angular.element('html').scope() }
-    //get $invoke() { return this.$injector.invoke; }
-    //get $compile() { return this.$injector.get('$compile'); }
-
-
-    //$isTest
-    //$name, $ctrlId,  $forms, $referrer
-
-    var $components = { "edit": ['edit', 'dialog'], "logs": ['cards'] } [$module];
-    var $stylesheet = { "edit": ['edit'], "logs": ['logs', 'cards'] } [$module];
+    if($router == undefined) { return }
 
     let $name = "OBSApp",
         $ctrlId = "View",
         $isTest = window.location.hostname == "127.0.0.1",
-        //$forms = document.forms,
-        //$form = document.forms[0],
-        //$referrer = document.referrer,
         $bootstrap = function() {
             //requirejs([$main])
             if(!window.angular) {
@@ -43,69 +19,9 @@ define(["app.router"], function(Router) { /*  Router return $router  */
                 $loadModule();
             }
         },
-
         $loadModule = function() {
-
-            /*
-            var $rootScope = angular.element('html').scope(),
-                $controller = angular.element("[ng-controller]"),
-                $scope = $controller.scope(),
-                $injector = $controller.injector();
-            var $invoke = $injector.invoke,
-                $compile = $injector.get('$compile');
-
-            if($stylesheet) {
-                $stylesheet.map((str) => {
-                    $injectStylesheet($router.rootUrl + "app/css/" + str + ".css")
-                })
-            };
-
-            if($components) {
-                $components.map((str) => {
-                    var src = $router.rootUrl + "app/html/" + str + ".html";
-                    $injectComponents(src, $scope, $compile, $controller)
-                })
-            };*/
-
-            /*                this != $scope, 避免與原$scope衝突            */
-            requirejs(["app.factory", $main_module, $vice_module], (factory, main_module, vice_module) => {
-
-                try {
-
-                    if($stylesheet) {
-                        $stylesheet.map((str) => {
-                            factory.$injectStylesheet($router.rootUrl + "app/css/" + str + ".css")
-                        })
-                    };
-
-                    if($components) {
-                        $components.map((str) => {
-                            var src = $router.rootUrl + "app/html/" + str + ".html";
-                            factory.$injectComponents(src)
-                        })
-                    };
-
-                    vice_module.call(factory, factory);
-                    main_module.call(factory, factory);
-
-                    //Object.assign(factory, $router)
-
-                    //console.log(factory);
-
-                    //factory({ $router, $components, $stylesheet })
-
-
-
-                    //console.log(main_module);
-                    //console.log(vice_module);
-
-                    //console.log(factory);
-                    //factory.call(app, app);
-
-                    //$('.collapse').show()
-                } catch (ex) {
-                    console.error(ex);
-                }
+            requirejs(["app.factory"], (factory) => {
+                factory($router)
             });
         };
 
@@ -125,6 +41,18 @@ define(["app.router"], function(Router) { /*  Router return $router  */
 
 
     return;
+
+
+    // var { $server, $locate, $module, $main, $main_module, $vice_module, extensionId, baseUrl, server, rootUrl } = $router;
+    //console.log($module);
+    //console.log($router);
+    /*
+    console.log($router.$components);
+    console.log($router.$stylesheet);
+    */
+    //$isTest
+    //$name, $ctrlId,  $forms, $referrer
+
 
     //return new APP()
 

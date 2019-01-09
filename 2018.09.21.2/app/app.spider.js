@@ -78,9 +78,8 @@ define([], function() {
         xmlSpider.load = function() {
             //console.log(this);
             //console.log(2);
-            this.command = "api.xmlHttp(...arguments)";
+            //this.command = "api.xmlHttp(...arguments)";
             //this.command = "new xmlHttp(...arguments)";
-            this.extensionId = localStorage.extensionId;
             this.channel = localStorage.channel;
             this.server = localStorage.server;
             this.responseHeaders = $getAllResponseHeaders(this);
@@ -100,18 +99,18 @@ define([], function() {
             this.type = this.sendData.type;
 
             this.action = this.sendData.action || this.sendData.type || this.lastPath;
-
+            this.command = "xmlSpider"
             //this.moment = Date.now();
-
-            this.$unique = window.$unique;
+            //this.$unique = window.$unique;
             //moment().format("YYYY-MM-DD HH:mm:ss")
-
             //console.log(window.$unique);
 
 
-            chrome.runtime.sendMessage(this.extensionId, this, (res) => {
+            var extensionId = localStorage.extensionId;
 
-            })
+
+
+
 
             //console.log(this.$scope);
         }

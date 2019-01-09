@@ -1,12 +1,22 @@
 define([], function() {
 
-    return async function({ $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply }) {
+    return async function({ apis, unique, $unique, $scope, $model, $sendMessage, $getUser, $delUser, $putUser, $apply }) {
+
+        //console.log(apis);
+        //$scope.user = await apis.getUser({ unique });
+
+        //apis.delUser(unique);
+
+        $scope.$watch('user',
+            apis.putUser,
+            true);
 
 
-        $scope.$watch('user', this.$putUser, true);
-        $getUser();
-        $scope.$createTab = this.$createTab;
-        $scope.$router = this.$router;
+        apis.getUser(unique)
+
+
+        console.log($scope.user);
+
 
         $scope.$sendSms = function(user) {
             $scope.user.sendSms = false;
@@ -16,8 +26,8 @@ define([], function() {
             }).then((res) => { $scope.user.sendSms = res; }).then($apply)
         };
 
-        $scope.$apply();
 
+        $scope.$apply();
 
 
         //console.table($scope.user)
