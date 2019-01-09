@@ -1,11 +1,11 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apiFunctions.region.call(me)">
+    <div class="ui card" ng-repeat="me in list" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.callee]" title="{{heads[me.callee]}}"></i>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apiFunctions.region.call(me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">

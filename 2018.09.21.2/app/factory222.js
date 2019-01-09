@@ -1,3 +1,5 @@
+
+
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
         //$digest
@@ -91,15 +93,16 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 //console.log(arguments.callee.caller._name);
                 //console.log(arguments.callee.caller.name);
                 var _name_ = arguments.callee.caller.name;
-                //console.log(_name_);
+                console.log(_name_);
+
                 return new Promise((resolve, reject) => {
+
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
                         params: [...arguments],
                     }, (res) => {
-                        //console.log("caller:::", _name_, res);
+                        console.log("caller:::", _name_, res);
                         resolve(res)
-                        //this.active = false;
                     })
                 })
             }
@@ -110,11 +113,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             apis.getUser = async function getUser() {
-                $scope.user =
-                    await apis.sendMessage(unique) ||
+                $scope.user = await apis.sendMessage(unique) ||
                     await apis.setUser();
                 $scope.$apply();
-                console.log("-------");
             }
 
             apis.delUser = async function delUser() {
@@ -151,7 +152,122 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
 
+            var _apis = [];
+            /*_apis[0] = "getUser"
+            _apis[1] = "putUser"
+            _apis[2] = "delUser"
+            _apis[21] = "btnUserSet"
+            */
 
+            //_apis[0] =
+
+            /*[
+                "getUser",
+                "putUser",
+                "delUser",
+
+
+
+
+
+            ]*/
+
+
+            _apis.forEach((name, index) => {
+
+                apis[name] = function(params) {
+
+                    return new Promise((resolve, reject) => {
+
+                        console.log(name);
+
+                        chrome.runtime.sendMessage($extensionId, {
+                            index: index,
+                            params: params,
+                            params2: arguments[1]
+                        }, resolve)
+
+                        /*(res) => {
+                            console.log(res);
+                            resolve(res)
+                        })*/
+                    })
+
+
+
+                }
+            })
+
+
+
+
+            //apis.getUser =
+
+            /*
+            var $sendMessage = function(message) {
+
+                console.log(message);
+
+                return
+                message.active = true;
+
+                console.log(message.command);
+
+                return new Promise((resolve, reject) => {
+                    if ($extensionId && message) {
+                        chrome.runtime.sendMessage($extensionId, message, (res) => {
+                            //console.log(res);
+                            message.active = false;
+                            if (res) {}
+                            try { resolve(res) } catch (ex) { reject(ex) }
+                        })
+                    } else {
+                        console.error(this);
+                        reject(101)
+                    }
+                })
+            }
+            */
+
+
+
+
+
+            var $getUser = async function() {
+                //console.log($unique);
+
+                $scope.user =
+                    await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique })
+
+                return;
+                $scope.user =
+                    await $sendMessage({ command: 'api.store.user.get(request.unique)', unique: $unique }) ||
+                    await $scope.$setUser();
+                console.log($scope.user);
+                $scope.$apply();
+            }
+
+            var $delUser = function(bool) {
+                if (!bool) { return }
+                return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
+                    .then((user) => {
+                        return;
+                        console.log('delUser:', unique);
+                    })
+            }
+
+            var $putUser = function(nv, ov) {
+                //console.log(nv, ov);
+                if (!nv) { return };
+                //if (angular.equals(nv, ov)) { return };
+                //if(angular.equals(_user, nv)) { return };
+                return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
+                    .then((user) => {
+                        console.count("put.user", nv);
+                        //console.countReset("put.user")
+                        return user;
+                    })
+            }
             var c = console.log;
             // var clipboardData;
             document.oncopy = function(e) {
@@ -251,8 +367,13 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $moment,
                 $params,
                 $xmlSpider,
+                $sendMessage,
                 //$sendSms,
-                //$clipboard,                
+                //$clipboard,
+                $getUser,
+                $delUser,
+                $putUser,
+                //$setUser,
                 $ajax,
                 $model,
                 $ctrl,
