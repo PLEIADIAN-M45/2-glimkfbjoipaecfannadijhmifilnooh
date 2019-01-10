@@ -468,13 +468,10 @@ apis.xmlSpider = async function(params) {
             window.cacheUserData = sendData;
             break;
         case "getmodel":
-
             //console.log(window.cacheUserData); //ishow  //isOpenDeposit
             //console.log(respData); //f_ishow  //f_depositStatus
-
             console.log(window.cacheUserData.ishow, window.cacheUserData.isOpenDeposit);
             console.log(respData.f_ishow,           respData.f_depositStatus);
-
             //重點是 ishow 的變化，isOpenDeposit可以看出存款設為什麼
             var user = await apis.getUser(unique);
             console.log(user);
