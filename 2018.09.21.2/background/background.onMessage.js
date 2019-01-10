@@ -371,13 +371,58 @@ apis.region.mobile = function() {
 }
 
 
+apis.GetSystemLog = function(origin, accounts, operator) {
+
+    console.log(origin, accounts, operator);
+
+    return $.ajax({
+        dataType: "json",
+        url: origin + "/LoadData/AccountManagement/GetSystemLog.ashx",
+        data: {
+            tabName: "",
+            zwrq: "",
+            pageIndex: "",
+            f_target: "",
+            f_handler: "",
+            ddlType: 0,
+            f_accounts: accounts,
+            zwrq2: "",
+            logType: "memberlog",
+            f_number: null,
+            type: null,
+            selType: "",
+            selShow: -1,
+            txtID: "",
+            selDengji: ""
+        }
+    }).then((res) => {
+        console.log(res);
+        //1.  用户状态   【审核中】   被修改为   【正常户】
+        /*
+        f_field: "f_ishow$log$f_intualStatus$log$f_depositStatus"
+        f_newData: "1$log$1$log$1"
+        f_oldData: "3$log$0$log$0"
+        */
+        var bc = res.rows.find(({ f_field, f_oldData, f_newData, f_handler }) => {
+            return (f_field == "f_ishow$log$f_intualStatus$log$f_depositStatus" &&
+                f_newData == "1$log$1$log$1" &&
+                f_oldData == "3$log$0$log$0" &&
+                f_handler == "18CS222")
+            //f_time  within 1 min
+        })
+        console.log(bc);
+
+    })
+}
+
+
 /*
 getmodel: 開通表
 StopMember:
 getDepositBonusList:
 delDiceWinRecords:
 DelDiceWinRecords:
-    -- -- -- -- -- -- -- -- -- -- -- -- -
+-- -- -- -- -- -- -- -- -- -- -- -- -
 UpdateMemberBonusLog
 GetMemberBonusLogBackendByCondition
 UpdateMemberRiskInfoAccountingBackend
@@ -385,11 +430,24 @@ UpdateMemberSNInfoBackend
 UpdateMemberRisksInfoBackendIsFSuspension
 CreateMemberInfoOperationLog
 */
+
+
+
 window.cacheBonusData;
+window.cacheUserData;
+
+
+
+/*
+
+btnUserSet -> "u-ok"
+sendData 去比對稍候的 getmodel 的respData
+
+*/
 
 apis.xmlSpider = async function(params) {
-    var { action, sendData, respData, server, unique, channel, operator, dataRows } = params;
-    //console.log(action, params)
+    //console.log(params);
+    var { action, sendData, respData, server, unique, account, channel, operator, dataRows } = params;
     switch (action) {
         //GetMemberRisksInfoBackendByAccountID
         //CreateMemberInfoOperationLog
@@ -405,7 +463,31 @@ apis.xmlSpider = async function(params) {
             return apis.putUser(user);
             break;
             //開通
+
         case "btnUserSet":
+            window.cacheUserData = sendData;
+            break;
+        case "getmodel":
+
+            //console.log(window.cacheUserData); //ishow  //isOpenDeposit
+            //console.log(respData); //f_ishow  //f_depositStatus
+
+            console.log(window.cacheUserData.ishow, window.cacheUserData.isOpenDeposit);
+            console.log(respData.f_ishow,           respData.f_depositStatus);
+
+            //重點是 ishow 的變化，isOpenDeposit可以看出存款設為什麼
+            var user = await apis.getUser(unique);
+            console.log(user);
+            break;
+
+        case "btnUserSet-222":
+
+            console.log(action, params)
+            //var origin = new URL(params.url).origin;
+            //return apis.GetSystemLog(params.origin, sendData.account, params.operator);
+
+            //return Promise.resolve()
+
             //console.log(user);
             var user = await apis.getUser(unique); //即時更新會比較保險
             if (user == undefined) { return Promise.reject(1) }
@@ -423,7 +505,6 @@ apis.xmlSpider = async function(params) {
             console.log("+[DONE]+ ", user.module, user);
             return apis.putUser(user);
             break;
-
         case "StopMember": //停權
             console.log("StopMember");
             if (respData == 2) {

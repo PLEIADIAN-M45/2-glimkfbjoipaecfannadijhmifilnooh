@@ -12,6 +12,9 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
         xmlSpider.open = function(method, url, async, user, password) {
             this.startedDateTime = Date.now();
             this.url = url.replace('..', location.origin);
+            this.origin = location.origin;
+            // var origin = new URL(params.url).origin;
+
             this.method = method;
             this.requestHeaders = {};
             return open.apply(this, arguments);
@@ -47,7 +50,9 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
             this.operator = localStorage.operator
             this.channel = localStorage.channel;
             this.server = localStorage.server;
-            
+
+
+
             this.unique = this.unique;
             //this.hostname = $hostname();
             this.responseHeaders = ext.$getAllResponseHeaders(this);
