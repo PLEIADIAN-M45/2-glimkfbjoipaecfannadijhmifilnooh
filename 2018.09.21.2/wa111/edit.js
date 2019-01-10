@@ -89,7 +89,10 @@ define([], function() {
 
 
         $xmlSpider.loadend = function xmlSpider() {
-            //console.log(this);
+
+            console.log(this.action);
+
+
             if ($scope.user) { this.user = $scope.user; };
 
             switch (this.action) {

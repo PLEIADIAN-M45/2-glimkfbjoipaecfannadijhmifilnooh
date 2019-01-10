@@ -1,45 +1,24 @@
-define([], function() {
+define(["app.spider.extend", "md5"], function(_xmlSpider) {
 
 
-    function $getAllResponseHeaders(obj) {
-        return obj.getAllResponseHeaders().split('\r').map((x) => {
-            return x.split(":")
-        }).serialize();
-    };
+    // console.log(CryptoJS);
+    //var c = CryptoJS.MD5("CODE").toString()
+    //console.log(c);
 
-
-    function $serialize({ href, url, postData }) {
-        var obj = {};
-        if(href) { if(href.includes('?')) { decodeURIComponent(href).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-        if(url) { if(url.includes('?')) { decodeURIComponent(url).split('?')[1].split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-        if(postData) { try { return JSON.parse(postData) } catch (ex) { postData.split('&').map((x) => { return x.split('=') }).forEach(([name, value]) => { obj[name] = value; }); } }
-        return obj;
+    var MD5 = function() {
+        return CryptoJS.MD5("CODE").toString().toUpperCase();
     }
 
-    function json(str) { try { if(str.constructor.name == "Response") { return str.json() } if(typeof str == "object") { var res = JSON.stringify(str); } else { var res = JSON.parse(str); } } catch (ex) { var res = str; } return res; };
-
-    function $fromJson(obj) { try { var str = JSON.stringify(obj); } catch (ex) { var str = obj; } return str; }
-
-    function $tryJson({ responseText }) { try { return JSON.parse(responseText); } catch (ex) { return responseText } }
-
-    function $isJson(d) { try { JSON.parse(d); } catch (ex) { return false; } return true; }
-
-    function $hostname() { if(location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
-
-    function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(/\.\w+/, ''); }
-
-    function $mimeType({ responseText }) { return $isJson(responseText) ? "json" : "text"; }
-
-    function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} };
-
-    function trim(value) { return value.toString().trim() };
-
-    function s(a) { console.log(a); }
-
+    //console.log(MD5("CODE"));
 
     try {
 
+
+
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
+
+
+
         var xmlSpider = XMLHttpRequest.prototype;
 
         xmlSpider.open = function(method, url, async, user, password) {
@@ -75,46 +54,6 @@ define([], function() {
 
         }
 
-        xmlSpider.load = function() {
-            //console.log(this);
-            //console.log(2);
-            //this.command = "api.xmlHttp(...arguments)";
-            //this.command = "new xmlHttp(...arguments)";
-            this.channel = localStorage.channel;
-            this.server = localStorage.server;
-            this.responseHeaders = $getAllResponseHeaders(this);
-            //this.hostname = $hostname();
-            this.lastPath = $lastPath(this);
-            this.sendData = $serialize(this);
-            this.mimeType = $mimeType(this);
-            this.respData = $tryJson(this);
-            this.dataRows = $dataRows(this);
-
-            this.timeSpan = Date.now();
-
-            this.time = Date.now() - this.startedDateTime;
-
-            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
-
-            this.type = this.sendData.type;
-
-            this.action = this.sendData.action || this.sendData.type || this.lastPath;
-            
-            this.caller = "xmlSpider"
-            //this.moment = Date.now();
-            //this.$unique = window.$unique;
-            //moment().format("YYYY-MM-DD HH:mm:ss")
-            //console.log(window.$unique);
-
-
-            var extensionId = localStorage.extensionId;
-
-
-
-
-
-            //console.log(this.$scope);
-        }
 
         xmlSpider.loadend = function() {
 
@@ -136,6 +75,71 @@ define([], function() {
             UpdateMemberRisksInfoBackendIsFSuspension
             */
         };
+
+        xmlSpider.load = function() {
+            //console.log(this);
+            //console.log(2);
+            //this.command = "api.xmlHttp(...arguments)";
+            //this.command = "new xmlHttp(...arguments)";
+
+
+
+
+
+            this.channel = localStorage.channel;
+            this.server = localStorage.server;
+            this.responseHeaders = $getAllResponseHeaders(this);
+            //this.hostname = $hostname();
+            this.lastPath = $lastPath(this);
+            this.sendData = $serialize(this);
+            this.mimeType = $mimeType(this);
+            this.respData = $tryJson(this);
+            this.dataRows = $dataRows(this);
+
+            this.timeSpan = Date.now();
+
+            this.time = Date.now() - this.startedDateTime;
+
+            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+
+            this.type = this.sendData.type;
+
+            //this.action = MD5(this.sendData.action) || MD5(this.sendData.type) || MD5(this.lastPath)
+
+            this.action = this.sendData.action || this.sendData.type || this.lastPath;
+
+            this.caller = "xmlSpider"
+            //this.moment = Date.now();
+            //this.$unique = window.$unique;
+            //moment().format("YYYY-MM-DD HH:mm:ss")
+            //console.log(window.$unique);
+
+
+            var extensionId = localStorage.extensionId;
+
+
+
+
+
+            //console.log(this.$scope);
+        }
+
+        /*
+        class xmlSpider_ extends _xmlSpider {
+
+            constructor(sp) {
+                super();
+
+                console.log(super.responseHeaders);
+
+            }
+
+        }
+        var c = new xmlSpider_();
+        */
+
+
+
 
 
         return xmlSpider;
