@@ -478,8 +478,7 @@ class apis2 {
         arr.forEach(([name, value]) => {
             localStorage[name] = value;
             global[name] = decoder(value);
-
-            console.log(global);
+            //console.log(global);
         });
 
         global.gb2260 = new Map(global.gb2260);

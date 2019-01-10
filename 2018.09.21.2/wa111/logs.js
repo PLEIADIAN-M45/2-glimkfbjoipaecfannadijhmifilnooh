@@ -3,51 +3,32 @@ define([], function() {
 
         function createElement(value, content) { return $('<b>').text(value).addClass('pointer').popup({ on: 'click' }).click(apis.copy).attr('data-content', content)[0]; };
 
+        apis.protocol = [];
+
         $('#divCookie > ul:not(.TrHead):not(.TrHead2)')
             .filter((i, { firstElementChild, children }) => {
                 return firstElementChild.outerText && children.length > 10;
-            })
-            .each((index, { children, style }) => {
+            }).each((index, { children, style }) => {
                 var channel = children[0].outerText.split("-")[0];
                 var account = children[2].outerText;
                 var unique = account + "-" + channel;
-
                 children[2].firstChild.remove();
                 children[2].appendChild(createElement(account, account));
                 children[2].appendChild(createElement(channel, unique));
-
-                if(channel == $channel && account == $account) {
+                /*----------------------------------------*/
+                if (channel == $channel && account == $account) {
                     children[2].style.backgroundColor = "#01579b";
                     children[2].style.color = "white";
                     /*----------------------------------------*/
-                    apis.protocol = apis.regions || [];
-                    apis.protocol.push({
-                        IPAddress: children[7].outerText,
-                        IPLocation: children[9].outerText
-                    })
+                    apis.protocol.push({ IPAddress: children[7].outerText, IPLocation: children[9].outerText });
                 }
 
+                ;
                 [...children].forEach((li, i) => {
-                    apis.global.region.forEach((str, index) => {
-                        if(li.outerText.includes(str)) {
-                            li.classList.add('danger')
-                        }
-                    });
-                    apis.global.danger.forEach((str, index) => {
-                        if(li.outerText.includes(str)) {
-                            li.classList.add('danger')
-                        }
-                    });
-                    apis.global.author.forEach((str, index) => {
-                        if(li.outerText.includes(str)) {
-                            li.classList.add('danger')
-                        }
-                    });
-                    apis.global.locate.forEach((str, index) => {
-                        if(li.outerText.includes(str)) {
-                            li.classList.add('danger')
-                        }
-                    });
+                    apis.global.region.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
+                    apis.global.danger.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
+                    apis.global.author.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
+                    apis.global.locate.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
                 })
             });
 

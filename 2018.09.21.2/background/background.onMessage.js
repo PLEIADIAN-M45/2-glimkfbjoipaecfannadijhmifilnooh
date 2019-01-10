@@ -1,11 +1,11 @@
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
 
-    if(sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
+    if (sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
 
     //var ___name = apis[request.command].name;
     /*************************************************************************************/
     //console.log(request.params[0], typeof request.params[0]);
-    console.log(request);
+    //console.log(request);
 
     apis[request.caller](...request.params).then((res) => {
         //apis[request.caller].call(...request.params).then((res) => {
@@ -49,14 +49,16 @@ apis.sendSms = function(params) {
         data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
     }).then((res, b, c) => {
         var status;
-        if(res.match(/(msg = '')/)) { status = 200; }
-        if(res.match(/(會員登錄)/)) { status = 401; }
-        if(res.match(/(msg = '101')/)) { status = 101; }
-        if(res.match(/(msg = '102')/)) { status = 102; }
+        if (res.match(/(msg = '')/)) { status = 200; }
+        if (res.match(/(會員登錄)/)) { status = 401; }
+        if (res.match(/(msg = '101')/)) { status = 101; }
+        if (res.match(/(msg = '102')/)) { status = 102; }
         params.sendSms = status;
         return apis.putUser(params);
     });
 };
+
+
 
 apis.region = function(params) {
     //console.log(params);
@@ -101,7 +103,7 @@ apis.blacklist = function() {
 
 apis.region.check = function(region) {
 
-    if(region) {
+    if (region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
@@ -131,7 +133,7 @@ apis.region.check = function(region) {
 
 apis.member = function(request) {
 
-    if(!window.baseUrl) {
+    if (!window.baseUrl) {
 
         window.baseUrl = {
             "0": "http://chrome.evo.net",
@@ -255,7 +257,7 @@ apis.member.ku711 = function() {
 }
 
 apis.getMemberAlertInfoBackend = function(res) {
-    if(res.rows && res.rows.length) {
+    if (res.rows && res.rows.length) {
         var baseUrl = (window.isLocal) ? chrome.runtime.getURL("/") : window.baseUrl[16];
         var Account = res.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
         return $.ajax({
@@ -265,7 +267,7 @@ apis.getMemberAlertInfoBackend = function(res) {
             "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
         }).then(({ Data }) => {
             //console.log(Data);
-            if(Data) {
+            if (Data) {
                 res.list_RemittanceName = Data.AlertInfoAccountName;
                 res.rows.map((x) => {
                     x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
@@ -302,13 +304,13 @@ apis.region.locate = function() {
     }).then((res) => {
         console.log(res);
         //var region = {};
-        if(res.status == 0) {
+        if (res.status == 0) {
             var str = res.data[0].location;
             console.log(str);
-            if(str) {
+            if (str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if(!prov && !city && !area) {
+                        if (!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -356,7 +358,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if(res.status == 0) {
+        if (res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,
@@ -369,30 +371,164 @@ apis.region.mobile = function() {
 }
 
 
+/*
+getmodel: 開通表
+StopMember:
+    getDepositBonusList:
+    delDiceWinRecords:
+    DelDiceWinRecords:
+    -- -- -- -- -- -- -- -- -- -- -- -- -
+    UpdateMemberBonusLog
+GetMemberBonusLogBackendByCondition
+UpdateMemberRiskInfoAccountingBackend
+UpdateMemberSNInfoBackend
+UpdateMemberRisksInfoBackendIsFSuspension
+
+CreateMemberInfoOperationLog
+*/
 apis.xmlSpider = function(params) {
-    // console.log(params);
-    console.log(params.action);
-    return xmlSpider[params.action].call(params)
+
+    var { action, sendData, respData, user, server } = params;
+
+
+    switch (params.action) {
+        //GetMemberRisksInfoBackendByAccountID
+        //CreateMemberInfoOperationLog
+        case "UpdateMemberRiskInfoAccountingBackend":
+            console.log(params)
+            user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+            user.status.push(sendData.MemberStatus)
+            user.permit.push(sendData.IsDeposit)
+            user.timing.push(Date.now())
+            user.timing.timeDiff();
+            if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+            console.log("+[DONE]+ ", user.module, user);
+            return apis.putUser(user);
+            break;
+            //開通
+        case "btnUserSet":
+            if (user == undefined) { return Promise.reject(1) }
+            if (user.module) { return Promise.reject(1) }
+            if (user.permit[0] == sendData.isOpenDeposit) { return Promise.reject("表示並未改變值") }
+            if (respData != "u-ok") { return Promise.reject(1) }
+            /**********************************************************************/
+            user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+            user.status.push(sendData.ishow)
+            user.permit.push(sendData.isOpenDeposit)
+            user.timing.push(Date.now())
+            user.timing.timeDiff();
+            if (server == "wa111") { if (sendData.ishow == 3 && sendData.isOpenDeposit == 1) { sendData.ishow = 1; } }
+            if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+            console.log("+[DONE]+ ", user.module, user);
+            return apis.putUser(user);
+            break;
+
+
+        case "StopMember": //停權
+        case "UpdateMemberSNInfoBackend": //"停權-用戶狀態選停權戶"
+        case "UpdateMemberRisksInfoBackendIsFSuspension": //"還原或停權"
+
+
+
+            break;
+
+            //禮金表列表
+        case "GetMemberBonusLogBackendByCondition":
+        case "getDepositBonusList":
+            break;
+
+
+
+            //禮金表功能
+        case "UpdateMemberBonusLog":
+        case "delDiceWinRecords":
+            /*用於給點*/
+        case "DelDiceWinRecords":
+            /*用於刪除*/
+
+            break;
+        default:
+            console.log('reject', action);
+            return Promise.reject(403)
+            break;
+
+    }
+
+
+
+    /*
+    //if (xmlSpider[action]) { Promise.reject(403) }
+
+    console.log(params.action, params);
+    console.log(xmlSpider[params.action]);
+
+    if (xmlSpider[params.action]) {
+        console.log(111);
+        return xmlSpider[params.action](params, params)
+        //return xmlSpider[params.action].call(params)
+    } else {
+        console.log(403);
+
+        return Promise.reject(403)
+    }
+    */
+
+    /*console.log(params.action);
+    if (xmlSpider[params.action]) {
+        return xmlSpider[params.action].call(params)
+    }*/
 };
 
+//COMMANDER, SEND_DATA, RESP_DATA,
+
+
 var xmlSpider = {};
-xmlSpider.btnUserSet = async function() {
+
+xmlSpider.btnUserSet = async function({ sendData, respData, user, server }) {
+
+    //console.log(COMMANDER, SEND_DATA, RESP_DATA, user);
+    //console.log(this);
+
+    console.log(sendData);
+    console.log(respData);
+    console.log(user);
+    console.log(server);
+
+
+    //var current_time = Date.now()
+    //return Promise.resolve(1)
     /**********************************************************************/
-    if(this.user == undefined) { return Promise.resolve(1) }
-    if(this.user.module) { return Promise.resolve(1) }
-    if(this.user.permit[0] == this.sendData.isOpenDeposit) { return Promise.resolve(1) }
-    if(this.respData != "u-ok") { return Promise.resolve(1) }
+    if (user == undefined) { return Promise.reject(1) }
+
+    if (user.module) { return Promise.reject(1) }
+
+    if (user.permit[0] == sendData.isOpenDeposit) { return Promise.reject(1) }
+
+    if (respData != "u-ok") { return Promise.reject(1) }
+
     /**********************************************************************/
-    this.user.module = (this.user.status[0] == 3) ? "authorize" : "suspended";
-    if(this.sendData.ishow == 3 && this.sendData.isOpenDeposit == 1) { this.sendData.ishow = 1; }
-    this.user.status.push(this.sendData.ishow)
-    this.user.permit.push(this.sendData.isOpenDeposit)
-    this.user.timing.push(this.timeSpan)
-    this.user.timing.timeDiff();
-    if(this.user.status[0] == 3 || this.user.status[1] == 1) { this.user.sendSms = true; }
-    return apis.putUser(this.user);
+    user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+
+    if (sendData.ishow == 3 && sendData.isOpenDeposit == 1) { sendData.ishow = 1; }
+
+    user.status.push(sendData.ishow)
+    user.permit.push(sendData.isOpenDeposit)
+    user.timing.push(Date.now())
+
+    user.timing.timeDiff();
+
+    if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+
+    console.log("[DONE] ", user.module);
+    return apis.putUser(user);
 }
 
+
+
+
+xmlSpider.btnUserSet33 = async function() {
+
+}
 
 
 

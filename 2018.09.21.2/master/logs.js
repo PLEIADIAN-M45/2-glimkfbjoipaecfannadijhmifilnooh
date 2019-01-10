@@ -9,10 +9,13 @@ define([], function() {
         await apis.getUser();
 
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
+            
             obj.region = obj.region || {};
+            
             with(obj) {
                 if(caller == "locate") {
                     obj.protocol = apis.protocol;
+                    console.log(apis.protocol);
                     $scope.user.region = apis.protocol.map((x) => { return x.IPLocation; })
                 } else {
                     obj.sites = [

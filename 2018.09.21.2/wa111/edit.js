@@ -1,12 +1,14 @@
 define([], function() {
+
     var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
 
-    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider }) {
+    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router }) {
 
-        var { server, origin, unique, channel, account, operator } = arguments[0];
+        console.log($account);
 
         function getUserBasic() {
-            Object.assign(_user_, { server, origin, unique, channel, account, operator });
+            var { server, origin, unique, channel, account, operator } = $router;
+            Object.assign(_user_, { unique, account, origin, server, channel, operator });
         }
 
         function getUserModel(m) {
@@ -67,17 +69,9 @@ define([], function() {
         }
 
 
-
-
         apis.setUser = function() {
             console.log('+');
-            return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()])
-                .then(() => {
-                    //_user_.idcard.region = {};
-                    //_user_.mobile.region = {};
-                    //_user_.locate.region = {};
-                    return _user_;
-                })
+            return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()]).then(() => { return _user_; })
         }
 
         $scope.setPermit = function(e) {
@@ -87,16 +81,12 @@ define([], function() {
         };
 
 
-
         $xmlSpider.loadend = function xmlSpider() {
-
-            console.log(this.action);
-
-
-            if ($scope.user) { this.user = $scope.user; };
-
+            //console.log(this.action);
             switch (this.action) {
                 case "btnUserSet":
+                    //if ($scope.user) {};
+                    this.user = $scope.user;
                     apis.sendMessage(this);
                     break;
                 case "getmodel":
@@ -107,6 +97,9 @@ define([], function() {
             }
         };
 
+
+
+
     }
 });
 
@@ -114,6 +107,9 @@ define([], function() {
 
 
 
+//_user_.idcard.region = {};
+//_user_.mobile.region = {};
+//_user_.locate.region = {};
 
 
 

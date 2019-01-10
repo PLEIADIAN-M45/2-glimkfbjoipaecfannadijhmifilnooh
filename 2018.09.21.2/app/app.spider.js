@@ -1,23 +1,11 @@
-define(["app.spider.extend", "md5"], function(_xmlSpider) {
+//define(["app.spider.extend", "md5"], function({ $getAllResponseHeaders, $serialize, $fromJson, $tryJson, $hostname, $lastPath, $mimeType, $dataRows }) {
+define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loadend) {
 
-
-    // console.log(CryptoJS);
-    //var c = CryptoJS.MD5("CODE").toString()
-    //console.log(c);
-
-    var MD5 = function() {
-        return CryptoJS.MD5("CODE").toString().toUpperCase();
-    }
-
-    //console.log(MD5("CODE"));
+    //console.log(ext);
 
     try {
 
-
-
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
-
-
 
         var xmlSpider = XMLHttpRequest.prototype;
 
@@ -35,32 +23,30 @@ define(["app.spider.extend", "md5"], function(_xmlSpider) {
         };
 
         xmlSpider.send = function(postData) {
+            //console.log(arguments);
+
             this.postData = postData;
+
             this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
 
-
         //onloadstart
         //onload
         //onloadend
         //console.log(moment);
-
-
         xmlSpider.loadstart = function() {
             /*cant catch respData yet.*/
-
         }
 
 
-        xmlSpider.loadend = function() {
 
+        /*function() {
             //console.log(3);
             //console.log(this);
             //console.log(this.extensionId);
-
             /*
             getmodel: 開通表
             StopMember:
@@ -73,76 +59,110 @@ define(["app.spider.extend", "md5"], function(_xmlSpider) {
             UpdateMemberRiskInfoAccountingBackend
             UpdateMemberSNInfoBackend
             UpdateMemberRisksInfoBackendIsFSuspension
-            */
+            
         };
+        */
 
         xmlSpider.load = function() {
-            //console.log(this);
-            //console.log(2);
-            //this.command = "api.xmlHttp(...arguments)";
-            //this.command = "new xmlHttp(...arguments)";
 
-
-
-
+            this.extensionId = localStorage.extensionId;
 
             this.channel = localStorage.channel;
+
             this.server = localStorage.server;
-            this.responseHeaders = $getAllResponseHeaders(this);
             //this.hostname = $hostname();
-            this.lastPath = $lastPath(this);
-            this.sendData = $serialize(this);
-            this.mimeType = $mimeType(this);
-            this.respData = $tryJson(this);
-            this.dataRows = $dataRows(this);
+            this.responseHeaders = ext.$getAllResponseHeaders(this);
+
+            this.lastPath = ext.$lastPath(this);
+
+            this.sendData = ext.$serialize(this);
+
+            this.mimeType = ext.$mimeType(this);
+
+            this.respData = ext.$tryJson(this);
+
+            this.dataRows = ext.$dataRows(this);
 
             this.timeSpan = Date.now();
 
             this.time = Date.now() - this.startedDateTime;
 
-            if(this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
+            if (this.respData && this.respData.Data && this.respData.Data.Message == "更新成功") { this.respData = 1; }
 
             this.type = this.sendData.type;
 
-            //this.action = MD5(this.sendData.action) || MD5(this.sendData.type) || MD5(this.lastPath)
-
             this.action = this.sendData.action || this.sendData.type || this.lastPath;
+            // this.caller = "xmlSpider";
 
-            this.caller = "xmlSpider"
+            var {
+                action,
+                respData,
+                sendData,
+                server,
+                channel
+            } = this;
+
+
+            /*
+            chrome.runtime.sendMessage(
+                this.extensionId, {
+                    caller: "xmlSpider",
+                    params: [
+                        action,
+                        respData,
+                        sendData,
+                        server,
+                        channel
+                    ],
+                }, (res) => {
+                    console.log(res);
+                    //resolve(res);
+                    //this.active = false;
+                })
+    */
+
+
+            this.MISSION = ext.MD5(this.lastPath)
+            this.COMMANDER = this.action.toUpperCase();
+            this.SEND_DATA = this.sendData;
+            this.RESP_DATA = this.respData;
+            this.EXTENSION = localStorage.extensionId;
+
+            // _loadend(this)
+
+
+            /*
+            var COMMANDER = this.action.toUpperCase(),
+                SEND_DATA = this.sendData,
+                RESP_DATA = this.respData,
+                EXTENSION = localStorage.extensionId;
+            */
+
+            //_loadend(COMMANDER, SEND_DATA, RESP_DATA, EXTENSION, this)
+
+
+
+
+
+
+
+
+
+            //this.action = MD5(this.sendData.action) || MD5(this.sendData.type) || MD5(this.lastPath)
             //this.moment = Date.now();
             //this.$unique = window.$unique;
             //moment().format("YYYY-MM-DD HH:mm:ss")
             //console.log(window.$unique);
-
-
-            var extensionId = localStorage.extensionId;
-
-
-
-
-
             //console.log(this.$scope);
         }
 
-        /*
-        class xmlSpider_ extends _xmlSpider {
+        xmlSpider.loadend = function() {
 
-            constructor(sp) {
-                super();
+            //_loadend.call(this, this)
 
-                console.log(super.responseHeaders);
-
-            }
-
-        }
-        var c = new xmlSpider_();
-        */
-
-
-
-
-
+        };
         return xmlSpider;
+
 
     } catch (ex) {
         console.error('xmlSpider');

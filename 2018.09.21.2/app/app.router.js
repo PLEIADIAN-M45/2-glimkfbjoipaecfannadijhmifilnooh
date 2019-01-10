@@ -1,9 +1,35 @@
 define(["router.wa111", "router.ku711"], function(wa111, ku711) {
     //console.log(chrome.runtime);
 
+
     class Router {};
+
+
+
+    var $searchParams = new URLSearchParams(window.location.search);
+    var $params = {};
+    Array.from($searchParams).forEach(([name, value]) => {
+        if (name && value) { $params[name] = value }
+    });
+
+    var origin = window.location.origin;
+
+    var account = $params.account || $params.member || $params.accountId || $params.accounts;
+    if (account) { account = account.toUpperCase() }
+
+    var channel = localStorage.channel || $params.siteNumber;
+
+    var unique = [account, channel].join("-");
+
+
+    Object.entries({ account, channel, unique, origin }).forEach(([name, value]) => {
+        Router.prototype["$" + name] = value;
+        Router.prototype[name] = value;
+    });
+
     Object.entries(window.localStorage).forEach(([name, value]) => {
         Router.prototype["$" + name] = value;
+        Router.prototype[name] = value;
     });
 
     with(Router.prototype) {
@@ -14,7 +40,6 @@ define(["router.wa111", "router.ku711"], function(wa111, ku711) {
             Router.prototype.$module = $module;
             Router.prototype.$master = "../" + $master + "/" + $module;
             Router.prototype.$branch = "../" + $server + "/" + $module;
-
             Router.prototype.$components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] } [$module];
             Router.prototype.$stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] } [$module];
             return new Router();

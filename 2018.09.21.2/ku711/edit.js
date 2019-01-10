@@ -1,17 +1,12 @@
-define(["ku711/decode"], function(decode) {
+define(["../ku711/decode"], function(decode) {
+
+    var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
+
+    return function({ apis, $xmlSpider, $scope, $ajax, $account, $dexie, $model, $ctrl, $getModule, $router }) {
 
 
-    return function({ $scope, $ajax, $account, $dexie, $model, $ctrl, $getModule }) {
+        var { account, server, origin, unique, channel, operator } = $router;
 
-
-        var { account, server, origin, unique, channel, operator } = this;
-
-        var _user_ = {
-            timing: [],
-            status: [],
-            permit: [],
-            region: [],
-        };
 
         function getSystemLog() {
             //timeing[0]: 用户状态 【靜止戶】 被修改为 【審核戶】
@@ -105,13 +100,10 @@ define(["ku711/decode"], function(decode) {
         }
 
 
-
-        $scope.$setUser = function() {
+        apis.setUser = function() {
             console.log('+');
             return Promise.all([
-                getUserBasic(this),
-                OldMemberBaseInfo(),
-                OldMemberRisksInfo(), getBanker(),
+                getUserBasic(), OldMemberBaseInfo(), OldMemberRisksInfo(), getBanker(),
                 getStatus(), getIsDeposit(), getSystemLog(),
             ]).then(() => {
                 _user_.idcard.region = {};
@@ -126,6 +118,33 @@ define(["ku711/decode"], function(decode) {
             $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
             $scope.ctrl.DepositChanged();
             $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
+        };
+
+
+
+
+
+        $xmlSpider.loadend = function xmlSpider() {
+
+            
+            console.log(this.action);
+
+
+            //alert(this.action)
+
+
+            switch (this.action) {
+                case "UpdateMemberRiskInfoAccountingBackend":
+                    //if ($scope.user) {};
+                    this.user = $scope.user;
+                    apis.sendMessage(this);
+                    break;
+                case "getmodel":
+                    apis.getUser();
+                    break;
+                case "-------":
+                    break;
+            }
         };
     }
 })

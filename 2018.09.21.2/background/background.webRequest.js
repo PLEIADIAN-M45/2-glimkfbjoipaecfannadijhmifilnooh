@@ -96,10 +96,10 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
     var { url, method, type, requestHeaders, initiator } = details;
     var lastPath = lastPathOf(url);
     //console.log(lastPath, url);
-    console.log(123, 456);
+   // console.log(123, 456);
     if (initiator == location.origin) {
 
-        console.log(requestHeaders);
+        //console.log(requestHeaders);
 
         requestHeaders.push({ name: 'referer', value: url });
         requestHeaders.push({ name: 'content-type', value: 'application/json;charset=UTF-8' });

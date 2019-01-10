@@ -1,5 +1,5 @@
 this.symbolList = function() {
-    for(var i = 0; i < 500; i++) {
+    for (var i = 0; i < 500; i++) {
         console.log(String.fromCharCode(i));
     }
     return
@@ -41,4 +41,60 @@ console.log(0x2F);
 
 console.log(String.fromCharCode(189, 43, 190, 61));
 console.log(String.fromCharCode(47));
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+let s1 = Symbol('foo');
+let s2 = Symbol('bar');
+
+//s1 // Symbol(foo)
+//s2 // Symbol(bar)
+
+//s1.toString() // "Symbol(foo)"
+//s2.toString() // "Symbol(bar)"
+
+var obj = {
+    s1: 123,
+    s2: 266
+}
+
+
+console.log(obj);
+console.log(obj.foo);
+console.log(obj.s1);
+*/
+
+let mySymbol = Symbol();
+
+console.log(mySymbol);
+// 第一种写法
+let a = {};
+a[mySymbol] = 'Hello!';
+
+console.log(a);
+
+/*
+// 第二种写法
+let a = {
+    [mySymbol]: 'Hello!'
+};
+
+// 第三种写法
+let a = {};
+Object.defineProperty(a, mySymbol, { value: 'Hello!' });
+
+// 以上写法都得到同样结果
+a[mySymbol] // "Hello!"
 */
