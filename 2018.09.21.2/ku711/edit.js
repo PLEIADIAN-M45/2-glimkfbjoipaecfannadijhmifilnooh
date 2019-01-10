@@ -122,17 +122,11 @@ define(["../ku711/decode"], function(decode) {
 
 
 
-
+        /*
 
         $xmlSpider.loadend = function xmlSpider() {
-
-            
             console.log(this.action);
-
-
-            //alert(this.action)
-
-
+                        //alert(this.action)
             switch (this.action) {
                 case "UpdateMemberRiskInfoAccountingBackend":
                     //if ($scope.user) {};
@@ -146,5 +140,6 @@ define(["../ku711/decode"], function(decode) {
                     break;
             }
         };
+        */
     }
 })

@@ -27,32 +27,6 @@ var Spreadsheets = {
 
 
 
-
-
-function getUser(unique) {
-    //console.log(unique);
-    return evo.store.user.get(unique);
-
-    /*
-    if (this.sendData) {
-        var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
-        var channel = this.channel;
-        var unique = [account, channel].join("-");
-        //console.log(unique);
-    }
-    */
-}
-
-
-function putUser(user) {
-    //console.log("putUser--", user);
-    return evo.store.user.put(user).then(() => {
-        return user;
-    })
-}
-
-
-
 function getBonus() {
     var bonus = this.dataRows.find((row) => {
         if(row.f_id) { return row.f_id == window.cacheBonusData.id; }
@@ -193,6 +167,32 @@ var robot = {
 }
 
 
+
+
+
+
+
+function getUser(unique) {
+    //console.log(unique);
+    return evo.store.user.get(unique);
+
+    /*
+    if (this.sendData) {
+        var account = this.sendData.accounts || this.sendData.account || this.sendData.f_accounts || this.sendData.AccountID;
+        var channel = this.channel;
+        var unique = [account, channel].join("-");
+        //console.log(unique);
+    }
+    */
+}
+
+
+function putUser(user) {
+    //console.log("putUser--", user);
+    return evo.store.user.put(user).then(() => {
+        return user;
+    })
+}
 
 
 

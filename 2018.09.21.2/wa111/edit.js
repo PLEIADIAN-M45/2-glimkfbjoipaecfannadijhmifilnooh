@@ -74,28 +74,23 @@ define([], function() {
             return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()]).then(() => { return _user_; })
         }
 
-        $scope.setPermit = function(e) {
-            e.currentTarget.hide();
-            $ctrl.isOpenDeposit.val(1);
-            $ctrl.btnSaveInfo.click();
-        };
 
 
-        $xmlSpider.loadend = function xmlSpider() {
-            //console.log(this.action);
-            switch (this.action) {
-                case "btnUserSet":
-                    //if ($scope.user) {};
-                    this.user = $scope.user;
-                    apis.sendMessage(this);
-                    break;
-                case "getmodel":
-                    apis.getUser();
-                    break;
-                case "-------":
-                    break;
-            }
-        };
+        // $xmlSpider.loadend = function xmlSpider() {
+        //     //console.log(this.action);
+        //     switch (this.action) {
+        //         case "btnUserSet":
+        //             //if ($scope.user) {};
+        //             this.user = $scope.user;
+        //             apis.sendMessage(this);
+        //             break;
+        //         case "getmodel":
+        //             apis.getUser();
+        //             break;
+        //         case "-------":
+        //             break;
+        //     }
+        // };
 
 
 

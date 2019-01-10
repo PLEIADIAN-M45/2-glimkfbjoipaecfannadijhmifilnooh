@@ -94,7 +94,7 @@ apis.blacklist = function() {
         case "banker":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "locate":
-            console.log($global);
+            //console.log($global);
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         default:
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
@@ -374,28 +374,27 @@ apis.region.mobile = function() {
 /*
 getmodel: 開通表
 StopMember:
-    getDepositBonusList:
-    delDiceWinRecords:
-    DelDiceWinRecords:
+getDepositBonusList:
+delDiceWinRecords:
+DelDiceWinRecords:
     -- -- -- -- -- -- -- -- -- -- -- -- -
-    UpdateMemberBonusLog
+UpdateMemberBonusLog
 GetMemberBonusLogBackendByCondition
 UpdateMemberRiskInfoAccountingBackend
 UpdateMemberSNInfoBackend
 UpdateMemberRisksInfoBackendIsFSuspension
-
 CreateMemberInfoOperationLog
 */
-apis.xmlSpider = function(params) {
+window.cacheBonusData;
 
-    var { action, sendData, respData, user, server } = params;
-
-
-    switch (params.action) {
+apis.xmlSpider = async function(params) {
+    var { action, sendData, respData, server, unique, channel, operator, dataRows } = params;
+    //console.log(action, params)
+    switch (action) {
         //GetMemberRisksInfoBackendByAccountID
         //CreateMemberInfoOperationLog
         case "UpdateMemberRiskInfoAccountingBackend":
-            console.log(params)
+            var user = await apis.getUser(unique); //即時更新會比較保險
             user.module = (user.status[0] == 3) ? "authorize" : "suspended";
             user.status.push(sendData.MemberStatus)
             user.permit.push(sendData.IsDeposit)
@@ -407,10 +406,12 @@ apis.xmlSpider = function(params) {
             break;
             //開通
         case "btnUserSet":
+            //console.log(user);
+            var user = await apis.getUser(unique); //即時更新會比較保險
             if (user == undefined) { return Promise.reject(1) }
-            if (user.module) { return Promise.reject(1) }
+            if (user.module) { return Promise.reject(2) }
             if (user.permit[0] == sendData.isOpenDeposit) { return Promise.reject("表示並未改變值") }
-            if (respData != "u-ok") { return Promise.reject(1) }
+            if (respData != "u-ok") { return Promise.reject(3) }
             /**********************************************************************/
             user.module = (user.status[0] == 3) ? "authorize" : "suspended";
             user.status.push(sendData.ishow)
@@ -423,28 +424,92 @@ apis.xmlSpider = function(params) {
             return apis.putUser(user);
             break;
 
-
         case "StopMember": //停權
-        case "UpdateMemberSNInfoBackend": //"停權-用戶狀態選停權戶"
+            console.log("StopMember");
+            if (respData == 2) {
+                var user = await apis.getUser(unique);
+                user.status.push(2)
+                user.permit.push(0)
+                user.timing.push(Date.now())
+                user.timing.timeDiff();
+                user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+                //審核中轉停權:開通表，或是其它狀態轉停權:停權表
+                console.log("+[DONE]+ ", user.module, user);
+                return apis.putUser(user);
+            };
+            break;
+        case "UpdateMemberSNInfoBackend": //"停權-用戶狀態選停權戶"(上方鍵)
+            var user = await apis.getUser(unique);
+            user.status.push(sendData.MemberStatus)
+            user.permit.push(sendData.IsDeposit)
+            user.timing.push(Date.now())
+            user.timing.timeDiff();
+            user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+            //審核中轉停權:開通表，或是其它狀態轉停權:停權表
+            console.log("+[DONE]+ ", user.module, user);
+            return apis.putUser(user);
+            break;
         case "UpdateMemberRisksInfoBackendIsFSuspension": //"還原或停權"
-
-
-
+            var user = await apis.getUser(unique);
+            if (sendData.IsFSuspension == true) {
+                user.status.push(0)
+                user.permit.push(0)
+                user.timing.push(Date.now())
+                user.timing.timeDiff();
+                user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+                //審核中轉停權:開通表，或是其它狀態轉停權:停權表
+                console.log("+[DONE]+ ", user.module, user);
+                return apis.putUser(user);
+            }
             break;
-
             //禮金表列表
-        case "GetMemberBonusLogBackendByCondition":
-        case "getDepositBonusList":
-            break;
 
+
+            /*刪除*/
+            /*給點*/
+        case "delDiceWinRecords":
+        case "DelDiceWinRecords":
+            console.log(params);
+            if (respData == 1) { window.cacheBonusData = sendData }
+            break;
+        case "getDepositBonusList":
+        case "DepositBonus":
+            var bonus = respData.rows.find((d) => {
+                return d.f_id == window.cacheBonusData.id
+                //&& d.f_AdminName == operator
+            });
+            var unique = bonus.f_accounts + '-' + channel;
+            var user = await apis.getUser(unique);
+            user.bonus = bonus;
+            user.module = "bonus:wa111";
+            console.log(bonus);
+            console.log(user);
+            return apis.putUser(user);
+            //console.log(respData.rows);
+            break;
 
 
             //禮金表功能
         case "UpdateMemberBonusLog":
-        case "delDiceWinRecords":
-            /*用於給點*/
-        case "DelDiceWinRecords":
-            /*用於刪除*/
+            //console.log(params);
+            if (respData == 1) { window.cacheBonusData = sendData }
+            break;
+        case "GetMemberBonusLogBackendByCondition":
+
+            var bonus = dataRows.find((d) => {
+                return d.BonusNumber == window.cacheBonusData.BonusNumber
+                //&& d.Creator == operator
+            });
+
+            var unique = bonus.AccountID + '-' + channel;
+            var user = await apis.getUser(unique);
+
+            console.log(unique, user);
+            user.bonus = bonus;
+            user.module = "bonus:ku711";
+            console.log(bonus);
+
+
 
             break;
         default:

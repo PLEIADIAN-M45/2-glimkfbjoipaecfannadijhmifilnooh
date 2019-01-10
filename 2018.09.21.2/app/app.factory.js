@@ -78,9 +78,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $scope.user =
                     await apis.sendMessage($unique) ||
                     await apis.setUser();
-                $scope.$apply();
 
+                $scope.$apply();
                 console.log("-------", $scope.user);
+                return $scope.user;
 
             }
 
@@ -95,6 +96,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             apis.putUser = async function putUser(nv, ov) {
                 if (!nv) { return };
                 //console.log("putUser");
+                $scope.user.lastModify = $moment(Date.now())
                 return apis.sendMessage($scope.user);
             }
 
@@ -239,6 +241,11 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             $xmlSpider.apis = apis;
             $xmlSpider.$scope = $scope;
+
+            $xmlSpider.unique = $router.unique
+            $xmlSpider.$unique = $router.$unique
+
+
 
 
             requirejs([

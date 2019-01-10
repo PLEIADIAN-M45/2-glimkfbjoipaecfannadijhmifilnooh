@@ -1,21 +1,14 @@
 define(["router.wa111", "router.ku711"], function(wa111, ku711) {
     //console.log(chrome.runtime);
-
-
     class Router {};
-
-
 
     var $searchParams = new URLSearchParams(window.location.search);
     var $params = {};
-    Array.from($searchParams).forEach(([name, value]) => {
-        if (name && value) { $params[name] = value }
-    });
+    Array.from($searchParams).forEach(([name, value]) => { if (name && value) { $params[name] = value } });
 
     var origin = window.location.origin;
 
     var account = $params.account || $params.member || $params.accountId || $params.accounts;
-    if (account) { account = account.toUpperCase() }
 
     var channel = localStorage.channel || $params.siteNumber;
 
@@ -50,6 +43,9 @@ define(["router.wa111", "router.ku711"], function(wa111, ku711) {
 });
 
 
+
+
+//if (account) { account = account.toUpperCase() }
 
 
 
