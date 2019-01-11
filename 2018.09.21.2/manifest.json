@@ -11,14 +11,20 @@
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
 
-            "background/Evolution.js",
-            "background/background.webRequest.js",
-            "background/background.onUpdated.js",
-            "background/background.onMessage.js",
+            "apis/evolution.js",
 
-            "mock/mock.js",
+            "apis/apis.js",
+            "apis/apis.member.js",
+            "apis/apis.region.js",
+            "apis/apis.xmlSpider.js",
+            
+            "apis/apis.onMessage.js",
+            "apis/apis.onWebRequest.js",
+            "apis/apis.onUpdated.js"
+
+            /*"mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"
+            "mock/mock.conf.js"*/
 
             /*
             "background/background.js",

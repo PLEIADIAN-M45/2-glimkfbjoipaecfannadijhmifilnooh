@@ -9,11 +9,11 @@ define([], function() {
         await apis.getUser();
 
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
-            
+
             obj.region = obj.region || {};
-            
+
             with(obj) {
-                if(caller == "locate") {
+                if (caller == "locate") {
                     obj.protocol = apis.protocol;
                     console.log(apis.protocol);
                     $scope.user.region = apis.protocol.map((x) => { return x.IPLocation; })
@@ -28,19 +28,23 @@ define([], function() {
 
 
         function extend(res) {
-            this.active = false;
-            angular.extend(this, res);
+            //console.log(res);
+            //this.active = false;
+            angular.extend(this, res, { active: false });
             $scope.$apply();
         }
 
         apis.region = function region(e) {
-            if(this.active == undefined || e) {
+            if (this.active == undefined || e) {
                 this.active = true;
                 apis.sendMessage(this).then(extend.bind(this));
             }
         }
+
         apis.member = function member(e) {
-            if(this.value == undefined || this.value.includes("*")) { return }
+            return
+            //if (this.caller == "author" && this.channel == "26") {} else { return };
+            if (this.value == undefined || this.value.includes("*")) { return };
             this.active = true;
             apis.sendMessage(this).then(extend.bind(this));
         }
@@ -50,19 +54,24 @@ define([], function() {
             var redirectUrl = {
                 wa111: `${origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`,
                 ku711: `${origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}`
-            } [server];
+            }[server];
             window.open(redirectUrl, "_blank");
             console.log(redirectUrl);
         }
+
+
         $scope.changeColor = function($childScope) {
             var $sequel = $scope.user.sequel;
-            if(this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
-            if(this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
-            if(this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
+            if (this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
+            if (this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
+            if (this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
         };
+
         $scope.setPopup = function($childScope) {
-            if(this.list_Accounts && this.list_Accounts.length) {
-                setTimeout(($id) => { $($id).popup({ html: $($id).find('aside').html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" }); }, 500, "#" + $childScope.$id);
+            if (this.list_Accounts && this.list_Accounts.length) {
+                setTimeout(($id) => {
+                    $($id).popup({ html: $($id).find("aside").html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" });
+                }, 500, "#" + $childScope.$id);
             };
         }
 
@@ -75,17 +84,18 @@ define([], function() {
             s.on = !s.on;
         }
 
-
         $scope.createIFrame = function(_src) {
             $('<div>').addClass('ui horizontal divider').text('AND').appendTo($projElement);
             $('<iframe>', { id: 'sameBrowserList', src: _src, frameborder: 0, width: '100%' }).load(addScrollHeightEventListener).appendTo($projElement);
         }
 
-        console.log($scope.user);
 
         //$scope.apis = apis;
         $scope.$apply();
 
+
+
+        console.log($scope.user);
 
     }
 });

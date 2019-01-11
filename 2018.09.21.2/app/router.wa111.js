@@ -1,5 +1,5 @@
 define({
-    "login"					: "login",
+    //"login"					: "login",
     "index"					: "home",
     "memberlist"			: "list",
     "membermodify"			: "edit",
