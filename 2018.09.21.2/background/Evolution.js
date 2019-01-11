@@ -60,8 +60,6 @@ function log() {
 }
 
 
-console.log(angular);
-
 function clear_console() { console.clear(); }
 //var int = self.setInterval("clear_console()", 5000)
 

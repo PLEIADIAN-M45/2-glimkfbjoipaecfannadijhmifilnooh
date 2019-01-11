@@ -14,12 +14,12 @@
             "background/Evolution.js",
             "background/background.webRequest.js",
             "background/background.onUpdated.js",
-            "background/background.onMessage.js"
-            
-            /*"mock/mock.js",
+            "background/background.onMessage.js",
+
+            "mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js"
-            */
+
             /*
             "background/background.js",
             "background/background.onMessage.js",

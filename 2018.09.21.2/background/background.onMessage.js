@@ -1,6 +1,6 @@
 chrome.runtime.onMessageExternal.addListener(function(request, sender, sendResponse) {
 
-    if (sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
+    if(sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
 
     //var ___name = apis[request.command].name;
     /*************************************************************************************/
@@ -49,10 +49,10 @@ apis.sendSms = function(params) {
         data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
     }).then((res, b, c) => {
         var status;
-        if (res.match(/(msg = '')/)) { status = 200; }
-        if (res.match(/(會員登錄)/)) { status = 401; }
-        if (res.match(/(msg = '101')/)) { status = 101; }
-        if (res.match(/(msg = '102')/)) { status = 102; }
+        if(res.match(/(msg = '')/)) { status = 200; }
+        if(res.match(/(會員登錄)/)) { status = 401; }
+        if(res.match(/(msg = '101')/)) { status = 101; }
+        if(res.match(/(msg = '102')/)) { status = 102; }
         params.sendSms = status;
         return apis.putUser(params);
     });
@@ -103,7 +103,7 @@ apis.blacklist = function() {
 
 apis.region.check = function(region) {
 
-    if (region) {
+    if(region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
@@ -133,7 +133,7 @@ apis.region.check = function(region) {
 
 apis.member = function(request) {
 
-    if (!window.baseUrl) {
+    if(!window.baseUrl) {
 
         window.baseUrl = {
             "0": "http://chrome.evo.net",
@@ -257,7 +257,7 @@ apis.member.ku711 = function() {
 }
 
 apis.getMemberAlertInfoBackend = function(res) {
-    if (res.rows && res.rows.length) {
+    if(res.rows && res.rows.length) {
         var baseUrl = (window.isLocal) ? chrome.runtime.getURL("/") : window.baseUrl[16];
         var Account = res.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
         return $.ajax({
@@ -267,7 +267,7 @@ apis.getMemberAlertInfoBackend = function(res) {
             "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
         }).then(({ Data }) => {
             //console.log(Data);
-            if (Data) {
+            if(Data) {
                 res.list_RemittanceName = Data.AlertInfoAccountName;
                 res.rows.map((x) => {
                     x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
@@ -304,13 +304,13 @@ apis.region.locate = function() {
     }).then((res) => {
         console.log(res);
         //var region = {};
-        if (res.status == 0) {
+        if(res.status == 0) {
             var str = res.data[0].location;
             console.log(str);
-            if (str) {
+            if(str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if (!prov && !city && !area) {
+                        if(!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -358,7 +358,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if (res.status == 0) {
+        if(res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,
@@ -372,9 +372,7 @@ apis.region.mobile = function() {
 
 
 apis.GetSystemLog = function(origin, accounts, operator) {
-
     console.log(origin, accounts, operator);
-
     return $.ajax({
         dataType: "json",
         url: origin + "/LoadData/AccountManagement/GetSystemLog.ashx",
@@ -436,78 +434,83 @@ CreateMemberInfoOperationLog
 window.cacheBonusData;
 window.cacheUserData;
 
-
-
 /*
-
 btnUserSet -> "u-ok"
 sendData 去比對稍候的 getmodel 的respData
-
 */
+
+apis.updateUser = function(user, status, permit) {
+    user.module = (user.status[0] == 3) ? "authorize" : "suspended";
+    user.status.push(status)
+    user.permit.push(permit)
+    user.timing.push(Date.now())
+    user.timing.timeDiff();
+
+    if(user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+    apis.putUser(user);
+
+}
+
 
 apis.xmlSpider = async function(params) {
     //console.log(params);
     var { action, sendData, respData, server, unique, account, channel, operator, dataRows } = params;
     switch (action) {
-        //GetMemberRisksInfoBackendByAccountID
-        //CreateMemberInfoOperationLog
         case "UpdateMemberRiskInfoAccountingBackend":
-            var user = await apis.getUser(unique); //即時更新會比較保險
-            user.module = (user.status[0] == 3) ? "authorize" : "suspended";
-            user.status.push(sendData.MemberStatus)
-            user.permit.push(sendData.IsDeposit)
-            user.timing.push(Date.now())
-            user.timing.timeDiff();
-            if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
-            console.log("+[DONE]+ ", user.module, user);
-            return apis.putUser(user);
-            break;
-            //開通
-
         case "btnUserSet":
-            window.cacheUserData = sendData;
-            break;
-        case "getmodel":
-            //console.log(window.cacheUserData); //ishow  //isOpenDeposit
-            //console.log(respData); //f_ishow  //f_depositStatus
-            console.log(window.cacheUserData.ishow, window.cacheUserData.isOpenDeposit);
-            console.log(respData.f_ishow,           respData.f_depositStatus);
-            //重點是 ishow 的變化，isOpenDeposit可以看出存款設為什麼
-            var user = await apis.getUser(unique);
-            console.log(user);
-            break;
 
-        case "btnUserSet-222":
-
-            console.log(action, params)
-            //var origin = new URL(params.url).origin;
-            //return apis.GetSystemLog(params.origin, sendData.account, params.operator);
-
-            //return Promise.resolve()
-
-            //console.log(user);
+        case "StopMember": //停權
+        case "UpdateMemberSNInfoBackend": //"停權-用戶狀態選停權戶"(上方鍵)
+        case "UpdateMemberRisksInfoBackendIsFSuspension": //"還原或停權"
             var user = await apis.getUser(unique); //即時更新會比較保險
-            if (user == undefined) { return Promise.reject(1) }
-            if (user.module) { return Promise.reject(2) }
-            if (user.permit[0] == sendData.isOpenDeposit) { return Promise.reject("表示並未改變值") }
-            if (respData != "u-ok") { return Promise.reject(3) }
-            /**********************************************************************/
+        case "btnUserSet":
+            apis.updateUser(user, sendData.ishow, sendData.isOpenDeposit)
+        case "UpdateMemberRiskInfoAccountingBackend":
+            apis.updateUser(user, sendData.MemberStatus, sendData.IsDeposit)
+
+        case "StopMember": //停權
+            if(respData == 2) {
+                apis.updateUser(user, 2, 0)
+            }
+        case "UpdateMemberRisksInfoBackendIsFSuspension": //"還原或停權"
+            if(sendData.IsFSuspension == true) {
+                apis.updateUser(user, 0, 0)
+            }
+        case "UpdateMemberSNInfoBackend": //"停權-用戶狀態選停權戶"(上方鍵)
+
+            apis.updateUser(user, sendData.MemberStatus, sendData.IsDeposit)
+
+            console.log(user);
+            console.log(".........");
+
+            //updateUser(user, status, permit)
+
+
+            break;
+
+
+            //GetMemberRisksInfoBackendByAccountID
+            //CreateMemberInfoOperationLog
+            /*
+        case "UpdateMemberRiskInfoAccountingBackend":
+        case "btnUserSet":
+            var user = await apis.getUser(unique); //即時更新會比較保險
             user.module = (user.status[0] == 3) ? "authorize" : "suspended";
-            user.status.push(sendData.ishow)
-            user.permit.push(sendData.isOpenDeposit)
+            user.status.push(sendData.ishow || sendData.MemberStatus)
+            user.permit.push(sendData.isOpenDeposit || sendData.IsDeposit)
             user.timing.push(Date.now())
             user.timing.timeDiff();
-            if (server == "wa111") { if (sendData.ishow == 3 && sendData.isOpenDeposit == 1) { sendData.ishow = 1; } }
-            if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+            if(user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
             console.log("+[DONE]+ ", user.module, user);
             return apis.putUser(user);
-            break;
+            //開通
         case "StopMember": //停權
             console.log("StopMember");
-            if (respData == 2) {
+            console.log(params);
+            if(respData == 2) {
                 var user = await apis.getUser(unique);
-                user.status.push(2)
-                user.permit.push(0)
+                user.status.push(sendData.MemberStatus || 2)
+                user.permit.push(sendData.IsDeposit || 0)
                 user.timing.push(Date.now())
                 user.timing.timeDiff();
                 user.module = (user.status[0] == 3) ? "authorize" : "suspended";
@@ -529,7 +532,7 @@ apis.xmlSpider = async function(params) {
             break;
         case "UpdateMemberRisksInfoBackendIsFSuspension": //"還原或停權"
             var user = await apis.getUser(unique);
-            if (sendData.IsFSuspension == true) {
+            if(sendData.IsFSuspension == true) {
                 user.status.push(0)
                 user.permit.push(0)
                 user.timing.push(Date.now())
@@ -540,21 +543,21 @@ apis.xmlSpider = async function(params) {
                 return apis.putUser(user);
             }
             break;
+
+*/
+
             //禮金表列表
-
-
             /*刪除*/
             /*給點*/
         case "delDiceWinRecords":
         case "DelDiceWinRecords":
             console.log(params);
-            if (respData == 1) { window.cacheBonusData = sendData }
+            if(respData == 1) { window.cacheBonusData = sendData }
             break;
         case "getDepositBonusList":
         case "DepositBonus":
             var bonus = respData.rows.find((d) => {
-                return d.f_id == window.cacheBonusData.id
-                //&& d.f_AdminName == operator
+                return d.f_id == window.cacheBonusData.id //&& d.f_AdminName == operator
             });
             var unique = bonus.f_accounts + '-' + channel;
             var user = await apis.getUser(unique);
@@ -570,8 +573,10 @@ apis.xmlSpider = async function(params) {
             //禮金表功能
         case "UpdateMemberBonusLog":
             //console.log(params);
-            if (respData == 1) { window.cacheBonusData = sendData }
+            if(respData == 1) { window.cacheBonusData = sendData }
             break;
+
+
         case "GetMemberBonusLogBackendByCondition":
 
             var bonus = dataRows.find((d) => {
@@ -641,18 +646,18 @@ xmlSpider.btnUserSet = async function({ sendData, respData, user, server }) {
     //var current_time = Date.now()
     //return Promise.resolve(1)
     /**********************************************************************/
-    if (user == undefined) { return Promise.reject(1) }
+    if(user == undefined) { return Promise.reject(1) }
 
-    if (user.module) { return Promise.reject(1) }
+    if(user.module) { return Promise.reject(1) }
 
-    if (user.permit[0] == sendData.isOpenDeposit) { return Promise.reject(1) }
+    if(user.permit[0] == sendData.isOpenDeposit) { return Promise.reject(1) }
 
-    if (respData != "u-ok") { return Promise.reject(1) }
+    if(respData != "u-ok") { return Promise.reject(1) }
 
     /**********************************************************************/
     user.module = (user.status[0] == 3) ? "authorize" : "suspended";
 
-    if (sendData.ishow == 3 && sendData.isOpenDeposit == 1) { sendData.ishow = 1; }
+    if(sendData.ishow == 3 && sendData.isOpenDeposit == 1) { sendData.ishow = 1; }
 
     user.status.push(sendData.ishow)
     user.permit.push(sendData.isOpenDeposit)
@@ -660,7 +665,7 @@ xmlSpider.btnUserSet = async function({ sendData, respData, user, server }) {
 
     user.timing.timeDiff();
 
-    if (user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
+    if(user.status[0] == 3 || user.status[1] == 1) { user.sendSms = true; }
 
     console.log("[DONE] ", user.module);
     return apis.putUser(user);
