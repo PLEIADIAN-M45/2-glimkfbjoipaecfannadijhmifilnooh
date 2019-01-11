@@ -2,13 +2,18 @@ define([], function() {
 
     var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
 
-    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router }) {
+    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router, $extensionId }) {
 
-        console.log($account);
+
+        var $sender;
+        var port = chrome.runtime.connect($extensionId);
+        port.postMessage('sender');
+        port.onMessage.addListener(function(res) { $sender = res; });
+
 
         function getUserBasic() {
             var { server, origin, unique, channel, account, operator } = $router;
-            Object.assign(_user_, { unique, account, origin, server, channel, operator });
+            Object.assign(_user_, { unique, account, origin, server, channel, operator, $sender });
         }
 
         function getUserModel(m) {
@@ -71,7 +76,12 @@ define([], function() {
 
         apis.setUser = function() {
             console.log('+');
-            return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()]).then(() => { return _user_; })
+            return Promise.all([getUserBasic(),
+                getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()
+            ]).then(() => {
+                _user_.$sender = $sender;
+                return _user_;
+            })
         }
 
 

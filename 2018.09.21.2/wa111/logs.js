@@ -1,4 +1,7 @@
 define([], function() {
+
+    console.log(window.opener);
+
     return async function({ apis, $account, $channel, $unique, $scope, $model, $getUser, $sendMessage, $apply }) {
 
         function createElement(value, content) { return $('<b>').text(value).addClass('pointer').popup({ on: 'click' }).click(apis.copy).attr('data-content', content)[0]; };

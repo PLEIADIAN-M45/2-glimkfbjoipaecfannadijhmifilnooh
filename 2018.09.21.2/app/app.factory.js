@@ -1,5 +1,7 @@
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
 
+
+
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
         //$digest
 
@@ -12,7 +14,14 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
         var $forms = document.forms,
             $form = document.forms[0],
             $referrer = document.referrer;
+
         /*----------------------------------------------------------------------*/
+
+        //chrome.runtime.connect
+        //laserExtensionId
+        //console.log(port);
+
+
 
         return function($router) {
 
@@ -129,11 +138,6 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 */
             };
 
-
-
-
-
-
             var c = console.log;
 
 
@@ -178,11 +182,23 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 };
             }
 
+
             /************************************************************/
 
+            /*var $sender;
+            var port = chrome.runtime.connect($extensionId);
+            port.postMessage('sender');
+            port.onMessage.addListener(function(res) {
+                console.log(res);
+                $sender = res;
+            });*/
+
             var $createTab = function(hyperlink) {
+                //console.log($sender);
                 //console.log($channel, $account);
-                let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account)
+                let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account);
+                //+ "&tabId=" + $sender.tab.id;
+                //redirectUrl + "&tabId=" + $sender.tab.id;
                 console.log(redirectUrl);
                 window.open(redirectUrl, "_blank");
                 //console.log(redirectUrl);
@@ -197,7 +213,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                     "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
-            } [$server];
+            }[$server];
 
 
             var $isTest = window.location.hostname == "127.0.0.1";
@@ -235,13 +251,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 ...$router.__proto__
             }
 
-            //console.log(factory);
-
 
 
             $xmlSpider.apis = apis;
             $xmlSpider.$scope = $scope;
-
             $xmlSpider.unique = $router.unique
             $xmlSpider.$unique = $router.$unique
 

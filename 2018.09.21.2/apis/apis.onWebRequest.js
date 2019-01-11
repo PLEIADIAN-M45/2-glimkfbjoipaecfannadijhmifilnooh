@@ -19,8 +19,8 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function(details) {
 chrome.webRequest.onBeforeRequest.addListener(function(details) {
     if (details.initiator == location.origin) { return };
     apis.baseUrl["16"] = details.initiator;
-    console.log(apis.baseUrl);
-    console.clear()
+    //console.log(apis.baseUrl);
+    //console.clear()
     //console.log(window.baseUrl);
 }, { urls: ["*://bk.ku711.net/*"], types: ["xmlhttprequest"] }, ['blocking']);
 

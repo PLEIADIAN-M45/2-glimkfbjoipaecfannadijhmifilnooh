@@ -23,13 +23,20 @@ define(["app.spider.extend", "md5"], function() {
 
     function $isJson(d) { try { JSON.parse(d); } catch (ex) { return false; } return true; }
 
-    function $hostname() { if (location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" } [location.port]; } else { return location.hostname.split('.')[1]; } }
+    function $hostname() { if (location.port) { return { "26": "wa111", "35": "wa111", "17": "wa111", "16": "ku711" }[location.port]; } else { return location.hostname.split('.')[1]; } }
 
     function $lastPath({ url }) { return url.split('?')[0].split('/').pop().replace(/\.\w+/, ''); }
 
     function $mimeType({ responseText }) { return $isJson(responseText) ? "json" : "text"; }
 
     function $dataRows({ respData }) { try { return respData.rows || respData.Data.Data; } catch (ex) {} }
+
+    function setToMap(key, arr) {
+        //console.log(this);
+        var obj = {};
+        arr.map((d) => { obj[d[key]] = d; })
+        return obj;
+    }
 
     var MD5 = function() {
         return CryptoJS.MD5("CODE").toString().toUpperCase();
@@ -48,7 +55,8 @@ define(["app.spider.extend", "md5"], function() {
         $lastPath,
         $mimeType,
         $dataRows,
-        MD5
+        MD5,
+        setToMap
     }
 
 

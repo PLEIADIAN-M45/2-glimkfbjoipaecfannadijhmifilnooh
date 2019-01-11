@@ -1,20 +1,16 @@
 //define(["app.spider.extend", "md5"], function({ $getAllResponseHeaders, $serialize, $fromJson, $tryJson, $hostname, $lastPath, $mimeType, $dataRows }) {
-define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loadend) {
+define(["app.spider.extend", "md5"], function(ext) {
 
     //console.log(ext);
-
     try {
 
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
-
         var xmlSpider = XMLHttpRequest.prototype;
-
         xmlSpider.open = function(method, url, async, user, password) {
             this.startedDateTime = Date.now();
             this.url = url.replace('..', location.origin);
             this.origin = location.origin;
             // var origin = new URL(params.url).origin;
-
             this.method = method;
             this.requestHeaders = {};
             return open.apply(this, arguments);
@@ -26,7 +22,6 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
         };
 
         xmlSpider.send = function(postData) {
-            //console.log(arguments);
             this.postData = postData;
             this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
@@ -34,16 +29,9 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
             return send.apply(this, arguments);
         };
 
-        //onloadstart
-        //onload
-        //onloadend
-        //console.log(moment);
-        xmlSpider.loadstart = function() {
-            /*cant catch respData yet.*/
-        }
-
-
-
+        //onloadstart        //onload        //onloadend        //console.log(moment); 
+           
+        xmlSpider.loadstart = function() { /*cant catch respData yet.*/ }
 
         xmlSpider.load = function() {
             this.extensionId = localStorage.extensionId;
@@ -78,48 +66,6 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
             } = this;
 
 
-            /*
-            chrome.runtime.sendMessage(
-                this.extensionId, {
-                    caller: "xmlSpider",
-                    params: [
-                        action,
-                        respData,
-                        sendData,
-                        server,
-                        channel
-                    ],
-                }, (res) => {
-                    console.log(res);
-                    //resolve(res);
-                    //this.active = false;
-                })
-    */
-
-
-            this.MISSION = ext.MD5(this.lastPath)
-            this.COMMANDER = this.action.toUpperCase();
-            this.SEND_DATA = this.sendData;
-            this.RESP_DATA = this.respData;
-            this.EXTENSION = localStorage.extensionId;
-
-            // _loadend(this)
-
-
-            /*
-            var COMMANDER = this.action.toUpperCase(),
-                SEND_DATA = this.sendData,
-                RESP_DATA = this.respData,
-                EXTENSION = localStorage.extensionId;
-            */
-
-            //_loadend(COMMANDER, SEND_DATA, RESP_DATA, EXTENSION, this)
-            //this.action = MD5(this.sendData.action) || MD5(this.sendData.type) || MD5(this.lastPath)
-            //this.moment = Date.now();
-            //this.$unique = window.$unique;
-            //moment().format("YYYY-MM-DD HH:mm:ss")
-            //console.log(window.$unique);
-            //console.log(this.$scope);
         }
 
         /*function() {
@@ -142,32 +88,30 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
         };
         */
         xmlSpider.loadend = async function xmlSpider() {
-            console.log(this.action);
-            //console.log(this.unique);
-            //console.log(xmlSpider.unique);
-            this.apis.sendMessage(this);
-
             switch (this.action) {
-                case "getDepositBonusList":
-                    //this.apis.getUser();
-                    break;
-
                 case "btnUserSet":
                 case "UpdateMemberRiskInfoAccountingBackend":
-                    //if ($scope.user) {};
-                    //this.user = this.$scope.user;
-                    //this.user = await this.apis.getUser();
+                case "GetMemberBonusLogBackendByCondition":
+                case "StopMember":
+                case "UpdateMemberRisksInfoBackendIsFSuspension":
+                case "UpdateMemberSNInfoBackend":
+                case "DepositBonus":
+                case "GetMemberBonusLogBackendByCondition":
+                case "UpdateMemberBonusLog":
+                case "delDiceWinRecords":
+                case "DelDiceWinRecords":
+                    console.log(this.action);
+                    this.apis.sendMessage(this);
                     break;
                 case "getmodel":
                     this.apis.getUser();
-                    break;
-                case "-------":
                     break;
             }
 
             //_loadend.call(this, this)
 
         };
+
         return xmlSpider;
 
 
@@ -179,7 +123,8 @@ define(["app.spider.extend", "app.spider.loadend", "md5"], function(ext, _loaden
 
 
 
-
+//this.cacheBonusData = setToMap('BonusNumber', this.respData.Data.Data)
+//this.cacheBonusData = setToMap('f_id', this.respData.rows)
 
 
 

@@ -1,9 +1,11 @@
 define([], function() {
     return async function({ apis, $scope, $server, $ctrl }) {
         //apis.watch('user', 'putUser');
+        
         await apis.getUser();
+        
+        //console.log($server);
 
-        console.log($server);
 
 
         $scope.setPermit = async function(e) {

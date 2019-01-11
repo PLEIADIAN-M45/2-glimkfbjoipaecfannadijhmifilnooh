@@ -47,26 +47,11 @@ apis.region.check = function(region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
-
         //if(this.age < 18) { this.alert = true }
     } else {
         return true;
     }
 
-    /*
-    return true;
-
-
-    if(this) {
-        this.alert = global.region.find(([elem]) => {
-            return Object.values(this).toString().includes(elem);
-        }) || false;
-        if(this.age < 18) { this.alert = true }
-    } else {
-        this.alert = true;
-    }
-    //res.alarm = this.compare();
-    return this;*/
 }
 
 apis.region.locate = function() {
@@ -147,9 +132,36 @@ apis.region.mobile = function() {
             this.region = {
                 city: d.city,
                 prov: d.prov,
-                meta: d.type || "baidu"
+                meta: d.type
             };
         }
         return this.region;
     })
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+return true;
+
+if(this) {
+    this.alert = global.region.find(([elem]) => {
+        return Object.values(this).toString().includes(elem);
+    }) || false;
+    if(this.age < 18) { this.alert = true }
+} else {
+    this.alert = true;
+}
+//res.alarm = this.compare();
+return this;*/
