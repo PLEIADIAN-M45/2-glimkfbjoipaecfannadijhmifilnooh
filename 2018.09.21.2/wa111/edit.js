@@ -84,7 +84,14 @@ define([], function() {
             })
         }
 
-
+        /*
+        var inp = document.createElement('input');
+        var XMLS = new XMLSerializer();
+        var inp_xmls = XMLS.serializeToString(inp); // First convert DOM node into a string
+        console.log(inp_xmls);
+        // Insert the newly created node into the document's body
+        document.body.insertAdjacentHTML('afterbegin', inp_xmls);
+    */
 
         // $xmlSpider.loadend = function xmlSpider() {
         //     //console.log(this.action);

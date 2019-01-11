@@ -92,6 +92,8 @@ define(["app.spider.extend", "md5"], function() {
 
 })
 
+//onloadstart        //onload        //onloadend        //console.log(moment); 
+
 /*
 method: "GET"
 onabort: null
@@ -119,19 +121,27 @@ url: "http://127.0.0.1:26/LoadData/AccountManagement/GetMemberList.ashx?ddlWarn=
 withCredentials: false
     */
 /*
+        /*function() {
+            //console.log(3);
+            //console.log(this);
+            //console.log(this.extensionId);
+            /*
+            getmodel: 開通表
+            StopMember:
+            getDepositBonusList:
+            delDiceWinRecords:
+            DelDiceWinRecords:
+            -------------------------
+            UpdateMemberBonusLog
+            GetMemberBonusLogBackendByCondition
+            UpdateMemberRiskInfoAccountingBackend
+            UpdateMemberSNInfoBackend
+            UpdateMemberRisksInfoBackendIsFSuspension
+            
+        };
+        */
 
-return {
-    $getAllResponseHeaders,
-    $serialize,
-    $fromJson,
-    $tryJson,
-    $hostname,
-    $lastPath,
-    $mimeType,
-    $dataRows
-}
-*/
-//console.log(arr);
+
 
 //console.log(arr);
 

@@ -1,44 +1,9 @@
 //define(["app.spider.extend", "md5"], function({ $getAllResponseHeaders, $serialize, $fromJson, $tryJson, $hostname, $lastPath, $mimeType, $dataRows }) {
 define(["app.spider.extend", "md5"], function(ext) {
     //console.log(ext);
-
-    //http://2ality.com/2015/08/es6-map-json.html
-    //https://developer.mozilla.org/zh-TW/docs/Web/API/XMLSerializer
-
-    function strMapToObj(strMap) {
-        let obj = Object.create(null);
-        for (let [k, v] of strMap) {
-            console.log(k, v);
-            // We don’t escape the key '__proto__'
-            // which can cause problems on older engines
-            obj[k] = v;
-        }
-        return obj;
-    }
-
-    function strMapToObj2(_url) {
-        console.log(_url);
-        let obj = Object.create(null);
-        Array.from(_url.searchParams.entries()).forEach(([k, v]) => { obj[k] = v; });
-        return obj;
-    }
-
-    function mapToJson(map) {
-        return JSON.stringify([...map]);
-    }
-
-    function jsonToMap(jsonStr) {
-        return new Map(JSON.parse(jsonStr));
-    }
-
-    var obj = { postData: {} };
-
     try {
-
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
-
         var xmlSpider = XMLHttpRequest.prototype;
-
         xmlSpider.open = function(method, url, async, user, password) {
             //this.startedDateTime = Date.now();
             //this.url = url.replace('..', location.origin);
@@ -46,30 +11,6 @@ define(["app.spider.extend", "md5"], function(ext) {
             // var origin = new URL(params.url).origin;
             //this.method = method;
             //this.requestHeaders = {};
-            //console.log(arguments);
-            //obj.url = new URL(url.replace('..', location.origin))
-
-            //var _url = new URL(url.replace('..', location.origin))
-
-            obj.method = method;
-            //obj.origin = _url.origin;
-            //obj.lastPath = _url.pathname.split('.')[0].split('/').pop();
-            obj.server = localStorage.server;
-            obj.channel = localStorage.channel;
-            obj.operator = localStorage.operator;
-
-
-            //url.replace('..', location.origin);
-
-            //var u = new URL(_url)
-            //console.log(method);
-            //console.log(u);
-
-            //url.split('?')[0].split('/').pop().replace(/\.\w+/, '');
-
-
-
-
             return open.apply(this, arguments);
         };
         xmlSpider.setRequestHeader = function(name, value) {
@@ -78,25 +19,7 @@ define(["app.spider.extend", "md5"], function(ext) {
         };
         xmlSpider.send = function(postData) {
 
-            if (postData) {
-                //console.log(postData);
-                //console.log(angular);
-                var object = {};
-                if (obj.server == "wa111") {
-                    postData.split("&").map((str) => { return "object." + str.replace("=", "=decodeURI('") + "')"; }).map((str) => { eval(str) });
-                }
-                if (obj.server == "ku711") {
-                    object = angular.fromJson(postData)
-                }
-
-                obj.postData = object;
-
-
-            }
-
-
-
-
+            this.postData = postData;
 
             this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
@@ -104,60 +27,7 @@ define(["app.spider.extend", "md5"], function(ext) {
             return send.apply(this, arguments);
         };
         xmlSpider.loadstart = function() { /*cant catch respData yet.*/ }
-
-
-
-        xmlSpider.load = function(progressEvent) {
-
-            /*
-            progressEvent.currentTarget.responseURL
-            progressEvent.timeStamp
-            progressEvent.total
-            progressEvent.loaded
-            progressEvent.type
-            */
-            //console.log(this);
-
-
-            var _url = new URL(this.responseURL);
-
-            if (_url.search) {
-                obj.sendData = strMapToObj2(_url);
-                obj._type = obj.sendData.type
-                obj._action = obj.sendData.action
-            }
-
-            obj._lastPath = this.responseURL.split('/').pop().split('.')[0];
-
-
-
-            try {
-                var _response = angular.fromJson(this.response);
-            } catch (ex) {
-                var _response = this.response;
-            }
-
-            switch (obj.server) {
-                case "wa111":
-
-                    obj._response = _response
-
-                    // _response.rows || _response;
-
-
-
-                    break;
-                case "ku711":
-                    //var _response = angular.fromJson(this.response)
-                    obj._response = _response.Data.Data || _response.Data || _response;
-                    break;
-
-            }
-
-
-            console.log(obj);
-
-            //.split('?')[0].split('.')[0].
+        xmlSpider.load = function() {
 
             /*this.extensionId = localStorage.extensionId;
             this.operator = localStorage.operator
@@ -165,7 +35,6 @@ define(["app.spider.extend", "md5"], function(ext) {
             this.server = localStorage.server;
             this.unique = this.unique;
             //this.hostname = $hostname();
-
             this.responseHeaders = ext.$getAllResponseHeaders(this);
             this.lastPath = ext.$lastPath(this);
             this.sendData = ext.$serialize(this);
@@ -181,18 +50,14 @@ define(["app.spider.extend", "md5"], function(ext) {
 
         xmlSpider.loadend = async function xmlSpider() {
 
-            //console.log(this);
+            console.log(this);
 
-
-            //this.apis.sendMessage(obj);
-
-
-            /*console.log(Object.keys(this));
+            console.log(Object.keys(this));
             console.log(Object.keys(this.__proto__));
-            */
 
 
-            /*
+            console.log(this);
+
             switch (this.action) {
                 case "btnUserSet":
                 case "UpdateMemberRiskInfoAccountingBackend":
@@ -212,7 +77,6 @@ define(["app.spider.extend", "md5"], function(ext) {
                     this.apis.getUser();
                     break;
             }
-            */
 
             //_loadend.call(this, this)
 

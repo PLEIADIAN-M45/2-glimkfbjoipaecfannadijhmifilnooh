@@ -37,7 +37,9 @@ window.cacheBonusData;
 window.cacheUserData;
 
 apis.xmlSpider = async function(params) {
-    //console.log(params);
+
+    console.log(params);
+    
     var { action, sendData, respData, server, unique, account, channel, operator, dataRows } = params;
     console.log(action);
 
@@ -67,7 +69,7 @@ apis.xmlSpider = async function(params) {
         case "GetMemberBonusLogBackendByCondition":
             window.cacheBonusData = respData.rows || respData.Data.Data;
             break;
-            
+
         case "UpdateMemberBonusLog":
             if (respData == 1 && window.cacheBonusData) {
                 var bonus = window.cacheBonusData.find((d) => { return d.BonusNumber == sendData.BonusNumber; });
