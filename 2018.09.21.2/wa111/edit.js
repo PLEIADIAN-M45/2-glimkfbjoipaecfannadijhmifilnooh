@@ -5,15 +5,9 @@ define([], function() {
     return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router, $extensionId }) {
 
 
-        var $sender;
-        var port = chrome.runtime.connect($extensionId);
-        port.postMessage('sender');
-        port.onMessage.addListener(function(res) { $sender = res; });
-
-
         function getUserBasic() {
             var { server, origin, unique, channel, account, operator } = $router;
-            Object.assign(_user_, { unique, account, origin, server, channel, operator, $sender });
+            Object.assign(_user_, { unique, account, origin, server, channel, operator });
         }
 
         function getUserModel(m) {
@@ -73,18 +67,28 @@ define([], function() {
             });
         }
 
-
         apis.setUser = function() {
             console.log('+');
-            return Promise.all([getUserBasic(),
-                getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()
-            ]).then(() => {
-                _user_.$sender = $sender;
-                return _user_;
-            })
-        }
+            return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()])
+                .then(() => { return _user_; });
+        };
+    }
+});
 
-        /*
+
+
+
+
+/*
+        _user_.$sender = $sender;
+
+      var $sender;
+      var port = chrome.runtime.connect($extensionId);
+      port.postMessage('sender');
+      port.onMessage.addListener(function(res) { $sender = res; });
+      */
+
+/*
         var inp = document.createElement('input');
         var XMLS = new XMLSerializer();
         var inp_xmls = XMLS.serializeToString(inp); // First convert DOM node into a string
@@ -93,29 +97,21 @@ define([], function() {
         document.body.insertAdjacentHTML('afterbegin', inp_xmls);
     */
 
-        // $xmlSpider.loadend = function xmlSpider() {
-        //     //console.log(this.action);
-        //     switch (this.action) {
-        //         case "btnUserSet":
-        //             //if ($scope.user) {};
-        //             this.user = $scope.user;
-        //             apis.sendMessage(this);
-        //             break;
-        //         case "getmodel":
-        //             apis.getUser();
-        //             break;
-        //         case "-------":
-        //             break;
-        //     }
-        // };
-
-
-
-
-    }
-});
-
-
+// $xmlSpider.loadend = function xmlSpider() {
+//     //console.log(this.action);
+//     switch (this.action) {
+//         case "btnUserSet":
+//             //if ($scope.user) {};
+//             this.user = $scope.user;
+//             apis.sendMessage(this);
+//             break;
+//         case "getmodel":
+//             apis.getUser();
+//             break;
+//         case "-------":
+//             break;
+//     }
+// };
 
 
 

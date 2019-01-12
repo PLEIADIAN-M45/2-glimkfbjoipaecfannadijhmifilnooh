@@ -1,15 +1,9 @@
 define([], function() {
     return function({ $dexie, $xmlSpider }) {
-       
-/*
         $xmlSpider.loadend = function() {
-            if(this.type == "getAllUser") {
-                this.dataRows.map((r) => {
-                    $dexie.user.put(r);
-                    console.log(r);
-                });
+            if (this.sendData.type == "getAllUser") {
+                this.dataset.map((r) => { return $dexie.user.put(r).then(() => { console.log(r); }) });
             };
         };
-        */
     };
 })

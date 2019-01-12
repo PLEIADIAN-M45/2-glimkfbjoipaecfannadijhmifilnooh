@@ -1,12 +1,15 @@
-function viewer(res) { console.log(res); return res; }
+function viewer(res) {
+    //console.log(res);
+    return res;
+}
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {})
 chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
-    if(!request.params) { return };
-    if(sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
+    if (!request.params) { return };
+    if (sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
     apis[request.caller](...request.params).then(viewer).then(sendResponse);
     return true;
 });
-chrome.runtime.onConnectExternal.addListener((port) => { port.onMessage.addListener((msg) => { if(msg == "sender") { port.postMessage(port.sender) } }); });
+chrome.runtime.onConnectExternal.addListener((port) => { port.onMessage.addListener((msg) => { if (msg == "sender") { port.postMessage(port.sender) } }); });
 
 
 

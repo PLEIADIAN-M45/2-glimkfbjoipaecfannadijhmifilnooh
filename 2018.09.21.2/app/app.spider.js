@@ -1,73 +1,48 @@
 define(["md5"], function(md5) {
     function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
+    function parseToObject(str) { if (str.includes("?")) { str = str.split("?")[1]; } if (str.includes("&")) { try { let obj = Object.create(null);
+                str.split("&").map((_str) => { return _str.split('='); }).map(([key, value]) => { obj[key] = value; }); return obj; } catch (ex) { return str; } } else { return str; } };
+    function parseToJson(str) { try { return angular.fromJson(str); } catch (ex) { return parseToObject(str); } };
+    function parseToPath(str) { return str.split('/').pop().split('.')[0]; }
 
-    function strMapToObj(strMap) {
-        let obj = Object.create(null);
-        strMap.split("&").map((str) => { return str.split('='); }).map(([key, value]) => { obj[key] = value; });
-        return obj;
-    }
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
         xmlSpider.open = function(method, url, async, user, password) {
             this.method = method;
-            this.server = this.$router.server;
-            this.channel = this.$router.channel;
-            this.operator = this.$router.operator;
-            this.unique = this.$router.unique;
             return open.apply(this, arguments);
         };
 
-        //xmlSpider.setRequestHeader = function(name, value) { return setRequestHeader.apply(this, arguments); };
         xmlSpider.send = function(postData) {
-            if(postData) {
-                postData = decodeURIComponent(postData);
-                if(this.server == "wa111") {
-                    this.sendData = strMapToObj(postData);
-                    this.commander = this.sendData.action;
-                };
-                if(this.server == "ku711") { this.sendData = angular.fromJson(postData); };
-            }
+            this.postData = postData;
             this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
 
-        xmlSpider.loadstart = function() {}
+        xmlSpider.loadstart = function() {};
         xmlSpider.load = function xmlSpider(progress) {
-            try {
-                var responseURL = decodeURIComponent(this.responseURL);
-                var _url = new URL(responseURL);
-                this.origin = _url.origin;
-                if(_url.search) {
-                    this.sendData = strMapToObj(responseURL.split("?")[1])
-                    this.commander = this.sendData.type;
-                }
-                var lastPath = this.responseURL.split('/').pop().split('.')[0];
-                if(!this.commander) { this.commander = lastPath; };
-                if(Number(this.commander)) { this.commander = lastPath };
-                this.commander = this.commander.toUpperCase();
-            } catch (ex) {}
-            try {
-                this.respData = angular.fromJson(decodeURIComponent(this.response));
-            } catch (ex) { this.respData = this.response; }
-
-            with(this) {
-                if(commander) {
-                    var obj = { commander: commander, command: MD5(commander), server, origin, respData, sendData, unique, operator, channel }
-                    this.apis.sendMessage(obj);
-                } else {
-                    //console.log(this);
-                }
-            }
-            console.log(this);
+            this.lastPath = parseToPath(this.responseURL);
+            this.respData = parseToJson(this.responseText);
+            this.sendData = (this.method == 'GET') ? parseToObject(this.responseURL) : parseToJson(this.postData);
+            if (this.respData.rows) { this.dataset = this.respData.rows };
+            if (this.respData.Data) { this.dataset = this.respData.Data };
+            if (this.dataset && this.dataset.Data) { this.dataset = this.dataset.Data };
+            this.commander = this.sendData.action || this.sendData.type || this.lastPath;
+            if (!isNaN(this.commander)) { this.commander = this.lastPath; };
+            this.commander = this.commander.toUpperCase();
+            var { commander, command, respData, sendData, dataset, apis } = this;
+            var { server, channel, operator, unique } = this.$router;
+            apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
         }
+
         xmlSpider.loadend = function() {
             console.log(this.commander);
             switch (this.commander) {
                 case "GETMODEL":
                     this.apis.getUser();
+                    console.log("**getUser");
                     break;
                 default:
                     // statements_def
@@ -75,12 +50,17 @@ define(["md5"], function(md5) {
             }
         };
 
+
         return xmlSpider;
+
     } catch (ex) {
+
         console.error('xmlSpider');
     }
 });
 
+//if (Number(this.commander)) { this.commander = this.lastPath };
+//this.command = MD5(this.commander);
 
 /*
 var obj = {
