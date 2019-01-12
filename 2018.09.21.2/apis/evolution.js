@@ -155,7 +155,7 @@ window.baseUrl = {
 
 
 
-class apis2 {
+class Apis2 {
     constructor() {
         //super();
         //this.store = new Dexie('evo');
@@ -347,7 +347,7 @@ class apis2 {
             $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
                 access_token: token
             }, (tokenInfo) => {
-                api.tokenInfo = tokenInfo;
+                apis2.tokenInfo = tokenInfo;
                 //localStorage.tokenInfo = angular.toJson(tokenInfo, true);
                 console.log("[OK]", "tokenInfo")
             })
@@ -622,8 +622,9 @@ class apis2 {
 
 
 
-var api = new apis2();
-console.log(api);
+var apis2 = new Apis2();
+
+console.log(apis2);
 
 
 

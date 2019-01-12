@@ -31,7 +31,7 @@ define([], function() {
                     apis.global.region.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
                     apis.global.danger.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
                     apis.global.author.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
-                    apis.global.locate.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
+                    //apis.global.locate.forEach((str, index) => { if (li.outerText.includes(str)) { li.classList.add('danger') } });
                 })
             });
 
