@@ -255,8 +255,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             $xmlSpider.apis = apis;
             $xmlSpider.$scope = $scope;
-            $xmlSpider.unique = $router.unique
-            $xmlSpider.$unique = $router.$unique
+
+            $xmlSpider.unique = $router.$unique
+
+            //$xmlSpider.$unique = $router.$unique
 
 
 

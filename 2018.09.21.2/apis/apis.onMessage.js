@@ -1,9 +1,11 @@
-Array.prototype.timeDiff = function(unit) {
+/*Array.prototype.timeDiff = function(unit) {
     this[0] = moment(this[0]).format("YYYY-MM-DD HH:mm:ss")
     this[1] = moment(this[1]).format("YYYY-MM-DD HH:mm:ss")
     this[2] = moment(this[1]).diff(moment(this[0]), "minutes", true);
     return this;
-}
+}*/
+
+
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     console.log(request);

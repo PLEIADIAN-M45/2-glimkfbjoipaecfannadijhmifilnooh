@@ -38,9 +38,6 @@ define(["app.spider.extend", "md5"], function() {
         return obj;
     }
 
-    var MD5 = function() {
-        return CryptoJS.MD5("CODE").toString().toUpperCase();
-    }
 
     function trim(value) { return value.toString().trim() };
 
@@ -92,7 +89,7 @@ define(["app.spider.extend", "md5"], function() {
 
 })
 
-//onloadstart        //onload        //onloadend        //console.log(moment); 
+//onloadstart        //onload        //onloadend        //console.log(moment);
 
 /*
 method: "GET"
@@ -137,7 +134,7 @@ withCredentials: false
             UpdateMemberRiskInfoAccountingBackend
             UpdateMemberSNInfoBackend
             UpdateMemberRisksInfoBackendIsFSuspension
-            
+
         };
         */
 
