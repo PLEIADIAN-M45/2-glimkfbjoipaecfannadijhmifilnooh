@@ -1,11 +1,7 @@
 define([], function() {
     return async function({ apis, $scope, $server, $ctrl }) {
-        //apis.watch('user', 'putUser');
-        
-        await apis.getUser();
-        
-        //console.log($server);
 
+        await apis.getUser();
 
 
         $scope.setPermit = async function(e) {
@@ -22,7 +18,6 @@ define([], function() {
                 $scope.ctrl.DepositChanged();
                 $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
             }
-
         };
 
 

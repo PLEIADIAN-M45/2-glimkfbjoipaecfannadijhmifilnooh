@@ -6,7 +6,6 @@ function google_scripts(e) {
 
     var user = JSON.parse(e.parameter.user);
 
-
     user.region = user.region || [];
 
     console.log(user);

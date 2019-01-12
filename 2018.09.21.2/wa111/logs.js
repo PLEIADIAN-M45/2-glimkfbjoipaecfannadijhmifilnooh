@@ -12,12 +12,15 @@ define([], function() {
             .filter((i, { firstElementChild, children }) => {
                 return firstElementChild.outerText && children.length > 10;
             }).each((index, { children, style }) => {
+
                 var channel = children[0].outerText.split("-")[0];
                 var account = children[2].outerText;
                 var unique = account + "-" + channel;
+
                 children[2].firstChild.remove();
                 children[2].appendChild(createElement(account, account));
                 children[2].appendChild(createElement(channel, unique));
+                
                 /*----------------------------------------*/
                 if (channel == $channel && account == $account) {
                     children[2].style.backgroundColor = "#01579b";

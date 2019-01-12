@@ -1,6 +1,6 @@
 define([], function() {
 
-    return async function({ apis, $getUser, $putUser, $scope, $sendMessage, $apply, $extensionId }) {
+    return async function({ apis, $server, $getUser, $putUser, $scope, $sendMessage, $apply, $extensionId }) {
 
 
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
@@ -14,9 +14,13 @@ define([], function() {
 
             with(obj) {
                 if (caller == "locate") {
-                    obj.protocol = apis.protocol;
-                    console.log(apis.protocol);
-                    $scope.user.region = apis.protocol.map((x) => { return x.IPLocation; })
+
+                    //console.log(apis.protocol);
+                    if ($server == "wa111") {
+                        obj.protocol = apis.protocol;
+                        $scope.user.region = apis.protocol.map((x) => { return x.IPLocation; })
+                    }
+
                 } else {
                     obj.sites = [
                         { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }

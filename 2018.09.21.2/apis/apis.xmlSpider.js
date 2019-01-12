@@ -31,8 +31,6 @@ apis.updateUser = async function({ unique, status, permit, bonus }) {
 
 
 apis.google2 = function google2(user) {
-
-
     try {
         delete user.banker[0].sites;
         delete user.idcard.sites;
@@ -40,21 +38,8 @@ apis.google2 = function google2(user) {
         delete user.mobile.sites;
         delete user.author.sites;
     } catch (ex) {};
-
-
     user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
-
-
     console.log(user);
-
-
-    //request.region = [];
-    // angular.fromJson(localStorage.tokenInfo).audience,
-
-
-
-    //console.log(angular.toJson(user));
-
     $.ajax({
         url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
         method: 'get',

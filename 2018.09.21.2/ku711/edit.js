@@ -3,10 +3,7 @@ define(["../ku711/decode"], function(decode) {
     var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
 
     return function({ apis, $xmlSpider, $scope, $ajax, $account, $dexie, $model, $ctrl, $getModule, $router }) {
-
-
         var { account, server, origin, unique, channel, operator } = $router;
-
 
         function getSystemLog() {
             //timeing[0]: 用户状态 【靜止戶】 被修改为 【審核戶】
@@ -120,6 +117,21 @@ define(["../ku711/decode"], function(decode) {
             $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
         };
 
+        console.log($scope);
+
+
+        $scope.$watch('ctrl.model.CityInfoList', function(nv, ov) {
+            if (nv) {
+                console.log(nv);
+            }
+        }, true);
+
+
+        $scope.$watch('ctrl.model.ProvinceInfoListForMemberInfo', function(nv, ov) {
+            if (nv) {
+                console.log(nv);
+            }
+        }, true);
 
 
         /*
