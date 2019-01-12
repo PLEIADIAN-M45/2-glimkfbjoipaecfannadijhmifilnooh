@@ -1,79 +1,38 @@
 apis.member = function(request) {
-    //console.log(request);
     request.url = apis.baseUrl[Number(request.channel)];
-    if (request.url == undefined) { return Promise.reject(800) };
-    return apis.member[request.server].call(request);
-
+    if(request.url == undefined) { return Promise.reject(800) };
+    return apis.member[request.server].call(request).then((res) => {
+        res.origin = request.url
+        res.index = request.index
+        return res
+    })
 }
 
 apis.member.ku711 = function() {
-
     return $.ajax({
         "dataType": 'json',
         "method": 'post',
         "url": this.url + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
         "data": angular.toJson({ "AccountID": "", "IDNumber": this.idcard, "RigistedIP": "", "TotalDepositAmount": null, "AccountNumber": "", "AccountName": this.author, "Email": "", "PhoneVerified": null, "IDVerified": null, "MinDeposit": null, "MaxDeposit": null, "StartRegistedTime": "", "EndRegistedTime": "", "PageNumber": this.index - 1, "RecordCounts": 20, "OrderField": "", "Desc": "true", "TotalDepositBonus": null, "AccountBookLevel": "", "AliPayLevel": "", "WeChatLevel": "", "CellPhone": this.mobile, "IsBlackList": null, "LevelType": null, "MemberStatus": null, "IsFisrstDeposit": null, "MemberMemoType": null, "TransferOutStatus": null, "IsLogIn": null, "AgencyID": "", "TestType": null, "PayeeAccountNo": this.banker, "LineType": "", "AccountingType": null, "ManageAccountID": "", "NickName": "" })
-    }).then(({ Data }) => {
+    }).then(({ Data }) => { return apis.member.getMemberAlertInfoBackend({ rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount }); })
 
-
-        return {
-            origin: this.url,
-            index: this.index,
-            rows: Data.Data,
-            records: Data.Pager.PageCount,
-            total: Data.TotalItemCount
-        };
-
-    }).then(apis.member.getMemberAlertInfoBackend)
+    //.then(apis.member.getMemberAlertInfoBackend)
 }
 
 
 apis.member.getMemberAlertInfoBackend = function(res) {
-    if (res.rows && res.rows.length) {} else { return res; }
-
+    if(res.rows && res.rows.length) {} else { return res; }
     return $.ajax({
         "method": 'post',
         "dataType": 'json',
-        "url": res.origin + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+        "url": apis.baseUrl["16"] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
         "data": angular.toJson({ "DisplayArea": "1", "Account": res.rows })
     }).then(({ Data }) => {
         res.list_RemittanceName = Data.AlertInfoAccountName;
         res.rows.map((row) => { row.list_Accounts = Data.AlertInfoAccountId.filter((d) => { return row.AccountID == d.AccountID; }); return row; });
-        //res.rows.map((row) => { row.list_Accounts = Data.AlertInfoAccountId; return row; })        
         console.log(res);
         return res;
-    })
-
-
-
-    if (res.rows && res.rows.length) {
-        //var baseUrl = (window.isLocal) ? chrome.runtime.getURL("/") : window.baseUrl[16];
-        //var baseUrl = window.baseUrl[16];
-        var Account = res.rows.map((x) => { return { "AccountID": x.AccountID, "AccountName": x.AccountName } })
-
-        return $.ajax({
-            "method": 'post',
-            "dataType": 'json',
-            "url": apis.baseUrl[16] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-            "data": angular.toJson({ "DisplayArea": "1", "Account": Account })
-
-        }).then(({ Data }) => {
-            //console.log(Data);
-            if (Data) {
-                res.list_RemittanceName = Data.AlertInfoAccountName;
-                res.rows.map((x) => {
-                    x.list_Accounts = Data.AlertInfoAccountId.filter((d) => {
-                        //console.log(d);
-                        return x.AccountID == d.AccountID
-                    });
-                    return x;
-                })
-            }
-            return res;
-        });
-    } else {
-        return res;
-    }
+    });
 }
 
 
@@ -81,41 +40,11 @@ apis.member.wa111 = function() {
     return $.ajax({
         "dataType": 'json',
         "url": this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
-        "data": {
-            "f_BankAccount": this.banker,
-            "txtPhoto": this.mobile,
-            "txtIdCard": this.idcard,
-            "f_RemittanceName": this.author,
-            "f_Account": "",
-            "txtAlipayAccount": "",
-            "txtEmail": "",
-            "txtPickName": "",
-            "txtChat": "",
-            "ddlBankInfo": "",
-            "zwrq": "",
-            "zwrq2": "",
-            "selSurplus": "",
-            "selShow": "",
-            "selIsDeposit": "",
-            "selLevel": "",
-            "selBank": "",
-            "selMutualStatus": "",
-            "ddlAliPay": "",
-            "ddlWeChat": "",
-            "ddlWarn": 0,
-            "hidevalue_totals": "",
-            "pageIndex": this.index,
-            "hidevalue_RecordCount": 0,
-            "type": "getAllUser",
-            "_": Date.now()
-        }
+        "data": { "f_BankAccount": this.banker, "txtPhoto": this.mobile, "txtIdCard": this.idcard, "f_RemittanceName": this.author, "f_Account": "", "txtAlipayAccount": "", "txtEmail": "", "txtPickName": "", "txtChat": "", "ddlBankInfo": "", "zwrq": "", "zwrq2": "", "selSurplus": "", "selShow": "", "selIsDeposit": "", "selLevel": "", "selBank": "", "selMutualStatus": "", "ddlAliPay": "", "ddlWeChat": "", "ddlWarn": 0, "hidevalue_totals": "", "pageIndex": this.index, "hidevalue_RecordCount": 0, "type": "getAllUser", "_": Date.now() }
     }).then((res) => {
-        //console.log(res);
         res.index = this.index;
         res.origin = this.url;
-        res.list_RemittanceName = (res.rows && res.rows.length) ?
-            res.rows[0].list_RemittanceName : [];
-
+        res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
         return res;
     })
 }

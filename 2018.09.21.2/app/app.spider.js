@@ -1,51 +1,32 @@
-//define(["app.spider.extend", "md5"], function({ $getAllResponseHeaders, $serialize, $fromJson, $tryJson, $hostname, $lastPath, $mimeType, $dataRows }) {
 define(["md5"], function(md5) {
-
-
-    function MD5(str) {
-        return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase();
-    }
-
-    //http://2ality.com/2015/08/es6-map-json.html
-    //https://developer.mozilla.org/zh-TW/docs/Web/API/XMLSerializer
+    function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
 
     function strMapToObj(strMap) {
         let obj = Object.create(null);
-        strMap.split("&").map((str) => {
-            return str.split('=');
-        }).map(([key, value]) => {
-            obj[key] = value;
-        })
+        strMap.split("&").map((str) => { return str.split('='); }).map(([key, value]) => { obj[key] = value; });
         return obj;
     }
-
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
         xmlSpider.open = function(method, url, async, user, password) {
             this.method = method;
-            this.server = localStorage.server;
-            this.channel = localStorage.channel;
-            this.operator = localStorage.operator;
-            this.unique = this.unique;
+            this.server = this.$router.server;
+            this.channel = this.$router.channel;
+            this.operator = this.$router.operator;
+            this.unique = this.$router.unique;
             return open.apply(this, arguments);
         };
 
-        xmlSpider.setRequestHeader = function(name, value) {
-            //this.requestHeaders[name] = value;
-            return setRequestHeader.apply(this, arguments);
-        };
-
+        //xmlSpider.setRequestHeader = function(name, value) { return setRequestHeader.apply(this, arguments); };
         xmlSpider.send = function(postData) {
             if(postData) {
                 postData = decodeURIComponent(postData);
                 if(this.server == "wa111") {
                     this.sendData = strMapToObj(postData);
                     this.commander = this.sendData.action;
-                }
-                if(this.server == "ku711") {
-                    this.sendData = angular.fromJson(postData);
-                }
+                };
+                if(this.server == "ku711") { this.sendData = angular.fromJson(postData); };
             }
             this.addEventListener('loadstart', this.loadstart);
             this.addEventListener('load', this.load);
@@ -53,9 +34,8 @@ define(["md5"], function(md5) {
             return send.apply(this, arguments);
         };
 
-        xmlSpider.loadstart = function() { /*cant catch respData yet.*/ }
-
-        xmlSpider.load = function(progressEvent) {
+        xmlSpider.loadstart = function() {}
+        xmlSpider.load = function xmlSpider(progress) {
             try {
                 var responseURL = decodeURIComponent(this.responseURL);
                 var _url = new URL(responseURL);
@@ -64,59 +44,67 @@ define(["md5"], function(md5) {
                     this.sendData = strMapToObj(responseURL.split("?")[1])
                     this.commander = this.sendData.type;
                 }
-
                 var lastPath = this.responseURL.split('/').pop().split('.')[0];
-                if(this.server == "wa111") {
-                    //this.commander
-                    if(Number(this.commander)) {
-                        this.commander = lastPath
-                    }
-                }
-                if(this.server == "ku711") { this.commander = lastPath; }
-            } catch (ex) {
-                console.log(ex);
-            }
-
+                if(!this.commander) { this.commander = lastPath; };
+                if(Number(this.commander)) { this.commander = lastPath };
+                this.commander = this.commander.toUpperCase();
+            } catch (ex) {}
             try {
-                var response = decodeURIComponent(this.response);
-                this.respData = angular.fromJson(response);
-            } catch (ex) {
-                this.respData = response;
-            }
+                this.respData = angular.fromJson(decodeURIComponent(this.response));
+            } catch (ex) { this.respData = this.response; }
 
-
-        }
-
-
-
-        xmlSpider.loadend = function xmlSpider() {
             with(this) {
-                var obj = {
-                    commander: commander.toUpperCase(),
-                    command: MD5(commander),
-                    server,
-                    origin,
-                    respData,
-                    sendData,
-                    getter: respData,
-                    setter: sendData,
-                    unique,
-                    operator,
-                    channel,
+                if(commander) {
+                    var obj = { commander: commander, command: MD5(commander), server, origin, respData, sendData, unique, operator, channel }
+                    this.apis.sendMessage(obj);
+                } else {
+                    //console.log(this);
                 }
             }
-            console.log(obj);
-            this.apis.sendMessage(obj);
+            console.log(this);
+        }
+        xmlSpider.loadend = function() {
+            console.log(this.commander);
+            switch (this.commander) {
+                case "GETMODEL":
+                    this.apis.getUser();
+                    break;
+                default:
+                    // statements_def
+                    break;
+            }
         };
 
         return xmlSpider;
-
-
     } catch (ex) {
         console.error('xmlSpider');
     }
 });
 
+
+/*
+var obj = {
+    commander: commander,
+    command: MD5(commander),
+    server,
+    origin,
+    respData,
+    sendData,
+    getter: respData,
+    setter: sendData,
+    unique,
+    operator,
+    channel,
+}
+*/
+
+
+
+
+
+
+//http://2ality.com/2015/08/es6-map-json.html
+//https://developer.mozilla.org/zh-TW/docs/Web/API/XMLSerializer
 
 /*console.log(Object.keys(this));
           console.log(Object.keys(this.__proto__));

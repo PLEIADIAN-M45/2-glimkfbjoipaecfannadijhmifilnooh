@@ -34,7 +34,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
 
-            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
             var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
@@ -47,9 +47,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -103,7 +103,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             apis.putUser = async function putUser(nv, ov) {
-                if (!nv) { return };
+                if(!nv) { return };
                 //console.log("putUser");
                 $scope.user.lastModify = $moment(Date.now())
                 return apis.sendMessage($scope.user);
@@ -148,8 +148,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             document.oncopy = function(e) {
-                if (window.getSelection().type === "Caret") { e.preventDefault(); }
-                if (e.clipboardData) { e.clipboardData.setData("text/plain", clipboardData); } else {
+                if(window.getSelection().type === "Caret") { e.preventDefault(); }
+                if(e.clipboardData) { e.clipboardData.setData("text/plain", clipboardData); } else {
                     window.clipboardData.setData("Text", clipboardData);
                 }
             }
@@ -161,7 +161,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             function $injectStylesheet(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -170,7 +170,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectComponents(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -213,18 +213,19 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     "cookie": "/member/MemberInfoManage/MemberLoginLog?method=CookieID&accounts=#2",
                     "device": "/member/MemberInfoManage/MemberLoginLog?method=DeviceNo&accounts=#2"
                 }
-            }[$server];
+            } [$server];
 
 
             var $isTest = window.location.hostname == "127.0.0.1";
-            if ($isTest && $server == "wa111") {
+            if($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
                 //$('#divCookie').hide();
             }
-            if ($isTest && $server == "ku711") {
+            if($isTest && $server == "ku711") {
                 $('.collapse').show()
             }
+
 
             $scope.$hyperlink = $hyperlink;
             $scope.$createTab = $createTab;
@@ -254,9 +255,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             $xmlSpider.apis = apis;
-            $xmlSpider.$scope = $scope;
+            //$xmlSpider.$scope = $scope;
 
-            $xmlSpider.unique = $router.$unique
+            $xmlSpider.$router = $router
 
             //$xmlSpider.$unique = $router.$unique
 
@@ -287,7 +288,7 @@ function keyboardEvent() {
     //全局屏蔽键盘事件：
     window.onkeydown = function() {
         console.log(window.event.keyCode)
-        if (window.event.keyCode == 49) {
+        if(window.event.keyCode == 49) {
             event.returnValue = false;
         }
     }

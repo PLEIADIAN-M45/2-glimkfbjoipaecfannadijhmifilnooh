@@ -1,12 +1,7 @@
 var dexie = new Dexie('evo');
 dexie.version(5).stores({ user: 'unique', GB2260: 'code' });
 
-var apis = {
-    dexie,
-    baseUrl: {}
-};
-
-
+var apis = { dexie, baseUrl: {} };
 
 apis.getLocalStorage = function(params) { return Promise.resolve(window.localStorage); };
 apis.getUser = function(params) { return dexie.user.get(params); };
