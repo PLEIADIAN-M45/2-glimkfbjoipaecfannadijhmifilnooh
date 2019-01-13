@@ -1,31 +1,27 @@
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
+    function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) { //$digest
 
+        var $isTest = window.location.hostname == "127.0.0.1";
+        var c = console.log;
+        var s = function(res) {
+            console.log(res);
+            return res;
+        }
 
-
-    function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
-        //$digest
-
-        var $dexie = new Dexie('evo');
-        $dexie.version(1).stores({ user: 'f_accounts' });
-
-        var $moment = function(timestr) { return moment(timestr).format("YYYY-MM-DD HH:mm:ss"); }
-
-        var $extensionId = localStorage.extensionId;
-        var $forms = document.forms,
-            $form = document.forms[0],
-            $referrer = document.referrer;
-
-        /*----------------------------------------------------------------------*/
-
-        //chrome.runtime.connect
-        //laserExtensionId
-        //console.log(port);
 
 
 
         return function($router) {
-
             var { $server, $module, $extensionId, $rootUrl, $channel, $account, $unique, $origin } = $router;
+
+            var $dexie = new Dexie('evo');
+            $dexie.version(1).stores({ user: 'f_accounts' });
+            var $moment = function(timestr) { return moment(timestr).format("YYYY-MM-DD HH:mm:ss"); }
+
+            var $extensionId = localStorage.extensionId;
+            var $forms = document.forms,
+                $form = document.forms[0],
+                $referrer = document.referrer;
 
             var $rootScope = angular.element('html').scope(),
                 $controller = angular.element("[ng-controller]"),
@@ -42,7 +38,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             /*********************************************************/
             var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
 
-            var $getModule = function(objPath) {
+            var $getModule22 = function(objPath) {
                 return new Promise((resolve, reject) => {
                     var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     (function repeater(object) {
@@ -56,15 +52,41 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 });
             }
 
+
+            var $getModule = function(objPath) {
+
+                console.log(objPath);
+
+                return new Promise((resolve, reject) => {
+
+                    $scope.$watch(objPath, (nv, ov) => {
+
+                        if(nv) {
+                            var length = Object.values(nv).length
+                            if(length) {
+                                console.log(length);
+                                //console.log("--------");
+                                resolve(nv);
+                            }
+                        }
+
+
+                    }, true);
+                })
+            }
+
+
+
+
             var $console = function() { console.log(...arguments); }
             var $keydown = function(callback) { document.addEventListener('keydown', callback); }
             /*********************************************************/
-
             var apis = {};
-            apis.sendMessage = function(p) {
+
+            apis.sendMessage = function sendMessage(p) {
                 //console.log(p);
                 //this.active = true
-                var _name_ = arguments.callee.caller.name;
+                //var _name_ = arguments.callee.caller.name;
                 return new Promise((resolve, reject) => {
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
@@ -76,52 +98,53 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 })
             }
 
-            apis.watch = function(name, callback) {
+            apis.watch = function watch(name, callback) {
                 $scope.$watch(name, apis[callback], true);
             }
 
-            apis.getUser = async function getUser() {
+            var cacheUser;
 
-                apis.watch('user', 'putUser');
+            apis.getUser = async function getUser() {
 
                 $scope.user =
                     await apis.sendMessage($unique) ||
                     await apis.setUser();
 
+                apis.watch('user', 'putUser');
+
                 $scope.$apply();
-                console.log("-------", $scope.user);
-                return $scope.user;
+                console.log("--", $scope.user);
 
+                //return $scope.user;
             }
-
             apis.delUser = async function delUser() {
-                //console.log(unique);
-                //delete $scope.user;
+                console.log($unique);
                 await apis.sendMessage($unique);
-                await apis.getUser();
-                //$scope.$apply();
             }
-
             apis.putUser = async function putUser(nv, ov) {
+                //console.log(angular.equals(cacheUser, $scope.user));
                 if(!nv) { return };
-                //console.log("putUser");
                 $scope.user.lastModify = $moment(Date.now())
                 return apis.sendMessage($scope.user);
             }
 
-            apis.global = {};
 
             apis.getLocalStorage = (async function getLocalStorage() {
                 var object = await apis.sendMessage();
+                apis.global = {};
                 Object.entries(object).map(([name, value]) => {
                     try { apis.global[name] = angular.fromJson(decodeURI(atob(value))).map((arr) => { return arr[0] }); } catch (e) {}
-                    return value
-                })
+                    //return value
+                });
+                // console.log(apis.global);
+                if($isTest) {
+                    apis.global.author.push(["陈丽娟"])
+                    apis.global.author.push(["王杰"])
+                    apis.global.region.push("浙江")
+                    apis.global.region.push("南宁")
+                    apis.global.locate.push("171.106.81.75")
+                }
             }());
-
-            //apis.getLocalStorage();
-
-            //value = angular.fromJson(decodeURI(atob(value))).map((arr) => { return arr[0] })
 
             apis.sendSms = async function sendSms(e) {
                 var $currentTarget = $(e.currentTarget)
@@ -129,20 +152,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 await apis.sendMessage($scope.user);
                 await apis.getUser();
                 $currentTarget.show();
-
-                /*
-                apis.sendMessage($scope.user).then((res) => {
-                    //console.log(res);
-                    apis.getUser();
-                })
-                */
             };
 
-            var c = console.log;
-
-
             var clipboardData;
-            apis.copy = function(e) {
+            apis.copy = function copy(e) {
                 clipboardData = e.currentTarget.dataset.content;
                 document.execCommand("copy", clipboardData);
             }
@@ -154,11 +167,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             }
 
-
-            Object.entries(apis).map(([name, fnuc]) => {
-                apis[name]._name = name;
-            })
-
+            //Object.entries(apis).map(([name, fnuc]) => { apis[name]._name = name; })
 
             function $injectStylesheet(abc) {
                 if(abc) {
@@ -177,6 +186,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                             .then((html) => {
                                 $controller.append($compile(angular.element(html))($scope))
                                 $scope.$apply();
+                                //console.log("------------");
                             });
                     })
                 };
@@ -184,24 +194,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             /************************************************************/
-
-            /*var $sender;
-            var port = chrome.runtime.connect($extensionId);
-            port.postMessage('sender');
-            port.onMessage.addListener(function(res) {
-                console.log(res);
-                $sender = res;
-            });*/
-
             var $createTab = function(hyperlink) {
-                //console.log($sender);
-                //console.log($channel, $account);
                 let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account);
-                //+ "&tabId=" + $sender.tab.id;
-                //redirectUrl + "&tabId=" + $sender.tab.id;
                 console.log(redirectUrl);
                 window.open(redirectUrl, "_blank");
-                //console.log(redirectUrl);
             }
 
             var $hyperlink = {
@@ -215,8 +211,6 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-
-            var $isTest = window.location.hostname == "127.0.0.1";
             if($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
@@ -229,11 +223,15 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             $scope.$hyperlink = $hyperlink;
             $scope.$createTab = $createTab;
+            $scope.apis = apis;
+
 
             /************************************************************/
 
+
             var factory = {
                 apis,
+                //api,
                 $apply,
                 $mdc,
                 $dexie,
@@ -253,16 +251,29 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
 
+            /*
+                      var api = {};
+                      Object.entries(apis).forEach(function([key, elem], index) {
+                          if(typeof elem == "function") {
+                              //console.log(elem.name);
+                              api[key] = function() {
+                                  console.log(key);
+                                  //elem();
+                              }
+                          }
+                      });
+                      */
+
+            /*for(var n of factory) {
+                console.log(n);
+            }*/
+
 
             $xmlSpider.apis = apis;
-            //$xmlSpider.$scope = $scope;
+            $xmlSpider.$router = $router;
+            $scope.apis = apis;
 
-            $xmlSpider.$router = $router
-
-            //$xmlSpider.$unique = $router.$unique
-
-
-
+            //window.__branch__ = $router.$branch
 
             requirejs([
                 $router.$master,
@@ -270,53 +281,13 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             ], ($$master, $$branch) => {
                 $injectComponents($router.$components);
                 $injectStylesheet($router.$stylesheet);
+
                 $$branch.call(factory, factory);
                 $$master.call(factory, factory);
-                $scope.apis = apis;
+
+                //console.log($router.$branch);
+
             });
-
-
             return factory;
         }
     });
-
-
-function keyboardEvent() {
-    keydown
-    keypress
-    keyup
-    //全局屏蔽键盘事件：
-    window.onkeydown = function() {
-        console.log(window.event.keyCode)
-        if(window.event.keyCode == 49) {
-            event.returnValue = false;
-        }
-    }
-    //全局屏蔽鼠标右键：
-    window.oncontextmenu = function() {
-        console.log('点击了鼠标右键')
-        event.returnValue = false;
-    }
-}
-
-
-
-
-/*********************************************************/
-
-
-
-//Object.assign(factory, $router.__proto__)
-
-
-/* //$sendSms,
-    //$clipboard,
-            console.log($router.operator);
-            console.log($router.$operator);
-            console.log(factory);
-            */
-
-//Object.assign(factory, window.localStorage)
-//console.log(Object.getOwnPropertyDescriptors(factory));
-
-//Object.assign($scope, apis);

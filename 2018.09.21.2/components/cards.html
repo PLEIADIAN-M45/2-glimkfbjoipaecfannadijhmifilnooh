@@ -1,15 +1,17 @@
+
 <div class="ui cards">
     <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>
+                <small>{{me.region.alarm[0]}}</small>
             </div>
             <div class="right floated meta">
                 <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, me, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
-            <div class="header">{{me.value||"------"}}/<small>{{me.region.alarm}}</small></div>
+            <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content result">
             <div class="ui dimmer" ng-class="{ 'active': me.active }">
@@ -24,8 +26,8 @@
             </div>
         </div>
         <!--  ng-init="getProtocolSet.call(me);" -->
-        <div class="extra content grid grid-2" ng-if="me.caller=='locate'">
-            <div class="ui image label green protocol center" ng-repeat="row in me.protocol" ng-class="{'pink':row.danger}">
+        <div class="extra content grid grid-2" ng-if="me.caller=='locate'" ng-init="getUserRegions.call(me)">
+            <div class="ui image label green protocol center" ng-repeat="row in user.region" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>
@@ -86,9 +88,29 @@
     </table>
 </div>
 <style type="text/css">
+/*.ui.cars {}
+#sameBrowserList {}
+*/
 /*aside {
     display: inherit;
 }*/
+
+/*
+
+*/
+/*
+td:has(>b) {
+    background-color: #01579B !important;
+}
+*/
+
+/*
+.isSelf {
+    background-color: #01579B !important;
+    color: #fff;
+}
+*/
+
 
 .category .tablelist {
     font-size: x-small;
@@ -99,17 +121,26 @@
 .tablelist th {
     background-color: #546e7a !important;
     color: #fff !important;
-    border-collapse: collapse!important;
+    border-collapse: collapse !important;
     border: 1px solid #fff;
 
     /*border: 1px solid #fff;*/
 }
 
+
+
 .tablelist tr:nth-child(even) {
-    background: rgba(255, 255, 255, 0.85)!important;
+    background: rgba(255, 255, 255, 0.85);
 }
 
+.category .tablelist tr:hover {
+
+    /*color: #333;*/
+}
+
+
 .category .tablelist td {
+    /*color: #333;*/
     width: auto;
 }
 

@@ -37,6 +37,7 @@ define(["md5"], function(md5) {
             apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
         }
 
+        /*
         xmlSpider.loadend = function() {
             console.log(this.commander);
             switch (this.commander) {
@@ -48,7 +49,7 @@ define(["md5"], function(md5) {
                     // statements_def
                     break;
             }
-        };
+        };*/
 
 
         return xmlSpider;

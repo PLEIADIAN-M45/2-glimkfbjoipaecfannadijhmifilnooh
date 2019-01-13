@@ -1,11 +1,8 @@
 {
     "background":
     {
-        //"page": "background.html",
         "persistent": true,
         "scripts": [
-            //"injector.js"
-            //"background/background.js",
             "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
@@ -17,16 +14,19 @@
             "apis/apis.member.js",
             "apis/apis.region.js",
             "apis/apis.xmlSpider.js",
-            
+
             "apis/apis.onMessage.js",
             "apis/apis.onWebRequest.js",
-            "apis/apis.onUpdated.js"
+            "apis/apis.onUpdated.js",
 
-            /*"mock/mock.js",
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
 
             /*
+        //"page": "background.html",
+            //"injector.js"
+            //"background/background.js",
             "background/background.js",
             "background/background.onMessage.js",
             "apiFunctions/apiFunctions.js",

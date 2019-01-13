@@ -209,9 +209,21 @@ li>b:nth-child(1) {
     /* color: blue; */
 }
 
-li>b:nth-child(2)::before {
+/*
+b.pointer.channel::before {
+    content: "-";
+}*/
+
+
+b.pointer+b.pointer::before {
     content: "-";
 }
+
+/*
+td>b:nth-child(5)::before {
+    content: "-";
+}
+*/
 
 .pointer {
     cursor: pointer;

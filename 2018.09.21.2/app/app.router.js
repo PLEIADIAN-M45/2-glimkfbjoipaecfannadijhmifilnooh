@@ -16,7 +16,6 @@ define(["router.wa111", "router.ku711"], function(wa111, ku711) {
 
     var unique = [account, channel].join("-");
 
-
     Object.entries({ account, channel, unique, origin, params }).forEach(([name, value]) => {
         Router.prototype["$" + name] = value;
         Router.prototype[name] = value;
@@ -33,8 +32,8 @@ define(["router.wa111", "router.ku711"], function(wa111, ku711) {
         var $module = { wa111, ku711 }[$server][$locate];
         if ($module) {
             Router.prototype.$module = $module;
-            Router.prototype.$master = "../" + $master + "/" + $module;
-            Router.prototype.$branch = "../" + $server + "/" + $module;
+            Router.prototype.$master = "../$" + $master + "/" + $module;
+            Router.prototype.$branch = "../$" + $server + "/" + $module;
             Router.prototype.$components = { "edit": ['edit.html', 'dialog.html'], "logs": ['cards.html'] }[$module];
             Router.prototype.$stylesheet = { "edit": ['edit.css'], "logs": ['logs.css', 'cards.css'] }[$module];
             return new Router();

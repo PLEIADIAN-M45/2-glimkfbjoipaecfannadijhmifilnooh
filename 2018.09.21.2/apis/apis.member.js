@@ -1,22 +1,29 @@
 apis.member = function(request) {
-    request.url = apis.baseUrl[Number(request.channel)];
-    if(request.url == undefined) { return Promise.reject(800) };
-    return apis.member[request.server].call(request).then((res) => {
-        res.origin = request.url
-        res.index = request.index
-        return res
+    return apis.member[request.server](request).then((res) => {
+        res.origin = apis.baseUrl[request.channel];
+        res.index = request.index;
+        return res;
+    });
+}
+
+apis.member.wa111 = function({ channel, index, banker = "", mobile = "", idcard = "", author = "" }) {
+    return $.ajax({
+        "dataType": 'json',
+        "url": apis.baseUrl[channel] + '/LoadData/AccountManagement/GetMemberList.ashx',
+        "data": { "f_BankAccount": banker, "txtPhoto": mobile, "txtIdCard": idcard, "f_RemittanceName": author, "f_Account": "", "txtAlipayAccount": "", "txtEmail": "", "txtPickName": "", "txtChat": "", "ddlBankInfo": "", "zwrq": "", "zwrq2": "", "selSurplus": "", "selShow": "", "selIsDeposit": "", "selLevel": "", "selBank": "", "selMutualStatus": "", "ddlAliPay": "", "ddlWeChat": "", "ddlWarn": 0, "hidevalue_totals": "", "pageIndex": index, "hidevalue_RecordCount": 0, "type": "getAllUser", "_": Date.now() }
+    }).then((res) => {
+        res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
+        return res;
     })
 }
 
-apis.member.ku711 = function() {
+apis.member.ku711 = function({ channel, index, banker = "", mobile = "", idcard = "", author = "" }) {
     return $.ajax({
         "dataType": 'json',
         "method": 'post',
-        "url": this.url + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
-        "data": angular.toJson({ "AccountID": "", "IDNumber": this.idcard, "RigistedIP": "", "TotalDepositAmount": null, "AccountNumber": "", "AccountName": this.author, "Email": "", "PhoneVerified": null, "IDVerified": null, "MinDeposit": null, "MaxDeposit": null, "StartRegistedTime": "", "EndRegistedTime": "", "PageNumber": this.index - 1, "RecordCounts": 20, "OrderField": "", "Desc": "true", "TotalDepositBonus": null, "AccountBookLevel": "", "AliPayLevel": "", "WeChatLevel": "", "CellPhone": this.mobile, "IsBlackList": null, "LevelType": null, "MemberStatus": null, "IsFisrstDeposit": null, "MemberMemoType": null, "TransferOutStatus": null, "IsLogIn": null, "AgencyID": "", "TestType": null, "PayeeAccountNo": this.banker, "LineType": "", "AccountingType": null, "ManageAccountID": "", "NickName": "" })
+        "url": apis.baseUrl[channel] + '/member/api/MemberInfoManage/GetMemberSNInfoBackendWithExtraInfo',
+        "data": angular.toJson({ "AccountID": "", "IDNumber": idcard, "RigistedIP": "", "TotalDepositAmount": null, "AccountNumber": "", "AccountName": author, "Email": "", "PhoneVerified": null, "IDVerified": null, "MinDeposit": null, "MaxDeposit": null, "StartRegistedTime": "", "EndRegistedTime": "", "PageNumber": index - 1, "RecordCounts": 20, "OrderField": "", "Desc": "true", "TotalDepositBonus": null, "AccountBookLevel": "", "AliPayLevel": "", "WeChatLevel": "", "CellPhone": mobile, "IsBlackList": null, "LevelType": null, "MemberStatus": null, "IsFisrstDeposit": null, "MemberMemoType": null, "TransferOutStatus": null, "IsLogIn": null, "AgencyID": "", "TestType": null, "PayeeAccountNo": banker, "LineType": "", "AccountingType": null, "ManageAccountID": "", "NickName": "" })
     }).then(({ Data }) => { return apis.member.getMemberAlertInfoBackend({ rows: Data.Data, records: Data.Pager.PageCount, total: Data.TotalItemCount }); })
-
-    //.then(apis.member.getMemberAlertInfoBackend)
 }
 
 
@@ -26,35 +33,18 @@ apis.member.getMemberAlertInfoBackend = function(res) {
         "method": 'post',
         "dataType": 'json',
         "url": apis.baseUrl["16"] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
+        "url": chrome.extension.getURL('/member/api/AlertInfoManage/GetMemberAlertInfoBackend'),
         "data": angular.toJson({ "DisplayArea": "1", "Account": res.rows })
     }).then(({ Data }) => {
         res.list_RemittanceName = Data.AlertInfoAccountName;
         res.rows.map((row) => { row.list_Accounts = Data.AlertInfoAccountId.filter((d) => { return row.AccountID == d.AccountID; }); return row; });
-        console.log(res);
         return res;
     });
 }
 
 
-apis.member.wa111 = function() {
-    return $.ajax({
-        "dataType": 'json',
-        "url": this.url + '/LoadData/AccountManagement/GetMemberList.ashx',
-        "data": { "f_BankAccount": this.banker, "txtPhoto": this.mobile, "txtIdCard": this.idcard, "f_RemittanceName": this.author, "f_Account": "", "txtAlipayAccount": "", "txtEmail": "", "txtPickName": "", "txtChat": "", "ddlBankInfo": "", "zwrq": "", "zwrq2": "", "selSurplus": "", "selShow": "", "selIsDeposit": "", "selLevel": "", "selBank": "", "selMutualStatus": "", "ddlAliPay": "", "ddlWeChat": "", "ddlWarn": 0, "hidevalue_totals": "", "pageIndex": this.index, "hidevalue_RecordCount": 0, "type": "getAllUser", "_": Date.now() }
-    }).then((res) => {
-        res.index = this.index;
-        res.origin = this.url;
-        res.list_RemittanceName = (res.rows && res.rows.length) ? res.rows[0].list_RemittanceName : [];
-        return res;
-    })
-}
-
-
 apis.member.GetSystemLog = function(origin, accounts, operator) {
-
-
     console.log(origin, accounts, operator);
-
     return $.ajax({
         dataType: "json",
         url: origin + "/LoadData/AccountManagement/GetSystemLog.ashx",
@@ -110,18 +100,21 @@ apis.member.GetSystemLog = function(origin, accounts, operator) {
 
 
 
+/*
+request.url = apis.baseUrl[Number(request.channel)];
+if(request.url == undefined) { return Promise.reject(800) };
+var { banker = "", mobile = "", idcard = "", author = "" } = request;
+Object.assign(request, { banker, mobile, idcard, author })
+
+return apis.member[request.server].call(request).then((res) => {
+    res.origin = request.url
+    res.index = request.index
+    return res
+})
+*/
 
 /*
-if (!window.baseUrl) {
-    window.baseUrl = {
-        "0": "http://chrome.evo.net",
-        "26": "http://host26.wa111.net",
-        "35": "http://host35.wa111.net",
-        "17": "http://host17.wa111.net",
-        "16": "https://bk.ku711.net"
-    }
 
-}
 
 */
 

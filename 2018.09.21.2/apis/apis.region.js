@@ -21,6 +21,24 @@ apis.region = function(params) {
 
 apis.blacklist = function() {
     console.log(global);
+
+    if(window.isLocal) {
+        global.author.push(["王杰"])
+        global.banker.push(["6217856300"])
+        global.banker.push(["62170033"])
+
+        global.locate.push(["171.106.81"])
+        global.locate.push(["223.104.33.115"])
+
+        //global.idcard.push(["3401221987100616"])
+        global.mobile.push(["13514966"])
+
+        global.mobile.push(["18587763"])
+
+
+    }
+
+
     var $global = global[this.caller] || [];
     //console.log($global);
     switch (this.caller) {
@@ -43,7 +61,7 @@ apis.blacklist = function() {
 
 
 apis.region.check = function(region) {
-    if (region) {
+    if(region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
@@ -72,13 +90,13 @@ apis.region.locate = function() {
     }).then((res) => {
         console.log(res);
         //var region = {};
-        if (res.status == 0) {
+        if(res.status == 0) {
             var str = res.data[0].location;
             console.log(str);
-            if (str) {
+            if(str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if (!prov && !city && !area) {
+                        if(!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -127,7 +145,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if (res.status == 0) {
+        if(res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,
