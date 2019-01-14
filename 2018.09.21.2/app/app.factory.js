@@ -38,9 +38,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             /*********************************************************/
             var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
 
-            var $getModule22 = function(objPath) {
+            var $getModule = function(objPath) {
                 return new Promise((resolve, reject) => {
-                    var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
+                    //var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
+                    var object = $scope;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
                         if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
@@ -53,25 +54,45 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
 
-            var $getModule = function(objPath) {
+            var $getModule22 = function(objPath) {
 
-                console.log(objPath);
+                var str = "$scope." + objPath;
+
+                var t = eval(str)
+
+                console.log(t);
+
 
                 return new Promise((resolve, reject) => {
 
+                    console.log(objPath);
+
                     $scope.$watch(objPath, (nv, ov) => {
 
-                        if(nv) {
-                            var length = Object.values(nv).length
-                            if(length) {
-                                console.log(length);
-                                //console.log("--------");
-                                resolve(nv);
-                            }
-                        }
+                        console.log(nv);
+                        /*
+                        if(nv != undefined) {
+                            console.log(typeof nv);
+                            if(typeof nv == "object") {
+                                if(Object.keys(nv).length) {
 
+                                    console.log(nv);
+
+                                    //console.log("--------");
+                                    resolve(nv);
+
+                                }
+                            } else {
+                                console.log(nv);
+
+                                resolve(nv);
+
+                            }
+                        }*/
 
                     }, true);
+
+
                 })
             }
 
@@ -82,6 +103,15 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $keydown = function(callback) { document.addEventListener('keydown', callback); }
             /*********************************************************/
             var apis = {};
+
+            apis.extensionId = $extensionId;
+            //apis.port = chrome.runtime.connect(apis.extensionId); //console.log(port);
+            apis.openDeposit = function openDeposit() {
+                console.log($scope.user.frameId);
+                return apis.sendMessage({ frameId: $scope.user.frameId });
+            }
+
+
 
             apis.sendMessage = function sendMessage(p) {
                 //console.log(p);
@@ -102,31 +132,54 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $scope.$watch(name, apis[callback], true);
             }
 
-            var cacheUser;
-
+            //var cacheUser;
             apis.getUser = async function getUser() {
-
-                $scope.user =
-                    await apis.sendMessage($unique) ||
-                    await apis.setUser();
-
-                apis.watch('user', 'putUser');
+                var user = await apis.sendMessage($router.$unique)
+                if(user) {
+                    $scope.user = user;
+                } else {
+                    var user = await apis.setUser();
+                    $scope.user = user;
+                    apis.putUser();
+                }
 
                 $scope.$apply();
-                console.log("--", $scope.user);
 
+                /*
+                $scope.user =
+                    await apis.sendMessage($router.$unique) ||
+                    await apis.setUser();
+                //apis.watch('user', 'putUser');
+                console.log("--", $scope.user);
+                */
                 //return $scope.user;
             }
             apis.delUser = async function delUser() {
                 console.log($unique);
                 await apis.sendMessage($unique);
             }
+
             apis.putUser = async function putUser(nv, ov) {
+                //console.log(angular.equals(cacheUser, $scope.user));
+                //if(!nv) { return };
+                console.log("putUser");
+
+                $scope.user.lastModify = $moment(Date.now())
+                return apis.sendMessage($scope.user);
+            }
+
+
+            apis.putUser2 = async function putUser(nv, ov) {
                 //console.log(angular.equals(cacheUser, $scope.user));
                 if(!nv) { return };
                 $scope.user.lastModify = $moment(Date.now())
                 return apis.sendMessage($scope.user);
             }
+
+
+            apis.getTabInfo = function getTabInfo() {
+                return apis.sendMessage(123);
+            };
 
 
             apis.getLocalStorage = (async function getLocalStorage() {

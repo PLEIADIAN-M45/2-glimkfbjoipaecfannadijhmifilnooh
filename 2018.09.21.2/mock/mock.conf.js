@@ -6,7 +6,7 @@ if(window.MockType == true) {
 
     var _entries = d.log.entries;
 
-    console.log(_entries);
+   // console.log(_entries);
 
     Mock.setup({ timeout: '200-800' })
 

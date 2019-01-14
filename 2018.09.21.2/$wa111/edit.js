@@ -4,6 +4,16 @@ define([], function() {
 
     return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router, $extensionId }) {
 
+
+        $xmlSpider.loadend = function xmlSpider() {
+            console.log(this.commander);
+            switch (this.commander) {
+                case "GETMODEL":
+                    apis.getUser();
+                    break;
+            }
+        };
+
         function getUserBasic() {
             var { server, origin, unique, channel, account, operator } = $router;
             Object.assign(_user_, { unique, account, origin, server, channel, operator });

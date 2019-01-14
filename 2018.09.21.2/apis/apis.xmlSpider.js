@@ -4,11 +4,11 @@ window.cacheUserData;
 apis.updateUser = async function({ unique, status, permit, bonus }) {
     var user = await apis.getUser(unique);
     //console.log(user);
-    if (user == undefined) { return };
-    if (window.isLocal) { user.module = null; };
-    if (user.module) { return };
+    if(user == undefined) { return };
+    if(window.isLocal) { user.module = null; };
+    if(user.module) { return };
 
-    if (bonus) {
+    if(bonus) {
         window.cacheBonusData = null;
         //user.module = "BONUS:" + user.server;
         user.module = "BONUS:AWARD";
@@ -31,6 +31,10 @@ apis.updateUser = async function({ unique, status, permit, bonus }) {
 
 
 apis.google2 = function google2(user) {
+
+    console.log(user);
+
+    return
     try {
         delete user.banker[0].sites;
         delete user.idcard.sites;
@@ -58,17 +62,16 @@ apis.google2 = function google2(user) {
 
 
 async function ___set({ unique, status, permit, awards }) {
+
     var user = await apis.getUser(unique);
     //console.log(user);
-    if (user == undefined) { return };
+    if(user == undefined) { return };
 
-    if (window.isLocal) { user.module = null; };
+    if(window.isLocal) { user.module = null; };
 
-    if (user.module) { return };
+    if(user.module) { return };
 
-    console.log("*******", user);
-
-    if (awards) {
+    if(awards) {
         user.module = "awards:" + user.server;
         user.awards = awards;
     } else {
@@ -81,10 +84,11 @@ async function ___set({ unique, status, permit, awards }) {
         user.timing[2] = moment(user.timing[0]).diff(moment(user.timing[1]), "minutes", true);
     }
 
+    apis.putUser(user);
 
-    apis.google2(user);
-    //apis.putUser(user);
-    console.log(user.module, user);
+    //apis.google2(user);
+
+    //console.log(user.module, user);
 }
 
 
@@ -94,41 +98,44 @@ apis.xmlSpider = async function(params) {
     with(params) {
         switch (commander) {
             case "BTNUSERSET":
-                if (respData == "u-ok") ___set({ unique: unique, status: sendData.ishow, permit: sendData.isOpenDeposit });
+                if(respData == "u-ok") {
+                    return ___set({ unique: unique, status: sendData.ishow, permit: sendData.isOpenDeposit });
+                }
                 break;
             case "UPDATEMEMBERRISKINFOACCOUNTINGBACKEND":
-                ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
+                return ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
                 break;
             case "UPDATEMEMBERSNINFOBACKEND":
-                ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
+                return ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
                 break;
             case "STOPMEMBER":
-                if (respData == 2)
-                    ___set({ unique: unique, status: 2, permit: 0 });
+                if(respData == 2)
+                    return ___set({ unique: unique, status: 2, permit: 0 });
                 break;
             case "UPDATEMEMBERRISKSINFOBACKENDISFSUSPENSION":
-                if (sendData.IsFSuspension == true)
-                    ___set({ unique: unique, status: 0, permit: 0 });
+                if(sendData.IsFSuspension == true)
+                    return ___set({ unique: unique, status: 0, permit: 0 });
                 break;
             case "GETDEPOSITBONUSLIST":
-                if (window.cacheBonusData) {
+                if(window.cacheBonusData) {
                     var awards = dataset.find((d) => { return d.f_id == window.cacheBonusData.id; });
-                    ___set({ awards: awards, unique: awards.f_accounts + "-" + channel });
                     window.cacheBonusData = null;
+                    return ___set({ awards: awards, unique: awards.f_accounts + "-" + channel });
                 }
                 break;
             case "GETMEMBERBONUSLOGBACKENDBYCONDITION":
-                if (window.cacheBonusData && sendData.DealType == null) {
+                if(window.cacheBonusData && sendData.DealType == null) {
                     var awards = dataset.find((d) => { return d.BonusNumber == window.cacheBonusData.BonusNumber; });
-                    ___set({ awards: awards, unique: awards.AccountID + "-" + channel });
                     window.cacheBonusData = null;
+                    return ___set({ awards: awards, unique: awards.AccountID + "-" + channel });
                 }
                 break;
             case "UPDATEMEMBERBONUSLOG":
             case "DELDICEWINRECORDS":
                 window.cacheBonusData = sendData;
+                return Promise.resolve();
                 break;
-                //console.log(sendData);               
+                //console.log(sendData);
             default:
                 return Promise.resolve();
         }
