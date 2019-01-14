@@ -49,3 +49,8 @@ chrome.webRequest.onBeforeRequest.addListener(function(details) {
 */
 
 /**************************************************************************************************************/
+/*
+chrome.webRequest.onCompleted.addListener(function(details) {
+    console.log(details);
+}, { urls: ["*://*.googlevideo.com/*", "*://*.google.com/*"] })
+*/

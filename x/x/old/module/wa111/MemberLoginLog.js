@@ -44,3 +44,5 @@ var getFrameUrl = function() {
     return location.origin + '/sameBrowserList.aspx?iType=3&accounts={accountId}&siteNumber={siteNumber}'
         .replace('{accountId}', evo.params.member).replace('{siteNumber}', evo.params.siteNumber);
 }
+
+

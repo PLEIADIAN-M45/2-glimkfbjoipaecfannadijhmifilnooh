@@ -68,6 +68,9 @@
             "injector.js"
         ],
         "matches": [
+            //"https://*.googlevideo.com/*",
+            //"https://*.google.com/*",
+
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
             "http://*/layout/Login.aspx",
             "*://127.0.0.1/*",

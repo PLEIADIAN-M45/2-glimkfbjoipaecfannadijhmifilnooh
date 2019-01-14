@@ -344,3 +344,24 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             return factory;
         }
     });
+
+
+
+
+
+
+
+
+function blobtoDataURL(blob, callback) {
+    var fr = new FileReader();
+    fr.onload = function(e) {
+        callback(e.target.result);
+    };
+    fr.readAsDataURL(blob);
+}
+
+var blob=""
+
+blobtoDataURL(blob, function(dataURL) {
+    console.log(dataURL);
+});
