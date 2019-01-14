@@ -26,7 +26,7 @@
         </div>
         <!--  ng-init="getProtocolSet.call(me);" -->
         <div class="extra content grid grid-2" ng-if="me.caller=='locate'" ng-init="getUserRegions.call(me)">
-            <div class="ui image label green protocol center" ng-repeat="row in user.region" ng-class="{'pink':row.danger}">
+            <div class="ui image label green protocol center" ng-repeat="row in user.regions" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>
@@ -36,13 +36,16 @@
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
+
                 <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || this.active"></i>
                     <div class="detail center" ng-show="this.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="this.active" ng-class="{ 'green': s.on }">
-                        <b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apis.member.call(s, this, $event);" ng-disabled="s.index>=s.records || this.active || s.abort"></i>
+                    <div class="detail center" ng-show="this.error"><i class="minus circle icon red"></i></div>
+                    <div class="detail center" ng-hide="this.active || this.error"><b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apis.member.call(s, this, $event);" 
+                    ng-disabled="s.index>=s.records || this.active || !s.records"></i>
                 </div>
+
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row, s)" ng-init="changeColor.call(row, this);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>
                     <aside class="hidden" ng-init="setPopup.call(row, this)" title="警示訊息">
@@ -237,6 +240,11 @@ i.icon:hover {
 }
 
 i.icon.loading {
+    margin: 0 !important;
+}
+
+
+i.icon.minus.circle {
     margin: 0 !important;
 }
 

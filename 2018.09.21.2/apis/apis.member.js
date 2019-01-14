@@ -28,12 +28,12 @@ apis.member.ku711 = function({ channel, index, banker = "", mobile = "", idcard 
 
 
 apis.member.getMemberAlertInfoBackend = function(res) {
-    if(res.rows && res.rows.length) {} else { return res; }
+    if (res.rows && res.rows.length) {} else { return res; }
     return $.ajax({
         "method": 'post',
         "dataType": 'json',
         "url": apis.baseUrl["16"] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-        "url": chrome.extension.getURL('/member/api/AlertInfoManage/GetMemberAlertInfoBackend'),
+        //"url": chrome.extension.getURL('/member/api/AlertInfoManage/GetMemberAlertInfoBackend'),
         "data": angular.toJson({ "DisplayArea": "1", "Account": res.rows })
     }).then(({ Data }) => {
         res.list_RemittanceName = Data.AlertInfoAccountName;

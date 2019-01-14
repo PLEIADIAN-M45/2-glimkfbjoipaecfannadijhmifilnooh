@@ -5,12 +5,15 @@ define(["md5"], function(md5) {
         $router.$module
     }
     */
+    // console.log($router.$module);
+    //console.log($router.$server);
 
-    console.log($router.$module);
+    if ($router.$server == "wa111") {
+        if (!["list", "edit", "bonus"].includes($router.$module)) { return {}; }
+    }
+    if ($router.$server == "ku711") { return {}; }
 
-    //["list", "edit", "bonus"]
-
-
+   
     function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
 
     function parseToObject(str) {

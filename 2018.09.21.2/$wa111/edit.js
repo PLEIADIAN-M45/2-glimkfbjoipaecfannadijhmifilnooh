@@ -78,7 +78,7 @@ define([], function() {
         }
 
         apis.setUser = function() {
-            console.log('+ setUser');
+            //console.log('+ setUser');
             return Promise.all([getUserBasic(), getUserModel($model), getUserState(), getUserStore(), getPhoneDate(), getSystemLog()])
                 .then(() => { return _user_; });
         };

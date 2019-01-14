@@ -22,6 +22,8 @@ apis.updateUser = async function({ unique, status, permit, bonus }) {
         user.permit[1] = Number(permit);
         user.timing[1] = moment().format("YYYY-MM-DD HH:mm:ss");
         user.timing[2] = moment(user.timing[0]).diff(moment(user.timing[1]), "minutes", true);
+
+
     }
     console.log(user.module, user);
     apis.putUser(user);
@@ -64,7 +66,6 @@ apis.google2 = function google2(user) {
 async function ___set({ unique, status, permit, awards }) {
 
     var user = await apis.getUser(unique);
-    console.log(user);
 
     if (user == undefined) { return };
 
@@ -83,8 +84,12 @@ async function ___set({ unique, status, permit, awards }) {
         user.permit[1] = Number(permit);
         user.timing[1] = moment().format("YYYY-MM-DD HH:mm:ss");
         user.timing[2] = moment(user.timing[0]).diff(moment(user.timing[1]), "minutes", true);
+        var protocol = new Set();
+        user.regions.map((x) => { return protocol.add(x.IPLocation) });
+        user.region = [...protocol];
     }
 
+    console.log(user);
     apis.putUser(user);
     //apis.google2(user);
     //console.log(user.module, user);

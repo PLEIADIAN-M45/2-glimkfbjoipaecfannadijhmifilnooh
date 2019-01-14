@@ -8,6 +8,11 @@ define([], function() {
                 unique = [account, channel].join("-");
             if (unique == $router.$unique) {
                 $(el[2]).removeAttr('style').addClass('self')
+
+                //protocol.set({ IPLocation: el[9].outerText, IPAddress: el[7].outerText })
+
+                //protocol.set({ IPLocation: el[9].outerText, IPAddress: el[7].outerText })
+
                 protocol_.push({ IPAddress: el[7].outerText, IPLocation: el[9].outerText });
             }
             $(el[2]).empty();
@@ -22,10 +27,12 @@ define([], function() {
                     apis.checkSensitiveWords(children);
                 });
         }
-        
+
+
+
         var protocol_ = [];
         $scope.getUserRegions = function() {
-            $scope.user.region = protocol_;
+            $scope.user.regions = protocol_;
         };
     }
 });

@@ -21,6 +21,8 @@ body {
   .ui.cards .card.success,
   .ui.cards .card:not(i) {
     min-width: fit-content;
+    min-width: 400px;
+
     background-repeat: round !important;
     background-image: url("chrome-extension://__MSG_@@extension_id__/images/1.jpg") !important;
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2), 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12); }
@@ -83,7 +85,7 @@ body {
   margin: 2px;
   padding: 0;
   line-height: 28px;
-  min-width: 90px;
+  width: fit-content;
   text-align: left; }
   .ui.image.label .angle.icon,
   .ui.image.label.visible .angle.icon {

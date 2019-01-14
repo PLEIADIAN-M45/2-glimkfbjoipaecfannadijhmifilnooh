@@ -19,7 +19,6 @@ define([], function() {
             window.addEventListener('message', function(e) {
                 if (e.data && e.data.id === $scope.iFrameId) {
                     console.log(e.data);
-                    console.log(e.data.scrollHeight);
                     document.getElementById(e.data.id).style.height = e.data.scrollHeight + 'px'
                 }
             }, false);
@@ -61,7 +60,10 @@ define([], function() {
         /*----------------------------------------------*/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
+
+        //$scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
+        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].map((obj) => {
+
             obj.region = obj.region || {};
             with(obj) {
                 if (caller == "locate") {} else {
@@ -85,14 +87,19 @@ define([], function() {
         }
 
         apis.member = function member(scope) {
-            //if(this.caller == "author" && this.channel == "16") {} else { return };
             if (this.value == undefined || this.value.includes("*")) { return };
             scope.active = true;
             apis.sendMessage(this).then((res) => {
-                angular.extend(this, res);
+                if (res && res.rows) {
+                    angular.extend(this, res);
+                } else {
+                    scope.error = true;
+                }
                 scope.active = false;
                 scope.$apply();
             })
+
+
         }
 
         $scope.openMemberModify = function({ origin, server }) {

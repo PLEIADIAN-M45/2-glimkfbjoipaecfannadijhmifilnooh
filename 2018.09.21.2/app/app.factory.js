@@ -9,14 +9,14 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             return res;
         }
 
-
         return function($router) {
 
             var { $server, $module, $extensionId, $rootUrl, $channel, $account, $unique, $origin } = $router;
 
 
-            //$xmlSpider($router);
 
+
+            //$xmlSpider($router);
 
             var $dexie = new Dexie('evo');
             $dexie.version(1).stores({ user: 'f_accounts' });
@@ -33,6 +33,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $injector = $controller.injector();
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
+
 
             var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
@@ -117,16 +118,37 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
 
+
             apis.sendMessage = function sendMessage(p) {
+                
                 //console.log(p);
-                //this.active = true
+                //if (scope) { scope.active = true }
                 //var _name_ = arguments.callee.caller.name;
                 return new Promise((resolve, reject) => {
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
                         params: [...arguments],
                     }, (res) => {
+
+                        // console.log(res);
+
+                        //if (scope) { scope.active = false }
+
+
                         resolve(res);
+
+                        /*if (res && res.error) {
+                            reject(res);
+                        } else {
+
+                        }
+                        */
+
+
+
+                        /*
+                        console.log(res);
+                       */
                         //this.active = false;
                     })
                 })
@@ -255,6 +277,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             $scope.$hyperlink = $hyperlink;
             $scope.$createTab = $createTab;
             $scope.apis = apis;
+            $scope.$isTest = $isTest;
+
 
 
             /************************************************************/
@@ -313,7 +337,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             requirejs([
-                
+
                 $router.$master,
                 $router.$branch
 

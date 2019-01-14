@@ -5,6 +5,8 @@ apis.region = function(params) {
     //global.region.push(["合肥"])
     //global.author.push(["贾波"])
     //params.time = Date.now();
+
+
     return apis.region[params.caller].call(params)
         //.then(apis.region.check)
         .then((region) => {
@@ -69,7 +71,6 @@ apis.region.check = function(region) {
     } else {
         return true;
     }
-
 }
 
 apis.region.locate = function() {
