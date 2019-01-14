@@ -1,4 +1,5 @@
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
+
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) { //$digest
 
         var $isTest = window.location.hostname == "127.0.0.1";
@@ -9,10 +10,13 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
         }
 
 
-
-
         return function($router) {
+
             var { $server, $module, $extensionId, $rootUrl, $channel, $account, $unique, $origin } = $router;
+
+
+            //$xmlSpider($router);
+
 
             var $dexie = new Dexie('evo');
             $dexie.version(1).stores({ user: 'f_accounts' });
@@ -30,7 +34,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
 
-            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
             var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
@@ -44,9 +48,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = $scope;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if(typeof alphaVal == "object") {
-                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if (typeof alphaVal == "object") {
+                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -134,48 +138,22 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             //var cacheUser;
             apis.getUser = async function getUser() {
-                var user = await apis.sendMessage($router.$unique)
-                if(user) {
-                    $scope.user = user;
-                } else {
-                    var user = await apis.setUser();
-                    $scope.user = user;
-                    apis.putUser();
-                }
-
-                $scope.$apply();
-
-                /*
+                apis.watch('user', 'putUser');
                 $scope.user =
                     await apis.sendMessage($router.$unique) ||
                     await apis.setUser();
-                //apis.watch('user', 'putUser');
-                console.log("--", $scope.user);
-                */
-                //return $scope.user;
+                $scope.$apply();
             }
             apis.delUser = async function delUser() {
-                console.log($unique);
+                //console.log($unique);
                 await apis.sendMessage($unique);
             }
 
             apis.putUser = async function putUser(nv, ov) {
-                //console.log(angular.equals(cacheUser, $scope.user));
-                //if(!nv) { return };
-                console.log("putUser");
-
-                $scope.user.lastModify = $moment(Date.now())
+                if (!nv || angular.equals(nv, ov)) { return };
+                //console.log("putUser::", nv);
                 return apis.sendMessage($scope.user);
             }
-
-
-            apis.putUser2 = async function putUser(nv, ov) {
-                //console.log(angular.equals(cacheUser, $scope.user));
-                if(!nv) { return };
-                $scope.user.lastModify = $moment(Date.now())
-                return apis.sendMessage($scope.user);
-            }
-
 
             apis.getTabInfo = function getTabInfo() {
                 return apis.sendMessage(123);
@@ -190,12 +168,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     //return value
                 });
                 // console.log(apis.global);
-                if($isTest) {
+                if ($isTest) {
                     apis.global.author.push(["陈丽娟"])
                     apis.global.author.push(["王杰"])
                     apis.global.region.push("浙江")
                     apis.global.region.push("南宁")
-                    apis.global.locate.push("171.106.81.75")
+                    //apis.global.locate.push("171.106.81.75")
                 }
             }());
 
@@ -214,8 +192,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             document.oncopy = function(e) {
-                if(window.getSelection().type === "Caret") { e.preventDefault(); }
-                if(e.clipboardData) { e.clipboardData.setData("text/plain", clipboardData); } else {
+                if (window.getSelection().type === "Caret") { e.preventDefault(); }
+                if (e.clipboardData) { e.clipboardData.setData("text/plain", clipboardData); } else {
                     window.clipboardData.setData("Text", clipboardData);
                 }
             }
@@ -223,7 +201,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             //Object.entries(apis).map(([name, fnuc]) => { apis[name]._name = name; })
 
             function $injectStylesheet(abc) {
-                if(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -232,7 +210,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectComponents(abc) {
-                if(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -264,12 +242,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-            if($isTest && $server == "wa111") {
+            if ($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
                 //$('#divCookie').hide();
             }
-            if($isTest && $server == "ku711") {
+            if ($isTest && $server == "ku711") {
                 $('.collapse').show()
             }
 
@@ -290,6 +268,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $dexie,
                 $moment,
                 $xmlSpider,
+                //$xmlSpider,
                 $ajax,
                 $model,
                 $ctrl,
@@ -322,46 +301,32 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }*/
 
 
-            $xmlSpider.apis = apis;
-            $xmlSpider.$router = $router;
             $scope.apis = apis;
+            $xmlSpider.apis = apis;
+            $xmlSpider.$dexie = $dexie;
+            $xmlSpider.$router = $router;
 
             //window.__branch__ = $router.$branch
 
+            //console.log(window.opener);
+
+
+
             requirejs([
+                
                 $router.$master,
                 $router.$branch
+
             ], ($$master, $$branch) => {
+
                 $injectComponents($router.$components);
                 $injectStylesheet($router.$stylesheet);
 
                 $$branch.call(factory, factory);
                 $$master.call(factory, factory);
-
                 //console.log($router.$branch);
-
             });
+
             return factory;
         }
     });
-
-
-
-
-
-
-
-
-function blobtoDataURL(blob, callback) {
-    var fr = new FileReader();
-    fr.onload = function(e) {
-        callback(e.target.result);
-    };
-    fr.readAsDataURL(blob);
-}
-
-var blob=""
-
-blobtoDataURL(blob, function(dataURL) {
-    console.log(dataURL);
-});

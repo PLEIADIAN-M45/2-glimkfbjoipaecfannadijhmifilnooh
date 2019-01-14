@@ -17,12 +17,12 @@
 
             "apis/apis.onMessage.js",
             "apis/apis.onWebRequest.js",
-            "apis/apis.onUpdated.js",
+            "apis/apis.onUpdated.js"
 
            /* "mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js",*/
-            "apis/fileSystem.js"
+            //"apis/fileSystem.js"
 
             /*
         //"page": "background.html",

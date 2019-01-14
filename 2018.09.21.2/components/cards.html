@@ -1,20 +1,19 @@
-
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me)">
+    <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me, this)">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>
                 <small>{{me.region.alarm[0]}}</small>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, me, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, this, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">
             <div class="header">{{me.value||"------"}}</div>
         </div>
         <div class="content result">
-            <div class="ui dimmer" ng-class="{ 'active': me.active }">
+            <div class="ui dimmer" ng-class="{ 'active': this.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
             <div class="header padded">
@@ -38,11 +37,11 @@
                     <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
                 </div>
                 <div class="ui image label">
-                    <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || s.active"></i>
-                    <div class="detail center" ng-show="s.active"><i class="spinner loading icon"></i></div>
-                    <div class="detail center" ng-hide="s.active" ng-click="switcher(s, $event)" ng-class="{ 'green': s.on }">
+                    <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || this.active"></i>
+                    <div class="detail center" ng-show="this.active"><i class="spinner loading icon"></i></div>
+                    <div class="detail center" ng-hide="this.active" ng-class="{ 'green': s.on }">
                         <b ng-show="s.records">{{s.index}}/</b>{{s.records}}</div>
-                    <i class="angle right icon" ng-click="s.index = s.index+1; apis.member.call(s, this, $event);" ng-disabled="s.index>=s.records || s.active || s.abort"></i>
+                    <i class="angle right icon" ng-click="s.index = s.index+1; apis.member.call(s, this, $event);" ng-disabled="s.index>=s.records || this.active || s.abort"></i>
                 </div>
                 <div class="ui image label pointer" ng-repeat="row in s.rows" ng-click="openMemberModify.call(row, s)" ng-init="changeColor.call(row, this);" ng-class="[color]" id="{{$id}}">
                     <div class="detail">{{row.f_accounts||row.AccountID|uppercase}}</div>

@@ -17,7 +17,8 @@ define([], function() {
         }
         $scope.scrollHeightListener = function() {
             window.addEventListener('message', function(e) {
-                if(e.data && e.data.id === $scope.iFrameId) {
+                if (e.data && e.data.id === $scope.iFrameId) {
+                    console.log(e.data);
                     console.log(e.data.scrollHeight);
                     document.getElementById(e.data.id).style.height = e.data.scrollHeight + 'px'
                 }
@@ -29,30 +30,31 @@ define([], function() {
         };
         apis.checkSensitiveWords = function checkSensitiveWords(children) {
             [...children].map((el) => {
-                apis.global.region.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
-                apis.global.danger.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
-                apis.global.author.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
-                apis.global.locate.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.region.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.danger.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.author.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
+                //apis.global.locate.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
             })
         };
 
+
         //if($router.$params.method == "CookieID") {}
-        if($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
+        if ($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
             await apis.getUser();
             $scope.scrollHeightListener();
             $scope.QueryInputModel();
             $scope.start();
-            $scope.createIFrame();
+            //$scope.createIFrame();
         }
 
-        if(location.pathname == "/sameBrowserList.aspx") {
+        if (location.pathname == "/sameBrowserList.aspx") {
             //$scope.QueryInputModel();
             $scope.start();
-            $scope.scrollHeightPoster();
+            // $scope.scrollHeightPoster();
             return;
         }
 
-        if($router.$params.method == "DeviceNo") {
+        if ($router.$params.method == "DeviceNo") {
             $scope.QueryInputModel();
             return;
         }
@@ -65,7 +67,7 @@ define([], function() {
         $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
             obj.region = obj.region || {};
             with(obj) {
-                if(caller == "locate") {} else {
+                if (caller == "locate") {} else {
                     obj.sites = [
                         { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
                     ];
@@ -75,47 +77,48 @@ define([], function() {
         });
 
 
-        function extend(res) {
-            //console.log(res);
-            //this.active = false;
-            angular.extend(this, res, { active: false });
-            $scope.$apply();
+        apis.region = function region(scope, e) {
+            //if (this.active == undefined || e) {
+            scope.active = true;
+            apis.sendMessage(this).then((res) => {
+                angular.extend(this, res);
+                scope.active = false;
+                scope.$apply();
+            })
+            //}
         }
 
-        apis.region = function region(e) {
-            if(this.active == undefined || e) {
-                this.active = true;
-                apis.sendMessage(this).then(extend.bind(this));
-            }
-        }
-
-        apis.member = function member(e) {
+        apis.member = function member(scope) {
             //if(this.caller == "author" && this.channel == "16") {} else { return };
-            if(this.value == undefined || this.value.includes("*")) { return };
-            this.active = true;
-            apis.sendMessage(this).then(extend.bind(this));
+            if (this.value == undefined || this.value.includes("*")) { return };
+            scope.active = true;
+            apis.sendMessage(this).then((res) => {
+                angular.extend(this, res);
+                scope.active = false;
+                scope.$apply();
+            })
         }
 
         $scope.openMemberModify = function({ origin, server }) {
-            console.log(this);
             var redirectUrl = {
                 wa111: `${origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`,
                 ku711: `${origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}`
             } [server];
+
             window.open(redirectUrl, "_blank");
-            console.log(redirectUrl);
+            //console.log(redirectUrl);
         }
 
 
         $scope.changeColor = function($childScope) {
             var $sequel = $scope.user.sequel;
-            if(this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
-            if(this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
-            if(this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
+            if (this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
+            if (this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
+            if (this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
         };
 
         $scope.setPopup = function($childScope) {
-            if(this.list_Accounts && this.list_Accounts.length) {
+            if (this.list_Accounts && this.list_Accounts.length) {
                 setTimeout(($id) => {
                     $($id).popup({ html: $($id).find("aside").html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" });
                 }, 500, "#" + $childScope.$id);
@@ -126,15 +129,6 @@ define([], function() {
             $scope.list_RemittanceName = s.list_RemittanceName;
             $('.ui.modal').modal('show');
         }
-
-        $scope.switcher = function(s, e) {
-            s.on = !s.on;
-        }
-
-
-        //apis.openDeposit()
-        //console.log($scope.user.frameId);
-
 
 
         $scope.$apply();

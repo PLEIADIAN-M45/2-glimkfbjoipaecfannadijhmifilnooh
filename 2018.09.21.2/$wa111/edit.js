@@ -2,9 +2,9 @@ define([], function() {
 
     var _user_ = { timing: [], status: [], permit: [], region: [], equpmt: {} };
 
-    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $xmlSpider, $router, $extensionId }) {
+    return async function({ apis, $ajax, $account, $dexie, $model, $ctrl, $scope, $router, $extensionId }) {
 
-
+        /*
         $xmlSpider.loadend = function xmlSpider() {
             console.log(this.commander);
             switch (this.commander) {
@@ -13,6 +13,7 @@ define([], function() {
                     break;
             }
         };
+        */
 
         function getUserBasic() {
             var { server, origin, unique, channel, account, operator } = $router;
@@ -71,7 +72,7 @@ define([], function() {
                 data: "tabName=&zwrq=&pageIndex=&f_target=&f_handler=&ddlType=0&f_accounts=" + $account + "&zwrq2=&logType=memberlog&f_number=&type=&selType=&selShow=-1&txtID=&selDengji=",
             }).then((rows) => {
                 return rows.find(({ f_field, f_oldData, f_newData, f_time }) => {
-                    if(f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return _user_.timing[0] = f_time; }
+                    if (f_field == "f_ishow" && f_oldData == "0" && f_newData == "3") { return _user_.timing[0] = f_time; }
                 });
             });
         }

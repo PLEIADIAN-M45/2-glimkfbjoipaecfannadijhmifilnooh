@@ -6,7 +6,7 @@ define([], function() {
             var account = el[2].outerText,
                 channel = el[0].outerText.split("-")[0],
                 unique = [account, channel].join("-");
-            if(unique == $router.$unique) {
+            if (unique == $router.$unique) {
                 $(el[2]).removeAttr('style').addClass('self')
                 protocol_.push({ IPAddress: el[7].outerText, IPLocation: el[9].outerText });
             }
@@ -15,7 +15,6 @@ define([], function() {
             $(el[2]).append(apis.createElement(channel, unique, "channel"));
         };
         $scope.start = function() {
-            $scope.scrollHeightPoster();
             $("#divCookie>ul:not(.TrHead):not(.TrHead2)")
                 .filter((i, { firstElementChild, childElementCount }) => { return firstElementChild.outerText && childElementCount > 5 })
                 .each((i, { children }) => {
@@ -23,6 +22,7 @@ define([], function() {
                     apis.checkSensitiveWords(children);
                 });
         }
+        
         var protocol_ = [];
         $scope.getUserRegions = function() {
             $scope.user.region = protocol_;

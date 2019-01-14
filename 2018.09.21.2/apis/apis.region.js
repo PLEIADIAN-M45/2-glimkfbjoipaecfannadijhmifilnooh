@@ -27,8 +27,8 @@ apis.blacklist = function() {
         global.banker.push(["6217856300"])
         global.banker.push(["62170033"])
 
-        global.locate.push(["171.106.81"])
-        global.locate.push(["223.104.33.115"])
+        //global.locate.push(["171.106.81"])
+        //global.locate.push(["223.104.33.115"])
 
         //global.idcard.push(["3401221987100616"])
         global.mobile.push(["13514966"])

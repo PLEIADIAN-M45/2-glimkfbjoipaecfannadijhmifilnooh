@@ -1,8 +1,31 @@
 define(["md5"], function(md5) {
+
+    /*return function($router) {
+        console.log($router);
+        $router.$module
+    }
+    */
+
+    console.log($router.$module);
+
+    //["list", "edit", "bonus"]
+
+
     function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
-    function parseToObject(str) { if (str.includes("?")) { str = str.split("?")[1]; } if (str.includes("&")) { try { let obj = Object.create(null);
-                str.split("&").map((_str) => { return _str.split('='); }).map(([key, value]) => { obj[key] = value; }); return obj; } catch (ex) { return str; } } else { return str; } };
+
+    function parseToObject(str) {
+        if (str.includes("?")) { str = str.split("?")[1]; }
+        if (str.includes("&")) {
+            try {
+                let obj = Object.create(null);
+                str.split("&").map((_str) => { return _str.split('='); }).map(([key, value]) => { obj[key] = value; });
+                return obj;
+            } catch (ex) { return str; }
+        } else { return str; }
+    };
+
     function parseToJson(str) { try { return angular.fromJson(str); } catch (ex) { return parseToObject(str); } };
+
     function parseToPath(str) { return str.split('/').pop().split('.')[0]; }
 
     try {
@@ -32,33 +55,49 @@ define(["md5"], function(md5) {
             this.commander = this.sendData.action || this.sendData.type || this.lastPath;
             if (!isNaN(this.commander)) { this.commander = this.lastPath; };
             this.commander = this.commander.toUpperCase();
-            var { commander, command, respData, sendData, dataset, apis } = this;
-            var { server, channel, operator, unique } = this.$router;
-            apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
+            this.COMMADER = this.commander.toUpperCase();
+
+            var { commander, command, respData, sendData, dataset } = this;
+            var { server, channel, operator, unique, extensionId } = window.$router;
+            chrome.runtime.sendMessage(extensionId, {
+                caller: "xmlSpider",
+                params: [{ commander, command, respData, sendData, dataset, server, channel, operator, unique }]
+            }, (res) => {
+                //console.log(res);
+            })
+            //apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
         }
 
-        /*
-        xmlSpider.loadend = function() {
-            console.log(this.commander);
-            switch (this.commander) {
-                case "GETMODEL":
-                    this.apis.getUser();
-                    console.log("**getUser");
-                    break;
-                default:
-                    // statements_def
-                    break;
-            }
-        };*/
+        xmlSpider.loadend = async function() {
+            with(this) {
+                switch (commander) {
+                    case "GETALLUSER":
+                        dataset.map((data) => { $dexie.user.put(data) });
+                        //console.log(await $dexie.user.toArray());
+                        break;
+                    case "GETMODEL":
+                        apis.getUser();
+                        break;
+                    case "BTNUSERSET":
 
+                        break;
+                    default:
+                        // statements_def
+                        break;
+                }
+            }
+        };
 
         return xmlSpider;
 
     } catch (ex) {
-
         console.error('xmlSpider');
     }
 });
+
+
+
+
 
 //if (Number(this.commander)) { this.commander = this.lastPath };
 //this.command = MD5(this.commander);

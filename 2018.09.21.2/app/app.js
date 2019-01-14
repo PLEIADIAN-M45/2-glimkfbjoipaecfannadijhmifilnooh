@@ -1,4 +1,6 @@
 define(["app.router"], function($router) {
+    window.$router = $router;
+
     if ($router == undefined) { return }
 
     let $name = "OBSApp",

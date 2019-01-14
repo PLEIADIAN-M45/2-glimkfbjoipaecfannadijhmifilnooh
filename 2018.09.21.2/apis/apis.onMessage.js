@@ -1,10 +1,11 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {})
 chrome.runtime.onMessageExternal.addListener((request, sender, sendResponse) => {
     ///console.log(sender);
-    if(!request.params) { return };
-    if(sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
-    if(window.isLocal) { apis.baseUrl = { "0": "http://chrome.evo.net", "26": "http://host26.wa111.net", "35": "http://host35.wa111.net", "17": "http://host17.wa111.net", "16": "https://bk.ku711.net" } }
+    if (!request.params) { return };
+    if (sender.tab.url.includes("127.0.0.1")) { window.isLocal = true; }
+    if (window.isLocal) { apis.baseUrl = { "0": "http://chrome.evo.net", "26": "http://host26.wa111.net", "35": "http://host35.wa111.net", "17": "http://host17.wa111.net", "16": "https://bk.ku711.net" } }
     //console.log(apis[request.caller]);
+    console.log(request.params);
     apis[request.caller](...request.params, sender, sendResponse).then(viewer).then(sendResponse);
     return true;
 });
@@ -25,9 +26,7 @@ chrome.runtime.onConnectExternal.addListener((port) => {
 });
 
 
-chrome.tabs.create({
-    url: "test.html"
-})
+//chrome.tabs.create({ url: "test.html" })
 
 
 

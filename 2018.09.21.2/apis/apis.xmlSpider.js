@@ -4,11 +4,11 @@ window.cacheUserData;
 apis.updateUser = async function({ unique, status, permit, bonus }) {
     var user = await apis.getUser(unique);
     //console.log(user);
-    if(user == undefined) { return };
-    if(window.isLocal) { user.module = null; };
-    if(user.module) { return };
+    if (user == undefined) { return };
+    if (window.isLocal) { user.module = null; };
+    if (user.module) { return };
 
-    if(bonus) {
+    if (bonus) {
         window.cacheBonusData = null;
         //user.module = "BONUS:" + user.server;
         user.module = "BONUS:AWARD";
@@ -64,14 +64,15 @@ apis.google2 = function google2(user) {
 async function ___set({ unique, status, permit, awards }) {
 
     var user = await apis.getUser(unique);
-    //console.log(user);
-    if(user == undefined) { return };
+    console.log(user);
 
-    if(window.isLocal) { user.module = null; };
+    if (user == undefined) { return };
 
-    if(user.module) { return };
+    if (window.isLocal) { user.module = null; };
 
-    if(awards) {
+    if (user.module) { return };
+
+    if (awards) {
         user.module = "awards:" + user.server;
         user.awards = awards;
     } else {
@@ -85,9 +86,7 @@ async function ___set({ unique, status, permit, awards }) {
     }
 
     apis.putUser(user);
-
     //apis.google2(user);
-
     //console.log(user.module, user);
 }
 
@@ -98,7 +97,7 @@ apis.xmlSpider = async function(params) {
     with(params) {
         switch (commander) {
             case "BTNUSERSET":
-                if(respData == "u-ok") {
+                if (respData == "u-ok") {
                     return ___set({ unique: unique, status: sendData.ishow, permit: sendData.isOpenDeposit });
                 }
                 break;
@@ -109,22 +108,22 @@ apis.xmlSpider = async function(params) {
                 return ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
                 break;
             case "STOPMEMBER":
-                if(respData == 2)
+                if (respData == 2)
                     return ___set({ unique: unique, status: 2, permit: 0 });
                 break;
             case "UPDATEMEMBERRISKSINFOBACKENDISFSUSPENSION":
-                if(sendData.IsFSuspension == true)
+                if (sendData.IsFSuspension == true)
                     return ___set({ unique: unique, status: 0, permit: 0 });
                 break;
             case "GETDEPOSITBONUSLIST":
-                if(window.cacheBonusData) {
+                if (window.cacheBonusData) {
                     var awards = dataset.find((d) => { return d.f_id == window.cacheBonusData.id; });
                     window.cacheBonusData = null;
                     return ___set({ awards: awards, unique: awards.f_accounts + "-" + channel });
                 }
                 break;
             case "GETMEMBERBONUSLOGBACKENDBYCONDITION":
-                if(window.cacheBonusData && sendData.DealType == null) {
+                if (window.cacheBonusData && sendData.DealType == null) {
                     var awards = dataset.find((d) => { return d.BonusNumber == window.cacheBonusData.BonusNumber; });
                     window.cacheBonusData = null;
                     return ___set({ awards: awards, unique: awards.AccountID + "-" + channel });
