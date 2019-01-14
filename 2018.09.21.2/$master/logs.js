@@ -75,12 +75,10 @@ define([], function() {
         });
 
 
-        console.log($scope.user);
-
+        //console.log($scope.user);
 
         apis.region = function region(scope, e) {
             if (!this.value) { return };
-
             //if (this.active == undefined || e) {//}
             scope.active = true;
             apis.sendMessage(this).then((res) => {
@@ -92,7 +90,7 @@ define([], function() {
 
         apis.member = function member(scope) {
             if (!this.value || this.value.includes("*")) { return };
-            console.log(this.caller, this.value);
+            //console.log(this.caller, this.value);
             scope.active = true;
             apis.sendMessage(this).then((res) => {
                 if (res && res.rows) {

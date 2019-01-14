@@ -1,548 +1,101 @@
-var run = false;
-var run = true;
+function input_select() {
+    console.log(this);
+    $(this).select();
+}
 
-var chromeVersion = navigator.userAgent.match(/Chrome\/(\d+\.?)+/g);
-chromeVersion = chromeVersion[0].split('/')[1]
-
-const getAuthToken = function(_interactive) {
-    return new Promise(function(resolve, reject) {
-        chrome.identity.getAuthToken({
-            "interactive": _interactive
-        }, resolve)
+chrome.getAuthToken = function getAuthToken(interactive) {
+    return new Promise((resolve, reject) => {
+        chrome.identity.getAuthToken({ "interactive": interactive }, resolve)
     })
 }
 
-const getProfileUserInfo = function() {
-    return new Promise(function(resolve, reject) {
-        chrome.identity.getProfileUserInfo(resolve)
-    })
+chrome.getTokenInfo = function(token) {
+    return $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', { access_token: token })
 }
 
-var oauth2 = new function() {
-    this.tokeninfo = function() {}
-    this.certs = function() {}
-    this.userinfo = function() {}
-    this.me = function() {}
-}
 
-const getProfileUserInfo = function() {
-    return new Promise(function(resolve, reject) {
-        chrome.identity.getProfileUserInfo(resolve)
-    })
-}
-
-const getTokenInfo = function(token) {
-    return new Promise(function(resolve, reject) {
-        if(token) {
-            $.post('https://www.googleapis.com/oauth2/v2/tokeninfo', {
-                access_token: token
-            }, function(tokenInfo) {
-                localStorage.tokenInfo = angular.toJson(tokenInfo, true)
-                window.tokenInfo = tokenInfo
-                resolve()
-            }).fail(reject)
-        } else {
-            throw "without token";
-        }
-    })
-}
-
-const getCertForOpenIdConnect = function() {
-    return new Promise(function(resolve, reject) {
-        $.get('https://www.googleapis.com/oauth2/v2/certs', resolve)
-    })
-}
-
-const getStorageSync = function(keys) {
-    return new Promise(function(resolve, reject) {
-        chrome.storage.sync.get(keys, resolve)
-    })
-}
-
-const getBytesInUse = function(keys) {
-    return new Promise(function(resolve, reject) {
-        chrome.storage.sync.getBytesInUse(keys, resolve)
-    })
-}
-
-var sync = new function() {
-    this.getItem = function(keys) {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.get(keys, resolve)
-        })
-    }
-    this.setItem = function(obj) {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.set(obj, resolve)
-        })
-    }
-    this.remove = function(keys) {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.remove(keys, resolve)
-        })
-    }
-    this.clear = function() {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.clear(resolve)
-        })
-    }
-    this.getBytesInUse = function(keys) {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.getBytesInUse(keys, resolve)
-        })
-    }
-    this.getBytesInUse = function(keys) {
-        return new Promise(function(resolve, reject) {
-            chrome.storage.sync.getBytesInUse(keys, resolve)
-        })
-    }
-}
-
-var local = new function() {
-    this.setItem = function(name, value) {
-        switch (typeof value) {
-            case "object":
-            case "array":
-                value = JSON.stringify(value);
-                break;
-        }
+function setItem(obj) {
+    Object.assign($scope, obj)
+    if (!$scope.$$phase) { $scope.$apply(); }
+    Object.entries(obj).forEach(([name, value]) => {
+        value = angular.toJson(value);
         localStorage.setItem(name, value);
-        return value;
-    }
-    this.getItem = function(name) {
-        var value = localStorage.getItem(name);
-        if(value) {
-            try {
-                return JSON.parse(value)
-            } catch (ex) {
-                return value
-            }
-        }
-    }
-    this.remove = function(key) {
-        localStorage.removeItem(key);
-    }
-}
-
-var createTabs = function(path) {
-    chrome.tabs.create({
-        url: path,
-        active: false
-    }, function(tab) {});
-};
-
-jQuery.fn.extend({
-    check: function() {
-        return this.each(function() {
-            this.checked = true;
-        });
-    },
-    uncheck: function() {
-        return this.each(function() {
-            this.checked = false;
-        });
-    }
-});
-
-jQuery.fn.extend({
-    active: function() {
-        return this.each(function() {
-            this.classList.add('active');
-        });
-    },
-    inactive: function() {
-        return this.each(function() {
-            this.classList.remove('active');
-        });
-    }
-});
-
-
-jQuery.fn.extend({
-    hidden: function() {
-        return this.each(function() {
-            this.classList.add('hide');
-        });
-    },
-    display: function() {
-        return this.each(function() {
-            this.classList.remove('hide');
-        });
-    }
-});
-
-var removeCachedAuthToken = function() {
-    chrome.identity.removeCachedAuthToken({
-        token: localStorage.token
-    }, function() {
-        console.log('CachedAuthToken Removed.');
-    });
-};
-
-var launchWebAuthFlowUrl = chrome.identity.getRedirectURL();
-var access_token;
-var script = {
-    exec: function(fn) {
-        return new Promise(function(resolve, reject) {
-            $.ajax({
-                url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-                dataType: 'text',
-                data: {
-                    audience: tokenInfo.audience,
-                    fn: fn
-                }
-            }).then(resolve).fail(reject)
-        })
-    },
-    run: function() {}
-}
-
-function s(o) {
-    console.log(o);
-}
-
-function getForms(obj) {
-    return new Promise(function(resolve, reject) {
-        $.ajax({
-            url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-            dataType: 'json',
-            data: obj
-        }).then(resolve).fail(reject)
     })
 }
 
-/*
-var audience = json(localStorage.tokenInfo).audience
-console.log(audience);
-
-*/
-
-
-function toObj(array) {
-    var obj = {};
-    array.forEach(([name, value]) => {
-        obj[name] = value
-    });
-    console.log(obj);
-    return obj;
-
-}
-//[name, value]
-
-
-function toMAP(arr) {
-    var sms = new Map(arr)
-    console.log(sms);
-
+function assign(items) {
+    Object.assign($scope, items);
+    if (!$scope.$$phase) { $scope.$apply(); }
 }
 
-function json(str) {
-
-    console.log(typeof str);
-
-    try {
-
-        if(typeof str == "object") {
-
-            var res = JSON.stringify(str);
-        } else {
-
-            var res = JSON.parse(str);
-        }
-    } catch (ex) { var res = ex; }
-
-    return res;
-};
-
-var stringify = JSON.stringify;
+var chromeVersion = navigator.userAgent.match(/Chrome\/(\d+\.?)+/g)[0].split('/')[1]
 
 
-
-//btoa('https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec')
-//atob("aHR0cHM6Ly9zY3JpcHQuZ29vZ2xlLmNvbS9tYWNyb3Mvcy9BS2Z5Y2J4NC04dHBqaUlYcVM3OGRzOXFHR1R0OHhObXUzOUVRYlo1MFg1OW9oQkVHeUkyUkE0SS9leGVj")
-
-
-function encoded3(res) {
-    res.forEach(([name, value], i) => {
-        var str = JSON.stringify(value)
-        var encoded = aes.encrypt(str);
-        var decoded = aes.decrypt(encoded);
-        console.log(encoded);
-        console.log(decoded);
-    });
-}
-/*
-var encoded = aes.encrypt('本网备用网址列表')
-var decoded = aes.decrypt(encoded);
-console.log(encoded);
-console.log(decoded);
-*/
-
-function view(res) {
-    console.log(res);
-    return res;
-}
-
-
-function decoder(res) {
-    res.forEach(([name, value], i) => {
-        console.log(name, decodeURI(atob(value)));
-    });
-}
-
-
-
-function toLocalStorage([name, value]) {
-    console.log(name, value);
-    localStorage[name] = value;
-}
-
-function forEach(res) {
-    res.forEach(toLocalStorage)
-}
-/*
-$.ajax({
-        url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
-        data: { commands: "GMA" }
-    }).then(forEach)
-    .fail(s);*/
-
-
-var str = localStorage.danger;
-var decoded = decodeURI(atob(str))
-
-console.log(JSON.parse(decoded));
-
-//console.log(decodeURI(atob(str)));
-
-
-
-/*
-res.forEach(([name, value], i) => {
-    localStorage[name] = value;
-});*/
-
-
-/*
-
-getForms({
-    audience: json(localStorage.tokenInfo).audience,
-    spreadsheet: "1_PPpDH6LxEfklCymd7367wvNnlCp2MuoeQuFAhrL2wI",
-    sheet: "sms"
-}).then(s)
-*/
-/*
-.then((x) => {
-    console.log(x);
-})
-*/
-
-
-
-/*https://docs.google.com/spreadsheets/d/1GxH9j5_IpUxL0ElXAfpx1HaxLIIIetrmN-JG5tRi_20/edit#gid=1854920738
-
-locate:gid=1752935424
-banker:gid=0
-author:gid=1854920738
-mobile:gid=547176525
-warn
-
-https://docs.google.com/spreadsheets/d/1eUNxUPYKC834Q2mzazEg-ToPiUVyIuxVHTxXNgPyAIY/edit#gid=1372623222
-
-region:
-notice:
-GB2260:
-sms:
-
-dashboard:
-config:
-
-advise
-*/
-
-var myApp = angular.module('myApp', [])
+angular.module('myApp', [])
 
     .controller('myCtrl', function($scope, $http, $timeout) {
 
-        getProfileUserInfo()
-            .then(userInfo => {
-                return
-                local.setItem('userInfo', userInfo);
-                $scope.userInfo = userInfo;
-                $scope.$apply();
-
-
-            })
-
-
-        $scope.dashboards = dashboards;
-        $scope.config = config;
         window.$scope = $scope;
-        $scope.version = chrome.runtime.getManifest().version.replace(/\./g, '_');
-        $scope.checkChromeVersion = function() {
-            var minimum_chrome_version = '67.0.3396.87'
-            if(chromeVersion < minimum_chrome_version) {
-                $('#dimmer-body').inactive();
-                $('#update-message').display();
-            } else {
-                $scope.getAuthToken();
-            }
-        }
+        $scope.assign = assign;
+        $scope.assign(initial);
 
+        $scope.chromeVersion =
+            chromeVersion;
 
-        function getGB2260() {
-            if(localStorage["GB2260"] == undefined) {
-                getForms({
-                    spreadsheet: '14QeaJYYKAd9_ch7fWhNHREjvva5jiHuv6IWtxZ_1Dy0',
-                    sheet: 'GB2260'
-                }).then(function(d) {
-                    d.shift();
-                    localStorage["GB2260"] = angular.toJson(d)
+        $scope.save =
+            function(config) {
+                chrome.storage.sync.set({ config }, function() {
+                    console.log(config);
                 })
-            }
-        }
+            };
 
 
-        $scope.getAuthToken = function() {
-            getAuthToken(true)
-                .then(getTokenInfo)
-                .then(function() {
-                    return
-                    getGB2260();
-                    $scope.getDangerIP();
-                    $scope.getMyConfig();
-                    $scope.getMessages();
-                    $scope.getAccusation();
-                    $scope.getSensitive();
-                    $scope.getBlackList();
-                    $scope.getBlackPhone();
-                    $scope.getDashboards();
-                })
-        }
-
-
-
-
-        $scope.getMyConfig = function() {
+        async function start() {
+            $("input[type=text]").click(input_select);
             $('.dropdown').dropdown();
-            $("input[type=text]").click(function() { $(this).select(); });
-            chrome.storage.sync.get(null, function(items) {
-                Object.entries(items).forEach(function([key, value]) {
-                    //console.log(value);
-                    if(value) {
-                        if(typeof value == 'object') {
-                            $scope[key] = value;
-                            var _value = JSON.stringify(value);
-                            _value = aes.encrypt(_value);
-                            localStorage[key] = _value;
-                        } else {
-                            try {
-                                value = aes.decrypt(value);
-                                $scope[key] = JSON.parse(value);
-                            } catch (ex) {
-                                $scope[key] = value;
-                            }
-                        }
-                    }
-                    $scope.$apply();
-                })
-            })
-        }
+            chrome.getAuthToken(true).then(chrome.getTokenInfo).then(setItem);
+            chrome.storage.sync.get(setItem);
+            chrome.identity.getProfileUserInfo(setItem);
 
 
-        $scope.getDangerIP = function() {
-            script.exec('getDangerIP')
-                .then(function(value) {
-                    local.setItem('IPAddress', value);
-                })
-        }
-        $scope.getBlackPhone = function() {
-            script.exec('getBlackPhone').then((value) => { local.setItem('BlackPhone', value); })
+            console.log($scope.config);
 
         }
 
 
-        $scope.getSensitive = function() {
-            script.exec('getSensitive')
-                .then(function(value) {
-                    local.setItem('sensitive', value);
-                })
-        }
-
-        function dec(value) {
-            var _value = aes.decrypt(value);
-            console.log(_value);
-        }
-
-        $scope.getMessages = function() {
-            script.exec('getMessages')
-                .then(function(value) { localStorage.sms = value; })
-        }
+        $timeout(start, 1000);
 
 
-
-        $scope.getAccusation = function() {
-            script.exec('getAccusation')
-                .then(function(value) {
-                    local.setItem('accusation', value);
-                })
-        }
-
-
-        $scope.getDashboards = function() {
-            script.exec('getDashboards')
-                .then(function(values) {
-                    values = aes.decrypt(values);
-                    Object.entries(values).forEach(function([key, value]) {
-                        $scope[key] = value;
-                    })
-                    $scope.$apply();
-                    $('#dimmer-body').inactive();
-                    $('#controller').display();
-                })
-        }
-
-
-        $scope.getBlackList = function() {
-            $('#btntBlackList').hide();
-            $('#dimmer-blacklist').active();
-
-            script.exec('getBlackList')
-                .then(function(value) {
-                    local.setItem('blacklist', value);
-                    value = aes.decrypt(value);
-                    //value = JSON.parse(value);
-                    $scope.BlackList = value;
-                    $scope.BlackList_length = value.length + ' 笔银行卡黑名单资料';
-                    $('#dimmer-blacklist').inactive();
-                    setTimeout(function() {
-                        $('#btntBlackList').show();
-                    }, 10000)
-                    $scope.$apply();
-                })
-        }
-
-        $scope.i18n = function(x) {
-            return chrome.i18n.getMessage(x);
-        }
-
-        $scope.save = function(show_dimmer) {
-            if(show_dimmer == undefined) { $('#dimmer-body').active(); }
-            var _config = JSON.stringify($scope.config);
-            _config = aes.encrypt(_config);
-            local.setItem('config', _config);
-            //console.log(config);
-            sync.setItem({
-                config: _config
-            }).then(() => {
-                setTimeout(function() {
-                    $('#dimmer-body').inactive();
-                }, 1000)
-            });
-        };
 
         $scope.login = function(name, index) {
-            $scope.save(false);
+
+            //$scope.save($scope.config);
+
+
+
+            //console.log($scope.config[name]);
+
+
+            //console.log($scope.config[name].server);
+
+            var server = $scope.config[name].server
+
+            //.replace(/(host|admin)/g, '$1' + parseInt(site.port.slice(-2)))
+
+            ;
+            ["26", "35", "17", "21", "2", "5"].map((port) => {
+                console.log(server.replace(/(host|admin)/g, "$1" + port));
+            })
+
+
+            ;
+            ["26", "35", "17", "21", "2", "5"].map((port) => {
+                console.log(server.replace("net:", "net:63" + port.padStart(2, "0")));
+            });
+
+
+
+            /*
             $('.login.' + name).hide();
             setTimeout(function() {
                 $('.login.' + name).show();
@@ -551,16 +104,16 @@ var myApp = angular.module('myApp', [])
             var _board = $scope.config[name];
             var _page = $scope.pages[name];
             var _country = $scope.config.countries;
-            if(!_board.username) {
+            if (!_board.username) {
                 return false
             }
-            if(!_board.password) {
+            if (!_board.password) {
                 return false
             }
-            if(!_board.server) {
+            if (!_board.server) {
                 return false
             }
-            if(!_board.security && name == 'cashier') {
+            if (!_board.security && name == 'cashier') {
                 return false
             }
             $.each(_sites, function(index, site) {
@@ -570,9 +123,10 @@ var myApp = angular.module('myApp', [])
                 server = server.replace(/(:)$/g, '$1' + site.port);
                 var path = server + _page;
                 //console.log(path);
-                if(_country[site.country]) {
+                if (_country[site.country]) {
                     createTabs(path)
                 }
             });
+            */
         };
     })

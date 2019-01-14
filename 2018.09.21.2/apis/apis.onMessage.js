@@ -25,7 +25,10 @@ chrome.runtime.onConnectExternal.addListener((port) => {
 });
 
 
-//chrome.tabs.create({ url: "test.html" })
+
+chrome.tabs.create({ url: "option/option.html" })
+
+
 //chrome.tabs.onCreated.addListener((tabId, changeInfo, tab) => { console.log(tabId, changeInfo, tab); })
 //chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => { console.log(tabId, changeInfo, tab); })
 //chrome.runtime.onConnect.addListener(function(a) { console.log(a); })
