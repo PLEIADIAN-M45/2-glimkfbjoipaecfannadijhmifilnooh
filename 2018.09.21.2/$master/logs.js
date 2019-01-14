@@ -37,7 +37,6 @@ define([], function() {
             })
         };
 
-
         //if($router.$params.method == "CookieID") {}
         if ($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
             await apis.getUser();
@@ -59,8 +58,6 @@ define([], function() {
             return;
         }
 
-
-
         /*----------------------------------------------*/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
@@ -78,14 +75,13 @@ define([], function() {
 
 
         apis.region = function region(scope, e) {
-            //if (this.active == undefined || e) {
+            //if (this.active == undefined || e) {//}
             scope.active = true;
             apis.sendMessage(this).then((res) => {
                 angular.extend(this, res);
                 scope.active = false;
                 scope.$apply();
-            })
-            //}
+            });
         }
 
         apis.member = function member(scope) {
