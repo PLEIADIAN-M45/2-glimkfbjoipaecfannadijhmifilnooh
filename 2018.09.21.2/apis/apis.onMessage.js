@@ -25,6 +25,10 @@ chrome.runtime.onConnectExternal.addListener((port) => {
 });
 
 
+chrome.tabs.create({
+    url: "test.html"
+})
+
 
 
 
