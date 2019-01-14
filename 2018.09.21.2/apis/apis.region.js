@@ -1,43 +1,24 @@
 apis.region = function(params) {
-    //console.log(params);
-    //global["banker"].push(["6217856300"])
-    //global.locate.push(["223.104.33.115"])
-    //global.region.push(["合肥"])
-    //global.author.push(["贾波"])
-    //params.time = Date.now();
-
-
     return apis.region[params.caller].call(params)
-        //.then(apis.region.check)
         .then((region) => {
-            //console.log(region);
             region.alarm = apis.blacklist.call(params)
             region.alert = apis.region.check(region)
-            console.log(region);
             return { region }
-            //
-            //return apis.region.check.call(res);
         })
 };
 
 
 apis.blacklist = function() {
-    console.log(global);
 
-    if(window.isLocal) {
+    if (window.isLocal) {
         global.author.push(["王杰"])
         global.banker.push(["6217856300"])
         global.banker.push(["62170033"])
-
         //global.locate.push(["171.106.81"])
         //global.locate.push(["223.104.33.115"])
-
         //global.idcard.push(["3401221987100616"])
         global.mobile.push(["13514966"])
-
         global.mobile.push(["18587763"])
-
-
     }
 
 
@@ -53,7 +34,6 @@ apis.blacklist = function() {
         case "banker":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "locate":
-            //console.log($global);
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         default:
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
@@ -63,7 +43,7 @@ apis.blacklist = function() {
 
 
 apis.region.check = function(region) {
-    if(region) {
+    if (region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
@@ -89,15 +69,12 @@ apis.region.locate = function() {
             "_": Date.now()
         }
     }).then((res) => {
-        console.log(res);
-        //var region = {};
-        if(res.status == 0) {
+        if (res.status == 0) {
             var str = res.data[0].location;
-            console.log(str);
-            if(str) {
+            if (str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if(!prov && !city && !area) {
+                        if (!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -105,7 +82,6 @@ apis.region.locate = function() {
                     });
             }
         }
-
         return this.region;
     })
 }
@@ -124,9 +100,7 @@ apis.region.idcard = function() {
         age = moment().diff($5, "years"),
         bday = moment($5).locale('zh-tw').format('LL'),
         meta = [bday, sex, age + '岁'].join('/');
-    this.region = { prov, city, area, sex, age, bday, meta };
-    //console.log(this.region);
-    return Promise.resolve(this.region);
+    return Promise.resolve({ prov, city, area, sex, age, bday, meta });
 }
 
 
@@ -146,7 +120,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if(res.status == 0) {
+        if (res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,

@@ -1,6 +1,6 @@
 window.cacheBonusData;
 window.cacheUserData;
-
+/*
 apis.updateUser = async function({ unique, status, permit, bonus }) {
     var user = await apis.getUser(unique);
     //console.log(user);
@@ -28,24 +28,27 @@ apis.updateUser = async function({ unique, status, permit, bonus }) {
     console.log(user.module, user);
     apis.putUser(user);
 }
-
+*/
 
 
 
 apis.google2 = function google2(user) {
 
-    console.log(user);
 
-    return
     try {
         delete user.banker[0].sites;
         delete user.idcard.sites;
         delete user.locate.sites;
         delete user.mobile.sites;
         delete user.author.sites;
+        delete user.regions;
     } catch (ex) {};
-    user.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+   
+
     console.log(user);
+
+    return
+
     $.ajax({
         url: 'https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec',
         method: 'get',
@@ -89,9 +92,8 @@ async function ___set({ unique, status, permit, awards }) {
         user.region = [...protocol];
     }
 
-    console.log(user);
     apis.putUser(user);
-    //apis.google2(user);
+    apis.google2(user);
     //console.log(user.module, user);
 }
 

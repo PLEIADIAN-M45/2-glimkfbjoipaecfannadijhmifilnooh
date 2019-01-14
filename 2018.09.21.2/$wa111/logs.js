@@ -2,17 +2,13 @@ define([], function() {
     return async function({ apis, $router, $account, $channel, $unique, $scope, $model, $getUser, $sendMessage, $apply }) {
         $scope.iFrameSrc = `/sameBrowserList.aspx?iType=3&accounts=${$router.$account}&siteNumber=${$router.$channel}`;
         $scope.QueryInputModel = function() {}
+        var protocol_ = [];
         apis.addSiteNumberToAccount = function addSiteNumberToAccount(el) {
             var account = el[2].outerText,
                 channel = el[0].outerText.split("-")[0],
                 unique = [account, channel].join("-");
             if (unique == $router.$unique) {
-                $(el[2]).removeAttr('style').addClass('self')
-
-                //protocol.set({ IPLocation: el[9].outerText, IPAddress: el[7].outerText })
-
-                //protocol.set({ IPLocation: el[9].outerText, IPAddress: el[7].outerText })
-
+                $(el[2]).removeAttr('style').addClass('self');
                 protocol_.push({ IPAddress: el[7].outerText, IPLocation: el[9].outerText });
             }
             $(el[2]).empty();
@@ -28,9 +24,6 @@ define([], function() {
                 });
         }
 
-
-
-        var protocol_ = [];
         $scope.getUserRegions = function() {
             $scope.user.regions = protocol_;
         };

@@ -8,6 +8,7 @@ apis.getUser = function(params) { return dexie.user.get(params); };
 apis.putUser = function(params) {
     //console.log(params);
     //params.lastModify = moment(Date.now())
+    params.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
     return dexie.user.put(params);
 };
 apis.delUser = function(params) { return dexie.user.delete(params); };
@@ -29,7 +30,7 @@ apis.sendSms = function(params) {
         return apis.putUser(params);
     });
 };
- 
+
 
 
 apis.openDeposit = function({ frameId }) {

@@ -120,7 +120,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             apis.sendMessage = function sendMessage(p) {
-                
+
                 //console.log(p);
                 //if (scope) { scope.active = true }
                 //var _name_ = arguments.callee.caller.name;
@@ -249,8 +249,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             /************************************************************/
             var $createTab = function(hyperlink) {
                 let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account);
-                console.log(redirectUrl);
                 window.open(redirectUrl, "_blank");
+                //console.log(redirectUrl);
             }
 
             var $hyperlink = {

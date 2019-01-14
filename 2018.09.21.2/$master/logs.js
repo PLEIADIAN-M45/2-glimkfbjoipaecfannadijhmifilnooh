@@ -42,13 +42,12 @@ define([], function() {
             $scope.scrollHeightListener();
             $scope.QueryInputModel();
             $scope.start();
-            //$scope.createIFrame();
+            $scope.createIFrame();
         }
 
         if (location.pathname == "/sameBrowserList.aspx") {
-            //$scope.QueryInputModel();
             $scope.start();
-            // $scope.scrollHeightPoster();
+            $scope.scrollHeightPoster();
             return;
         }
 
@@ -61,8 +60,8 @@ define([], function() {
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
 
-        //$scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
-        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].map((obj) => {
+        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
+            //$scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].map((obj) => {
 
             obj.region = obj.region || {};
             with(obj) {
@@ -76,7 +75,12 @@ define([], function() {
         });
 
 
+        console.log($scope.user);
+
+
         apis.region = function region(scope, e) {
+            if (!this.value) { return };
+
             //if (this.active == undefined || e) {//}
             scope.active = true;
             apis.sendMessage(this).then((res) => {
@@ -87,7 +91,8 @@ define([], function() {
         }
 
         apis.member = function member(scope) {
-            if (this.value == undefined || this.value.includes("*")) { return };
+            if (!this.value || this.value.includes("*")) { return };
+            console.log(this.caller, this.value);
             scope.active = true;
             apis.sendMessage(this).then((res) => {
                 if (res && res.rows) {
