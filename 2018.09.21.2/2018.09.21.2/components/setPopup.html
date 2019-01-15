@@ -1,0 +1,62 @@
+<aside class="hidden" ng-init="setPopup.call(row, this)" title="警示訊息">
+    <table class="ui celled selectable striped collapsing table inverted pink small" name="{{$id}}">
+        <thead>
+            <td>11</td>
+            <th>警示帐号</th>
+            <th>汇款户名</th>
+            <th>汇款帐号</th>
+            <th>警示讯息</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="w in s.list_RemittanceName" ng-if="w.AccountID==row.AccountID">
+                <td>11</td>
+                <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
+                <td>{{w.f_RemittanceName||w.AccountName}}</td>
+                <td>{{w.f_RemittanceAccount}}</td>
+                <td>{{w.f_remarks||w.Memo}}</td>
+            </tr>
+        </tbody>
+    </table>
+</aside>
+<div class="ui popup2 special2">
+    <table class="ui celled selectable striped collapsing table inverted pink small">
+        <thead>
+            <td>11</td>
+            <th>警示帐号</th>
+            <th>汇款户名</th>
+            <th>汇款帐号</th>
+            <th>警示讯息</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="w in list_Accounts" ng-if="w.AccountID==AccountID">
+                <td>11</td>
+                <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
+                <td>{{w.f_RemittanceName||w.AccountName}}</td>
+                <td>{{w.f_RemittanceAccount}}</td>
+                <td>{{w.f_remarks||w.Memo}}</td>
+            </tr>
+        </tbody>
+    </table>
+    ng-mouseover="hoverIn(row, s)"
+</div>
+<b>{{AccountID}}</b>
+<aside id="list_RemittanceName">
+    <table class="ui celled selectable striped collapsing table inverted pink small">
+        <thead>
+            <td>11</td>
+            <th>警示帐号</th>
+            <th>汇款户名</th>
+            <th>汇款帐号</th>
+            <th>警示讯息</th>
+        </thead>
+        <tbody>
+            <tr ng-repeat="w in list_RemittanceName" ng-if="w.AccountID==AccountID">
+                <td>11</td>
+                <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
+                <td>{{w.f_RemittanceName||w.AccountName}}</td>
+                <td>{{w.f_RemittanceAccount}}</td>
+                <td>{{w.f_remarks||w.Memo}}</td>
+            </tr>
+        </tbody>
+    </table>
+</aside>
