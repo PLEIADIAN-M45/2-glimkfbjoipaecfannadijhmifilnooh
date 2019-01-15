@@ -55,9 +55,13 @@ define(["md5"], function(md5) {
             this.sendData = (this.method == 'GET') ? parseToObject(this.responseURL) : parseToJson(this.postData);
             if(this.respData.rows) { this.dataset = this.respData.rows };
             if(this.respData.Data) { this.dataset = this.respData.Data };
+
             if(this.dataset && this.dataset.Data) { this.dataset = this.dataset.Data };
+
             this.commander = this.sendData.action || this.sendData.type || this.lastPath;
+
             if(!isNaN(this.commander)) { this.commander = this.lastPath; };
+            
             this.commander = this.commander.toUpperCase();
             this.COMMADER = this.commander.toUpperCase();
 

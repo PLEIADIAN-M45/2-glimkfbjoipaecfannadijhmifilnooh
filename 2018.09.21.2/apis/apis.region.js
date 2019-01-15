@@ -2,6 +2,7 @@ apis.region = function(params) {
     return apis.region[params.caller].call(params)
         .then((region) => {
             region.alarm = apis.blacklist.call(params)
+
             region.alert = apis.region.check(region)
             return { region, active: false }
         })
@@ -10,23 +11,26 @@ apis.region = function(params) {
 
 apis.blacklist = function() {
 
-    if(window.isLocal) {
-        apis.global.author.push(["王杰"])
-        apis.global.banker.push(["6217856300"])
-        apis.global.banker.push(["62170033"])
-        //global.locate.push(["171.106.81"])
+    if (!window.isLocal) {
+        global.author.push(["王杰", "LIYOU1314", "26", "投诉支付宝"])
+        global.banker.push(["6217856300"])
+        global.banker.push(["62170033"])
+        global.locate.push(["115.215.229.116"])
         //global.locate.push(["223.104.33.115"])
         //global.idcard.push(["3401221987100616"])
-        apis.global.mobile.push(["13514966"])
-        apis.global.mobile.push(["18587763"])
+        global.mobile.push(["13514966"])
+        global.mobile.push(["18587763"])
     }
 
 
-    var $global = apis.global[this.caller] || [];
+    var $global = global[this.caller] || [];
     //console.log($global);
     switch (this.caller) {
         case "author":
-            return $global.find(([val]) => { return this.value == val }) || false;
+            var res = $global.find((arr) => { return this.value == arr[0] }) || false;
+            console.log(res);
+            return res
+            return
         case "mobile":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "idcard":
@@ -42,9 +46,11 @@ apis.blacklist = function() {
 
 
 
+
+
 apis.region.check = function(region) {
-    if(region) {
-        return apis.global.region.find(([elem]) => {
+    if (region) {
+        return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
         //if(this.age < 18) { this.alert = true }
@@ -69,12 +75,12 @@ apis.region.locate = function() {
             "_": Date.now()
         }
     }).then((res) => {
-        if(res.status == 0) {
+        if (res.status == 0) {
             var str = res.data[0].location;
-            if(str) {
+            if (str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if(!prov && !city && !area) {
+                        if (!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -93,9 +99,9 @@ apis.region.banker = function() { return Promise.resolve(this.region); }
 apis.region.idcard = function() {
     var IDParser = function(value) { return value.replace(/(\d{2})(\d{2})(\d{2})(\d{4})(\d{2})(\d{2})(\d{3})(\w{1})/, ['$10000', '$1$200', '$1$2$3', '$7', '$4-$5-$6']).split(",").map((x) => { return (isNaN(x)) ? x : Number(x) }) }
     var [$1, $2, $3, $4, $5] = IDParser(this.value);
-    var prov = apis.global.gb2260.get($1),
-        city = apis.global.gb2260.get($2),
-        area = apis.global.gb2260.get($3),
+    var prov = global.gb2260.get($1),
+        city = global.gb2260.get($2),
+        area = global.gb2260.get($3),
         sex = ($4 % 2 === 1) ? "男" : "女",
         age = moment().diff($5, "years"),
         bday = moment($5).locale('zh-tw').format('LL'),
@@ -120,7 +126,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if(res.status == 0) {
+        if (res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,

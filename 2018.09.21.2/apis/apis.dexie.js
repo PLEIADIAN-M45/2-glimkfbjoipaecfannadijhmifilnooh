@@ -1,6 +1,8 @@
 // 2
 var dexie = new Dexie('evo');
 dexie.version(5).stores({ user: 'unique', });
+
+
 apis.dexie = dexie;
 apis.user = dexie.user;
 
@@ -8,47 +10,71 @@ apis.user = dexie.user;
 
 var global = Object.create({});
 
-function fetchData(commands) {
-    fetch("https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=" + commands)
-        .then(function(response) { return response.json(); })
-        .then(function(values) {
-            global[commands] = values;
-            localStorage[commands] = angular.toJson(values)
-            console.log(global);
-        });
+if (localStorage.sms) {
+
+    function global_decode(commands) {
+        global[commands] = angular.fromJson(localStorage[commands]);
+        if (commands == "gb2260") {
+            global.gb2260 = new Map(global.gb2260)
+        }
+        if (commands == "sms") {
+            global.sms = new Map(global.sms)
+
+        }
+    }
+
+    var c = [
+        "gb2260",
+        "author",
+        "locate",
+        "mobile",
+        "banker",
+        "region",
+        "danger",
+        "notice",
+        "sms"
+    ].map(global_decode);
+
+    global_decode();
+} else {
+    function fetchData(commands) {
+        fetch("https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=" + commands)
+            .then(function(response) { return response.json(); })
+            .then(function(values) {
+                global[commands] = values;
+                localStorage[commands] = angular.toJson(values);
+                console.log(global);
+                if (commands == "gb2260") {
+                    global.gb2260 = new Map(global.gb2260)
+                }
+                if (commands == "sms") {
+                    global.sms = new Map(global.sms)
+
+                }
+            });
+    }
+
+    var c = [
+        "gb2260",
+        "author",
+        "locate",
+        "mobile",
+        "banker",
+        "region",
+        "danger",
+        "notice",
+        "sms"
+    ].map(fetchData);
 }
 
-function global_decode() {
-    Object.entries(localStorage).forEach(([name, str]) => {
-        global[name] = angular.fromJson(str);
-    });
-}
-global_decode();
 
-
-global.gb2260 = new Map(global.gb2260)
-global.sms = new Map(global.sms)
 
 apis.global = global;
-
-
-
 console.log(global);
 
-/*
-var c = [
-    "gb2260",
-    "author",
-    "locate",
-    "mobile",
-    "banker",
-    "region",
-    "danger",
-    "notice",
-    "sms"
-].map(fetchData);
 
-*/
+
+
 
 
 

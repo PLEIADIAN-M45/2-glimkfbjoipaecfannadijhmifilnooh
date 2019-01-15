@@ -70,16 +70,10 @@ angular.module('myApp', [])
         $scope.login = function(name, index) {
 
             //$scope.save($scope.config);
-
-
-
             //console.log($scope.config[name]);
-
-
             //console.log($scope.config[name].server);
 
-            var server = $scope.config[name].server
-
+            var server = $scope.config[name].server;
             //.replace(/(host|admin)/g, '$1' + parseInt(site.port.slice(-2)))
 
             ;

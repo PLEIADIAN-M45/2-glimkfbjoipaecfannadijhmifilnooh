@@ -3,8 +3,9 @@
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>
-                {{this.active}}
-                <small>{{me.region.alarm[0]}}</small>
+            </div>
+            <div class="left floated meta hidden" style="padding-left: 30px;">
+                {{me.region.alarm[0]}} {{me.region.alarm[1]}}-{{me.region.alarm[2]}} {{me.region.alarm[3]}}
             </div>
             <div class="right floated meta">
                 <i class="sync alternate icon" ng-class="{ 'loading': this.active }" ng-click="apis.region.call(me, this, $event);"></i>
@@ -17,8 +18,9 @@
             <div class="ui dimmer" ng-class="{ 'active': this.active }">
                 <div class="ui text loader small">归属地查询中</div>
             </div>
+            <div>
+            </div>
             <div class="header padded">
-                <!-- <b ng-if="me.alarm">{{me.status||me.alarm}}</b> -->
                 {{me.region.prov}} {{me.region.city}} {{me.region.area}} {{me.region.country}}
             </div>
             <div class="sub meta">
@@ -29,7 +31,7 @@
             <div ng-repeat="s in sites[$index]" ng-init="apis.member.call(s, this)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}</div>
-                    <div class="detail center pink pointer" ng-if="s.list_RemittanceName.length">{{s.list_RemittanceName.length}}</div>
+                    <div class="detail center pink pointer" ng-if="s.list_RemittanceName.length && s.caller=='author'">{{s.list_RemittanceName.length}}</div>
                 </div>
                 <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || this.active"></i>
@@ -64,14 +66,17 @@
         </div>
     </div>
     <div class="ui vertical icon menu">
-        <a class="item"  ng-click="transition(this)">
-    <i class="gamepad icon"></i>
-  </a>
-        <a class="item" ng-click="setPermit(user.frameId)">
-    <i class="video camera icon"></i>
-  </a>
+        <a class="item" ng-click="transition(this)">
+            <i class="eye slash icon"></i>
+        </a>
+        <a class="item" ng-click="transition(this)">
+            <i class="eye icon"></i>
+        </a>
         <a class="item">
     <i class="video play icon"></i>
+  </a>
+        <a class="item" ng-click="setPermit(user.frameId)">
+    <i class="handshake icon"></i>
   </a>
     </div>
 </div>
@@ -94,6 +99,7 @@
     </table>
 </div>
 <style type="text/css">
+
 .detail.center.pink {
     background-color: #e91e63 !important;
     color: #fff !important;
@@ -103,29 +109,6 @@
     position: relative;
     top: 30px;
 }
-
-/*.ui.cars {}
-#sameBrowserList {}
-*/
-/*aside {
-    display: inherit;
-}*/
-
-/*
-
-*/
-/*
-td:has(>b) {
-    background-color: #01579B !important;
-}
-*/
-
-/*
-.isSelf {
-    background-color: #01579B !important;
-    color: #fff;
-}
-*/
 
 .ui.horizontal.divider {
     margin: 50px;
@@ -142,22 +125,16 @@ td:has(>b) {
     color: #fff !important;
     border-collapse: collapse !important;
     border: 1px solid #fff;
-
     /*border: 1px solid #fff;*/
 }
-
-
 
 .tablelist tr:nth-child(even) {
     background: rgba(255, 255, 255, 0.85);
 }
 
 .category .tablelist tr:hover {
-
     /*color: #333;*/
 }
-
-
 .category .tablelist td {
     /*color: #333;*/
     width: auto;

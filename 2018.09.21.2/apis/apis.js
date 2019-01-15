@@ -1,14 +1,11 @@
-// 1
-function parseToObject(obj) {
-    //let obj = Object.create(null);
-    console.log(obj);
-};
 
 
 var apis = Object.create({});
 
-apis.localStorage = window.localStorage
-apis.sessionStorage = window.sessionStorage
+apis.localStorage   = window.localStorage;
+
+apis.sessionStorage = window.sessionStorage;
+
 apis.getUser = async function(params) {
     console.log("::getUser", params);
     return dexie.user.get(params)
@@ -52,6 +49,11 @@ apis.getGlobal = function(params, sender) {
 
 
 
+// 1
+function parseToObject(obj) {
+    //let obj = Object.create(null);
+    console.log(obj);
+};
 
 
 

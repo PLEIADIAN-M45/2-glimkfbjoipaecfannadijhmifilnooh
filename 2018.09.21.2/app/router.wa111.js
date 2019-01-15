@@ -5,7 +5,9 @@ define({
     "membermodify"			: "edit",
     "depositbonus"			: "bonus",
     "igetmemberinfo"		: "logs",
+    
     "samebrowserlist"		: "logs",
+
     "deltabank"				: "cash",
     "deltaonline"			: "cash",
     "deltawechat"			: "cash",

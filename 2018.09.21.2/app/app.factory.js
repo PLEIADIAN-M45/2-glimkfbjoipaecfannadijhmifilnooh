@@ -22,7 +22,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $injector = $controller.injector();
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
-            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
             var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
@@ -35,9 +35,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = $scope;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if(typeof alphaVal == "object") {
-                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if (typeof alphaVal == "object") {
+                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -61,27 +61,22 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $scope.$watch(name, callback, true);
             }
             apis.getUser = async function getUser() {
-
                 apis.watch('user', apis.putUser);
-
                 $scope.user =
                     await apis.sendMessage({ unique }) ||
                     await apis.setUser();
-
-
-                console.log(10000, $scope.user);
-                // $scope.user.sender = await apis.sender()
+                console.log('getUser::', $scope.user);
                 $scope.$apply();
             }
 
 
             apis.delUser = async function delUser() {
-                console.log({ unique });
+                //console.log({ unique });
                 await apis.sendMessage({ unique });
             }
 
             apis.putUser = async function putUser(nv, ov) {
-                if(!nv || angular.equals(nv, ov)) { return };
+                if (!nv || angular.equals(nv, ov)) { return };
                 console.log("putUser::", nv);
                 return apis.sendMessage($scope.user);
             }
@@ -94,18 +89,11 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $currentTarget.show();
             };
 
+
             apis.getTabId = async function getTabId() {
                 var c = await apis.sendMessage({});
-                console.log(c);
+                //console.log(c);
             };
-
-            /*
-            apis.sender = async function sender() {
-                return apis.sendMessage({});
-            };
-
-            apis.sender();
-            */
 
 
             ;
@@ -124,15 +112,15 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 document.execCommand("copy", apis.clipboardData);
             }
             document.oncopy = function(e) {
-                if(window.getSelection().type === "Caret") { e.preventDefault(); }
-                if(e.clipboardData) { e.clipboardData.setData("text/plain", apis.clipboardData); } else {
+                if (window.getSelection().type === "Caret") { e.preventDefault(); }
+                if (e.clipboardData) { e.clipboardData.setData("text/plain", apis.clipboardData); } else {
                     window.clipboardData.setData("Text", apis.clipboardData);
                 }
             }
 
 
-            function $injectStylesheet(abc) {
-                if(abc) {
+            apis.$injectStylesheet = function $injectStylesheet(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -140,8 +128,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             }
 
-            function $injectComponents(abc) {
-                if(abc) {
+            apis.$injectComponents = function $injectComponents(abc) {
+                if (abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -183,12 +171,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-            if($isTest && $server == "wa111") {
+            if ($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
                 //$('#divCookie').hide();
             }
-            if($isTest && $server == "ku711") { $('.collapse').show() }
+            if ($isTest && $server == "ku711") { $('.collapse').show() }
 
 
             $scope.$hyperlink = $hyperlink;
@@ -205,15 +193,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             $xmlSpider.$router = $router;
 
             requirejs([
-
                 $router.$master,
                 $router.$branch
-
             ], ($$master, $$branch) => {
-
-                $injectComponents($router.$components);
-                $injectStylesheet($router.$stylesheet);
-
                 $$branch.call(factory, factory);
                 $$master.call(factory, factory);
                 //console.log($router.$branch);

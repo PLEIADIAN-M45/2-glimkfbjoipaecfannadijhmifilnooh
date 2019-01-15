@@ -32,7 +32,7 @@ define(["../$ku711/decode"], function(decode) {
             }).then((d) => {
                 d.Data.Data.filter(({ Content, OperateTime, Operator }) => {
                     Content.filter((obj) => {
-                        if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
+                        if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
                             //console.log(7, OperateTime);
                             _user_.timing[0] = OperateTime;
                         }
@@ -130,43 +130,73 @@ define(["../$ku711/decode"], function(decode) {
         };
 
 
-
-        //console.log($scope);
-
-        /*
-        $scope.$watch('ctrl.model.CityInfoList', function(nv, ov) {
-            if (nv) {
-                console.log(nv);
-            }
-        }, true);
-
-
-        $scope.$watch('ctrl.model.ProvinceInfoListForMemberInfo', function(nv, ov) {
-            if (nv) {
-                console.log(nv);
-            }
-        }, true);
-        */
-
-
-        /*
-
-        $xmlSpider.loadend = function xmlSpider() {
-            console.log(this.action);
-                        //alert(this.action)
-            switch (this.action) {
-                case "UpdateMemberRiskInfoAccountingBackend":
-                    //if ($scope.user) {};
-                    this.user = $scope.user;
-                    apis.sendMessage(this);
-                    break;
-                case "getmodel":
-                    apis.getUser();
-                    break;
-                case "-------":
-                    break;
-            }
-        };
-        */
     }
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//console.log($scope);
+
+/*
+$scope.$watch('ctrl.model.CityInfoList', function(nv, ov) {
+    if (nv) {
+        console.log(nv);
+    }
+}, true);
+
+
+$scope.$watch('ctrl.model.ProvinceInfoListForMemberInfo', function(nv, ov) {
+    if (nv) {
+        console.log(nv);
+    }
+}, true);
+*/
+
+
+/*
+
+$xmlSpider.loadend = function xmlSpider() {
+    console.log(this.action);
+                //alert(this.action)
+    switch (this.action) {
+        case "UpdateMemberRiskInfoAccountingBackend":
+            //if ($scope.user) {};
+            this.user = $scope.user;
+            apis.sendMessage(this);
+            break;
+        case "getmodel":
+            apis.getUser();
+            break;
+        case "-------":
+            break;
+    }
+};
+*/

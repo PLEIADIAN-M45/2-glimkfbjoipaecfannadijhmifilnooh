@@ -9,8 +9,6 @@
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
-
-            //"apis/evolution.js",
             "apis/apis.js",
             "apis/apis.dexie.js",
             "apis/apis.smss.js",
@@ -18,20 +16,10 @@
             "apis/apis.webRequest.js",
             "apis/apis.xmlSpider.js",
             "apis/apis.region.js",
-            "apis/apis.member.js",
-
-            "mock/mock.js",
+            "apis/apis.member.js"
+            /*"mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"
-
-
-
-
-            /*"apis/apis.member.js",
-            "apis/apis.region.js",
-            "apis/apis.onMessage.js",
-            "apis/apis.onUpdated.js",
-            */
+            "mock/mock.conf.js"*/
         ]
     },
     "browser_action":
@@ -51,13 +39,11 @@
             "lib/semantic/semantic.css"
         ],
         "js": [
-            "lib/jquery/jquery-3.2.1.min.js",
             "injector.js"
         ],
         "matches": [
             //"https://*.googlevideo.com/*",
             //"https://*.google.com/*",
-
             "http://*/company/net/page/Login/CommonLogin/Login.aspx",
             "http://*/layout/Login.aspx",
             "*://127.0.0.1/*",

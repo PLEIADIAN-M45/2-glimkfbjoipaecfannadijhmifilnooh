@@ -61,9 +61,9 @@ var __initial__ = {
         ],
         "wa111": [
             { "label": "http://q51.tp33.net:" },
-            { "label": "http://host$.wa111.net" },
-            { "label": "http://admin.wa111.net" },
-            { "label": "http://admin-2.wa111.net" }
+            { "label": "http://host^.wa111.net" },
+            { "label": "http://admin^.wa111.net" },
+            { "label": "http://admin^-2.wa111.net" }
         ],
         "ku711": [
             { "label": "https://lg.ku711.net" },
@@ -87,5 +87,5 @@ var __initial__ = {
 
 //console.log(angular.toJson(initial));
 var str = encodeURI(angular.toJson(__initial__))
-//console.log(str);
-//console.log(btoa(str));
+console.log(str);
+console.log(btoa(str));

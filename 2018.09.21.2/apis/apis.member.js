@@ -7,6 +7,9 @@ apis.member = function(request) {
 }
 
 apis.member.wa111 = function({ channel, index, banker = "", mobile = "", idcard = "", author = "" }) {
+
+    console.log(apis.baseUrl[channel]);
+
     return $.ajax({
         "dataType": 'json',
         "url": apis.baseUrl[channel] + '/LoadData/AccountManagement/GetMemberList.ashx',
@@ -28,7 +31,7 @@ apis.member.ku711 = function({ channel, index, banker = "", mobile = "", idcard 
 
 
 apis.member.getMemberAlertInfoBackend = function(res) {
-    if(res.rows && res.rows.length) {} else { return res; }
+    if (res.rows && res.rows.length) {} else { return res; }
     return $.ajax({
         "method": 'post',
         "dataType": 'json',
