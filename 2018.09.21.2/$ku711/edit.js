@@ -32,8 +32,7 @@ define(["../$ku711/decode"], function(decode) {
             }).then((d) => {
                 d.Data.Data.filter(({ Content, OperateTime, Operator }) => {
                     Content.filter((obj) => {
-                        if ((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
-                            //console.log(7, OperateTime);
+                        if((obj.FieldName == 'MemberStatus' && obj.BeforeValue == 2 && obj.AfterValue == 3)) {
                             _user_.timing[0] = OperateTime;
                         }
                     })
@@ -45,7 +44,6 @@ define(["../$ku711/decode"], function(decode) {
         function getMemberBaseInfo() {
             Object.assign(_user_, { account, server, origin, unique, channel, operator });
             return $getModule('ctrl.model.OldMemberBaseInfo').then((c) => {
-                //console.log(2, c);
                 _user_.author = { value: c.AccountName, title: c.AccountNameShow, caller: 'author' }
                 _user_.mobile = { value: c.CellPhone, title: c.CellPhoneShow, caller: 'mobile' }
                 _user_.idcard = { value: c.IDNumber, title: c.IDNumberShow, caller: 'idcard' }
@@ -58,7 +56,6 @@ define(["../$ku711/decode"], function(decode) {
 
         function getMemberRisksInfo() {
             return $getModule('ctrl.model.OldMemberRisksInfo').then((c) => {
-                //console.log(3, c);
                 _user_.locate = { value: c.RegistedIP, title: c.RegistedIP, caller: 'locate' }
                 _user_.equpmt = { browser: c.BrowserType, osInfo: c.OSType }
                 _user_.agency = c.AgencyID;
@@ -70,24 +67,13 @@ define(["../$ku711/decode"], function(decode) {
 
         function getMemberStatus() {
             return $getModule('ctrl.MemberStatus').then((c) => {
-                //console.log(4, 'MemberStatus', c);
                 _user_.status[0] = Number(c)
-            })
-            return $getModule('ctrl.model.UpdateEditMemberInfoManage.MemberStatus').then((c) => {
-                //console.log(4, c);
-                _user_.status[0] = Number(c)
-
             })
         }
 
         function getMemberDeposit() {
             return $getModule('ctrl.OldIsDeposit').then((c) => {
-                //console.log(5, 'OldIsDeposit', c);
                 _user_.permit[0] = Number(c);
-            })
-            return $getModule('ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit').then((c) => {
-                //console.log(5, c);
-                _user_.permit[0] = Number(c)
             })
         }
 
@@ -122,11 +108,10 @@ define(["../$ku711/decode"], function(decode) {
             })
         }
 
-
         $scope.setPermit = function(e) {
-            $scope.ctrl.model.GetMemberRiskInfoAccountingBackendByAccountIDOutput.IsDeposit = true;
-            $scope.ctrl.DepositChanged();
-            $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
+            $scope.ctrl.model.UpdateEditMemberInfoManage.MemberStatus = 1;
+            $scope.ctrl.MemberStatusChange();
+            setTimeout(() => { $scope.ctrl.UpdateMemberSNInfo() }, 500);
         };
 
 

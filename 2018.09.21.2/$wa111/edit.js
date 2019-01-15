@@ -77,8 +77,6 @@ define([], function() {
             $('.setPermit').hide();
             $ctrl.isOpenDeposit.val(1);
             $ctrl.btnSaveInfo.click();
-
-            console.log(12, 32);
         };
 
 

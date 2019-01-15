@@ -24,7 +24,7 @@ apis.delUser = function(params) {
 
 apis.setPermit = function(params, sender) {
     console.log(params);
-    ports[params.frameId].postMessage({ setPermit: true })
+    apis.ports[params.frameId].postMessage({ setPermit: true })
     return Promise.resolve(params.frameId)
 };
 

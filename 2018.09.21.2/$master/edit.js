@@ -4,12 +4,7 @@ define([], function() {
         apis.$injectStylesheet($router.$stylesheet);
         apis.$injectComponents($router.$components);
 
-        await apis.getUser()
-
-
-        //console.log($scope.user);
-
-
+        await apis.getUser();
 
         $xmlSpider.loadend = async function() {
             if(this.commander == "GETMODEL") {
@@ -17,33 +12,14 @@ define([], function() {
             }
         };
 
-
-        $scope.setFrameId = function({ frameId }) {
-
-            /*$scope.user.frameId = frameId;
-            $scope.frameId = frameId;
-            $scope.$apply();
-            */
-        }
-
-
-
         apis.port = chrome.runtime.connect(apis.extensionId, { name: "evo" });
-
         apis.port.onMessage.addListener(function({ frameId, setPermit }) {
-
-
-            if(setPermit) {
-
-                $scope.setPermit();
-            }
-
+            if(setPermit) { $scope.setPermit(); }
             if(frameId) {
                 console.log(frameId);
                 $scope.user.frameId = frameId;
             }
         })
-
 
         apis.port.postMessage('frameId')
 

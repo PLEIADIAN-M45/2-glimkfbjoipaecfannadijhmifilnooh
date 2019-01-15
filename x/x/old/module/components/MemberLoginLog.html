@@ -44,7 +44,8 @@
                     </div>
                 </div>
                 <!-- <div class="ui divider"></div> -->
-                <div class="ui image label pointer special" ng-class="{'pink': row.match,'green': !row.match }" ng-if="s.method=='getAllIPAddress'" ng-repeat="row in s.rows">
+                <div class="ui image label pointer special"
+                ng-class="{'pink': row.match,'green': !row.match }" ng-if="s.method=='getAllIPAddress'" ng-repeat="row in s.rows">
                     <b ng-init="check_locate(row)">{{row.locate}}</b>
                     <div ng-init="check_region(row)" class="detail">{{row.province}}</div>
                 </div>
@@ -73,7 +74,7 @@
         </div>
     </div>
 </div>
-<!-- ng-class="{'pink': row.list_Accounts }" 
+<!-- ng-class="{'pink': row.list_Accounts }"
  -->
 <style type="text/css">
 .ui.cards>.card:nth-child(2) {

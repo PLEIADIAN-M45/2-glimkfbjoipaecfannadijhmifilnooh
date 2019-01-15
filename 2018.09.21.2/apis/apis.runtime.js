@@ -26,13 +26,10 @@ apis.ports = {};
 
 chrome.runtime.onConnectExternal.addListener((port) => {
 
-
     /*var frameId = port.sender.frameId;
     ports[frameId] = port;
     port.postMessage({ frameId })
     */
-
-
 
     port.onMessage.addListener((msg) => {
         console.log(msg);

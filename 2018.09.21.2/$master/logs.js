@@ -39,25 +39,30 @@ define([], function() {
                 apis.global.region.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
                 apis.global.danger.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
                 apis.global.author.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
-                //apis.global.locate.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.locate.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
             })
         };
 
-        //console.log($router.$params.method);
+
+        apis.global.notice.push(["打水套利"])
+
+        $scope.checkSensitiveUserWarn = function checkSensitiveWords() {
+            apis.global.notice.map(([str]) => {
+                if(this.f_remarks.includes(str)) {
+                    this.f_remarks = this.f_remarks.replace(str, '<em>' + str + '</em>');
+                    this.sort = 0;
+                }
+            });
+        }
 
 
-        //if($router.$params.method == "CookieID") {}
+
         if($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
-
-
 
             apis.$injectComponents($router.$components);
             apis.$injectStylesheet($router.$stylesheet);
+
             await apis.getUser();
-
-
-            console.log($scope.user);
-
 
             $scope.QueryInputModel();
             $scope.scrollHeightListener();
@@ -166,14 +171,12 @@ define([], function() {
 
 
         $scope.transition = function(scope) {
-            //$scope.eye = true
             $('.extra.grid').toggle()
             //$('.extra.grid').transition('slide down');
         }
 
 
         $scope.setPermit = function setPermit(frameId) {
-            console.log(frameId);
             $scope.sendMessage({ frameId })
         }
 

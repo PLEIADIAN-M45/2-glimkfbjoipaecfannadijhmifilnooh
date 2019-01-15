@@ -2,14 +2,16 @@ define([], function() {
     return async function({ apis, $router, $account, $channel, $unique, $scope, $model, $getUser, $sendMessage, $apply }) {
         $scope.iFrameSrc = `/sameBrowserList.aspx?iType=3&accounts=${$router.$account}&siteNumber=${$router.$channel}`;
         $scope.QueryInputModel = function() {}
-        var protocol_ = [];
+        var regions = [];
+        var region = new Set();
         apis.addSiteNumberToAccount = function addSiteNumberToAccount(el) {
             var account = el[2].outerText,
                 channel = el[0].outerText.split("-")[0],
                 unique = [account, channel].join("-");
             if(unique == $router.$unique) {
                 $(el[2]).removeAttr('style').addClass('self');
-                protocol_.push({ IPAddress: el[7].outerText, IPLocation: el[9].outerText });
+                regions.push({ IPAddress: el[7].outerText, IPLocation: el[9].outerText });
+                region.add(el[9].outerText)
             }
             $(el[2]).empty();
             $(el[2]).append(apis.createElement(account, account, "account"));
@@ -23,11 +25,29 @@ define([], function() {
                     apis.checkSensitiveWords(children);
                 });
         }
-
         $scope.getUserRegions = function() {
-
-            console.log(protocol_);
-            $scope.user.regions = protocol_;
+            $scope.user.region = [...region];
+            $scope.user.regions = regions;
         };
+
+
+
+
+        function adjustTable() {
+            $('.TrHead>li').each((i, li) => {
+                li.textContent += i
+            })
+            $('ul>li:nth-child(11)').hide()
+        }
+
+        $('.TrHead>li').each((i, li) => {
+            li.textContent += i
+            $('ul>li:nth-child(11)').hide()
+
+        })
+
+
+
+
     }
 });

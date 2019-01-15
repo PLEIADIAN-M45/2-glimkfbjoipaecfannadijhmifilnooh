@@ -27,8 +27,14 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
+        <div class="extra content grid grid-2" ng-if="me.caller=='locate'" ng-init="getUserRegions()">
+            <div class="ui image label green protocol center" ng-repeat="row in user.regions" ng-class="{'pink':row.danger}">
+                <span>{{row.IPAddress}}</span>
+                <div class="detail">{{row.IPLocation}}</div>
+            </div>
+        </div>
         <div class="extra content grid grid-4">
-            <div ng-repeat="s in sites[$index]" ng-init="apis.member.call(s, this)">
+            <div ng-repeat="s in sites[$index]" ng-init="apis.member.call(s, this)" ng-if="me.caller!='locate'">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
                     <div class="detail center">{{s.channel}}</div>
                     <div class="detail center pink pointer" ng-if="s.list_RemittanceName.length && s.caller=='author'">{{s.list_RemittanceName.length}}</div>
@@ -93,16 +99,74 @@
                 <td>{{w.f_accounts||w.AccountID|uppercase}}</td>
                 <td>{{w.f_RemittanceName||w.AccountName}}</td>
                 <td>{{w.f_RemittanceAccount}}</td>
-                <td>{{w.f_remarks||w.Memo}}</td>
+                <td ng-bind-html="w.f_remarks||w.Memo"></td>
             </tr>
         </tbody>
     </table>
 </div>
 <style type="text/css">
+/*
+.tabelwidth-tongyideng li {
+    width: auto!important;
+
+}
+
+.tabelwidth-tongyideng li:nth-child(1) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(2) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(3) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(4) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(5) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(10) {
+    width: 10%;
+}
+
+.tabelwidth-tongyideng li:nth-child(1) {
+    width: 2%;
+}
+
+.tabelwidth-tongyideng li:nth-child(12) {
+    width: auto;
+
+}
+
+
+*/
+
+em {
+    color: #E91E63;
+    padding-left: 3px;
+    padding-right: 5px;
+}
+
+.ui.image.label .detail:first-child {
+    border-top-left-radius: 0.285714rem;
+    border-bottom-left-radius: 0.285714rem;
+}
+
+.ui.image.label .detail:last-child {
+    border-top-right-radius: 0.285714rem;
+    border-bottom-right-radius: 0.285714rem;
+}
 
 .detail.center.pink {
     background-color: #e91e63 !important;
     color: #fff !important;
+    opacity: 1;
 }
 
 .ui.bottom.attached.segment {
@@ -135,6 +199,7 @@
 .category .tablelist tr:hover {
     /*color: #333;*/
 }
+
 .category .tablelist td {
     /*color: #333;*/
     width: auto;

@@ -11,7 +11,7 @@
             "lib/jquery/dexie.js",
             "apis/apis.js",
             "apis/apis.dexie.js",
-            "apis/apis.smss.js",
+            "apis/apis.sendsms.js",
             "apis/apis.runtime.js",
             "apis/apis.webRequest.js",
             "apis/apis.xmlSpider.js",
