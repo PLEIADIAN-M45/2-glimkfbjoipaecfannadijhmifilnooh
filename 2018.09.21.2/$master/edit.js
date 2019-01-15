@@ -7,18 +7,13 @@ define([], function() {
         await apis.getUser();
 
         $xmlSpider.loadend = async function() {
-            if(this.commander == "GETMODEL") {
-                apis.getUser();
-            }
+            if(this.commander == "GETMODEL") { apis.getUser(); }
         };
 
         apis.port = chrome.runtime.connect(apis.extensionId, { name: "evo" });
         apis.port.onMessage.addListener(function({ frameId, setPermit }) {
             if(setPermit) { $scope.setPermit(); }
-            if(frameId) {
-                console.log(frameId);
-                $scope.user.frameId = frameId;
-            }
+            if(frameId) { $scope.user.frameId = frameId; }
         })
 
         apis.port.postMessage('frameId')

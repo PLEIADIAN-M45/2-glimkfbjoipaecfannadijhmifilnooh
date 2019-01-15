@@ -58,23 +58,22 @@ define([], function() {
 
 
         if($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
-
             apis.$injectComponents($router.$components);
             apis.$injectStylesheet($router.$stylesheet);
-
             await apis.getUser();
-
             $scope.QueryInputModel();
             $scope.scrollHeightListener();
             $scope.start();
-            //$scope.createIFrame();
-
+            $scope.createIFrame();
         }
 
         if(location.pathname == "/sameBrowserList.aspx") {
             apis.$injectStylesheet($router.$stylesheet);
             $scope.start();
-            $scope.scrollHeightPoster();
+            $scope.document = document;
+            $scope.$watch("document.body.scrollHeight", fnction(nv, ov) {
+                $scope.scrollHeightPoster();
+            })
             return;
         }
 
@@ -127,11 +126,7 @@ define([], function() {
             if(!this.value || this.value.includes("*")) { return };
             childScope.active = true;
             $scope.sendMessage(this).then((result) => {
-                if(result && result.rows) {
-                    angular.extend(this, result);
-                } else {
-                    childScope.error = true;
-                }
+                if(result && result.rows) { angular.extend(this, result); } else { childScope.error = true; }
                 childScope.active = false;
                 childScope.apply();
             })
@@ -142,7 +137,6 @@ define([], function() {
                 wa111: `${origin}/Aspx/MemberModify.aspx?account=${this.f_accounts}`,
                 ku711: `${origin}/Member/MemberInfoManage/EditMemberInfoManage?accountId=${this.AccountID}`
             } [server];
-
             window.open(redirectUrl, "_blank");
             //console.log(redirectUrl);
         }

@@ -1,13 +1,10 @@
 define([], function() {
     return function({ apis, $scope, $channel, $ctrl, $getModule, $account, $router, $model, $xmlSpider }) {
         $scope.iFrameSrc = location.href.replace('CookieID', 'DeviceNo');
-
-
         apis.removeElementClass = function removeElementClass(children) {;
             [...children].map((el) => {
                 $(el).find("br").remove();
                 $(el).removeAttr("class");
-
             });
         };
 
@@ -18,18 +15,14 @@ define([], function() {
             $(el[1]).find(".ng-binding").hide();
             $(el[1]).append(apis.createElement(account, account));
             $(el[1]).append(apis.createElement(channel, unique));
-            if (el[4].outerText == '正常户') { $(el[4]).addClass('normal') }
-            if (unique == $router.$unique) { $(el[1]).removeAttr('style').addClass('self') }
+            if(el[4].outerText == '正常户') { $(el[4]).addClass('normal') }
+            if(unique == $router.$unique) { $(el[1]).removeAttr('style').addClass('self') }
         };
 
 
 
         $scope.start = async function start() {
-
-            var AlertInfo = await $getModule('ctrl.model.AlertInfo');
-
-            $scope.scrollHeightPoster();
-
+            await $getModule('ctrl.model.AlertInfo');
             $("#tbList>tbody>tr:not(:last)").each((i, { children }) => {
                 apis.removeElementClass(children);
                 apis.addSiteNumberToAccount(children);

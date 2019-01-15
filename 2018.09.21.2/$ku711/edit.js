@@ -80,7 +80,6 @@ define(["../$ku711/decode"], function(decode) {
         function getMemberBankInfo() {
             return $getModule('ctrl.model.GetMemberWithdrawalBankInfoBackendByAccountIDOutput')
                 .then((banker) => {
-                    //console.log(6, banker);
                     _user_.banker = banker.map((s) => {
                         return {
                             caller: 'banker',
