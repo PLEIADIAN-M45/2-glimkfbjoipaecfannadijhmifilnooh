@@ -1,6 +1,7 @@
 window.cacheBonusData;
 window.cacheUserData;
 /*
+c
 apis.updateUser = async function({ unique, status, permit, bonus }) {
     var user = await apis.getUser(unique);
     //console.log(user);
@@ -43,7 +44,7 @@ apis.google2 = function google2(user) {
         delete user.author.sites;
         delete user.regions;
     } catch (ex) {};
-   
+
 
     console.log(user);
 

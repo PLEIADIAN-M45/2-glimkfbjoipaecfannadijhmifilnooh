@@ -1,6 +1,8 @@
 {
     "background":
     {
+        //"page": "apis/aspi.html"
+
         "persistent": true,
         "scripts": [
             "lib/angular/angular.min.js",
@@ -8,42 +10,25 @@
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
 
-            "apis/evolution.js",
-
+            //"apis/evolution.js",
             "apis/apis.js",
-            "apis/apis.member.js",
-            "apis/apis.region.js",
+            "apis/apis.dexie.js",
+            "apis/apis.smss.js",
+            "apis/apis.runtime.js",
+            "apis/apis.webRequest.js",
             "apis/apis.xmlSpider.js",
+            "apis/apis.region.js",
+            "apis/apis.member.js"
 
+
+
+
+
+            /*"apis/apis.member.js",
+            "apis/apis.region.js",
             "apis/apis.onMessage.js",
-            "apis/apis.onWebRequest.js",
-            "apis/apis.onUpdated.js"
-
-           /* "mock/mock.js",
-            "mock/mock.data.js",
-            "mock/mock.conf.js",*/
-            //"apis/fileSystem.js"
-
-            /*
-        //"page": "background.html",
-            //"injector.js"
-            //"background/background.js",
-            "background/background.js",
-            "background/background.onMessage.js",
-            "apiFunctions/apiFunctions.js",
-            "apiFunctions/apiFunctions.locate.js",
-            "apiFunctions/apiFunctions.banker.js",
-            "apiFunctions/apiFunctions.author.js",
-            "apiFunctions/apiFunctions.idcard.js",
-            "apiFunctions/apiFunctions.mobile.js",
-            "apiFunctions/apiFunctions.google.js",
-            "apiFunctions/apiFunctions.member.js",
-            "apiFunctions/apiFunctions.sendsms.js",
-            "apiFunctions/apiFunctions.store.js",
-            "apiFunctions/apiFunctions.sheets.js",
-            "apiFunctions/apiFunctions.XMLHttpRequest.js"
-            */
-            /*"mock/mock.js",
+            "apis/apis.onUpdated.js",
+            "mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js"*/
         ]

@@ -3,10 +3,11 @@
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>
+                {{this.active}}
                 <small>{{me.region.alarm[0]}}</small>
             </div>
             <div class="right floated meta">
-                <i class="sync alternate icon" ng-class="{ 'loading': me.active }" ng-click="apis.region.call(me, this, $event);"></i>
+                <i class="sync alternate icon" ng-class="{ 'loading': this.active }" ng-click="apis.region.call(me, this, $event);"></i>
             </div>
         </div>
         <div class="content compact center aligned">

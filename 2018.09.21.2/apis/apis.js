@@ -1,56 +1,94 @@
-var dexie = new Dexie('evo');
-dexie.version(5).stores({ user: 'unique', GB2260: 'code' });
+// 1
+function parseToObject(obj) {
+    //let obj = Object.create(null);
+    console.log(obj);
+};
 
-var apis = { dexie, baseUrl: {}, port: {} };
 
-apis.getLocalStorage = function(params) { return Promise.resolve(window.localStorage); };
+
+var apis = Object.create({});
+apis.global = Object.create({});
+apis.localStorage = window.localStorage
+apis.sessionStorage = window.sessionStorage
+
+
 apis.getUser = function(params) { return dexie.user.get(params); };
 apis.putUser = function(params) {
     //console.log(params);
     //params.lastModify = moment(Date.now())
-    params.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+    //params.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
     return dexie.user.put(params);
 };
 apis.delUser = function(params) { return dexie.user.delete(params); };
-apis.sendSms = function(params) {
-    var content = global.sms.get(Number(params.channel)) || global.sms.get(params.channel);
-    var mobile = "86" + params.mobile.value;
-    return $.ajax({
-        url: 'http://client.motosms.com/smsc/smssend',
-        dataType: "html",
-        method: 'post',
-        data: { sender: '', phones: mobile, smscontent: content, taskType: 1, taskTime: '', batch: 1, splittime: 0, packid: '' }
-    }).then((res) => {
-        var setsms;
-        if (res.match(/(msg = '')/)) { setsms = 200; }
-        if (res.match(/(會員登錄)/)) { setsms = 401; }
-        if (res.match(/(msg = '101')/)) { setsms = 101; }
-        if (res.match(/(msg = '102')/)) { setsms = 102; }
-        params.setsms = setsms;
-        return apis.putUser(params);
-    });
+
+apis.getTabId = function(params, sender) {
+    //console.log(sender);
+    return Promise.resolve(sender)
+};
+
+
+apis.sender = function(params, sender) {
+    //console.log(sender);
+    return Promise.resolve(sender)
+};
+
+
+apis.getGlobal = function(params, sender) {
+    //console.log(sender);
+    return Promise.resolve(apis.global)
 };
 
 
 
-apis.openDeposit = function({ frameId }) {
-    //console.log(frameId);
-    //console.log(apis.port[frameId]);
-    apis.port[frameId].postMessage('setPermit')
-    return Promise.resolve(frameId);
-    // return apis.sendMessage({ frameId: $scope.user.frameId });
-}
 
 
 /*
-chrome.webNavigation.onCreatedNavigationTarget.addListener(function(details) {
-    console.log(details);
+.map((commands) => {
+    var value = localStorage[s]
+    var str = decodeURI(atob(value));
+    console.log(angular.fromJson(str));
+
 })
 */
 
 
+
 /*
-chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-    console.log(tab);
-})
+get audience() { return this.tokenInfo.audience; }
+get macros() { return "https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec" }
+
+download() {
+    if(window.localStorage.length < 5) {
+        return Promise.all([
+            fetch(this.macros + '?commands=GMA').then(this.toJson),
+            fetch(this.macros + '?commands=GMB').then(this.toJson)
+        ]).then(this.flat).then(this.save).then((x) => { console.log(localStorage); })
+    } else {
+        this.save(Object.entries(localStorage))
+    }
+}
+*/
+
+
+
+/*
+apis.global = parseToObject(localStorage)
+Array.from(localStorage)
+Object.entries(localStorage)
+*/
+
+
+/*
+apis.storage = {
+    local: window.localStorage,
+    session: window.sessionStorage
+}
+*/
+
+
+
+/*
+apis.getLocalStorage = function(params) { return Promise.resolve(window.localStorage); };
+apis.localStorage = window.localStorage
+
 */

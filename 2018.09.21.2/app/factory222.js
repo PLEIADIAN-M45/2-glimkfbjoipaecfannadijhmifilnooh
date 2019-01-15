@@ -1,5 +1,3 @@
-
-
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) {
         //$digest
@@ -26,7 +24,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
 
-            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
             var $searchParams = new URLSearchParams(window.location.search);
             var $params = Array.from($searchParams).serialize();
 
@@ -42,9 +40,9 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
@@ -123,7 +121,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             apis.putUser = async function putUser(nv, ov) {
-                if (!nv) { return };
+                if(!nv) { return };
                 console.log("putUser");
                 return apis.sendMessage($scope.user);
             }
@@ -248,7 +246,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             var $delUser = function(bool) {
-                if (!bool) { return }
+                if(!bool) { return }
                 return $sendMessage({ command: 'api.store.user.delete(request.unique)', unique: unique })
                     .then((user) => {
                         return;
@@ -258,7 +256,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
             var $putUser = function(nv, ov) {
                 //console.log(nv, ov);
-                if (!nv) { return };
+                if(!nv) { return };
                 //if (angular.equals(nv, ov)) { return };
                 //if(angular.equals(_user, nv)) { return };
                 return $sendMessage({ command: 'api.store.user.put(request.user)', user: nv })
@@ -273,12 +271,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             document.oncopy = function(e) {
                 // console.log(e);
                 //console.log(clipboardData);
-                if (window.getSelection().type === "Caret") {
+                if(window.getSelection().type === "Caret") {
                     e.preventDefault();
                     console.log(this);
                 }
                 console.log(e.clipboardData);
-                if (e.clipboardData) {
+                if(e.clipboardData) {
                     e.clipboardData.setData("text/plain", clipboardData);
                 } else {
                     console.log(12);
@@ -287,7 +285,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectStylesheet(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -296,7 +294,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             function $injectComponents(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -334,12 +332,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
 
 
             var $isTest = window.location.hostname == "127.0.0.1";
-            if ($isTest && $server == "wa111") {
+            if($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
                 $('#divCookie').hide();
             }
-            if ($isTest && $server == "ku711") {
+            if($isTest && $server == "ku711") {
                 $('.collapse').show()
             }
 
@@ -428,7 +426,7 @@ function keyboardEvent() {
     //全局屏蔽键盘事件：
     window.onkeydown = function() {
         console.log(window.event.keyCode)
-        if (window.event.keyCode == 49) {
+        if(window.event.keyCode == 49) {
             event.returnValue = false;
         }
     }
@@ -443,3 +441,64 @@ function keyboardEvent() {
 
 
 /*********************************************************/
+
+
+
+if(request.caller) {
+    console.log(request.caller);
+    console.log(request.params);
+    // var cmd = request.caller + "('" + request.params + "')";
+    var commandString = request.caller + "(" + angular.toJson(request.params) + ")"
+
+    console.log(commandString);
+
+    eval(commandString)
+        .then((r) => {
+            console.log(r);
+            sendResponse(r)
+        })
+
+
+    return true;
+
+    //
+
+
+    //console.log(fn);
+
+
+}
+
+if(request.callee) {
+    //var obj = eval(request.callee);
+    //sendResponse(obj);
+
+
+    async function go() {
+        var res = await eval(request.callee)
+        console.log(res);
+        sendResponse(res)
+    }
+
+    go()
+    return true;
+
+    return;
+}
+
+
+
+//console.log(request.caller);
+var target = apis[request.caller];
+console.log(target);
+switch (typeof target) {
+    case "object":
+        sendResponse(target)
+        return;
+    case "function":
+        // statements_1
+        break;
+    default:
+        // statements_def
+        break;
+}

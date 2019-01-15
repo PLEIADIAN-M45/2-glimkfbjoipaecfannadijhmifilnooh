@@ -15,13 +15,13 @@ function google_scripts(e) {
     var status = {
         "ku711": ["停權戶", "正常戶", "靜止戶", "審核中", "測試戶", "推廣戶"],
         "wa111": ["靜止戶", "正常戶", "停權戶", "審核中", "測試戶"]
-    }[user.server];
+    } [user.server];
 
 
     var permit = {
         'wa111': ["否", "是"],
         'ku711': ["否", "是"]
-    }[user.server];
+    } [user.server];
 
 
     switch (user.module) {
@@ -95,8 +95,8 @@ function google_scripts(e) {
                     user.operator,
                     user.channel,
                     user.account.toUpperCase(),
-                    { "0": "否", "1": "是" }[user.bonus.f_Audit],
-                    { "15": "首存", "16": "二存" }[user.bonus.f_type],
+                    { "0": "否", "1": "是" } [user.bonus.f_Audit],
+                    { "15": "首存", "16": "二存" } [user.bonus.f_type],
                     user.bonus.f_unfreezeWater,
                     user.bonus.f_Money,
                     user.banker[0].value,
@@ -125,8 +125,8 @@ function google_scripts(e) {
                     user.operator,
                     user.channel,
                     user.account.toUpperCase(),
-                    { "1": "处理中", "2": "是", "3": "否" }[user.bonus.DealType],
-                    { "1": "首存", "2": "二存" }[user.bonus.BonusType],
+                    { "1": "处理中", "2": "是", "3": "否" } [user.bonus.DealType],
+                    { "1": "首存", "2": "二存" } [user.bonus.BonusType],
                     user.bonus.Amount,
                     user.bonus.BonusPoint,
                     user.banker[0].value,
@@ -148,3 +148,38 @@ function google_scripts(e) {
     sheet.appendRow(model.contents);
     return ContentService.createTextOutput(1);
 }
+
+
+function doTrim(e) {
+    var spreadsheet = SpreadsheetApp.openById('1GxH9j5_IpUxL0ElXAfpx1HaxLIIIetrmN-JG5tRi_20');
+    var sheet = spreadsheet.getSheetByName('举报账本同户名表格');
+    var range = sheet.getDataRange();
+    for(var i = 1; i < range.getLastRow(); i++) {
+        var cell = range.getCell(i, 1);
+        var value = cell.getValue().trim();
+        cell.setValue(value);
+    }
+}
+
+
+
+getSheetByName: function(e) {
+    var spreadsheet = SpreadsheetApp.openById("1GxH9j5_IpUxL0ElXAfpx1HaxLIIIetrmN-JG5tRi_20")
+    var sheet = spreadsheet.getSheetByName('測試用');
+    var value = sheet.getSheetValues(1, 1, -1, 1);
+    //var range = sheet.getRange("A:A");
+    //var values = range.getValues();
+    var values = value.map(function(arr) { return arr[0] }).filter(function(str) { return str })
+
+    var result = JSON.stringify(values);
+    return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
+},
+
+ mobile2: function(e) {
+        var spreadsheet = SpreadsheetApp.openById("1GxH9j5_IpUxL0ElXAfpx1HaxLIIIetrmN-JG5tRi_20")
+        var sheet = spreadsheet.getSheetByName('停權手機');
+        var value = sheet.getSheetValues(1, 1, -1, 1);
+        var values = value.map(function(arr) { return arr[0] }).filter(function(str) { return str })
+        var result = JSON.stringify(values);
+        return ContentService.createTextOutput(result).setMimeType(ContentService.MimeType.JSON);
+    },
