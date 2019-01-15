@@ -11,12 +11,11 @@ define([], function() {
         };
 
         apis.port = chrome.runtime.connect(apis.extensionId, { name: "evo" });
+        apis.port.postMessage('frameId');
         apis.port.onMessage.addListener(function({ frameId, setPermit }) {
             if(setPermit) { $scope.setPermit(); }
             if(frameId) { $scope.user.frameId = frameId; }
         })
-
-        apis.port.postMessage('frameId')
 
 
 
