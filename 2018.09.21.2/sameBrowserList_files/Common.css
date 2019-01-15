@@ -1,0 +1,202 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+
+li {
+    font-family: "Microsoft YaHei";
+    font-size: 13px;
+}
+
+.TrHead {
+    text-align: center;
+}
+
+.divSel {
+    border-radius: 4px;
+    border: 3px solid #1F7888;
+    text-align: center;
+}
+
+ul, li {
+    list-style: none;
+}
+
+.btn-box {
+    display: inline-block;
+    color: #fff;
+    width: 51px;
+    height: 22px;
+    text-align: center;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color: #ee7a47;
+    border: #b54717 1px solid;
+    margin-left: 20px;
+}
+
+    .btn-box:hover, a:hover {
+        cursor: pointer;
+    }
+
+#btnSearch :hover {
+    cursor: pointer;
+}
+
+#divallsite span {
+    padding-left: 20px;
+    height: 20px;
+}
+
+#divallsite {
+    vertical-align: middle;
+    font-family: tahoma;
+}
+
+.tabledivPublic ul:first-child li {
+    font-weight: bold;
+}
+
+.tabledivPublic {
+    margin-top: 4px;
+}
+
+    .tabledivPublic ul {
+        clear: both;
+        overflow: hidden;
+    }
+
+        .tabledivPublic ul li {
+            color: #3c3c3c;
+            text-align: center;
+            float: left;
+            height: 30px;
+            line-height: 30px;
+            border-top: #cccccc solid 1px;
+            border-left: #cccccc solid 1px;
+        }
+
+        .tabledivPublic ul:first-child li {
+            border-top: #aeaeae solid 1px;
+        }
+
+    .tabledivPublic li:first-child {
+        border-left: #aeaeae solid 1px;
+    }
+
+    .tabledivPublic ul:last-child li {
+        border-bottom: #cccccc solid 1px;
+    }
+
+    .tabledivPublic li:last-child {
+        border-right: #cccccc solid 1px;
+    }
+
+    .tabledivPublic ul:first-child li:first-child {
+        border-top-left-radius: 7px;
+    }
+
+    .tabledivPublic ul:first-child li:last-child {
+        border-top-right-radius: 7px;
+    }
+
+
+    .tabledivPublic ul:nth-child(2n) li {
+        background-color: #fffff0;
+    }
+
+.radiox {
+    vertical-align: middle;
+    color: black;
+}
+
+input[type='radio'] {
+    margin-left: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+.liPhOld {
+    display: none;
+}
+
+
+.showInfo {
+    position: absolute;
+    -webkit-border-radius: 12px;
+    -moz-border-radius: 12px;
+    border-radius: 12px;
+    width: 350px;
+    text-align: left;
+    padding-left: 5px;
+    display: none;
+    border: 1px solid;
+    word-wrap: break-word;
+}
+
+.aspShowInfo {
+    white-space: nowrap;
+    width: 96%;
+    margin: auto;
+    display: block;
+    text-overflow: ellIPsis;
+    overflow: hidden;
+}
+
+.colorfontblue {
+    color: #2b93e4;
+}
+
+.colorfontorange {
+    color: #ef6a30;
+}
+
+.colorfontred {
+    color: #ea3232;
+}
+
+.colorlightBlue {
+    color: blue;
+}
+
+select {
+    width: 100px;
+    height: 23px;
+}
+
+.TrHead2 li:first-child {
+    border-top-left-radius: 7px;
+}
+
+.TrHead2 li {
+    background-color: #edd9ff;
+    color: black;
+    font-weight: bold;
+}
+
+
+.ShowTd {
+    width: 800px;
+    padding: 15px 15px;
+    border: 1px solid;
+    border-radius: 12px;
+    display: none;
+    position: absolute;
+    word-wrap: break-word;
+    z-index: 9999;
+    max-height: 800px;
+    overflow: auto;
+}
+
+.ShowTd table {
+    border-collapse: collapse;
+    TABLE-LAYOUT: fixed;
+}
+
+.ShowTd table td {
+    border: 1px solid black;
+    padding: 0px 5px;
+    WORD-WRAP: break-word;
+}

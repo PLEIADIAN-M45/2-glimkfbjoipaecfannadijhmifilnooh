@@ -1,0 +1,96 @@
+﻿//本地针对一个session来存储数据（当关闭浏览器标签页时数据会丢失）
+var storage = window.sessionStorage;
+$(function () {
+    //显示cookie记录的隐藏栏位
+    var hcook = $.cookie('Hidden');
+    if (hcook != null && hcook != "") {
+        var arrCookie = hcook.split('|');
+        if (arrCookie.length > 1) {
+            for (var i = 0; i < arrCookie.length; i++) {
+                if (arrCookie[i].trim().length > 0) {
+                    $("." + arrCookie[i]).show();
+                    $("#" + arrCookie[i])[0].checked = true;
+                }
+            }
+        }
+    }
+    var ReportAcc = storage.getItem('ReportAcc');
+    if (ReportAcc != null && ReportAcc != "") {
+        var arrCookie = ReportAcc.split(',');
+        if (arrCookie.length > 1) {
+            for (var i = 0; i < arrCookie.length; i++) {
+                $("." + arrCookie[i] + "_Report").css("color", "#ed23ff");
+            }
+        }
+    }
+    var RemarkAcc = storage.getItem('RemarkAcc');
+    if (RemarkAcc != null && RemarkAcc != "") {
+        var arrCookie = RemarkAcc.split(',');
+        if (arrCookie.length > 1) {
+            for (var i = 0; i < arrCookie.length; i++) {
+                $("." + arrCookie[i] + "_Remark").css("color", "#ed23ff");
+            }
+        }
+    }
+    var YiJiAcc = storage.getItem('YiJiAcc');
+    if (YiJiAcc != null && YiJiAcc != "") {
+        var arrCookie = YiJiAcc.split(',');
+        if (arrCookie.length > 1) {
+            for (var i = 0; i < arrCookie.length; i++) {
+                $("." + arrCookie[i] + "_YiJi").css("color", "#ed23ff");
+            }
+        }
+    }
+    $(".colse").click(function () {
+        $(".changM").hide();
+    })
+});
+//如果有填账号 跳转到指纹统计页面 要能把账号站点做参数传过去
+function hrefBrowser() {
+    var acc = $("#txtSameMember").val();
+    var site = $("#selSiteList").find("option:selected").val();
+    if (acc.trim() === "") {
+        window.open("sameBrowserList.aspx");
+    } else {
+        window.open("sameBrowserList.aspx?accounts=" + acc + "&siteNumber=" + site);
+    }
+}
+
+/* */
+function getParams(para) {
+    var s_Value = window.location.search.match(new RegExp("[\?\&]" + para + "=([^\&]*)(\&?)", "i"));
+    return s_Value ? s_Value[1] : s_Value;
+}
+//警示停權新開窗口
+function goWarnOrStop(pstatus) {
+    window.open("StopOrWarn.aspx?ProcessStatus=" + pstatus + "&lan=" + Typ, pstatus === "2" ? "警示管理頁面" : "停權管理頁面", "width=850,height=500, top=200,left=200, toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes,location=yes, status=yes");
+}
+function DoHidden(bthis) {
+    var cid = $(bthis).attr("id");
+    var hcook = $.cookie('Hidden');
+    if ($(bthis)[0].checked) {
+        if (hcook == null) {
+            $.cookie('Hidden', cid + "|");
+        } else {
+            $.cookie('Hidden', cid + "|" + hcook);
+        }
+        $("." + cid).show();
+    } else {
+        var ncook = "";
+        obj = document.getElementsByClassName("hidchk");
+        for (k in obj) {
+            if (obj[k].checked)
+                ncook += obj[k].id + "|";
+        }
+        $.cookie('Hidden', ncook);
+        $("." + cid).hide();
+    }
+}
+function ExcelAcc() {
+
+    if ($("#divCookie").children().length == 1) {
+        alert("没有可导出的数据");
+        return;
+    }
+    $(".changM").show();
+}

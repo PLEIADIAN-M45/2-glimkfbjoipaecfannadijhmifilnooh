@@ -1,0 +1,588 @@
+﻿
+$(function () {
+    // * 重写toFixed解决精度问题
+    // * @param 需要精度的浮点数
+    // * @returns {string}
+    Number.prototype.toFixed = function (val) {
+        var num = (Math.round(this * Math.pow(10, val)) / Math.pow(10, val)).toString();
+        var index = num.indexOf(".");
+        if (index < 0 && val > 0) {
+            num = num + ".";
+            for (var i = 0; i < val; i++) {
+                num = num + "0";
+            }
+        } else {
+            index = num.length - index;
+            for (var j = 0; j < (val - index) + 1; j++) {
+                num = num + "0";
+            }
+        }
+        return num;
+    }
+});
+
+/* 链接到X1报表页面 */
+function openX1Report(siteName, account, site, bthis) {
+    if (typeof (storage) != "undefined") {
+        var hcook = storage.getItem('ReportAcc');
+        if (hcook == null) {
+            hcook = site + "_" + account + ",";
+        } else {
+            if (hcook.indexOf(site + "_" + account) == -1) {
+                hcook += site + "_" + account + ",";
+            }
+        }
+        storage.setItem('ReportAcc', hcook);
+        $("." + site + "_" + account + "_Report").css("color", "#ed23ff");
+    }
+    window.open(x1Url + "?IsYGDD=true&AllPassSign=True&Account=" + account + "&Versus=1&Electric=1&LiveGame=1&Sports=1&currentSiteName=" + siteName + "&CheckedSite=" + site, "X1輸贏結果", "width=850,height=500, top=200,left=200, toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes,location=yes, status=yes");
+}
+
+/* 链接到X1备注页面 */
+function openX1Remark(sitenumber, account, site, bthis) {
+    if (typeof (storage) != "undefined") {
+        var hcook = storage.getItem('RemarkAcc');
+        if (hcook == null) {
+            hcook = site + "_" + account + ",";
+        } else {
+            if (hcook.indexOf(site + "_" + account) == -1) {
+                hcook += site + "_" + account + ",";
+            }
+        }
+        storage.setItem('RemarkAcc', hcook);
+        $("." + site + "_" + account + "_Remark").css("color", "#ed23ff");
+    }
+    window.open(x1RemarkUrl + "?accounts=" + account + "&currentSiteName=" + sitenumber + "&checkedSite=" + site, "X1備註", "width=850,height=500, top=200,left=200, toolbar=yes, menubar=yes, scrollbars=yes, resizable=yes,location=yes, status=yes");
+}
+
+/* 打开用户备注页面 */
+function openProcessReport(sitenumber, account, bthis) {
+    if (typeof (storage) != "undefined") {
+        var hcook = storage.getItem('YiJiAcc');//获取所有被点击过的一机备注账号
+        if (hcook == null) {
+            hcook = sitenumber + "_" + account + ",";
+        } else {
+            if (hcook.indexOf(sitenumber + "_" + account) == -1) {
+                hcook += sitenumber + "_" + account + ",";
+            }
+        }
+        storage.setItem("YiJiAcc", hcook);
+        $("." + sitenumber + "_" + account + "_YiJi").css("color", "#ed23ff");
+    }
+    window.open("UserProcessReport.aspx?btnStatus=0&SiteNumber=" + sitenumber + "&Account=" + account, "", "width=1000,height=500, top=200,left=200, toolbar=no, menubar=no, scrollbars=yes, resizable=yes,location=no, status=yes");
+}
+onkeydown = function enterClick(e) {
+    var evt = e || event;
+    var currKey = evt.keyCode || evt.which || evt.charCode;
+    if (currKey == 13) {
+        document.getElementById("btnSearch").click();
+    }
+}
+//格式化合计数字
+function fomartData(num) {
+    var numVal = parseFloat(num).toFixed(2);
+    return "<font color=\"" + (num > 0 ? "#067E02" : "#f40500") + "\">" + numVal + "</font>";
+}///判斷是否填了帳號
+function getAcc(typ) {
+    var acc = $("#txtSameMember").val();
+    var site = $("#selSiteList").find("option:selected").val();
+    if (acc.trim() === "") {
+        alert("請填寫要查詢的帳號!");
+        return;
+    }
+    window.location.href = (typ === 2 ? "SameIpBlack.aspx" : "sameBrowserList.aspx") + "?accounts=" + acc + "&siteNumber=" + site + "&iType=" + typ;
+}
+//得到所有手机归属地的li
+function GetPhSource() {
+    var liPhone = $(".liPhone").length;
+    if ($(".liPhOld").length !== 0) {
+        $(".liPhOld").each(function (it) { this.style.display = "block"; })
+    }
+    if (liPhone === 0 && $(".liPhOld").length === 0) {
+        alert("当前账号均无注册手机号");
+        return;
+    }
+    //号码相同  不去修改一机多登的表,不同则要将储值后台的号码 拿到并更新到一机多登库表
+    var oldKey = "";
+    var dataArr = "";
+    $(".liPhone").each(function (it) {
+        //循环记录需要请求查询api的手机号
+        var b = this;
+        var txt = this.innerHTML.trim();
+        if (txt === "" || txt === "未知") {
+            var id = $(this).attr("data");
+            var arr = id.split("'"); //格式li+新号码+旧号码
+            if (oldKey == arr[1]) {
+                return true;
+            }
+            oldKey = arr[1];
+            dataArr += arr[1] + "|";
+        }
+    });
+    if (dataArr.length > 0) {
+        $.ajax({
+            type: "post",
+            url: "Handle/QueryPhone.ashx",
+            data: {
+                "info": dataArr,
+                date: new Date().getTime()
+            },
+            dataType: "json",
+            cache: false,
+            success: function (par) {
+                //返回集合{id,归属地}
+                if (par && par.length > 0) {
+                    for (var i = 0; i < par.length; i++) {
+                        var divhtml = $("." + par[i].key);
+                        if (par[i].address == undefined || par[i].address == "") {
+                            divhtml.html("<span style='color:#ed5c5c;'>未知</span>")
+                        }
+                        else {
+                            divhtml.html(par[i].address)
+                        }
+                    }
+                }
+            },
+            error: function (data) {
+            }
+        });
+    }
+}
+///刷新IP归属地
+function FreshIpSource() {
+    var liIp = $(".liIP").length;
+    if (liIp == 0) {
+        alert("当前页没有可刷新的数据！");
+        return;
+    }
+    var iCount = 0;
+    $(".liIP").each(function (it) {
+        var txt = this.innerHTML.trim();
+        if (txt === "" || txt === "归属地不详" || txt === "伪造ip") {
+            var id = this.id;
+            var arr = id.split("'");
+            var b = this;
+            $.ajax({
+                type: "get",
+                url: "Handle/FreshIpSource.ashx",
+                data: {
+                    info: arr[1],
+                    date: new Date().getTime()
+                },
+                dataType: "text",
+                contentType: "application/json;charset=utf-8",
+                success: function (data) {
+                    b.innerHTML = data;
+                },
+                error: function (data) {
+
+                }
+            });
+        } else {
+            iCount++;
+        }
+    });
+    if (iCount === liIp) {
+        alert("当前页没有可刷新的数据！");
+        return;
+    }
+}
+
+///判斷元素是否存在數組中
+function IsExits(arr, str) {
+    var i = arr.length;
+    while (i--) {
+        if (arr[i] === str) {
+            return true;
+        }
+    }
+    return false;
+}
+
+//批量添加备注
+function Addall(sType) {
+    var remark = $.trim($("#txtRemark").val());
+    var sortType = $("#selRemark option:selected").val();
+    if (remark === "") {
+        alert("備註內容不能為空！");
+        return;
+    }
+    if (sortType === "") {
+        alert("請選擇警示類型！");
+        return;
+    }
+    $("#btnRemark")[0].disabled = true;
+    var uniqId = RequestKit("ID");
+    var site = RequestKit("siteNumber");
+    var acc = RequestKit("accounts");
+    var iLan = RequestKit("lan");
+    $.ajax({
+        type: "get",
+        url: "Handle/MarkAccount.ashx",
+        data: {
+            "remark": remark,
+            "sort": sortType,
+            "siteNumber": site,
+            "accounts": acc,
+            "ID": uniqId,
+            "lan": iLan,
+            "type": sType,
+            date: new Date().getTime()
+        },
+        dataType: "text",
+        contentType: "application/json;charset=utf-8",
+        success: function (data) {
+            window.location.reload();
+        },
+        error: function (data) { }
+    });
+}
+
+//查看备注
+function showinfo(b, type) {
+    $(".showInfo").hide();
+    if (type === 1) {
+        $($(b)[0].nextElementSibling).show();
+    } else {
+        var evt = window.event || arguments.callee.caller.arguments[0];//火狐获取不到window.event。
+        var evtElement = evt.toElement || evt.relatedTarget;
+        if (evtElement == $(b)[0].nextElementSibling) return;//如果鼠标从a元素移动到备注div中则不隐藏
+        $($(b)[0].nextElementSibling).hide();
+    }
+}
+
+var idx;//当前显示的警示
+var clo = 1;//1鼠标移开警示div  2鼠标移上去警示div
+var process;
+var zhis = 1;
+//查看警示备注
+function showRmark(acc, site, type, rname) {
+    var divId = "showInfo_";
+    if (rname != null && rname == "") {
+        return false;
+    }
+    if (rname != null && rname != "") {
+        divId = "showRname_";
+    }
+    if (type === 1) {
+        zhis = 1;
+        clearTimeout(process);
+        $(".showInfo").hide();
+        if (idx != acc) {
+            //如果上一个显示的层不现在显示的这个，先隐藏上一个
+            $("#" + divId + site + "_" + idx).hide();
+        }
+        idx = acc;
+        $("#" + divId + site + "_" + acc).show();
+    } else {
+        var index = acc;
+        zhis = 2;
+        process = setTimeout(function () {
+            //如果没有移到警示内容层，则2秒关闭
+            $("#" + divId + site + "_" + acc).hide()
+        }, 1500);
+        $("#" + divId + site + "_" + acc).mouseover(function () {
+            clo = 0;//鼠标以上警示div
+            clearTimeout(process);
+        });
+        $("#" + divId + site + "_" + acc).mouseout(function () {
+            clo = 1;//鼠标移开警示div
+            setTimeout(function () {
+                if (clo === 1 && zhis != 1) {
+                    $("#" + divId + site + "_" + acc).hide();
+                }
+            }, 500);
+        });
+    }
+}
+//查看黑名单
+function showBlack(acc, site, type) {
+    if (type === 1) {
+        $("#black_" + site + "_" + acc).show();
+    } else {
+        $("#black_" + site + "_" + acc).hide();
+    }
+}
+var isResust = false;
+var isSyBs = false;
+var sumSy = 0;
+var sumBs = 0;
+function GetBiShu() {
+    if (isResust) {
+        alert("正在请求中，请不要频繁点击");
+        return
+    }
+    if (RequestKit("accounts") == null || RequestKit("accounts") == "" || RequestKit("siteNumber") == null || RequestKit("siteNumber") == "") {
+        alert("当前没有可查询的数据");
+        isResust = false;
+        return;
+    }
+    isResust = true;
+    $(".BLACK").show();
+    $.ajax({
+        type: "get",
+        url: "Handle/SportBsSy.ashx",
+        data: {
+            accounts: RequestKit("accounts"),
+            siteNumber: RequestKit("siteNumber"),
+            iType: RequestKit("iType"),
+            date: new Date().getTime()
+        },
+        dataType: "text",
+        contentType: "application/json;charset=utf-8",
+        success: function (data) {
+            setInterval(function () {
+                isResust = false;
+            }, 5000);
+            $(".BLACK").hide();
+            $(".bsclass").html("0");
+            $(".syclass").html("0.00");
+            if (data == "error") {
+                alert("当前没有可查询的数据");
+                return;
+            }
+            var jsonData = JSON.parse(data);
+            if (jsonData.length > 0) {
+                for (var i = 0; i < jsonData.length; i++) {
+                    $(".bs_" + jsonData[i].f_siteNumber + "_" + jsonData[i].f_accounts).html(jsonData[i].coid);
+                    $(".sy_" + jsonData[i].f_siteNumber + "_" + jsonData[i].f_accounts).html(MresultFoat(toDecimal2(jsonData[i].sumSportMresult)));
+                    sumSy += parseFloat(jsonData[i].sumSportMresult);
+                    sumBs += parseInt(jsonData[i].coid);
+                }
+                $("#sumSy").html(MresultFoat(toDecimal2(sumSy)));
+                $("#sumBs").html(sumBs);
+                ReCalcuZSY();
+            } else {
+                alert("当前没有可查询的数据");
+                return;
+            }
+        },
+        error: function (data) {
+            setInterval(function () {
+                isResust = false;
+            }, 5000);
+            alert("当前没有可查询的数据");
+            return;
+        }
+    });
+}
+
+function modeSort() {
+    var div = document.getElementById("divCookie");
+    //找出我们所有的ul
+    var lis = document.getElementsByClassName("demo");
+    //建立以新的数组
+    var list = [];
+    for (var i = 0; i < lis.length; i++) {
+        list.push($(lis[i]).attr("data-sort"));
+    }
+    //对数组进行排序
+    list.sort(function (a, b) {
+        return a - b;
+    })
+    for (var j = 0; j < liLen; j++) {
+        ul1.appendChild(list[j]);
+    }
+}
+function MresultFoat(result) {
+    if (parseFloat(result) >= 0) {
+        return '<span style="color: #067E02">' + result + ' </span>'
+    } else {
+        return '<span style="color: #ea3232">' + result + ' </span>'
+    }
+}
+
+//制保留2位小数，如：2，会在2后面补上.00 
+function toDecimal2(x) {
+    var f = parseFloat(x);
+    if (isNaN(f)) {
+        return false;
+    }
+    var f = Math.round(x * 100) / 100;
+    var s = f.toString();
+    var rs = s.indexOf('.');
+    if (rs < 0) {
+        rs = s.length;
+        s += '.';
+    }
+    while (s.length <= rs + 2) {
+        s += '0';
+    }
+    return s;
+}
+//表头固定显示 id定位的表格、defaluttrHeadHeight标题的高度、defaultTop默认距离上面高度、defaultLeft默认距离左边高度
+function SetTopGuDing(id, defaluttrHeadHeight, defaultTop, defaultLeft) {
+    var divoffsetTop = defaultTop;
+    var divoffsetleft = defaultLeft;
+    //窗口重置
+    $(window).resize(function () {
+        if ($(id).offset()) {
+            divoffsetTop = $(id).offset().top - defaluttrHeadHeight;
+            divoffsetleft = $(id).offset().left;
+        }
+        GuDingscroll(divoffsetTop, divoffsetleft);
+    });
+    $(window).scroll(function () {
+        if ($(id).offset()) {
+            divoffsetTop = $(id).offset().top - defaluttrHeadHeight;
+            divoffsetleft = $(id).offset().left;
+        }
+        GuDingscroll(divoffsetTop, divoffsetleft);
+    });
+}
+//滚动时設置表头固定显示位置
+function GuDingscroll(divoffsetTop, divoffsetleft) {
+    var offsetscrollTop = $(this).scrollTop();
+    if (offsetscrollTop >= divoffsetTop) {
+        $(".TrHead").css("top", 0);
+    } else {
+        $(".TrHead").css("top", divoffsetTop - offsetscrollTop);
+    }
+    var offsetscrollLeft = $(this).scrollLeft();
+    $(".TrHead").css("left", divoffsetleft - offsetscrollLeft);
+}
+
+//测试站一机多登录页面IP后面新增一个勾选项，勾上后 该页面只显示与这个IP 4码一致的账号（同IP多登也一样做）
+function showIpSameAcc(obj) {
+    if ($(obj)[0].checked) {
+        if (!$("#chkAllIP")[0].checked) {
+            $("#chkAllIP")[0].checked = true;
+            $("#chkAllIP").attr("checked", "checked");
+        }
+        $("[data-ip]").each(function () {
+            if ($(obj).val() == $(this).attr("data-ip")) {
+                if ($(this).find(".chkIP")[0]) {
+                    $(this).find(".chkIP")[0].checked = true;
+                    $(this).find(".chkIP").attr("checked", "checked");
+                }
+            }
+        });
+    } else {
+        $("[data-ip]").each(function () {
+            if ($(obj).val() == $(this).attr("data-ip")) {
+                if ($(this).find(".chkIP")[0]) {
+                    $(this).find(".chkIP")[0].checked = false;
+                    $(this).find(".chkIP").removeAttr("checked");
+                }
+            }
+        });
+        if ($("input[class='chkIP']:checked").length == 0) {
+            $("#chkAllIP")[0].checked = true;
+            $("#chkAllIP").removeAttr("checked");
+        }
+    }
+}
+//显示勾选的同ip数据
+function ShowIpChk() {
+    if ($("input[class='chkIP']:checked").length == 0) {
+        $("[data-ip]").show();
+        $("#total").text($("#hidSum").val());
+        return;
+    }
+    $("[data-ip]").hide();
+    //获取选中项
+    $("input[class='chkIP']:checked").each(function () {
+        var obj = this;
+        $("[data-ip]").each(function () {
+            if ($(obj).val() == $(this).attr("data-ip")) {
+                if ($(this).find(".chkIP")[0]) {
+                    $(this).find(".chkIP")[0].checked = true;
+                    $(this).find(".chkIP").attr("checked", "checked");
+                    $(this).show();
+                }
+            }
+        });
+    });
+    ReCalcuZSY();
+}
+//IP全选 与 取消
+function ShowAllIpChk(e, obj) {
+    e.stopPropagation()
+    if ($(obj)[0].checked) {
+        //获取选中项
+        $(".chkIP").each(function () {
+            $(this)[0].checked = true;
+            $(this).attr("checked", "checked");
+        });
+    } else {
+        $(".chkIP").each(function () {
+            $(this)[0].checked = false;
+            $(this).removeAttr("checked");
+        });
+    }
+}
+
+//IP勾选框隐藏跟显示时，合计重新计算
+//id:total sumSy sumBs
+//class:liResult syclass bsclass
+function ReCalcuZSY() {
+    if ($("#total") && $("#sumSy") && $("#sumBs")) {
+        var total = 0; sumSy = 0; sumBs = 0, iAcc = "", iSite = "";
+        $(".js-dxls:visible").each(function () {
+            if (IsNum($(this).find(".liResult").text())) {
+                if (iAcc != $(this).attr("data-acc") || iSite != $(this).attr("data-site")) {
+                    total += parseFloat($(this).find(".liResult").text());
+                }
+            }
+            iAcc = $(this).attr("data-acc");
+            iSite = $(this).attr("data-site");
+            if (IsNum($(this).find(".syclass").text())) {
+                sumSy += parseFloat($(this).find(".syclass").text());
+            }
+            if (IsNum($(this).find(".bsclass").text())) {
+                sumBs += parseFloat($(this).find(".bsclass").text());
+            }
+            $("#total").text(total.toFixed(2));
+            $("#sumSy").text(sumSy.toFixed(2));
+            $("#sumBs").text(sumBs.toFixed(2));
+        });
+        return;
+    }
+    if ($("#total")) {
+        var total = 0;
+        $(".js-dxls:visible").each(function () {
+            if (IsNum($(this).find(".liResult").text())) {
+                if (iAcc != $(this).attr("data-acc") || iSite != $(this).attr("data-site")) {
+                    total += parseFloat($(this).find(".liResult").text());
+                }
+            }
+            iAcc = $(this).attr("data-acc");
+            iSite = $(this).attr("data-site");
+            $("#total").text(total.toFixed(2));
+        });
+        return;
+    }
+}
+//判断是否为数字
+function IsNum(s) {
+    if (s != null && s != "") {
+        return !isNaN(s);
+    }
+    return false;
+}
+function delModeCache() {
+    $.ajax({
+        type: "get",
+        url: "Handle/MarkAccount.ashx",
+        data: {
+            type: "3",
+            date: new Date().getTime()
+        },
+        dataType: "text",
+        contentType: "application/json;charset=utf-8",
+        success: function (data) {
+            if (data) {
+                if (data == "0") {
+                    alert("缓存清除成功");
+                    return;
+                } else {
+                    alert("5分钟清除一次，请勿频繁操作");
+                    return;
+                }
+            }
+        },
+        error: function (data) {
+            return;
+        }
+    });
+}

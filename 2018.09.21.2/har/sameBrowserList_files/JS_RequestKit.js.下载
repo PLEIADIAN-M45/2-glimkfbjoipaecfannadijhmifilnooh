@@ -1,0 +1,4 @@
+﻿function RequestKit(key) {
+    var svalue = window.location.search.match(new RegExp("[\?\&]" + key + "=([^\&]*)(\&?)", "i"));
+    return svalue ? svalue[1] : svalue;
+}
