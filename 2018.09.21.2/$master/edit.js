@@ -1,12 +1,11 @@
 define([], function() {
-    return async function({ apis, $scope, $server, $ctrl }) {
+    return async function({ apis, $xmlSpider, $scope, $server, $ctrl }) {
 
         await apis.getUser();
 
-        $scope.setPermit = async function(e) {
-            await apis.getUser();
+        $scope.setPermit = async function() {
             if($server == "wa111") {
-                if(e) { e.currentTarget.hide(); }
+                $('.setPermit').hide();
                 $ctrl.isOpenDeposit.val(1);
                 $ctrl.btnSaveInfo.click();
             }
@@ -16,13 +15,26 @@ define([], function() {
                 $scope.ctrl.UpdateMemberRiskInfoAccountingBackend();
             }
         };
+
+
+
+        $xmlSpider.loadend = async function() {
+            if(this.commander == "GETMODEL") { apis.getUser(); }
+        };
+
+
+        $scope.setFrameId = function({ frameId }) {
+            $scope.user.frameId = frameId;
+            $scope.frameId = frameId;
+            $scope.$apply();
+        }
+
+        var port = chrome.runtime.connect(apis.extensionId, { name: "knockknock" });
+        port.onMessage.addListener(function(msg) {
+            if(msg.setPermit) { $scope.setPermit(); }
+            if(msg.frameId) { $scope.setFrameId(msg) }
+        });
+
+        $scope.$apply();
     }
 });
-
-
-
-
-
-
-
-

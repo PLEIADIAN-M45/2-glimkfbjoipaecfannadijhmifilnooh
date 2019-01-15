@@ -28,14 +28,14 @@ apis.member.ku711 = function({ channel, index, banker = "", mobile = "", idcard 
 
 
 apis.member.getMemberAlertInfoBackend = function(res) {
-    if (res.rows && res.rows.length) {} else { return res; }
+    if(res.rows && res.rows.length) {} else { return res; }
     return $.ajax({
         "method": 'post',
         "dataType": 'json',
         "url": apis.baseUrl["16"] + '/member/api/AlertInfoManage/GetMemberAlertInfoBackend',
-        //"url": chrome.extension.getURL('/member/api/AlertInfoManage/GetMemberAlertInfoBackend'),
         "data": angular.toJson({ "DisplayArea": "1", "Account": res.rows })
     }).then(({ Data }) => {
+        //console.log(Data);
         res.list_RemittanceName = Data.AlertInfoAccountName;
         res.rows.map((row) => { row.list_Accounts = Data.AlertInfoAccountId.filter((d) => { return row.AccountID == d.AccountID; }); return row; });
         return res;

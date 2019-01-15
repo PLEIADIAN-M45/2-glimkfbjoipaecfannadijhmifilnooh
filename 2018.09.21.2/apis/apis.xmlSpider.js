@@ -32,6 +32,8 @@ apis.updateUser = async function({ unique, status, permit, bonus }) {
 */
 
 
+//params.lastModify = moment(Date.now())
+//params.timespan = moment().format('YYYY-MM-DD HH:mm:ss')
 
 apis.google2 = function google2(user) {
 
@@ -71,13 +73,13 @@ async function ___set({ unique, status, permit, awards }) {
 
     var user = await apis.getUser(unique);
 
-    if (user == undefined) { return };
+    if(user == undefined) { return };
 
-    if (window.isLocal) { user.module = null; };
+    if(window.isLocal) { user.module = null; };
 
-    if (user.module) { return };
+    if(user.module) { return };
 
-    if (awards) {
+    if(awards) {
         user.module = "awards:" + user.server;
         user.awards = awards;
     } else {
@@ -88,13 +90,16 @@ async function ___set({ unique, status, permit, awards }) {
         user.permit[1] = Number(permit);
         user.timing[1] = moment().format("YYYY-MM-DD HH:mm:ss");
         user.timing[2] = moment(user.timing[0]).diff(moment(user.timing[1]), "minutes", true);
-        var protocol = new Set();
-        user.regions.map((x) => { return protocol.add(x.IPLocation) });
-        user.region = [...protocol];
+        //var protocol = new Set();
+        //user.regions.map((x) => { return protocol.add(x.IPLocation) });
+        //user.region = [...protocol];
     }
 
+    console.log("-------------------------");
     apis.putUser(user);
-    apis.google2(user);
+    //apis.google2(user);
+
+    return
     //console.log(user.module, user);
 }
 
@@ -102,10 +107,13 @@ async function ___set({ unique, status, permit, awards }) {
 
 
 apis.xmlSpider = async function(params) {
+
     with(params) {
+
+       // console.log(commander);
         switch (commander) {
             case "BTNUSERSET":
-                if (respData == "u-ok") {
+                if(respData == "u-ok") {
                     return ___set({ unique: unique, status: sendData.ishow, permit: sendData.isOpenDeposit });
                 }
                 break;
@@ -116,22 +124,22 @@ apis.xmlSpider = async function(params) {
                 return ___set({ unique: unique, status: sendData.MemberStatus, permit: sendData.IsDeposit });
                 break;
             case "STOPMEMBER":
-                if (respData == 2)
+                if(respData == 2)
                     return ___set({ unique: unique, status: 2, permit: 0 });
                 break;
             case "UPDATEMEMBERRISKSINFOBACKENDISFSUSPENSION":
-                if (sendData.IsFSuspension == true)
+                if(sendData.IsFSuspension == true)
                     return ___set({ unique: unique, status: 0, permit: 0 });
                 break;
             case "GETDEPOSITBONUSLIST":
-                if (window.cacheBonusData) {
+                if(window.cacheBonusData) {
                     var awards = dataset.find((d) => { return d.f_id == window.cacheBonusData.id; });
                     window.cacheBonusData = null;
                     return ___set({ awards: awards, unique: awards.f_accounts + "-" + channel });
                 }
                 break;
             case "GETMEMBERBONUSLOGBACKENDBYCONDITION":
-                if (window.cacheBonusData && sendData.DealType == null) {
+                if(window.cacheBonusData && sendData.DealType == null) {
                     var awards = dataset.find((d) => { return d.BonusNumber == window.cacheBonusData.BonusNumber; });
                     window.cacheBonusData = null;
                     return ___set({ awards: awards, unique: awards.AccountID + "-" + channel });

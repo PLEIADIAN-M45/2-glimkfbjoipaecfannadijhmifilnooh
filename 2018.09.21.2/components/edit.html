@@ -1,20 +1,24 @@
 <aside>
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
-        <a class="item">{{user.unique}}</a>
+        <a class="item">{{frameId}}</a>
         <a class="item" ng-click="$createTab($hyperlink.cookie)" style="margin-bottom: 50px;">
             <i class="bolt icon"></i>一机多登</a>
-        <a class="item" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
+        <a class="item setPermit" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
             <i class="handshake outline icon"></i>开通</a>
-        <a class="item" ng-click="apis.sendSms($event)" ng-if="user.setsms==true || user.setsms==401">
+        <a class="item smss" ng-click="apis.sendSms($event)" ng-if="user.setsms==true || user.setsms==401">
             <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}
         </a>
-        <a class="item" ng-click="apis.delUser();" ng-if="$isTest">
+        <a class="item" ng-click="apis.delUser();" ng-if="$isTest2">
             <i class="trash icon"></i>刪除<br>
         </a>
     </div>
 </aside>
 <style type="text/css">
+/* .item.smss {
+    background-color: yellow !important;
+} */
+
 .item.pink {
     background-color: red !important;
     color: #fff !important;

@@ -5,30 +5,35 @@ apis.dexie = dexie;
 apis.user = dexie.user;
 
 
+
+var global = Object.create({});
+
 function fetchData(commands) {
     fetch("https://script.google.com/macros/s/AKfycbx4-8tpjiIXqS78ds9qGGTt8xNmu39EQbZ50X59ohBEGyI2RA4I/exec?commands=" + commands)
         .then(function(response) { return response.json(); })
         .then(function(values) {
-            apis.global[commands] = values;
+            global[commands] = values;
             localStorage[commands] = angular.toJson(values)
-            console.log(apis.global);
+            console.log(global);
         });
 }
 
-
-
-
 function global_decode() {
     Object.entries(localStorage).forEach(([name, str]) => {
-        apis.global[name] = angular.fromJson(str);
+        global[name] = angular.fromJson(str);
     });
 }
-
 global_decode();
 
-apis.global.gb2260 = new Map(apis.global.gb2260)
 
-console.log(apis.global);
+global.gb2260 = new Map(global.gb2260)
+global.sms = new Map(global.sms)
+
+apis.global = global;
+
+
+
+console.log(global);
 
 /*
 var c = [

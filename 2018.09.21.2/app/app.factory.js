@@ -50,6 +50,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             apis.extensionId = $extensionId;
             apis.sendMessage = function sendMessage(params) {
                 return new Promise((resolve, reject) => {
+
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
                         params: params
@@ -60,21 +61,31 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $scope.$watch(name, callback, true);
             }
             apis.getUser = async function getUser() {
+
                 apis.watch('user', apis.putUser);
+
                 $scope.user =
                     await apis.sendMessage({ unique }) ||
                     await apis.setUser();
-                $scope.user.sender = await apis.sender()
+
+
+                console.log(10000, $scope.user);
+                // $scope.user.sender = await apis.sender()
                 $scope.$apply();
             }
+
+
             apis.delUser = async function delUser() {
-                await apis.sendMessage($unique);
+                console.log({ unique });
+                await apis.sendMessage({ unique });
             }
+
             apis.putUser = async function putUser(nv, ov) {
                 if(!nv || angular.equals(nv, ov)) { return };
                 console.log("putUser::", nv);
                 return apis.sendMessage($scope.user);
             }
+
             apis.sendSms = async function sendSms(e) {
                 var $currentTarget = $(e.currentTarget)
                 $currentTarget.hide();
@@ -88,17 +99,19 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 console.log(c);
             };
 
+            /*
             apis.sender = async function sender() {
                 return apis.sendMessage({});
             };
 
             apis.sender();
+            */
 
 
             ;
             (async function global() {
                 apis.global = await apis.sendMessage({});
-                console.log(apis.global);
+                //console.log(apis.global);
             }());
 
 

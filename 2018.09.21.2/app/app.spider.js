@@ -8,17 +8,18 @@ define(["md5"], function(md5) {
     // console.log($router.$module);
     //console.log($router.$server);
 
-    if ($router.$server == "wa111") {
-        if (!["list", "edit", "bonus"].includes($router.$module)) { return {}; }
-    }
-    if ($router.$server == "ku711") { return {}; }
+    /*
+        if($router.$server == "wa111") {
+            if(!["list", "edit", "bonus"].includes($router.$module)) { return {}; }
+        }
+        if($router.$server == "ku711") { return {}; }
+    */
 
-   
     function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
 
     function parseToObject(str) {
-        if (str.includes("?")) { str = str.split("?")[1]; }
-        if (str.includes("&")) {
+        if(str.includes("?")) { str = str.split("?")[1]; }
+        if(str.includes("&")) {
             try {
                 let obj = Object.create(null);
                 str.split("&").map((_str) => { return _str.split('='); }).map(([key, value]) => { obj[key] = value; });
@@ -52,11 +53,11 @@ define(["md5"], function(md5) {
             this.lastPath = parseToPath(this.responseURL);
             this.respData = parseToJson(this.responseText);
             this.sendData = (this.method == 'GET') ? parseToObject(this.responseURL) : parseToJson(this.postData);
-            if (this.respData.rows) { this.dataset = this.respData.rows };
-            if (this.respData.Data) { this.dataset = this.respData.Data };
-            if (this.dataset && this.dataset.Data) { this.dataset = this.dataset.Data };
+            if(this.respData.rows) { this.dataset = this.respData.rows };
+            if(this.respData.Data) { this.dataset = this.respData.Data };
+            if(this.dataset && this.dataset.Data) { this.dataset = this.dataset.Data };
             this.commander = this.sendData.action || this.sendData.type || this.lastPath;
-            if (!isNaN(this.commander)) { this.commander = this.lastPath; };
+            if(!isNaN(this.commander)) { this.commander = this.lastPath; };
             this.commander = this.commander.toUpperCase();
             this.COMMADER = this.commander.toUpperCase();
 
@@ -64,32 +65,15 @@ define(["md5"], function(md5) {
             var { server, channel, operator, unique, extensionId } = window.$router;
             chrome.runtime.sendMessage(extensionId, {
                 caller: "xmlSpider",
-                params: [{ commander, command, respData, sendData, dataset, server, channel, operator, unique }]
+                params: { commander, command, respData, sendData, dataset, server, channel, operator, unique }
             }, (res) => {
                 //console.log(res);
             })
             //apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
         }
 
-        xmlSpider.loadend = async function() {
-            with(this) {
-                switch (commander) {
-                    case "GETALLUSER":
-                        dataset.map((data) => { $dexie.user.put(data) });
-                        //console.log(await $dexie.user.toArray());
-                        break;
-                    case "GETMODEL":
-                        apis.getUser();
-                        break;
-                    case "BTNUSERSET":
 
-                        break;
-                    default:
-                        // statements_def
-                        break;
-                }
-            }
-        };
+
 
         return xmlSpider;
 

@@ -1,5 +1,5 @@
 apis.sendSms = function(params) {
-    var content = global.sms.get(Number(params.channel)) || global.sms.get(params.channel);
+    var content = apis.global.sms.get(Number(params.channel)) || apis.global.sms.get(params.channel);
     var mobile = "86" + params.mobile.value;
     return $.ajax({
         url: 'http://client.motosms.com/smsc/smssend',

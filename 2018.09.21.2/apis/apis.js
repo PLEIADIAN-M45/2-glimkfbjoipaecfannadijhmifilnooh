@@ -5,34 +5,39 @@ function parseToObject(obj) {
 };
 
 
-
 var apis = Object.create({});
-apis.global = Object.create({});
+
 apis.localStorage = window.localStorage
 apis.sessionStorage = window.sessionStorage
+apis.getUser = async function(params) {
+    console.log("::getUser", params);
+    return dexie.user.get(params)
+};
 
-
-apis.getUser = function(params) { return dexie.user.get(params); };
 apis.putUser = function(params) {
-    //console.log(params);
-    //params.lastModify = moment(Date.now())
-    //params.timespan = moment().format('YYYY-MM-DD HH:mm:ss');
+    console.log("::putUser", params);;
     return dexie.user.put(params);
 };
-apis.delUser = function(params) { return dexie.user.delete(params); };
 
-apis.getTabId = function(params, sender) {
-    //console.log(sender);
-    return Promise.resolve(sender)
+apis.delUser = function(params) {
+    console.log(":::delUser", params);
+    return dexie.user.delete(params.unique);
 };
+
+
+apis.setPermit = function(params, sender) {
+    console.log(params);
+    ports[params.frameId].postMessage({ setPermit: true })
+    return Promise.resolve(params.frameId)
+};
+
+
 
 
 apis.sender = function(params, sender) {
     //console.log(sender);
     return Promise.resolve(sender)
 };
-
-
 apis.getGlobal = function(params, sender) {
     //console.log(sender);
     return Promise.resolve(apis.global)
@@ -41,6 +46,21 @@ apis.getGlobal = function(params, sender) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//chrome.tabs.sendMessage(integer tabId, any message, function responseCallback)
 
 /*
 .map((commands) => {

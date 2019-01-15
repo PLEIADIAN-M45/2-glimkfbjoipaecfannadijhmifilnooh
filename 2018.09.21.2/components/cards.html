@@ -25,17 +25,11 @@
                 {{me.region.meta}} {{me.region.time}}
             </div>
         </div>
-        <!--  ng-init="getProtocolSet.call(me);" -->
-        <div class="extra content grid grid-2" ng-if="me.caller=='locate'" ng-init="getUserRegions.call(me)">
-            <div class="ui image label green protocol center" ng-repeat="row in user.regions" ng-class="{'pink':row.danger}">
-                <span>{{row.IPAddress}}</span>
-                <div class="detail">{{row.IPLocation}}</div>
-            </div>
-        </div>
-        <div class="extra content grid grid-4" ng-if="me.caller!='locate'">
-            <div ng-repeat="s in me.sites" ng-init="apis.member.call(s, this)">
+        <div class="extra content grid grid-4">
+            <div ng-repeat="s in sites[$index]" ng-init="apis.member.call(s, this)">
                 <div class="ui image label" ng-click="showSemanticModal(s);">
-                    <div class="detail center">{{s.channel}}-{{s.abort}}<b>{{s.list_RemittanceName.length}}</b></div>
+                    <div class="detail center">{{s.channel}}</div>
+                    <div class="detail center pink pointer" ng-if="s.list_RemittanceName.length">{{s.list_RemittanceName.length}}</div>
                 </div>
                 <div class="ui image label">
                     <i class="angle left icon" ng-click="s.index = s.index-1; apis.member.call(s, this, $event)" ng-disabled="s.index==1 || this.active"></i>
@@ -69,6 +63,17 @@
             </div>
         </div>
     </div>
+    <div class="ui vertical icon menu">
+        <a class="item"  ng-click="transition(this)">
+    <i class="gamepad icon"></i>
+  </a>
+        <a class="item" ng-click="setPermit(user.frameId)">
+    <i class="video camera icon"></i>
+  </a>
+        <a class="item">
+    <i class="video play icon"></i>
+  </a>
+    </div>
 </div>
 <div class="ui fullscreen modal">
     <table class="ui celled selectable striped collapsing table small">
@@ -89,6 +94,16 @@
     </table>
 </div>
 <style type="text/css">
+.detail.center.pink {
+    background-color: #e91e63 !important;
+    color: #fff !important;
+}
+
+.ui.bottom.attached.segment {
+    position: relative;
+    top: 30px;
+}
+
 /*.ui.cars {}
 #sameBrowserList {}
 */

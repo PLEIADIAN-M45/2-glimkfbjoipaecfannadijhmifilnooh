@@ -60,9 +60,48 @@ define([], function() {
         /*----------------------------------------------*/
         $scope.icons = { author: "icon universal access", locate: "icon map marker alternate", idcard: "icon address card", mobile: "icon mobile alternate", banker: "icon cc visa", birthday: "icon birthday cake" };
         $scope.heads = { author: "汇款户名", locate: "登入网段", idcard: "身份证号", mobile: "手机号码", banker: "银行卡号" };
-        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker].map((obj) => {
-            //$scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard].map((obj) => {
-            //obj.region = obj.region || {};
+        $scope.list = [$scope.user.author, $scope.user.locate, $scope.user.mobile, $scope.user.idcard, ...$scope.user.banker]
+
+        $scope.sites = $scope.list.map((obj) => {
+            with(obj) {
+                //$scope.sites[value] =
+
+                return [
+                    { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
+                ]
+                return [
+                    { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value },
+                    { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
+                ]
+                /*
+                return {
+                    [caller]: [
+                        { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value },
+                        { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value },
+                        { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value },
+                        { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
+                    ]
+                }*/
+
+
+                /* if(caller == "locate") {} else {
+                     obj.sites = [
+                         { channel: "26", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "35", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "17", server: "wa111", index: 1, caller, value, [caller]: value }, { channel: "16", server: "ku711", index: 1, caller, value, [caller]: value }
+                     ];
+                 }*/
+            }
+        });
+
+        console.log($scope.sites);
+
+        /*
+        .map((obj) => {
+
             with(obj) {
                 if(caller == "locate") {} else {
                     obj.sites = [
@@ -71,9 +110,7 @@ define([], function() {
                 }
             }
             return obj;
-        });
-
-
+        });*/
 
         apis.region = function region(scope, e) {
             if(!this.value) { return };
@@ -88,19 +125,14 @@ define([], function() {
             }
         }
 
-        console.log($scope.user);
+        //console.log($scope.user);
+
 
         apis.member = function member(scope, e) {
-            return
             if(!this.value || this.value.includes("*")) { return };
-            //console.log(this.caller, this.value);
             scope.active = true;
             apis.sendMessage(this).then((res) => {
-                if(res && res.rows) {
-                    angular.extend(this, res);
-                } else {
-                    scope.error = true;
-                }
+                if(res && res.rows) { angular.extend(this, res); } else { scope.error = true; }
                 scope.active = false;
                 scope.$apply();
             })
@@ -136,6 +168,19 @@ define([], function() {
             $scope.list_RemittanceName = s.list_RemittanceName;
             $('.ui.modal').modal('show');
         }
+
+        $scope.transition = function(scope) {
+            $('.extra.grid').toggle()
+            //$('.extra.grid').transition('slide down');
+        }
+
+
+        $scope.setPermit = function setPermit(frameId) {
+            console.log(frameId);
+            apis.sendMessage({ frameId })
+        }
+
+
 
 
         $scope.$apply();
