@@ -13,6 +13,7 @@ apis.sendSms = function(params) {
         if(res.match(/(msg = '101')/)) { setsms = 101; }
         if(res.match(/(msg = '102')/)) { setsms = 102; }
         params.setsms = setsms;
-        return apis.putUser(params);
+        return setsms
+        //apis.putUser(params);
     });
 };

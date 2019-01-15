@@ -22,7 +22,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 $injector = $controller.injector();
             var $invoke = $injector.invoke,
                 $compile = $injector.get('$compile');
-            var $apply = function() { if (!$scope.$$phase) { $scope.$apply(); } }
+            var $apply = function() { if(!$scope.$$phase) { $scope.$apply(); } }
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
             var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
@@ -35,75 +35,80 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     var object = $scope;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
-                        if (alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
-                            if (typeof alphaVal == "object") {
-                                if (Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
+                        if(alphaVal == undefined) { setTimeout(function() { repeater(object) }, 500); } else {
+                            if(typeof alphaVal == "object") {
+                                if(Object.keys(alphaVal).length) { resolve(alphaVal); } else { setTimeout(function() { repeater(object) }, 500) };
                             } else { resolve(alphaVal); }
                         }
                     }(object));
                 });
             }
             var $console = function() { console.log(...arguments); }
-            var $keydown = function(callback) { document.addEventListener('keydown', callback); }
+
             /*********************************************************/
             var apis = {};
+            apis.$keydown = function(callback) { document.addEventListener('keydown', callback); }
             apis.extensionId = $extensionId;
-            apis.sendMessage = function sendMessage(params) {
-                return new Promise((resolve, reject) => {
 
-                    chrome.runtime.sendMessage($extensionId, {
-                        caller: arguments.callee.caller.name,
-                        params: params
-                    }, (res) => { resolve(res); })
-                })
-            }
+
+
             apis.watch = function watch(name, callback) {
                 $scope.$watch(name, callback, true);
             }
             apis.getUser = async function getUser() {
                 apis.watch('user', apis.putUser);
                 $scope.user =
-                    await apis.sendMessage({ unique }) ||
+                    await $scope.sendMessage({ unique }) ||
                     await apis.setUser();
-                console.log('getUser::', $scope.user);
                 $scope.$apply();
             }
-
-
             apis.delUser = async function delUser() {
                 //console.log({ unique });
-                await apis.sendMessage({ unique });
+                await $scope.sendMessage({ unique });
             }
-
             apis.putUser = async function putUser(nv, ov) {
-                if (!nv || angular.equals(nv, ov)) { return };
-                console.log("putUser::", nv);
-                return apis.sendMessage($scope.user);
+                if(!nv || angular.equals(nv, ov)) { return };
+                //console.log("putUser::", nv);
+                console.count("putUser");
+                $scope.sendMessage($scope.user);
+                $scope.user = nv;
+                $scope.apply();
+
+                console.log($scope.user);
+
+            }
+            $scope.sendMessage = function sendMessage(params) {
+                return new Promise((resolve, reject) => {
+                    chrome.runtime.sendMessage($extensionId, {
+                        caller: arguments.callee.caller.name,
+                        params: params
+                    }, (res) => {
+                        resolve(res)
+                    });
+                })
             }
 
-            apis.sendSms = async function sendSms(e) {
-                var $currentTarget = $(e.currentTarget)
-                $currentTarget.hide();
-                await apis.sendMessage($scope.user);
-                await apis.getUser();
-                $currentTarget.show();
+            $scope.apply = function() {
+                if(!$scope.$$phase) {
+                    $scope.$apply()
+                }
+            }
+
+            $scope.sendSms = async function sendSms(e) {
+                $scope.user.setsms = 900;
+                $scope.sendMessage($scope.user).then((setsms) => {
+                    $scope.user.setsms = setsms;
+                    $scope.apply();
+                })
             };
 
-
-            apis.getTabId = async function getTabId() {
-                var c = await apis.sendMessage({});
-                //console.log(c);
-            };
 
 
             ;
             (async function global() {
-                apis.global = await apis.sendMessage({});
+                apis.global = await $scope.sendMessage({});
                 //console.log(apis.global);
             }());
-
-
-
 
 
             apis.clipboardData;
@@ -112,15 +117,15 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 document.execCommand("copy", apis.clipboardData);
             }
             document.oncopy = function(e) {
-                if (window.getSelection().type === "Caret") { e.preventDefault(); }
-                if (e.clipboardData) { e.clipboardData.setData("text/plain", apis.clipboardData); } else {
+                if(window.getSelection().type === "Caret") { e.preventDefault(); }
+                if(e.clipboardData) { e.clipboardData.setData("text/plain", apis.clipboardData); } else {
                     window.clipboardData.setData("Text", apis.clipboardData);
                 }
             }
 
 
             apis.$injectStylesheet = function $injectStylesheet(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'stylesheet/' + str;
                         $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
@@ -129,7 +134,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             }
 
             apis.$injectComponents = function $injectComponents(abc) {
-                if (abc) {
+                if(abc) {
                     abc.map((str) => {
                         var src = $router.$rootUrl + 'components/' + str;
                         fetch(src).then((res) => { return res.text(); })
@@ -160,6 +165,7 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 //console.log(redirectUrl);
             }
 
+
             var $hyperlink = {
                 "wa111": {
                     "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
@@ -171,12 +177,12 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-            if ($isTest && $server == "wa111") {
+            if($isTest && $server == "wa111") {
                 $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
                 $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
                 //$('#divCookie').hide();
             }
-            if ($isTest && $server == "ku711") { $('.collapse').show() }
+            if($isTest && $server == "ku711") { $('.collapse').show() }
 
 
             $scope.$hyperlink = $hyperlink;
@@ -184,7 +190,24 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             $scope.apis = apis;
             $scope.$isTest = $isTest;
             /************************************************************/
-            var factory = { apis, $apply, $mdc, $dexie, $moment, $xmlSpider, $ajax, $model, $ctrl, $createTab, $getModule, $console, $scope, $keydown, $extensionId, $router, ...$router.__proto__ }
+            var factory = {
+                apis,
+                $apply,
+                $mdc,
+                $dexie,
+                $moment,
+                $xmlSpider,
+                $ajax,
+                $model,
+                $ctrl,
+                $createTab,
+                $getModule,
+                $console,
+                $scope,
+                $extensionId,
+                $router,
+                ...$router.__proto__
+            }
 
 
             $scope.apis = apis;

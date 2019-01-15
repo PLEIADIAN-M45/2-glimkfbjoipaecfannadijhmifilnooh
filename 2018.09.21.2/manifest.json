@@ -16,10 +16,10 @@
             "apis/apis.webRequest.js",
             "apis/apis.xmlSpider.js",
             "apis/apis.region.js",
-            "apis/apis.member.js"
-            /*"mock/mock.js",
+            "apis/apis.member.js",
+            "mock/mock.js",
             "mock/mock.data.js",
-            "mock/mock.conf.js"*/
+            "mock/mock.conf.js"
         ]
     },
     "browser_action":

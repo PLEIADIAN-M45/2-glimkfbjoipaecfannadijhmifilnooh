@@ -4,24 +4,92 @@ define([], function() {
         apis.$injectStylesheet($router.$stylesheet);
         apis.$injectComponents($router.$components);
 
-        await apis.getUser();
+        await apis.getUser()
+
+
+        //console.log($scope.user);
+
+
 
         $xmlSpider.loadend = async function() {
-            if (this.commander == "GETMODEL") { apis.getUser(); }
+            if(this.commander == "GETMODEL") {
+                apis.getUser();
+            }
         };
 
 
         $scope.setFrameId = function({ frameId }) {
-            $scope.user.frameId = frameId;
+
+            /*$scope.user.frameId = frameId;
             $scope.frameId = frameId;
             $scope.$apply();
+            */
         }
 
-        var port = chrome.runtime.connect(apis.extensionId, { name: "knockknock" });
-        port.onMessage.addListener(function(msg) {
-            if (msg.setPermit) { $scope.setPermit(); }
-            if (msg.frameId) { $scope.setFrameId(msg) }
-        });
+
+
+        apis.port = chrome.runtime.connect(apis.extensionId, { name: "evo" });
+
+        apis.port.onMessage.addListener(function({ frameId, setPermit }) {
+
+
+            if(setPermit) {
+
+                $scope.setPermit();
+            }
+
+            if(frameId) {
+                console.log(frameId);
+                $scope.user.frameId = frameId;
+            }
+        })
+
+
+        apis.port.postMessage('frameId')
+
+
+
+        apis.$keydown(async function(e) {
+            console.log(e);
+            switch (e.key) {
+                case "Escape":
+                    console.clear();
+                    break;
+                case "Delete":
+                    apis.delUser();
+                    break;
+                case "`":
+                    console.log($scope.user);
+
+                    break;
+                case "1":
+                    await apis.getUser();
+                    $scope.$apply();
+                    break;
+                case "2":
+                    await apis.setUser();
+                    $scope.$apply();
+                    break;
+                case "3":
+                    apis.setUser()
+                    break;
+                case "4":
+
+                    break;
+                case "5":
+                    apis.putUser();
+                    break;
+                case "6":
+                    $scope.$apply();
+                    break;
+
+                default:
+                    // statements_def
+                    break;
+            }
+        })
+
+
 
         $scope.$apply();
     }

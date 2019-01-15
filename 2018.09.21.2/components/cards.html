@@ -1,5 +1,5 @@
 <div class="ui cards">
-    <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me, this)">
+    <div class="ui card" ng-repeat="me in list track by $index" ng-class="{'negative':me.region.alert||me.region.alarm}" ng-init="apis.region.call(me, this, $event);">
         <div class="ui top attached content compact">
             <div class="left floated meta">
                 <i class="icon icon-text" ng-class="icons[me.caller]" title="{{heads[me.caller]}}"></i>

@@ -6,7 +6,7 @@
             <i class="bolt icon"></i>一机多登</a>
         <a class="item setPermit" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
             <i class="handshake outline icon"></i>开通</a>
-        <a class="item smss" ng-click="apis.sendSms($event)" ng-if="user.setsms==true || user.setsms==401">
+        <a class="item sms_{{user.setsms}}" ng-click="sendSms($event)" ng-if="user.setsms==true || user.setsms==401" ng-hide="user.setsms==900">
             <i class="envelope outline icon"></i>短信<br>{{user.smss.status}}
         </a>
         <a class="item" ng-click="apis.delUser();" ng-if="$isTest2">
@@ -18,6 +18,10 @@
 /* .item.smss {
     background-color: yellow !important;
 } */
+
+.item.sms_401 {
+    background-color: #e91e63 !important;
+}
 
 .item.pink {
     background-color: red !important;

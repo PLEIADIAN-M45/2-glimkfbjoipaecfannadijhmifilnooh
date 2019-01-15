@@ -13,7 +13,7 @@ define([], function() {
 
         $scope.scrollHeightListener = function() {
             window.addEventListener('message', function(e) {
-                if (e.data && e.data.id === $scope.iFrameId) {
+                if(e.data && e.data.id === $scope.iFrameId) {
                     console.log(e.data);
                     document.getElementById(e.data.id).style.height = e.data.scrollHeight + 'px'
                 }
@@ -36,18 +36,18 @@ define([], function() {
 
         apis.checkSensitiveWords = function checkSensitiveWords(children) {
             [...children].map((el) => {
-                apis.global.region.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
-                apis.global.danger.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
-                apis.global.author.find((str) => { if (el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.region.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.danger.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
+                apis.global.author.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
                 //apis.global.locate.find((str) => { if(el.outerText.includes(str)) { el.classList.add('danger') } });
             })
         };
 
-        console.log($router.$params.method);
+        //console.log($router.$params.method);
 
 
         //if($router.$params.method == "CookieID") {}
-        if ($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
+        if($router.$params.method == "CookieID" || location.pathname == "/IGetMemberInfo.aspx") {
 
 
 
@@ -56,28 +56,29 @@ define([], function() {
             await apis.getUser();
 
 
+            console.log($scope.user);
+
+
             $scope.QueryInputModel();
             $scope.scrollHeightListener();
             $scope.start();
-            $scope.createIFrame();
+            //$scope.createIFrame();
 
         }
 
-        if (location.pathname == "/sameBrowserList.aspx") {
+        if(location.pathname == "/sameBrowserList.aspx") {
             apis.$injectStylesheet($router.$stylesheet);
             $scope.start();
             $scope.scrollHeightPoster();
             return;
         }
 
-        if ($router.$params.method == "DeviceNo") {
+        if($router.$params.method == "DeviceNo") {
             apis.$injectStylesheet($router.$stylesheet);
             $scope.QueryInputModel();
             $scope.start();
             return;
         }
-
-        return
 
 
 
@@ -88,7 +89,7 @@ define([], function() {
         $scope.sites = $scope.list.map((obj) => {
             with(obj) {
                 //$scope.sites[value] =
-                if (caller == 'locate') {
+                if(caller == 'locate') {
                     return []
                 } else {
                     return [
@@ -105,27 +106,29 @@ define([], function() {
 
         console.log($scope.sites);
 
-        apis.region = function region(scope, e) {
-            if (!this.value) { return };
-            if (this.active == undefined || e) {
-                scope.active = true;
-                apis.sendMessage(this).then((res) => {
-                    angular.extend(this, res);
-                    scope.active = false;
-                    scope.$apply();
+        apis.region = function region(childScope, e) {
+            if(this.value) {} else { return };
+            if(childScope.active == undefined || e) {
+                childScope.active = true;
+                $scope.sendMessage(this).then((result) => {
+                    angular.extend(this, result);
+                    childScope.active = false;
+                    childScope.apply();
                 });
             }
         }
 
-        apis.member = function member(scope, e) {
-            if (!this.value || this.value.includes("*")) { return };
-            scope.active = true;
-            apis.sendMessage(this).then((res) => {
-                if (res && res.rows) {
-                    angular.extend(this, res);
-                } else { scope.error = true; }
-                scope.active = false;
-                scope.$apply();
+        apis.member = function member(childScope, e) {
+            if(!this.value || this.value.includes("*")) { return };
+            childScope.active = true;
+            $scope.sendMessage(this).then((result) => {
+                if(result && result.rows) {
+                    angular.extend(this, result);
+                } else {
+                    childScope.error = true;
+                }
+                childScope.active = false;
+                childScope.apply();
             })
         }
 
@@ -142,13 +145,13 @@ define([], function() {
 
         $scope.changeColor = function($childScope) {
             var $sequel = $scope.user.sequel;
-            if (this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
-            if (this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
-            if (this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
+            if(this.list_Accounts && this.list_Accounts.length) { $childScope.color = "pink"; };
+            if(this.f_blacklist == 17 || this.IsBlackList == true) { $childScope.color = "black" };
+            if(this.f_id == $sequel || this.MNO == $sequel) { $childScope.color = "brown" };
         };
 
         $scope.setPopup = function($childScope) {
-            if (this.list_Accounts && this.list_Accounts.length) {
+            if(this.list_Accounts && this.list_Accounts.length) {
                 setTimeout(($id) => {
                     $($id).popup({ html: $($id).find("aside").html(), hoverable: true, setFluidWidth: true, exclusive: true, on: "hover", position: "bottom left", variation: "special" });
                 }, 500, "#" + $childScope.$id);
@@ -171,7 +174,7 @@ define([], function() {
 
         $scope.setPermit = function setPermit(frameId) {
             console.log(frameId);
-            apis.sendMessage({ frameId })
+            $scope.sendMessage({ frameId })
         }
 
 
