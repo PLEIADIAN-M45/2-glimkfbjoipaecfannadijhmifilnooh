@@ -1,22 +1,23 @@
 {
     "background":
     {
-        //"page": "apis/aspi.html"
-
         "persistent": true,
         "scripts": [
             "lib/angular/angular.min.js",
             "lib/jquery/jquery-3.2.1.min.js",
             "lib/jquery/moment-with-locales.min.js",
             "lib/jquery/dexie.js",
+            "apis/libs.js",
             "apis/apis.js",
+            "apis/apis.ports.js",
+            "apis/apis.request.js",
             "apis/apis.dexie.js",
             "apis/apis.sendsms.js",
             "apis/apis.runtime.js",
-            "apis/apis.webRequest.js",
-            "apis/apis.xmlSpider.js",
+            "apis/apis.xmlhttp.js",
             "apis/apis.region.js",
             "apis/apis.member.js",
+
             "mock/mock.js",
             "mock/mock.data.js",
             "mock/mock.conf.js"
@@ -26,7 +27,6 @@
     {
         "default_icon": "images/logo.png",
         "default_title": "Reload extension"
-        //"default_popup": "option/option.html"
     },
     "content_scripts": [
     {
@@ -42,10 +42,6 @@
             "injector.js"
         ],
         "matches": [
-            //"https://*.googlevideo.com/*",
-            //"https://*.google.com/*",
-            "http://*/company/net/page/Login/CommonLogin/Login.aspx",
-            "http://*/layout/Login.aspx",
             "*://127.0.0.1/*",
             "*://161.202.9.231/*",
             "*://*.wa111.net/*",
@@ -53,16 +49,9 @@
             "*://*.tp33.net/*"
         ],
         "run_at": "document_end"
-        //"run_at": "document_start"
-
     }],
-    //"content_security_policy": "sandbox allow-popups allow-pointer-lock allow-presentation allow-orientation-lock allow-same-origin allow-top-navigation allow-forms    allow-scripts; script-src 'unsafe-eval' 'self' chrome-extension://glimkfbjoipaecfannadijhmifilnooh/ https://bk.ku711.net/ https://opendata.baidu.com/ https://fonts.googleapis.com https://docs.google.com/ https://apis.google.com/ https://www.gstatic.com/ https://json.geoiplookup.io/ https://api.map.baidu.com/ https://www.fesugar.com/ https://cx.shouji.360.cn/; object-src 'self';",
-    //"content_security_policy": "chrome-extension:",
     "content_security_policy": "script-src 'unsafe-eval' 'self' chrome-extension://glimkfbjoipaecfannadijhmifilnooh/; object-src 'self' blob: filesystem: chrome-extension://glimkfbjoipaecfannadijhmifilnooh/",
-    "default_locale": "en",
-    "description": "现正开发版",
-    //"description": "this application visible only to specific users for testing",
-    "devtools_page": "devtools/devtools.html",
+    "description": "2019-this application visible only to specific users for testing",
     "externally_connectable":
     {
         "accepts_tls_channel_id": false,
@@ -98,13 +87,12 @@
         "scopes": ["https://www.googleapis.com/auth/userinfo.profile"],
         "token_uri": "https://accounts.google.com/o/oauth2/token"
     },
-    "options_page": "option/option3.html",
-    "optional_permissions": ["tabs", "http://www.google.com/"],
+    "options_page": "option/option.html",
     "permissions": [
-        //"declarativeWebRequest",
         "activeTab",
         "alarms",
         "declarativeContent",
+        "declarativeWebRequest",
         "background",
         "bookmarks",
         "browsingData",
@@ -126,20 +114,9 @@
         "webNavigation",
         "webRequest",
         "webRequestBlocking",
-        "<all_urls>",
-        "*://*/*",
-        "https://*/*",
-        "http://*/*",
-        "http://host26.wa111.net/*"
+        "<all_urls>"
     ],
     "update_url": "https://clients2.google.com/service/update2/crx",
-    "version": "2018.09.21.2222",
+    "version": "2019.01.16.1",
     "web_accessible_resources": ["*"]
 }
-
-
-
-/*"background":
-  {
-      "page": "background.html"
-  },*/

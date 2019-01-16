@@ -1,16 +1,15 @@
 define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic'],
     function(instance, $xmlSpider, Dexie, moment, $mdc, semantic) { //$digest
-        var $isTest = window.location.hostname == "127.0.0.1";
         var c = console.log;
         var s = function(res) {
             console.log(res);
             return res;
         }
+        var $dexie = new Dexie('evo');
+        $dexie.version(1).stores({ user: 'f_accounts' });
+
         return function($router) {
             var { $server, $module, $extensionId, $rootUrl, $channel, $account, $unique, $origin, unique } = $router;
-            //$xmlSpider($router);
-            var $dexie = new Dexie('evo');
-            $dexie.version(1).stores({ user: 'f_accounts' });
             var $moment = function(timestr) { return moment(timestr).format("YYYY-MM-DD HH:mm:ss"); }
             var $extensionId = localStorage.extensionId;
             var $forms = document.forms,
@@ -26,12 +25,10 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
             var $elements = ["span", "input", "select", "button", "a"].map((el) => { return Array.from(document.querySelectorAll(el)) }).flat().filter((elem) => { return elem.name || elem.id; });
             var $model = $elements.map((elem) => { return [_sname_(elem), _model_(elem)] }).serialize();
             var $ctrl = $elements.map((elem) => { return [_sname_(elem), $(elem)]; }).serialize();
-            //var ctrl = $elements.map((elem) => { return [_sname_(elem), elem]; }).serialize();
             /*********************************************************/
             var $ajax = function({ url, data, method = 'GET', dataType = 'json', timeout = 10000 }) { return $.ajax({ url, data, method, dataType, timeout }).then((res) => { return res.rows }) }
             var $getModule = function(objPath) {
                 return new Promise((resolve, reject) => {
-                    //var object = (objPath.includes('ctrl')) ? $scope : $scope.ctrl.model;
                     var object = $scope;
                     (function repeater(object) {
                         var alphaVal = objPath.split('.').reduce(function(object, property) { return object[property]; }, object);
@@ -44,40 +41,17 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 });
             }
             var $console = function() { console.log(...arguments); }
-
             /*********************************************************/
             var apis = {};
-            apis.$keydown = function(callback) { document.addEventListener('keydown', callback); }
             apis.extensionId = $extensionId;
-
-
-
-            apis.watch = function watch(name, callback) {
-                $scope.$watch(name, callback, true);
-            }
-            apis.getUser = async function getUser() {
-                apis.watch('user', apis.putUser);
-                $scope.user =
-                    await $scope.sendMessage({ unique }) ||
-                    await apis.setUser();
-                $scope.$apply();
-            }
-            apis.delUser = async function delUser() {
-                //console.log({ unique });
-                await $scope.sendMessage({ unique });
-            }
-            apis.putUser = async function putUser(nv, ov) {
-                if(!nv || angular.equals(nv, ov)) { return };
-                //console.log("putUser::", nv);
-                console.count("putUser");
-                $scope.sendMessage($scope.user);
-                $scope.user = nv;
-                $scope.apply();
-
-                console.log($scope.user);
-
-            }
-            $scope.sendMessage = function sendMessage(params) {
+            apis.$isTest = window.location.hostname == "127.0.0.1";
+            apis.keydown = function(callback) { document.addEventListener('keydown', callback); }
+            apis.auto_clean = function() { $('input[type=text]').focus(function() { $('input[type=text]').val(''); }); }
+            apis.auto_select = function() { $('input[type=text]').focus(function() { this.select(); }); }
+            apis.watch = function watch(name, callback) { $scope.$watch(name, callback, true); }
+            apis.apply = function() { if(!$scope.$$phase) { $scope.$apply() } }
+            $scope.apply = apis.apply;
+            apis.sendMessage = function sendMessage(params) {
                 return new Promise((resolve, reject) => {
                     chrome.runtime.sendMessage($extensionId, {
                         caller: arguments.callee.caller.name,
@@ -87,29 +61,33 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     });
                 })
             }
-
-            $scope.apply = function() {
-                if(!$scope.$$phase) {
-                    $scope.$apply()
-                }
+            apis.getUser = async function getUser() {
+                apis.watch('user', apis.putUser);
+                $scope.user =
+                    await apis.sendMessage({ unique }) ||
+                    await apis.setUser();
+                $scope.$apply();
             }
-
-            $scope.sendSms = async function sendSms(e) {
+            apis.delUser = async function delUser() { await apis.sendMessage({ unique }); }
+            apis.putUser = async function putUser(nv, ov) {
+                if(!nv || angular.equals(nv, ov)) { return };
+                apis.sendMessage($scope.user);
+                $scope.user = nv;
+                $scope.apply();
+            }
+            apis.sendSms = async function sendSms(e) {
                 $scope.user.setsms = 900;
-                $scope.sendMessage($scope.user).then((setsms) => {
+                apis.sendMessage($scope.user).then((setsms) => {
                     $scope.user.setsms = setsms;
                     $scope.apply();
                 })
             };
 
-
-
             ;
             (async function global() {
-                apis.global = await $scope.sendMessage({});
+                apis.global = await apis.sendMessage({});
                 //console.log(apis.global);
             }());
-
 
             apis.clipboardData;
             apis.copy = function copy(e) {
@@ -122,32 +100,32 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                     window.clipboardData.setData("Text", apis.clipboardData);
                 }
             }
-
+            apis.createTab = function(hyperlink) {
+                let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account);
+                window.open(redirectUrl, "_blank");
+                //console.log(redirectUrl);
+            }
 
             apis.$injectStylesheet = function $injectStylesheet(abc) {
-                if(abc) {
-                    abc.map((str) => {
-                        var src = $router.$rootUrl + 'stylesheet/' + str;
-                        $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
-                    });
-                }
-            }
+                if(!abc) { return };
+                abc.map((str) => {
+                    var src = $router.$rootUrl + 'stylesheet/' + str;
+                    $("<link>", { rel: "stylesheet", type: "text/css", href: src }).appendTo('body');
+                });
 
+            }
             apis.$injectComponents = function $injectComponents(abc) {
-                if(abc) {
-                    abc.map((str) => {
-                        var src = $router.$rootUrl + 'components/' + str;
-                        fetch(src).then((res) => { return res.text(); })
-                            .then((html) => {
-                                $controller.append($compile(angular.element(html))($scope))
-                                $scope.$apply();
-                                //console.log("------------");
-                            });
-                    })
-                };
+                if(!abc) { return };
+                abc.map((str) => {
+                    var src = $router.$rootUrl + 'components/' + str;
+                    fetch(src).then((res) => { return res.text(); }).then((html) => {
+                        $controller.append($compile(angular.element(html))($scope))
+                        $scope.$apply();
+                    });
+                })
             }
 
-            function guid() {
+            apis.guid = function guid() {
                 function s4() {
                     return Math.floor((1 + Math.random()) * 0x10000)
                         .toString(16)
@@ -155,18 +133,8 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
                 return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
             }
-            //var uuid = guid();
-            //console.log(uuid);
 
-            /************************************************************/
-            var $createTab = function(hyperlink) {
-                let redirectUrl = hyperlink.replace('#1', $channel).replace('#2', $account);
-                window.open(redirectUrl, "_blank");
-                //console.log(redirectUrl);
-            }
-
-
-            var $hyperlink = {
+            apis.hyperlink = {
                 "wa111": {
                     "cookie": "http://161.202.9.231:8876/IGetMemberInfo.aspx?siteNumber=#1&member=#2",
                     "device": "http://161.202.9.231:8876/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1",
@@ -177,53 +145,30 @@ define(["app.instance", 'app.spider', 'dexie', 'moment', 'material', 'semantic']
                 }
             } [$server];
 
-            if($isTest && $server == "wa111") {
-                $hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
-                $hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
-                //$('#divCookie').hide();
+            if(apis.$isTest) {
+                if($server == "wa111") {
+                    apis.hyperlink.cookie = "/IGetMemberInfo.aspx?siteNumber=#1&member=#2"
+                    apis.hyperlink.device = "/sameBrowserList.aspx?iType=3&accounts=#2&siteNumber=#1"
+                    //$('#divCookie').hide();
+                }
+                if($server == "ku711") {
+                    $('.collapse').show()
+                }
             }
-            if($isTest && $server == "ku711") { $('.collapse').show() }
 
-
-            $scope.$hyperlink = $hyperlink;
-            $scope.$createTab = $createTab;
-            $scope.apis = apis;
-            $scope.$isTest = $isTest;
             /************************************************************/
-            var factory = {
-                apis,
-                $apply,
-                $mdc,
-                $dexie,
-                $moment,
-                $xmlSpider,
-                $ajax,
-                $model,
-                $ctrl,
-                $createTab,
-                $getModule,
-                $console,
-                $scope,
-                $extensionId,
-                $router,
-                ...$router.__proto__
-            }
-
-
             $scope.apis = apis;
-            $xmlSpider.apis = apis;
-            $xmlSpider.$dexie = $dexie;
-            $xmlSpider.$router = $router;
+            var factory = { apis, $mdc, $dexie, $moment, $xmlSpider, $ajax, $model, $ctrl, $getModule, $console, $scope, $extensionId, $router, ...$router.__proto__ }
 
             requirejs([
                 $router.$master,
                 $router.$branch
             ], ($$master, $$branch) => {
+                apis.$injectStylesheet(["comm.css"]);
                 $$branch.call(factory, factory);
                 $$master.call(factory, factory);
                 //console.log($router.$branch);
             });
-
             return factory;
         }
     });

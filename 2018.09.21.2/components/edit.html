@@ -2,11 +2,11 @@
     <div class="ui vertical labeled icon menu inverted" ng-class="{ 'danger': user.isblack }">
         <a class="item">{{user.author.value}}</a>
         <a class="item">{{frameId}}</a>
-        <a class="item" ng-click="$createTab($hyperlink.cookie)" style="margin-bottom: 50px;">
+        <a class="item" ng-click="apis.createTab(apis.hyperlink.cookie)" style="margin-bottom: 50px;">
             <i class="bolt icon"></i>一机多登</a>
         <a class="item setPermit" ng-click="setPermit($event)" ng-if="user.status[0] == 3 && !user.status[1]" status="{{user.status}}">
             <i class="handshake outline icon"></i>开通</a>
-        <a class="item sms_{{user.setsms}}" ng-click="sendSms($event)" ng-if="user.setsms==true || user.setsms==401" ng-hide="user.setsms==900">
+        <a class="item sms_{{user.setsms}}" ng-click="apis.sendSms($event)" ng-if="user.setsms==true || user.setsms==401" ng-hide="user.setsms==900">
             <i class="envelope outline icon"></i>短信<br>{{user.setsms}}
         </a>
         <a class="item" ng-click="apis.delUser();" ng-if="$isTest2">

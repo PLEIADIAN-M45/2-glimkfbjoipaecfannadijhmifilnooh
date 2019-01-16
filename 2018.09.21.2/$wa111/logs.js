@@ -27,7 +27,7 @@ define([], function() {
         }
         $scope.getUserRegions = function() {
             $scope.user.region = [...region];
-            $scope.user.regions = regions;
+            this.regions = regions;
         };
 
 
@@ -40,11 +40,6 @@ define([], function() {
             $('ul>li:nth-child(11)').hide()
         }
 
-        $('.TrHead>li').each((i, li) => {
-            li.textContent += i
-            $('ul>li:nth-child(11)').hide()
-
-        })
 
 
 

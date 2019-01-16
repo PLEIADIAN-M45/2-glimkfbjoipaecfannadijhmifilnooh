@@ -1,5 +1,5 @@
 define([], function() {
-    return function({ apis, $scope, $channel, $ctrl, $getModule, $account, $router, $model, $xmlSpider }) {
+    return function({ apis, $scope, $channel, $ctrl, $getModule, $account, $router, $model }) {
         $scope.iFrameSrc = location.href.replace('CookieID', 'DeviceNo');
         apis.removeElementClass = function removeElementClass(children) {;
             [...children].map((el) => {
@@ -7,7 +7,6 @@ define([], function() {
                 $(el).removeAttr("class");
             });
         };
-
         apis.addSiteNumberToAccount = function addSiteNumberToAccount(el) {
             var account = el[1].outerText,
                 channel = $router.$channel,
@@ -19,8 +18,6 @@ define([], function() {
             if(unique == $router.$unique) { $(el[1]).removeAttr('style').addClass('self') }
         };
 
-
-
         $scope.start = async function start() {
             await $getModule('ctrl.model.AlertInfo');
             $("#tbList>tbody>tr:not(:last)").each((i, { children }) => {
@@ -28,9 +25,7 @@ define([], function() {
                 apis.addSiteNumberToAccount(children);
                 apis.checkSensitiveWords(children);
             });
-
         };
-
 
         $scope.QueryInputModel = function QueryInputModel() {
             $scope.ctrl.model.QueryInputModel.AccountID = $router.$account;
@@ -39,52 +34,16 @@ define([], function() {
 
         $scope.getUserRegions = async function getUserRegions() {
             var ResultList = await $getModule('ctrl.model.ResultList');
+            var region = new Set();
+            var regions = [];
+            ResultList.filter(({ AccountID }) => { return AccountID == $account })
+                .map(({ IPAddress, IPLocation }) => {
+                    region.add(IPLocation);
+                    regions.push({ IPAddress, IPLocation })
+                });
 
-
-            console.log(ResultList);
-            $scope.user.region = ResultList.filter(({ AccountID }) => { return AccountID == $account })
-                .map(({ IPAddress, IPLocation }) => { return { IPAddress, IPLocation } });
-            $scope.$apply();
-        };
-
-
-        $xmlSpider.loadend = function xmlSpider() {
-            //console.log(this.commander);
-            //alert(this.action)
-            switch (this.commander) {
-                case "GETMEMBERALERTINFOBACKENDBYMULTIPLAYER":
-
-                    /*
-                        if ($router.$params.method == "DeviceNo") {
-                            $scope.start();
-                            $scope.scrollHeightPoster();
-                        }*/
-                    break;
-                case "-------":
-                    break;
-            }
-
+            this.regions = regions;
+            $scope.user.region = [...region];
         };
     }
 });
-
-
-
-
-
-
-
-
-
-
-
-/*
-$scope.$watch('ctrl.model.ResultList', function(nv, ov) {
-    console.log(nv);
-}, true);
-
-$scope.$watch('ctrl.model.AlertInfo', function(nv, ov) {
-    console.log(nv);
-}, true);
-*/
-//$(el).removeClass('wauto w10 w20')

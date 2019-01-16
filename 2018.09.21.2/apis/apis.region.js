@@ -11,26 +11,11 @@ apis.region = function(params) {
 
 apis.blacklist = function() {
 
-    if (!window.isLocal) {
-        global.author.push(["王杰", "LIYOU1314", "26", "投诉支付宝"])
-        global.banker.push(["6217856300"])
-        global.banker.push(["62170033"])
-        global.locate.push(["115.215.229.116"])
-        //global.locate.push(["223.104.33.115"])
-        //global.idcard.push(["3401221987100616"])
-        global.mobile.push(["13514966"])
-        global.mobile.push(["18587763"])
-    }
-
-
     var $global = global[this.caller] || [];
     //console.log($global);
     switch (this.caller) {
         case "author":
-            var res = $global.find((arr) => { return this.value == arr[0] }) || false;
-            console.log(res);
-            return res
-            return
+            return $global.find((arr) => { return this.value == arr[0] }) || false;
         case "mobile":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "idcard":
@@ -39,9 +24,9 @@ apis.blacklist = function() {
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
         case "locate":
             return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
-        default:
-            return $global.find(([val]) => { return this.value.startsWith(val) }) || false;
     }
+
+    return Promise.resolve();
 }
 
 
@@ -49,7 +34,7 @@ apis.blacklist = function() {
 
 
 apis.region.check = function(region) {
-    if (region) {
+    if(region) {
         return global.region.find(([elem]) => {
             return Object.values(region).toString().includes(elem);
         }) || false;
@@ -75,12 +60,12 @@ apis.region.locate = function() {
             "_": Date.now()
         }
     }).then((res) => {
-        if (res.status == 0) {
+        if(res.status == 0) {
             var str = res.data[0].location;
-            if (str) {
+            if(str) {
                 str.replace(/(天津市|北京市|重庆市|上海市|.+省|.+自治区)?(.+自治州|.+区|.+市|.+县|.+州|.+府)?(.+区|.+市|.+县|.+州|.+府)?(\s*.*)/,
                     (match, prov, city, area, meta, offset, string) => {
-                        if (!prov && !city && !area) {
+                        if(!prov && !city && !area) {
                             this.region = { prov: meta }
                         } else {
                             this.region = { prov, city, area, meta }
@@ -126,7 +111,7 @@ apis.region.mobile = function() {
             "_": Date.now(),
         }
     }).then((res) => {
-        if (res.status == 0) {
+        if(res.status == 0) {
             var d = res.data[0];
             this.region = {
                 city: d.city,

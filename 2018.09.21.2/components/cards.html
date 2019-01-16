@@ -28,7 +28,7 @@
             </div>
         </div>
         <div class="extra content grid grid-2" ng-if="me.caller=='locate'" ng-init="getUserRegions()">
-            <div class="ui image label green protocol center" ng-repeat="row in user.regions" ng-class="{'pink':row.danger}">
+            <div class="ui image label green protocol center" ng-repeat="row in regions" ng-class="{'pink':row.danger}">
                 <span>{{row.IPAddress}}</span>
                 <div class="detail">{{row.IPLocation}}</div>
             </div>

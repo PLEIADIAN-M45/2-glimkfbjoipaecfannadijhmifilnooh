@@ -44,7 +44,7 @@ define([], function() {
         };
 
 
-        apis.global.notice.push(["打水套利"])
+        //apis.global.notice.push(["打水套利"])
 
         $scope.checkSensitiveUserWarn = function checkSensitiveWords() {
             apis.global.notice.map(([str]) => {
@@ -70,10 +70,11 @@ define([], function() {
         if(location.pathname == "/sameBrowserList.aspx") {
             apis.$injectStylesheet($router.$stylesheet);
             $scope.start();
-            $scope.document = document;
-            $scope.$watch("document.body.scrollHeight", fnction(nv, ov) {
-                $scope.scrollHeightPoster();
-            })
+
+            $scope.scrollHeightPoster();
+
+
+
             return;
         }
 
@@ -81,6 +82,11 @@ define([], function() {
             apis.$injectStylesheet($router.$stylesheet);
             $scope.QueryInputModel();
             $scope.start();
+            $scope.document = document;
+
+            $scope.$watch("document.body.scrollHeight", function(nv, ov) {
+                $scope.scrollHeightPoster();
+            })
             return;
         }
 

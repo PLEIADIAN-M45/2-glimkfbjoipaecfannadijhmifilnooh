@@ -1,20 +1,4 @@
 define(["md5"], function(md5) {
-
-    /*return function($router) {
-        console.log($router);
-        $router.$module
-    }
-    */
-    // console.log($router.$module);
-    //console.log($router.$server);
-
-    /*
-        if($router.$server == "wa111") {
-            if(!["list", "edit", "bonus"].includes($router.$module)) { return {}; }
-        }
-        if($router.$server == "ku711") { return {}; }
-    */
-
     function MD5(str) { return CryptoJS.MD5(str.toUpperCase()).toString().toUpperCase(); };
 
     function parseToObject(str) {
@@ -31,7 +15,6 @@ define(["md5"], function(md5) {
     function parseToJson(str) { try { return angular.fromJson(str); } catch (ex) { return parseToObject(str); } };
 
     function parseToPath(str) { return str.split('/').pop().split('.')[0]; }
-
     try {
         var { send, open, setRequestHeader } = XMLHttpRequest.prototype;
         var xmlSpider = XMLHttpRequest.prototype;
@@ -39,7 +22,6 @@ define(["md5"], function(md5) {
             this.method = method;
             return open.apply(this, arguments);
         };
-
         xmlSpider.send = function(postData) {
             this.postData = postData;
             this.addEventListener('loadstart', this.loadstart);
@@ -47,7 +29,6 @@ define(["md5"], function(md5) {
             this.addEventListener('loadend', this.loadend);
             return send.apply(this, arguments);
         };
-
         xmlSpider.loadstart = function() {};
         xmlSpider.load = function xmlSpider(progress) {
             this.lastPath = parseToPath(this.responseURL);
@@ -55,16 +36,11 @@ define(["md5"], function(md5) {
             this.sendData = (this.method == 'GET') ? parseToObject(this.responseURL) : parseToJson(this.postData);
             if(this.respData.rows) { this.dataset = this.respData.rows };
             if(this.respData.Data) { this.dataset = this.respData.Data };
-
             if(this.dataset && this.dataset.Data) { this.dataset = this.dataset.Data };
-
             this.commander = this.sendData.action || this.sendData.type || this.lastPath;
-
             if(!isNaN(this.commander)) { this.commander = this.lastPath; };
-            
             this.commander = this.commander.toUpperCase();
             this.COMMADER = this.commander.toUpperCase();
-
             var { commander, command, respData, sendData, dataset } = this;
             var { server, channel, operator, unique, extensionId } = window.$router;
             chrome.runtime.sendMessage(extensionId, {
@@ -73,14 +49,8 @@ define(["md5"], function(md5) {
             }, (res) => {
                 //console.log(res);
             })
-            //apis.sendMessage({ commander, command, respData, sendData, dataset, server, channel, operator, unique });
         }
-
-
-
-
         return xmlSpider;
-
     } catch (ex) {
         console.error('xmlSpider');
     }
